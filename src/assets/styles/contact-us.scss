@@ -2,57 +2,120 @@
 @import "vars";
 
 .contact-us {
-  scroll-snap-align: start;
   position: relative;
-  width: 100vw;
-  left: 50%;
-  transform: translateX(-50%);
-  background-image: url("../../assets/images/bg/contact-us.svg");
-  background-repeat: no-repeat;
-  background-position: center;
   background-size: cover;
+  background: url("../../assets/images/bg/contact-us.svg") no-repeat bottom left;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding-top: 24px;
   padding-bottom: 160px;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  // @include content-alignment(0);
+  @include content-alignment(0);
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: url("../../assets/images/about-pages/ornament-top-sm.svg")
+      no-repeat;
+    width: 218px;
+    height: 213px;
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: url("../../assets/images/about-pages/ornament-bottom-sm.svg")
+      no-repeat;
+    width: 110px;
+    height: 132px;
+  }
+
+  @include tablet {
+    padding-top: 65px;
+    padding-bottom: 142px;
+
+    &:before {
+      background: url("../../assets/images/about-pages/ornament-top-md.svg")
+        no-repeat;
+      width: 251px;
+      height: 246px;
+    }
+
+    &:after {
+      background: url("../../assets/images/about-pages/ornament-bottom-md.svg")
+        no-repeat;
+      width: 205px;
+      height: 246px;
+    }
+  }
+
+  @include desktop-lg {
+    padding-top: 35px;
+    padding-bottom: 89px;
+
+    &:before {
+      background: url("../../assets/images/about-pages/ornament-top-lg.svg")
+        no-repeat;
+      width: 266px;
+      height: 261px;
+    }
+
+    &:after {
+      background: url("../../assets/images/about-pages/ornament-bottom-lg.svg")
+        no-repeat;
+      width: 163px;
+      height: 210px;
+    }
+  }
+
+  @include desktop-xl {
+    padding-top: 323px;
+    padding-bottom: 323px;
+
+    &:before {
+      background: url("../../assets/images/about-pages/ornament-top-xl.svg")
+        no-repeat;
+      width: 261px;
+      height: 299px;
+    }
+
+    &:after {
+      background: url("../../assets/images/about-pages/ornament-bottom-xl.svg")
+        no-repeat;
+      width: 261px;
+      height: 299px;
+    }
+  }
 
   &__wrapper {
-    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0;
-    box-sizing: border-box;
-    z-index: 1;
 
     @include desktop-xl {
       flex-direction: row;
       max-width: 1489px;
-      padding: 0 40px;
+      margin: 0 auto;
     }
   }
 
   &__block {
     width: 100%;
-    position: relative;
-    z-index: 1;
 
     @include mobile {
-      // &:first-child {
-      max-width: 80%;
-      margin: 0 auto;
-      // }
+      &:first-child {
+        max-width: 80%;
+        margin: 0 auto;
+      }
     }
 
     @include tablet {
-      // max-width: 668px;
+      max-width: 668px;
       margin: 0 auto;
     }
 
@@ -194,87 +257,6 @@
       max-width: 475px;
     }
   }
-
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -1px;
-    background: url("../../assets/images/about-pages/ornament-top-sm.svg")
-      no-repeat;
-    width: 218px;
-    height: 213px;
-    z-index: 0;
-  }
-
-  &:after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    right: -1px;
-    background: url("../../assets/images/about-pages/ornament-bottom-sm.svg")
-      no-repeat;
-    width: 110px;
-    height: 132px;
-    z-index: 0;
-  }
-
-  @include tablet {
-    padding-top: 65px;
-    padding-bottom: 142px;
-
-    &:before {
-      background: url("../../assets/images/about-pages/ornament-top-md.svg")
-        no-repeat;
-      width: 251px;
-      height: 246px;
-    }
-
-    &:after {
-      background: url("../../assets/images/about-pages/ornament-bottom-md.svg")
-        no-repeat;
-      width: 205px;
-      height: 246px;
-    }
-  }
-
-  @include desktop-lg {
-    padding-top: 35px;
-    padding-bottom: 89px;
-
-    &:before {
-      background: url("../../assets/images/about-pages/ornament-top-lg.svg")
-        no-repeat;
-      width: 266px;
-      height: 261px;
-    }
-
-    &:after {
-      background: url("../../assets/images/about-pages/ornament-bottom-lg.svg")
-        no-repeat;
-      width: 163px;
-      height: 210px;
-    }
-  }
-
-  @include desktop-xl {
-    padding-top: 323px;
-    padding-bottom: 323px;
-
-    &:before {
-      background: url("../../assets/images/about-pages/ornament-top-xl.svg")
-        no-repeat;
-      width: 261px;
-      height: 299px;
-    }
-
-    &:after {
-      background: url("../../assets/images/about-pages/ornament-bottom-xl.svg")
-        no-repeat;
-      width: 261px;
-      height: 299px;
-    }
-  }
 }
 
 .contact-us-form {
@@ -290,7 +272,7 @@
 
   @include desktop-lg {
     padding-top: 60px;
-    max-width: unset;
+    max-width: 736px;
     margin: 0 auto;
   }
 
