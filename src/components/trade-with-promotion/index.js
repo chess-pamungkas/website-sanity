@@ -236,7 +236,7 @@ const TradeWithPromotion = ({ className, sectionRef }) => {
                 {t(`index_trade-with-promotion-promo-text-bold-fsa`)}
                 &nbsp;
               </span>
-              <span>{t(`index_trade-with-promotion-promo-text-bold-fsa`)}</span>
+              <span>{t(`index_trade-with-promotion-promo-text2-fsa`)}</span>
             </p>
           </div>
           <div className="trade-with-promotion__block">
