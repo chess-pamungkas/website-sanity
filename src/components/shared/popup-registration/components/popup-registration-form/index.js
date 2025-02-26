@@ -384,6 +384,7 @@ const PopupRegistrationForm = ({ params }) => {
         handleBlur,
         handleSubmit,
         setFieldValue,
+        setTouched,
       }) => {
         // Move the initialization effect here where setFieldValue is available
         useEffect(() => {
@@ -427,7 +428,11 @@ const PopupRegistrationForm = ({ params }) => {
         };
 
         return (
-          <form onSubmit={handleSubmit} className="popup-registration__form">
+          <form
+            onSubmit={handleSubmit}
+            className="popup-registration__form"
+            noValidate
+          >
             {/* Name Fields */}
             <div className="name-fields">
               <div className="popup-registration__field">
@@ -445,7 +450,7 @@ const PopupRegistrationForm = ({ params }) => {
                     "popup-registration__input--error":
                       errors.first_name && touched.first_name,
                   })}
-                  required
+                  noValidate
                 />
                 {errors.first_name && touched.first_name && (
                   <div className="popup-registration__error">
@@ -468,7 +473,7 @@ const PopupRegistrationForm = ({ params }) => {
                     "popup-registration__input--error":
                       errors.last_name && touched.last_name,
                   })}
-                  required
+                  noValidate
                 />
                 {errors.last_name && touched.last_name && (
                   <div className="popup-registration__error">
@@ -495,7 +500,7 @@ const PopupRegistrationForm = ({ params }) => {
                     "popup-registration__input--error":
                       errors.email && touched.email,
                   })}
-                  required
+                  noValidate
                 />
                 {errors.email && touched.email && (
                   <div className="popup-registration__error">
@@ -624,7 +629,7 @@ const PopupRegistrationForm = ({ params }) => {
                         "popup-registration__input--error":
                           errors.mobile && touched.mobile,
                       })}
-                      required
+                      noValidate
                     />
                     {errors.mobile && touched.mobile && (
                       <div className="popup-registration__error">
@@ -686,21 +691,54 @@ const PopupRegistrationForm = ({ params }) => {
                   </Trans>
                 </span>
               </span>
+              {errors.agreement && touched.agreement && (
+                <div
+                  className="popup-registration__error"
+                  style={{ marginTop: "8px" }}
+                >
+                  {t("popup-registration-agreement-required")}
+                </div>
+              )}
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
               className={cn("continue-button", {
-                "button-link--disabled":
-                  Object.values(errors).length > 0 ||
-                  Object.values(touched).length === 0,
+                "button-link--disabled": false,
               })}
+              onClick={async (e) => {
+                e.preventDefault();
+                // Touch all fields to show validation errors
+                await setTouched(
+                  {
+                    first_name: true,
+                    last_name: true,
+                    email: true,
+                    country: true,
+                    country_code: true,
+                    mobile: true,
+                    agreement: true,
+                    is_subscribe: true,
+                  },
+                  true
+                );
+
+                // Validate all fields
+                Object.keys(values).forEach((field) => {
+                  setFieldValue(field, values[field], true);
+                });
+
+                // If form is valid, submit it
+                if (Object.keys(errors).length === 0) {
+                  handleSubmit();
+                }
+              }}
             >
               {t("popup-registration-continue")}
             </button>
 
-            {/* Error Message */}
+            {/* Error Message - Only for API errors */}
             {errorMessage && (
               <p
                 className="popup-registration-error-message"

@@ -20,6 +20,6 @@ export const PopupRegistrationSchema = object().shape({
     .min(7, "popup-registration-phoneNumber-invalid")
     .required("popup-registration-phoneNumber-required"),
   agreement: boolean()
-    .oneOf([true], "You must accept the Privacy and Cookie Policy")
-    .required("You must accept the Privacy and Cookie Policy"),
+    .oneOf([true], "popup-registration-agreement-required")
+    .required("popup-registration-agreement-required"),
 });

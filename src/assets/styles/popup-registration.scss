@@ -43,7 +43,7 @@
     text-align: left !important;
     margin: auto;
     max-height: 90vh;
-    overflow-y: auto;
+    // overflow-y: auto;
 
     @include mobile {
       width: 100%;
@@ -58,22 +58,23 @@
     }
 
     @include desktop-lg {
-      max-width: 71.25rem;
+      max-width: 73.25rem;
+      max-height: 45rem;
     }
 
     @include desktop-xl {
       max-width: 75rem;
-      max-height: 45rem;
+      max-height: 47rem;
     }
 
     @include desktop-2k {
       max-width: 90rem;
-      max-height: 54rem;
+      max-height: 56rem;
     }
 
     @include desktop-5k {
       max-width: 120rem;
-      max-height: 72rem;
+      max-height: 74rem;
     }
   }
 
@@ -276,12 +277,12 @@
       }
 
       @include desktop-lg {
-        top: 40%;
+        top: 30%;
         font-size: 0.75rem;
       }
 
       @include desktop-2k {
-        top: 45%;
+        top: 25%;
         font-size: 0.875rem;
         max-width: 28.875rem;
       }
@@ -923,7 +924,7 @@
       }
 
       &__label {
-        font-size: 0.75rem;
+        font-size: 0.75rem !important;
       }
 
       &__input,

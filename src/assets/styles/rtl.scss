@@ -1191,7 +1191,7 @@
     margin: auto;
     display: flex;
     flex-direction: row;
-    overflow-y: auto;
+    // overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 
     input[type="text"],
@@ -1219,12 +1219,12 @@
     }
 
     @include desktop-lg {
-      max-width: 71.25rem;
+      max-width: 73.25rem;
     }
 
     @include desktop-xl {
       max-width: 75rem;
-      max-height: 45rem;
+      max-height: 47rem;
     }
   }
 
