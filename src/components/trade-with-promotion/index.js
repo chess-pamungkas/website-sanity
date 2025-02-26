@@ -38,7 +38,6 @@ import {
   DIR_RTL,
   ShowRegistrationPopup,
 } from "../../helpers/constants";
-import { sitePostfix } from "../../helpers/entity-resolver";
 import { setLangParam } from "../../helpers/services/language-service";
 
 const TradeWithPromotion = ({ className, sectionRef }) => {
@@ -230,16 +229,14 @@ const TradeWithPromotion = ({ className, sectionRef }) => {
           <div className="trade-with-promotion__block">
             <p className="trade-with-promotion__promo-text">
               <span>
-                {t(`index_trade-with-promotion-promo-text1${sitePostfix}`)}
+                {t(`index_trade-with-promotion-promo-text1-fsa`)}
                 &nbsp;
               </span>
               <span className="bold">
-                {t(`index_trade-with-promotion-promo-text-bold${sitePostfix}`)}
+                {t(`index_trade-with-promotion-promo-text-bold-fsa`)}
                 &nbsp;
               </span>
-              <span>
-                {t(`index_trade-with-promotion-promo-text2${sitePostfix}`)}
-              </span>
+              <span>{t(`index_trade-with-promotion-promo-text-bold-fsa`)}</span>
             </p>
           </div>
           <div className="trade-with-promotion__block">

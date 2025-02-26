@@ -14,7 +14,6 @@ import {
 import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { getArrows } from "./get-arrows";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
-import { sitePostfix } from "../../../../helpers/entity-resolver";
 import { setLangParam } from "../../../../helpers/services/language-service";
 
 const HowToStart = ({ className }) => {
@@ -42,7 +41,7 @@ const HowToStart = ({ className }) => {
     >
       <div className="partners-start__wrapper">
         <h2 className="partners-start__title">
-          {t(`partners_start-title${sitePostfix}`)}
+          {t(`partners_start-title-fsa`)}
         </h2>
         <div className="partners-start__items">
           {START_STEPS.length > 0 &&
@@ -59,7 +58,7 @@ const HowToStart = ({ className }) => {
           className={cn("partners-start__btn")}
           onClick={handleShowRegistrationPopup}
         >
-          {t(`partners_start-btn${sitePostfix}`)}
+          {t(`partners_start-btn-fsa`)}
         </ButtonPopup>
         <img src={arrow1} alt="" className="partners-start__arrow1" />
         <img src={arrow2} alt="" className="partners-start__arrow2" />
