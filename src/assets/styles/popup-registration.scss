@@ -364,7 +364,13 @@
     padding: 0.625rem 0.75rem;
     border: none;
     border-bottom: 1px solid #ff4400;
-    font-size: 0.8125rem;
+    font-size: 0.8125rem important;
+    // -webkit-text-size-adjust: 100%;
+
+    @supports (-webkit-touch-callout: none) {
+      font-size: 0.8125rem !important;
+      transform-origin: left top;
+    }
 
     &:focus {
       outline: none;
@@ -988,6 +994,39 @@
           transition: all 0.2s ease;
         }
       }
+    }
+  }
+
+  // Apply to all form inputs and selects
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  select,
+  .custom-dropdown__selected {
+    font-size: 0.8125rem !important;
+    -webkit-text-size-adjust: 100%;
+
+    @supports (-webkit-touch-callout: none) {
+      font-size: 0.8125rem !important;
+      transform-origin: left top;
+    }
+  }
+
+  // Fix for iOS specific issues
+  @supports (-webkit-touch-callout: none) {
+    -webkit-tap-highlight-color: transparent;
+
+    input,
+    select {
+      -webkit-appearance: none;
+      appearance: none;
+      border-radius: 0;
+    }
+
+    // Prevent scroll issues
+    .popup-registration__wrapper {
+      -webkit-overflow-scrolling: touch;
     }
   }
 }

@@ -1194,6 +1194,17 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    select,
+    .custom-dropdown__selected {
+      @supports (-webkit-touch-callout: none) {
+        transform-origin: right top;
+      }
+    }
+
     @include mobile {
       flex-direction: column;
       width: 100%;
