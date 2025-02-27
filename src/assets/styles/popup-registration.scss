@@ -59,12 +59,12 @@
 
     @include desktop-lg {
       max-width: 73.25rem;
-      max-height: 45rem;
+      max-height: 47rem;
     }
 
     @include desktop-xl {
       max-width: 75rem;
-      max-height: 47rem;
+      max-height: 48rem;
     }
 
     @include desktop-2k {
@@ -277,7 +277,7 @@
       }
 
       @include desktop-lg {
-        top: 30%;
+        top: 33%;
         font-size: 0.75rem;
       }
 
@@ -1030,6 +1030,21 @@
       -webkit-overflow-scrolling: touch;
     }
   }
+
+  &__error {
+    color: #ff0000;
+    font-size: 0.8125rem;
+    margin-top: 0.25rem;
+    min-height: 1rem;
+
+    // Special styling for agreement error
+    &--agreement {
+      margin-top: 1.25rem;
+      margin-bottom: 0;
+      text-align: center;
+      font-weight: bold;
+    }
+  }
 }
 
 .recaptcha-terms-text {
@@ -1332,14 +1347,5 @@
         margin-bottom: 0;
       }
     }
-  }
-}
-
-.popup-registration {
-  &__error {
-    color: #ff0000;
-    font-size: 0.8125rem;
-    margin-top: 0.25rem;
-    min-height: 1rem;
   }
 }

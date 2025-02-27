@@ -693,8 +693,10 @@ const PopupRegistrationForm = ({ params }) => {
               </span>
               {errors.agreement && touched.agreement && (
                 <div
-                  className="popup-registration__error"
-                  style={{ marginTop: "8px" }}
+                  className={cn(
+                    "popup-registration__error",
+                    "popup-registration__error--agreement"
+                  )}
                 >
                   {t("popup-registration-agreement-required")}
                 </div>
