@@ -32,6 +32,7 @@ const SearchPageContent = () => {
   const { searchState, setSearchState } = useContext(SearchContext);
   const searchResultsRef = useRef();
   const isRTL = useRtlDirection();
+  const [inputValue, setInputValue] = useState("");
 
   const [resultsBundleCount, setResultsBundleCount] = useState(
     SEARCH_RESULTS_FIRST_BUNDLE
@@ -51,34 +52,19 @@ const SearchPageContent = () => {
     }
   }, []);
 
+  // Initialize search from URL
   useEffect(() => {
     const searchParamValue = getUrlParamValue(SEARCH_PARAM_NAME);
-    if (!searchParamValue) return;
+    if (!searchParamValue) {
+      setInputValue("");
+      setSearchState(INITIAL_SEARCH_STATE);
+      return;
+    }
 
-    const results = getSearchResults(decodeURI(searchParamValue));
-    setSearchState({
-      query: searchParamValue,
-      results,
-      noResultsFound: !results.length,
-    });
-  }, [getSearchResults, setSearchState]);
+    const query = decodeURI(searchParamValue);
+    setInputValue(query);
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
-
-  const getSearchMinQueryLocale = useCallback(() => {
-    return isRTL
-      ? ArabicNumbers(SEARCH_MIN_QUERY_LENGTH)
-      : SEARCH_MIN_QUERY_LENGTH;
-  }, [isRTL]);
-
-  const handleSearch = (e) => {
-    const query = e.target.value;
     if (query.length >= SEARCH_MIN_QUERY_LENGTH) {
-      setResultsBundleCount(SEARCH_RESULTS_FIRST_BUNDLE);
       const results = getSearchResults(query);
       setSearchState({
         query,
@@ -92,12 +78,57 @@ const SearchPageContent = () => {
         noResultsFound: false,
       });
     }
+  }, []); // Only run on mount
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
+  const getSearchMinQueryLocale = useCallback(() => {
+    return isRTL
+      ? ArabicNumbers(SEARCH_MIN_QUERY_LENGTH)
+      : SEARCH_MIN_QUERY_LENGTH;
+  }, [isRTL]);
+
+  const handleSearch = (e) => {
+    const query = e.target.value || "";
+    setInputValue(query);
+
+    if (query.length >= SEARCH_MIN_QUERY_LENGTH) {
+      setResultsBundleCount(SEARCH_RESULTS_FIRST_BUNDLE);
+      const results = getSearchResults(query);
+      setSearchState({
+        query,
+        results,
+        noResultsFound: !results.length,
+      });
+
+      // Update URL without page reload
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.set(SEARCH_PARAM_NAME, query);
+      window.history.replaceState({}, "", newUrl);
+    } else {
+      setSearchState({
+        query,
+        results: [],
+        noResultsFound: false,
+      });
+
+      // Remove query parameter if search is empty
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.delete(SEARCH_PARAM_NAME);
+      window.history.replaceState({}, "", newUrl);
+    }
   };
 
-  // reset search state
+  // Cleanup search state on unmount
   useEffect(() => {
-    return () => setSearchState(INITIAL_SEARCH_STATE);
-  }, []);
+    return () => {
+      setSearchState(INITIAL_SEARCH_STATE);
+      setInputValue("");
+    };
+  }, [setSearchState]);
 
   return (
     <section className="search-page__container" dir={isRTL ? DIR_RTL : DIR_LTR}>
@@ -113,7 +144,8 @@ const SearchPageContent = () => {
           className="search-page__form-input"
           placeholder={t("search-placeholder")}
           onChange={handleSearch}
-          value={searchState.query}
+          value={inputValue}
+          autoComplete="off"
         />
       </form>
 

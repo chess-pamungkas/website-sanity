@@ -32,8 +32,8 @@ const Header = ({ className }) => {
   const isRTL = useRtlDirection();
   const { isDesktop, isTablet, isMobile } = useWindowSize();
 
-  console.log("isDesktop", isDesktop);
-  console.log("isTablet", isTablet);
+  // console.log("isDesktop", isDesktop);
+  // console.log("isTablet", isTablet);
 
   const {
     headerRef,
