@@ -32,6 +32,7 @@ const SearchBar = ({
   const isRTL = useRtlDirection();
 
   const [isActive, setIsActive] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
   const searchInput = useRef();
   const searchBarRef = useRef();
@@ -51,46 +52,77 @@ const SearchBar = ({
     if (!isExpandable && !isNavbarOpen) return;
 
     setSearchState(INITIAL_SEARCH_STATE);
+    setInputValue("");
     if (!isExpandable) return;
 
     setIsActive(false);
   });
 
   const handleSearch = (e) => {
-    const query = e.target.value;
-    if (query.length >= SEARCH_MIN_QUERY_LENGTH) {
-      const results = getSearchResults(query);
-      setSearchState({
-        query,
-        results,
-        noResultsFound: !results.length,
-      });
-    } else {
-      setSearchState({
-        query,
-        results: [],
-        noResultsFound: false,
-      });
-    }
+    const query = e.target.value || "";
+    setInputValue(query);
+
+    setSearchState({
+      query,
+      results:
+        query.length >= SEARCH_MIN_QUERY_LENGTH ? getSearchResults(query) : [],
+      noResultsFound:
+        query.length >= SEARCH_MIN_QUERY_LENGTH &&
+        !getSearchResults(query).length,
+    });
   };
 
   const handleMoreResultsClick = (e) => {
     if (!isNavbarOpen) return;
-
     onSubmit(e);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onSubmit) onSubmit(e);
+    e.stopPropagation();
 
-    navigate(
-      `${
+    if (onSubmit) {
+      onSubmit(e);
+    }
+
+    if (inputValue) {
+      const url = `${
         selectedLanguage.URIPart
-      }${SEARCH_PAGE_LINK}/?${SEARCH_PARAM_NAME}=${encodeURI(
-        searchState.query
-      )}`
-    );
+      }${SEARCH_PAGE_LINK}/?${SEARCH_PARAM_NAME}=${encodeURIComponent(
+        inputValue
+      )}`;
+      navigate(url);
+
+      // Clear input and search state after navigation
+      setInputValue("");
+      setSearchState(INITIAL_SEARCH_STATE);
+    }
+  };
+
+  const handleGoClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (inputValue) {
+      if (onSubmit) {
+        onSubmit(e);
+      }
+
+      const url = `${
+        selectedLanguage.URIPart
+      }${SEARCH_PAGE_LINK}/?${SEARCH_PARAM_NAME}=${encodeURIComponent(
+        inputValue
+      )}`;
+
+      try {
+        navigate(url);
+        // Clear input and search state after navigation
+        setInputValue("");
+        setSearchState(INITIAL_SEARCH_STATE);
+      } catch (error) {
+        console.error("Navigation failed:", error);
+      }
+    }
   };
 
   return (
@@ -106,9 +138,7 @@ const SearchBar = ({
       <button
         className="search-bar__expand"
         type="button"
-        onClick={() => {
-          onBarExpand();
-        }}
+        onClick={onBarExpand}
       >
         <SearchIcon />
       </button>
@@ -121,9 +151,14 @@ const SearchBar = ({
           placeholder={t("search-placeholder")}
           ref={searchInput}
           onChange={handleSearch}
-          value={searchState.query}
+          value={inputValue}
+          autoComplete="off"
         />
-        <button className="search-bar__submit" type="submit">
+        <button
+          className="search-bar__submit"
+          type="button"
+          onClick={handleGoClick}
+        >
           {t("search-submit-btn")}
         </button>
       </div>

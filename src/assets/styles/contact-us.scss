@@ -3,6 +3,11 @@
 
 .contact-us {
   position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
   background-size: cover;
   background: url("../../assets/images/bg/contact-us.svg") no-repeat bottom left;
   display: flex;
@@ -11,17 +16,27 @@
   justify-content: center;
   padding-top: 24px;
   padding-bottom: 160px;
-  @include content-alignment(0);
+  overflow: hidden;
+
+  @include mobile {
+    padding-left: $padding-sm;
+    padding-right: $padding-sm;
+  }
 
   &:before {
     content: "";
     position: absolute;
     top: 0;
-    left: 0;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    width: 100vw;
+    height: 100%;
     background: url("../../assets/images/about-pages/ornament-top-sm.svg")
       no-repeat;
-    width: 218px;
-    height: 213px;
+    z-index: 2;
+    pointer-events: none;
   }
 
   &:after {
@@ -33,6 +48,7 @@
       no-repeat;
     width: 110px;
     height: 132px;
+    z-index: 2;
   }
 
   @include tablet {
@@ -68,7 +84,7 @@
     &:after {
       background: url("../../assets/images/about-pages/ornament-bottom-lg.svg")
         no-repeat;
-      width: 163px;
+      width: 148px;
       height: 210px;
     }
   }
