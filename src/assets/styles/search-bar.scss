@@ -12,7 +12,7 @@
   box-shadow: 0 5px 10px #0000001a;
   border: 2px solid #e03c00;
   border-radius: 25px;
-  pointer-events: all;
+  pointer-events: auto;
 
   &--closed {
     padding: 0;
@@ -29,7 +29,7 @@
     }
 
     & > .search-bar__expand {
-      pointer-events: all;
+      pointer-events: auto;
     }
   }
 
@@ -43,13 +43,14 @@
     border: none;
     background: transparent;
     cursor: pointer;
-    pointer-events: none;
+    pointer-events: auto;
     outline: none;
   }
 
   &__controls {
     display: flex;
     flex-grow: 1;
+    pointer-events: auto;
   }
 
   &__icon {
@@ -68,6 +69,7 @@
     font-size: 16px;
     line-height: 20px;
     transition: width 0.3s;
+    pointer-events: auto;
 
     &::placeholder {
       color: map-get($colors, "white");
@@ -97,6 +99,7 @@
     line-height: 20px;
     text-transform: uppercase;
     transition: all 0.3s;
+    pointer-events: auto;
 
     &:hover {
       background-color: map-get($colors, "red");
@@ -157,7 +160,7 @@
     border-radius: 25px;
     box-shadow: 0px 3px 6px #00000029;
     z-index: 1003;
-    pointer-events: all;
+    pointer-events: auto;
 
     @include tablet {
       width: 350px;
@@ -173,6 +176,7 @@
 
     &-item {
       text-align: left;
+      pointer-events: auto;
 
       & + & {
         margin-top: 12px;
@@ -182,6 +186,15 @@
     &-link {
       display: flex;
       align-items: center;
+      pointer-events: auto;
+      cursor: pointer;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+
+      &:active {
+        opacity: 0.7;
+      }
     }
 
     &-icon {
