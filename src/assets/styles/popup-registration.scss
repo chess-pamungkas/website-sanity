@@ -95,7 +95,6 @@
       font-size: 1.5rem;
       font-weight: map-get($font-weight, "black");
       color: #1a1a1a;
-      margin-bottom: 3.125rem;
       line-height: 1.2;
       white-space: pre-line;
       padding: 3.125rem;
@@ -125,16 +124,15 @@
       }
 
       @include tablet {
-        margin-bottom: 1.25rem;
-        padding: 1.25rem;
+        padding: 2.813rem;
       }
 
       @include desktop-lg {
-        padding: 3.125rem;
+        padding: 3.438rem;
       }
 
       @include desktop-xl {
-        padding: 4.813rem 3.375rem 0 3.375rem;
+        padding: 4.625rem 3.375rem 0 3.375rem;
       }
 
       @include desktop-2k {
@@ -190,11 +188,11 @@
     @include mobile {
       width: 100%;
       border-radius: 0 0 0.625rem 0.625rem;
-      padding: 8.75rem 1.25rem 1.875rem 1.25rem;
+      padding: 1.875rem 1.25rem 1.875rem 1.25rem;
     }
 
     @include tablet {
-      padding: 1.25rem;
+      padding: 2.5rem;
     }
 
     @include desktop-lg {
@@ -870,7 +868,7 @@
       &__content {
         width: 100%;
         border-radius: 0 0 0.625rem 0.625rem;
-        padding: 8.75rem 1.25rem 1.875rem 1.25rem;
+        padding: 1.875rem 1.25rem 1.875rem 1.25rem;
 
         .popup-registration__close {
           display: none;

@@ -114,14 +114,14 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
                   </span>
                 </Trans>
               </div>
-              <div className="benefits-container">
+              {/* <div className="benefits-container">
                 {benefits.map(({ label }, index) => (
                   <div key={`${label}-${index}`} className="benefits-item">
                     <Bullet />
                     <span>{t(label)}</span>
                   </div>
                 ))}
-              </div>
+              </div> */}
             </div>
           </div>
           <div
