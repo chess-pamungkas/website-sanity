@@ -99,7 +99,7 @@ export const TWP_ICONS_INITIAL_SHIFT = {
   logo2: -180,
   logo3: -270,
   netflix: -100,
-  tesla: -200,
+  tesla: -180,
   airbnb: -50,
   meta: -100,
   amazon: -300,

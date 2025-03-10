@@ -1690,12 +1690,16 @@
   "popup-registration-email-invalid": "必须是有效的邮箱",
   "popup-registration-phoneNumber-numbers-only": "只能输入数字",
   "popup-registration-phoneNumber-invalid": "请输入正确电话号码",
-  "popup-registration-error-invalid-data": "提供的数据无效。",
-  "popup-registration-error-signature-verification": "签名验证失败。",
-  "popup-registration-error-email-format": "邮箱格式不正确。",
-  "popup-registration-error-email-taken": "邮箱已被占用。",
-  "popup-registration-error-blacklisted": "用户在黑名单中。",
-  "popup-registration-error-referral-code": "推荐码错误。",
-  "popup-registration-error-registration-failed": "用户注册失败。",
-  "popup-registration-error-password-format": "密码格式不正确，请包含数字和字母。"
+
+  "popup-registration-error-unexpected": "发生了意外情况。请重试或联系客服。",
+  "popup-registration-error-invalid-data": "我们无法处理您的信息。请检查您的详细信息并重试。",
+  "popup-registration-error-operation-failure": "我们无法完成您的请求。请稍后再试。",
+  "popup-registration-error-signature-verification": "安全验证失败。请重试或使用其他身份验证方式。",
+  "popup-registration-error-blacklisted": "请联系客服以获得帮助。",
+  "popup-registration-error-ip-blocked": "请联系客服以获得帮助。",
+  "popup-registration-error-referral-code": "您输入的推荐码无效。请检查后重试。",
+  "popup-registration-error-registration-failed": "我们无法创建您的账户。请重试或联系客服。",
+  "popup-registration-error-password-format": "您的密码必须包含字母和数字。请创建一个更强的密码。",
+  "popup-registration-error-email-format": "请输入有效的电子邮件地址（例如：name@example.com）。",
+  "popup-registration-error-email-taken": "该电子邮件已被注册。请登录或使用不同的电子邮件地址。"
 }

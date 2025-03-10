@@ -13,18 +13,18 @@ import { PORTAL_LANGUAGES_MAP } from "../../../../../helpers/lang-options.config
 import LanguageContext from "../../../../../context/language-context";
 import arrowDownIcon from "../../../../../assets/images/icons/arrow-down.png";
 
-const ERROR_MESSAGE_MAP = {
-  "The given data was invalid.": "popup-registration-error-invalid-data",
-  "Signature verification failed.":
-    "popup-registration-error-signature-verification",
-  "The email format is incorrect.": "popup-registration-error-email-format",
-  "The email has already been taken.": "popup-registration-error-email-taken",
-  "The user in black list.": "popup-registration-error-blacklisted",
-  "Referral code error.":
-    "popup-registratioThe email format is incorrect.n-error-referral-code",
-  "User registration failed.": "popup-registration-error-registration-failed",
-  "The password format is incorrect， include both Numbers and letters.":
-    "popup-registration-error-password-format",
+const ERROR_CODE_MAP = {
+  99: "popup-registration-error-unexpected",
+  10001: "popup-registration-error-invalid-data",
+  10002: "popup-registration-error-operation-failure",
+  10017: "popup-registration-error-signature-verification",
+  40018: "popup-registration-error-blacklisted",
+  40035: "popup-registration-error-ip-blocked",
+  41009: "popup-registration-error-referral-code",
+  41040: "popup-registration-error-registration-failed",
+  80003: "popup-registration-error-password-format",
+  80084: "popup-registration-error-email-format",
+  80051: "popup-registration-error-email-taken",
 };
 
 const CodeDropdown = ({
@@ -309,12 +309,14 @@ const PopupRegistrationForm = ({ params }) => {
     );
   }, [searchCountry]);
 
-  const handleApiResponse = (isSuccessful, message = "") => {
+  const handleApiResponse = (isSuccessful, message = "", code = null) => {
     setIsSentSuccessful(isSuccessful);
-    const translationKey = ERROR_MESSAGE_MAP[message];
-    if (translationKey) {
-      setErrorMessage(t(translationKey));
+
+    // Use code-based error mapping
+    if (code && ERROR_CODE_MAP[code]) {
+      setErrorMessage(t(ERROR_CODE_MAP[code]));
     } else {
+      // If no code or no mapping for the code, just use the message directly
       setErrorMessage(message);
     }
   };
@@ -337,7 +339,7 @@ const PopupRegistrationForm = ({ params }) => {
       });
 
       if (response.data.code && response.data.code !== 200) {
-        handleApiResponse(false, response.data.message);
+        handleApiResponse(false, response.data.message, response.data.code);
       } else {
         handleApiResponse(true);
 
@@ -348,8 +350,9 @@ const PopupRegistrationForm = ({ params }) => {
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || "An error occurred";
-      sendLog({ message: error.message, type: error.name });
-      handleApiResponse(false, errorMessage);
+      const errorCode = error.response?.data?.code;
+      sendLog({ message: error.message, type: error.name, code: errorCode });
+      handleApiResponse(false, errorMessage, errorCode);
     }
   };
 

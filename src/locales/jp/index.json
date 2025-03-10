@@ -1640,12 +1640,16 @@
   "popup-registration-email-invalid": "有効なメールアドレスでなければなりません",
   "popup-registration-phoneNumber-numbers-only": "数字のみを入力してください",
   "popup-registration-phoneNumber-invalid": "有効な電話番号を入力してください",
-  "popup-registration-error-invalid-data": "提供されたデータが無効です。",
-  "popup-registration-error-signature-verification": "署名の検証に失敗しました。",
-  "popup-registration-error-email-format": "メールアドレスの形式が正しくありません。",
-  "popup-registration-error-email-taken": "メールアドレスは既に使用されています。",
-  "popup-registration-error-blacklisted": "ユーザーはブラックリストに登録されています。",
-  "popup-registration-error-referral-code": "紹介コードエラーです。",
-  "popup-registration-error-registration-failed": "ユーザー登録に失敗しました。",
-  "popup-registration-error-password-format": "パスワードの形式が正しくありません。数字と文字の両方を含めてください。"
+
+  "popup-registration-error-unexpected": "予期しない問題が発生しました。もう一度お試しいただくか、カスタマーサポートにお問い合わせください。",
+  "popup-registration-error-invalid-data": "情報を処理できませんでした。　入力内容をご確認の上、もう一度お試しください。",
+  "popup-registration-error-operation-failure": "リクエストを完了できませんでした。しばらくしてからもう一度お試しください。",
+  "popup-registration-error-signature-verification": "セキュリティ認証に失敗しました。もう一度お試しいただくか、別の認証方法をご利用ください。",
+  "popup-registration-error-blacklisted": "サポートが必要な場合はカスタマーサポートにお問い合わせください。",
+  "popup-registration-error-ip-blocked": "サポートが必要な場合は、カスタマーサポートにお問い合わせください。",
+  "popup-registration-error-referral-code": "入力した紹介コードは無効です。ご確認の上、再度お試しください。",
+  "popup-registration-error-registration-failed": "アカウントを作成できませんでした。もう一度お試しいただくか、カスタマーサポートにお問い合わせください。",
+  "popup-registration-error-password-format": "パスワードには英字と数字の両方を含める必要があります。より強力なパスワードを作成してください。",
+  "popup-registration-error-email-format": "有効なメールアドレスを入力してください（例: name@example.com）。",
+  "popup-registration-error-email-taken": "このメールアドレスは既に登録されています。ログインするか、別のメールアドレスを使用してください。"
 }

@@ -1682,12 +1682,16 @@
   "popup-registration-email-invalid": "กรุณากรอกอีเมลที่ถูกต้อง",
   "popup-registration-phoneNumber-numbers-only": "กรุณากรอกตัวเลขเท่านั้น",
   "popup-registration-phoneNumber-invalid": "กรุณากรอกหมายเลขโทรศัพท์ที่ถูกต้อง",
-  "popup-registration-error-invalid-data": "ข้อมูลที่ให้มาไม่ถูกต้อง",
-  "popup-registration-error-signature-verification": "การตรวจสอบลายเซ็นล้มเหลว",
-  "popup-registration-error-email-format": "รูปแบบอีเมลไม่ถูกต้อง",
-  "popup-registration-error-email-taken": "อีเมลนี้ถูกใช้งานแล้ว",
-  "popup-registration-error-blacklisted": "ผู้ใช้อยู่ในบัญชีดำ",
-  "popup-registration-error-referral-code": "ข้อผิดพลาดของรหัสแนะนำ",
-  "popup-registration-error-registration-failed": "การลงทะเบียนผู้ใช้ล้มเหลว",
-  "popup-registration-error-password-format": "รูปแบบรหัสผ่านไม่ถูกต้อง ควรมีตัวเลขและตัวอักษรผสมกัน"
+
+  "popup-registration-error-unexpected": "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่หรือติดต่อฝ่ายสนับสนุนลูกค้า",
+  "popup-registration-error-invalid-data": "เราไม่สามารถประมวลผลข้อมูลของคุณได้ กรุณาตรวจสอบรายละเอียดและลองอีกครั้ง",
+  "popup-registration-error-operation-failure": "เราไม่สามารถดำเนินการตามคำขอของคุณได้ กรุณาลองใหม่ภายหลัง",
+  "popup-registration-error-signature-verification": "การตรวจสอบความปลอดภัยล้มเหลว กรุณาลองใหม่หรือลองใช้วิธีการยืนยันตัวตนแบบอื่น",
+  "popup-registration-error-blacklisted": "กรุณาติดต่อฝ่ายสนับสนุนลูกค้าเพื่อขอความช่วยเหลือ",
+  "popup-registration-error-ip-blocked": "กรุณาติดต่อฝ่ายสนับสนุนลูกค้าเพื่อขอความช่วยเหลือ",
+  "popup-registration-error-referral-code": "รหัสแนะนำที่คุณป้อนไม่ถูกต้อง กรุณาตรวจสอบและลองใหม่",
+  "popup-registration-error-registration-failed": "เราไม่สามารถสร้างบัญชีของคุณได้ กรุณาลองใหม่หรือติดต่อฝ่ายสนับสนุนลูกค้า",
+  "popup-registration-error-password-format": "รหัสผ่านของคุณต้องมีทั้งตัวอักษรและตัวเลข กรุณาสร้างรหัสผ่านที่แข็งแกร่งขึ้น",
+  "popup-registration-error-email-format": "กรุณากรอกที่อยู่อีเมลที่ถูกต้อง (ตัวอย่าง: name@example.com)",
+  "popup-registration-error-email-taken": "อีเมลนี้ได้รับการลงทะเบียนแล้ว กรุณาเข้าสู่ระบบหรือลองใช้อีเมลอื่น"
 }

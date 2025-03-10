@@ -1646,12 +1646,16 @@
   "popup-registration-email-invalid": "Harus email yang valid",
   "popup-registration-phoneNumber-numbers-only": "Hanya angka yang diperbolehkan",
   "popup-registration-phoneNumber-invalid": "Silakan masukkan nomor telepon yang valid.",
-  "popup-registration-error-invalid-data": "Data yang diberikan tidak valid.",
-  "popup-registration-error-signature-verification": "Verifikasi tanda tangan gagal.",
-  "popup-registration-error-email-format": "Format email tidak benar.",
-  "popup-registration-error-email-taken": "Email sudah digunakan.",
-  "popup-registration-error-blacklisted": "Pengguna masuk dalam daftar hitam.",
-  "popup-registration-error-referral-code": "Kesalahan kode referal.",
-  "popup-registration-error-registration-failed": "Pendaftaran pengguna gagal.",
-  "popup-registration-error-password-format": "Format kata sandi tidak benar, harus mencakup angka dan huruf."
+
+  "popup-registration-error-unexpected": "Terjadi sesuatu yang tidak terduga. Silakan coba lagi atau hubungi dukungan pelanggan.",
+  "popup-registration-error-invalid-data": "Kami tidak dapat memproses informasi Anda. Silakan periksa detail Anda dan coba lagi.",
+  "popup-registration-error-operation-failure": "Kami tidak dapat menyelesaikan permintaan Anda. Silakan coba lagi nanti.",
+  "popup-registration-error-signature-verification": "Verifikasi keamanan gagal. Silakan coba lagi atau gunakan metode autentikasi lain.",
+  "popup-registration-error-blacklisted": "Silakan hubungi dukungan pelanggan untuk bantuan.",
+  "popup-registration-error-ip-blocked": "Silakan hubungi dukungan pelanggan untuk bantuan.",
+  "popup-registration-error-referral-code": "Kode referensi yang Anda masukkan tidak valid. Silakan periksa dan coba lagi.",
+  "popup-registration-error-registration-failed": "Kami tidak dapat membuat akun Anda. Silakan coba lagi atau hubungi dukungan pelanggan.",
+  "popup-registration-error-password-format": "Kata sandi Anda harus berisi huruf dan angka. Silakan buat kata sandi yang lebih kuat.",
+  "popup-registration-error-email-format": "Silakan masukkan alamat email yang valid (contoh: name@example.com).",
+  "popup-registration-error-email-taken": "Email ini sudah terdaftar. Silakan masuk atau gunakan alamat email lain."
 }

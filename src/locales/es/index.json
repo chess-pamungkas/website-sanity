@@ -1689,12 +1689,16 @@
   "popup-registration-email-invalid": "Debe ser un correo electrónico válido",
   "popup-registration-phoneNumber-numbers-only": "Solo se permiten números",
   "popup-registration-phoneNumber-invalid": "Por favor, ingrese un número de teléfono válido",
-  "popup-registration-error-invalid-data": "Los datos proporcionados no eran válidos.",
-  "popup-registration-error-signature-verification": "La verificación de la firma falló.",
-  "popup-registration-error-email-format": "El formato del correo electrónico es incorrecto.",
-  "popup-registration-error-email-taken": "El correo electrónico ya ha sido registrado.",
-  "popup-registration-error-blacklisted": "El usuario está en la lista negra.",
-  "popup-registration-error-referral-code": "Error en el código de referencia.",
-  "popup-registration-error-registration-failed": "El registro del usuario falló.",
-  "popup-registration-error-password-format": "El formato de la contraseña es incorrecto, incluya tanto números como letras."
+
+  "popup-registration-error-unexpected": "Ocurrió algo inesperado. Por favor, inténtelo de nuevo o contacte con el soporte al cliente.",
+  "popup-registration-error-invalid-data": "No pudimos procesar su información. Por favor, verifique sus datos e inténtelo de nuevo.",
+  "popup-registration-error-operation-failure": "No pudimos completar su solicitud. Por favor, inténtelo más tarde.",
+  "popup-registration-error-signature-verification": "La verificación de seguridad falló. Por favor, inténtelo de nuevo o use otro método de autenticación.",
+  "popup-registration-error-blacklisted": "Por favor, contacte con nuestro equipo de soporte.",
+  "popup-registration-error-ip-blocked": "Por favor, comuníquese con nuestro equipo de soporte.",
+  "popup-registration-error-referral-code": "El código de referencia ingresado no es válido. Por favor, verifíquelo e intente nuevamente.",
+  "popup-registration-error-registration-failed": "No pudimos crear su cuenta. Por favor, inténtelo de nuevo o contacte nuestro equipo de soporte al cliente.",
+  "popup-registration-error-password-format": "Su contraseña debe contener letras y números. Por favor, cree una contraseña más segura.",
+  "popup-registration-error-email-format": "Por favor, introduzca una dirección de correo electrónico válida (ejemplo: nombre@ejemplo.com).",
+  "popup-registration-error-email-taken": "Este correo electrónico ya está registrado. Por favor, inicie sesión o use otra dirección de correo electrónico."
 }

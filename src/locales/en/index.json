@@ -1779,12 +1779,16 @@
   "popup-registration-email-invalid": "Must be a valid email",
   "popup-registration-phoneNumber-numbers-only": "Please enter numbers only",
   "popup-registration-phoneNumber-invalid": "Please enter a valid phone number",
-  "popup-registration-error-invalid-data": "The given data was invalid.",
-  "popup-registration-error-signature-verification": "Signature verification failed.",
-  "popup-registration-error-email-format": "The email format is incorrect.",
-  "popup-registration-error-email-taken": "The email has already been taken.",
-  "popup-registration-error-blacklisted": "The user in black list.",
-  "popup-registration-error-referral-code": "Referral code error.",
-  "popup-registration-error-registration-failed": "User registration failed.",
-  "popup-registration-error-password-format": "The password format is incorrect, include both Numbers and letters."
+
+  "popup-registration-error-unexpected": "Something unexpected happened. Please try again or contact customer support.",
+  "popup-registration-error-invalid-data": "We couldn't process your information. Please check your details and try again.",
+  "popup-registration-error-operation-failure": "We couldn't complete your request. Please try again later.",
+  "popup-registration-error-signature-verification": "Security verification failed. Please try again or use a different authentication method.",
+  "popup-registration-error-blacklisted": "Please contact customer support for assistance.",
+  "popup-registration-error-ip-blocked": "Please contact customer support for assistance.",
+  "popup-registration-error-referral-code": "The referral code you entered isn't valid. Please check and try again.",
+  "popup-registration-error-registration-failed": "We couldn't create your account. Please try again or contact customer support.",
+  "popup-registration-error-password-format": "Your password must contain both letters and numbers. Please create a stronger password.",
+  "popup-registration-error-email-format": "Please enter a valid email address (example: name@example.com).",
+  "popup-registration-error-email-taken": "This email is already registered. Please log in or use a different email address."
 }

@@ -1677,12 +1677,16 @@
   "popup-registration-email-invalid": "Phải là một địa chỉ email hợp lệ",
   "popup-registration-phoneNumber-numbers-only": "Vui lòng chỉ nhập số",
   "popup-registration-phoneNumber-invalid": "Vui lòng nhập số điện thoại hợp lệ",
-  "popup-registration-error-invalid-data": "Dữ liệu được cung cấp không hợp lệ.",
-  "popup-registration-error-signature-verification": "Xác minh chữ ký không thành công.",
-  "popup-registration-error-email-format": "Định dạng email không đúng.",
-  "popup-registration-error-email-taken": "Email đã được sử dụng.",
-  "popup-registration-error-blacklisted": "Người dùng nằm trong danh sách đen.",
-  "popup-registration-error-referral-code": "Lỗi mã giới thiệu.",
-  "popup-registration-error-registration-failed": "Đăng ký người dùng không thành công.",
-  "popup-registration-error-password-format": "Định dạng mật khẩu không đúng, phải bao gồm cả số và chữ cái."
+
+  "popup-registration-error-unexpected": "Đã xảy ra sự cố ngoài ý muốn. Vui lòng thử lại hoặc liên hệ với bộ phận hỗ trợ khách hàng.",
+  "popup-registration-error-invalid-data": "Chúng tôi không thể xử lý thông tin của bạn. Vui lòng kiểm tra chi tiết và thử lại.",
+  "popup-registration-error-operation-failure": "Chúng tôi không thể hoàn thành yêu cầu của bạn. Vui lòng thử lại sau.",
+  "popup-registration-error-signature-verification": "Xác minh bảo mật không thành công. Vui lòng thử lại hoặc sử dụng phương thức xác thực khác.",
+  "popup-registration-error-blacklisted": "Vui lòng liên hệ với bộ phận hỗ trợ khách hàng để được trợ giúp.",
+  "popup-registration-error-ip-blocked": "Vui lòng liên hệ với bộ phận hỗ trợ khách hàng để được trợ giúp.",
+  "popup-registration-error-referral-code": "Mã giới thiệu bạn nhập không hợp lệ. Vui lòng kiểm tra và thử lại.",
+  "popup-registration-error-registration-failed": "Chúng tôi không thể tạo tài khoản của bạn. Vui lòng thử lại hoặc liên hệ với bộ phận hỗ trợ khách hàng.",
+  "popup-registration-error-password-format": "Mật khẩu của bạn phải chứa cả chữ cái và số. Vui lòng tạo một mật khẩu mạnh hơn.",
+  "popup-registration-error-email-format": "Vui lòng nhập địa chỉ email hợp lệ (ví dụ: name@example.com).",
+  "popup-registration-error-email-taken": "Email này đã được đăng ký. Vui lòng đăng nhập hoặc sử dụng một địa chỉ email khác."
 }
