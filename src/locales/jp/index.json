@@ -177,7 +177,7 @@
   "index_trade-with-promotion-BNB": "バイナンスコイン(BNB)",
   "index_trade-with-promotion-TBC": "テンベストコイン(TBC)",
   "index_trade-with-promotion-promo-text1-fsa": "モバイル、デスクトップ、タブレットでいつでもどこでも",
-  "index_trade-with-promotion-promo-text-bold-fsa": "{{ assets-number-fsa-jp}}",
+  "index_trade-with-promotion-promo-text-bold-fsa": "{{ assets-number-fsa-jp }}",
   "index_trade-with-promotion-promo-text2-fsa": "以上の金融資産の中からお取引できます。",
   "index_promotion1-btn-text": "詳細を見る",
   "index_promotion1-text-fsa": "{{ index-promotion1-amount-fsa }}ドルからの入金で、{{ index-promotion1-currencies-fsa }} 種類の基本通貨の中から選んでトレードを開始できます。",
