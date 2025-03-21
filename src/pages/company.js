@@ -33,14 +33,14 @@ const CompanyPage = () => {
           primaryClassName="highlighted-in-black"
           accentClassName="highlighted-in-red"
         />
-        <br />
+        {/* <br />
         <br />
         <HighlightedLocalizationText
           localizationText="company_split-text-promotion-text2"
           wordsToHighlight="company-split-text-promotion-text2-accent"
           primaryClassName="highlighted-in-black"
           accentClassName="highlighted-in-red"
-        />
+        /> */}
       </SplitTextPromotion>
       <CompanyAdvantages />
     </>
