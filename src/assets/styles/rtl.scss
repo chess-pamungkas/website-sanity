@@ -277,6 +277,28 @@
 .promotion4.promotion--rtl {
   background: url("../../assets/images/promotions/promo4-rtl.svg") no-repeat 0;
   background-size: cover;
+
+  @include desktop-xl {
+    direction: ltr;
+
+    .promotion__bg {
+      background: url("../../assets/images/promotions/promo4-rtl.svg") no-repeat
+        center;
+      background-size: cover;
+    }
+
+    .promotion__wrapper {
+      direction: rtl;
+    }
+
+    .promotion__text {
+      text-align: right;
+    }
+
+    .promotion__btn {
+      float: right;
+    }
+  }
 }
 
 .trading-tools--rtl {
