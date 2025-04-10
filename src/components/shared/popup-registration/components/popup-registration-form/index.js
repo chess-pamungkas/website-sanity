@@ -3,15 +3,18 @@ import { Formik } from "formik";
 import cn from "classnames";
 import { PopupRegistrationSchema } from "../../../../../validations/popup-registration";
 import axios from "axios";
-import { Trans } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useTranslationWithVariables } from "../../../../../helpers/hooks/use-translation-with-vars";
+import { useRtlDirection } from "../../../../../helpers/hooks/use-rtl-direction";
 import { sendLog } from "../../../../../helpers/services/log-service";
 import countries from "../../../../shared/countries";
 import ClientResolverContext from "../../../../../context/client-resolver-context";
 import { PORTAL_LANGUAGES_MAP } from "../../../../../helpers/lang-options.config";
 import LanguageContext from "../../../../../context/language-context";
 import arrowDownIcon from "../../../../../assets/images/icons/arrow-down.png";
+
+const RTL_LANGUAGES = ["ar"];
 
 const ERROR_CODE_MAP = {
   99: "popup-registration-error-unexpected",
@@ -251,6 +254,7 @@ const CountryDropdown = ({
 
 const PopupRegistrationForm = ({ params }) => {
   const { t } = useTranslationWithVariables();
+  const isRTL = useRtlDirection();
   const countryOptionsRef = useRef(null);
   const codeOptionsRef = useRef(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -259,9 +263,107 @@ const PopupRegistrationForm = ({ params }) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const { clientConfig } = useContext(ClientResolverContext);
   const { selectedLanguage } = useContext(LanguageContext);
-  const languageCode = PORTAL_LANGUAGES_MAP[selectedLanguage.id];
-  const referral_type = params.referral_type;
-  const referral_value = params.referral_value;
+
+  // Parse params safely
+  const safeParams = useMemo(() => {
+    try {
+      if (typeof params === "string") {
+        return JSON.parse(params);
+      }
+      return params || {};
+    } catch (e) {
+      console.error("Error parsing params:", e);
+      return {};
+    }
+  }, [params]);
+
+  // Store referral parameters in state with defaults from parsed params
+  const [referral_type, setReferralType] = useState(
+    safeParams.referral_type || null
+  );
+  const [referral_value, setReferralValue] = useState(
+    safeParams.referral_value || null
+  );
+
+  // Update state values when params change
+  useEffect(() => {
+    if (safeParams.referral_type) {
+      setReferralType(safeParams.referral_type);
+    }
+    if (safeParams.referral_value) {
+      setReferralValue(safeParams.referral_value);
+    }
+  }, [safeParams]);
+
+  // Listen for messages from parent window with higher priority
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data && event.data.type === "REGISTRATION_PARAMS") {
+        const data = event.data.data || {};
+        const msgReferralType = data.referral_type || null;
+        const msgReferralValue = data.referral_value || null;
+
+        if (msgReferralType) setReferralType(msgReferralType);
+        if (msgReferralValue) setReferralValue(msgReferralValue);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    // Try to extract parameters directly from URL immediately
+    const extractUrlParams = () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Check all possible parameter formats
+        const urlReferralType =
+          urlParams.get("referral_type") ||
+          urlParams.get("referralType") ||
+          urlParams.get("referral-type");
+
+        const urlReferralValue =
+          urlParams.get("referral_value") ||
+          urlParams.get("referralValue") ||
+          urlParams.get("referral-value");
+
+        if (urlReferralType) setReferralType(urlReferralType);
+        if (urlReferralValue) setReferralValue(urlReferralValue);
+      } catch (err) {
+        console.error("Error extracting URL parameters:", err);
+      }
+    };
+
+    // Extract parameters from URL immediately
+    extractUrlParams();
+
+    // Try again after a short delay (for late-loading cases)
+    const timeout = setTimeout(extractUrlParams, 500);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  // Use the language parameter also to detect RTL
+  const forcedRTL =
+    safeParams.langParam && RTL_LANGUAGES.includes(safeParams.langParam);
+  const isRTLMode = isRTL || forcedRTL;
+
+  // Prioritize langParam from URL parameters over context language
+  // This ensures the language specified in the URL is used
+  const paramLangCode = safeParams.langParam;
+  const contextLangCode = selectedLanguage?.id || "en";
+
+  // Use the language from params if available, otherwise use context language
+  // This fixes the issue where language from URL is ignored
+  const languageCode = paramLangCode || contextLangCode;
+
+  // Map to portal language format (needed for API calls)
+  const portalLanguageCode = PORTAL_LANGUAGES_MAP[languageCode] || "en";
+
+  // Get translation function outside the effect to avoid the error
+  const { i18n } = useTranslation();
 
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCountryCode, setSelectedCountryCode] = useState("");
@@ -274,6 +376,92 @@ const PopupRegistrationForm = ({ params }) => {
     cookiePolicy: "",
   });
 
+  // Function to handle policy link clicks
+  const handlePolicyLinkClick = (e, url) => {
+    e.preventDefault();
+
+    // Anti multi-click implementation with improved tracking
+    const target = e.currentTarget;
+
+    // Check if link is in process (throttling)
+    if (target.getAttribute("data-processing") === "true") {
+      return;
+    }
+
+    // Set flag to prevent repeated clicks
+    target.setAttribute("data-processing", "true");
+
+    // Track which window was opened
+    let policyWindow = null;
+
+    // Reset flag after 3 seconds
+    setTimeout(() => {
+      target.removeAttribute("data-processing");
+    }, 3000);
+
+    // Handle differently based on context
+    if (window.parent !== window) {
+      // If inside an iframe, first try sending a message to parent window
+      try {
+        window.parent.postMessage(
+          {
+            type: "OQTIMA_OPEN_LINK",
+            url: url,
+            isPolicyLink: true,
+            policyType: url.toLowerCase().includes("privacy")
+              ? "privacy"
+              : "cookie",
+            timestamp: Date.now(),
+          },
+          "*"
+        );
+
+        // As a fallback, try to open directly after a short delay
+        // This only happens if the parent handler doesn't handle it
+        setTimeout(() => {
+          // Check if a window was already opened by the parent
+          if (!policyWindow) {
+            try {
+              policyWindow = window.open(url, "_blank", "noopener,noreferrer");
+
+              // If window was blocked, show a hint to the user
+              if (!policyWindow) {
+                console.warn(
+                  "Popup was blocked by browser - consider enabling popups for this site"
+                );
+              }
+            } catch (err) {
+              console.error("Error opening policy link directly:", err);
+            }
+          }
+        }, 500);
+      } catch (err) {
+        console.error("Error sending message to parent for policy link:", err);
+
+        // Fallback to direct opening if message sending fails
+        try {
+          policyWindow = window.open(url, "_blank", "noopener,noreferrer");
+        } catch (innerErr) {
+          console.error("Error in fallback policy link opening:", innerErr);
+        }
+      }
+    } else {
+      // If not in an iframe, open the link directly
+      try {
+        policyWindow = window.open(url, "_blank", "noopener,noreferrer");
+
+        // If window was blocked, show a hint to the user
+        if (!policyWindow) {
+          console.warn(
+            "Popup was blocked by browser - consider enabling popups for this site"
+          );
+        }
+      } catch (err) {
+        console.error("Error opening policy link directly:", err);
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchPolicyLinks = async () => {
       try {
@@ -281,11 +469,13 @@ const PopupRegistrationForm = ({ params }) => {
         const { privacy_policy, cookie_policy } = response.data;
 
         const privacyLink =
-          privacy_policy.find((p) => p.language === languageCode)?.oss_url ||
+          privacy_policy.find((p) => p.language === portalLanguageCode)
+            ?.oss_url ||
           privacy_policy.find((p) => p.language === "en")?.oss_url;
 
         const cookieLink =
-          cookie_policy.find((c) => c.language === languageCode)?.oss_url ||
+          cookie_policy.find((c) => c.language === portalLanguageCode)
+            ?.oss_url ||
           cookie_policy.find((c) => c.language === "en")?.oss_url;
 
         setPolicyLinks({
@@ -293,13 +483,12 @@ const PopupRegistrationForm = ({ params }) => {
           cookiePolicy: cookieLink,
         });
       } catch (error) {
-        // console.error("Error fetching policy links:", error);
         sendLog({ message: error.message, type: error.name });
       }
     };
 
     fetchPolicyLinks();
-  }, [languageCode]);
+  }, [portalLanguageCode]);
 
   const filteredCountries = useMemo(() => {
     if (!searchCountry) return countries;
@@ -323,20 +512,33 @@ const PopupRegistrationForm = ({ params }) => {
 
   const handleRegistrationtForm = async (values) => {
     const token = await executeRecaptcha("popup_registration");
-    const referralTypeValue = referral_type || referral_value;
 
     try {
-      const response = await axios.post(`${API_URL}crm-register`, {
+      // Prepare submission data with referral parameters
+      const submissionData = {
         ...values,
         token,
-        language: languageCode,
+        language: portalLanguageCode,
         redirect: "register",
         register_ip: clientConfig.ipAddress,
         agreement: true,
         privacy: policyLinks.privacyPolicy,
         cookie: policyLinks.cookiePolicy,
-        ...(referralTypeValue ? { referral_type, referral_value } : {}),
-      });
+      };
+
+      // Only add referral parameters if we have them
+      if (referral_type) {
+        submissionData.referral_type = referral_type;
+      }
+
+      if (referral_value) {
+        submissionData.referral_value = referral_value;
+      }
+
+      const response = await axios.post(
+        `${API_URL}crm-register`,
+        submissionData
+      );
 
       if (response.data.code && response.data.code !== 200) {
         handleApiResponse(false, response.data.message, response.data.code);
@@ -345,7 +547,85 @@ const PopupRegistrationForm = ({ params }) => {
 
         const redirectAddress = response.data.redirect_address;
         if (redirectAddress) {
-          window.location.href = redirectAddress;
+          // Check if we're in an iframe
+          if (window.parent !== window) {
+            // ENHANCED: Send multiple message formats to ensure compatibility
+
+            // 1. Standard object format with REDIRECT_TO_URL type
+            window.parent.postMessage(
+              {
+                type: "REDIRECT_TO_URL",
+                url: redirectAddress,
+                success: true,
+                timestamp: Date.now(),
+              },
+              "*"
+            );
+
+            // 2. Alternative object format with redirectUrl property
+            window.parent.postMessage(
+              {
+                type: "REDIRECT_TO_URL",
+                redirectUrl: redirectAddress,
+                success: true,
+                timestamp: Date.now(),
+              },
+              "*"
+            );
+
+            // 3. Registration success format
+            window.parent.postMessage(
+              {
+                type: "REGISTRATION_SUCCESS",
+                url: redirectAddress,
+                redirectUrl: redirectAddress,
+                success: true,
+                timestamp: Date.now(),
+              },
+              "*"
+            );
+
+            // 4. Simple string format (for the global handler)
+            window.parent.postMessage(`redirect:${redirectAddress}`, "*");
+
+            // 5. Direct URL string (for simple string extraction)
+            setTimeout(() => {
+              window.parent.postMessage(redirectAddress, "*");
+            }, 100);
+
+            // ENHANCED: Try direct redirection approach for some browsers
+            try {
+              // Some browsers allow this in certain contexts
+              if (window.top) {
+                setTimeout(() => {
+                  try {
+                    window.top.location.href = redirectAddress;
+                  } catch (err) {
+                    console.log("Could not directly set top location", err);
+                  }
+                }, 300);
+              }
+            } catch (err) {
+              console.log("Could not access top window", err);
+            }
+
+            // ENHANCED: As a final fallback, try to save to localStorage for use on page reload
+            try {
+              localStorage.setItem("OQTIMA_PENDING_REDIRECT", redirectAddress);
+
+              // Set a flag to indicate successful registration
+              localStorage.setItem("OQTIMA_REGISTRATION_SUCCESS", "true");
+              localStorage.setItem(
+                "OQTIMA_REGISTRATION_TIMESTAMP",
+                Date.now().toString()
+              );
+            } catch (err) {
+              console.log("Could not save to localStorage", err);
+            }
+          } else {
+            // If not in iframe, redirect normally
+            window.location.href = redirectAddress;
+          }
         }
       }
     } catch (error) {
@@ -433,11 +713,14 @@ const PopupRegistrationForm = ({ params }) => {
         return (
           <form
             onSubmit={handleSubmit}
-            className="popup-registration__form"
+            className={cn("popup-registration__form", {
+              "popup-registration__form--rtl": isRTLMode,
+            })}
+            dir={isRTLMode ? "rtl" : "ltr"}
             noValidate
           >
             {/* Name Fields */}
-            <div className="name-fields">
+            <div className="name-fields" style={{ marginBottom: "20px" }}>
               <div className="popup-registration__field">
                 <label className="popup-registration__label">
                   {t("popup-registration-firstName")} *
@@ -487,7 +770,10 @@ const PopupRegistrationForm = ({ params }) => {
             </div>
 
             {/* Email Field */}
-            <div className="popup-registration__row">
+            <div
+              className="popup-registration__row"
+              style={{ marginBottom: "20px" }}
+            >
               <div className="popup-registration__field">
                 <label className="popup-registration__label">
                   {t("popup-registration-email")} *
@@ -514,7 +800,10 @@ const PopupRegistrationForm = ({ params }) => {
             </div>
 
             {/* Country, Code, Phone Fields */}
-            <div className="popup-registration__row">
+            <div
+              className="popup-registration__row"
+              style={{ marginBottom: "20px" }}
+            >
               <div className="three-fields-container">
                 {/* Country Field */}
                 <div className="popup-registration__field country-field">
@@ -645,7 +934,10 @@ const PopupRegistrationForm = ({ params }) => {
             </div>
 
             {/* Newsletter Subscription */}
-            <div className="popup-registration__newsletter">
+            <div
+              className="popup-registration__newsletter"
+              style={{ marginBottom: "20px" }}
+            >
               <input
                 type="checkbox"
                 name="is_subscribe"
@@ -658,7 +950,10 @@ const PopupRegistrationForm = ({ params }) => {
             </div>
 
             {/* Consent */}
-            <div className="popup-registration__consent">
+            <div
+              className="popup-registration__consent"
+              style={{ marginBottom: "20px" }}
+            >
               <span className="popup-registration__consent-text">
                 <input
                   type="checkbox"
@@ -678,6 +973,9 @@ const PopupRegistrationForm = ({ params }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="link"
+                      onClick={(e) =>
+                        handlePolicyLinkClick(e, policyLinks.privacyPolicy)
+                      }
                     >
                       Privacy Policy
                     </a>
@@ -687,6 +985,9 @@ const PopupRegistrationForm = ({ params }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="link"
+                      onClick={(e) =>
+                        handlePolicyLinkClick(e, policyLinks.cookiePolicy)
+                      }
                     >
                       Cookie Policy
                     </a>
@@ -712,6 +1013,7 @@ const PopupRegistrationForm = ({ params }) => {
               className={cn("continue-button", {
                 "button-link--disabled": false,
               })}
+              style={{ marginTop: "auto", marginBottom: "20px" }}
               onClick={async (e) => {
                 e.preventDefault();
                 // Touch all fields to show validation errors
@@ -743,11 +1045,11 @@ const PopupRegistrationForm = ({ params }) => {
               {t("popup-registration-continue")}
             </button>
 
-            {/* Error Message - Only for API errors */}
+            {/* Error Message */}
             {errorMessage && (
               <p
                 className="popup-registration-error-message"
-                style={{ color: "red" }}
+                style={{ color: "red", marginBottom: "20px" }}
               >
                 {errorMessage}
               </p>

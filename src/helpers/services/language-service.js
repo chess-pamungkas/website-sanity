@@ -40,6 +40,12 @@ export const changeI18nLanguage = (selectedLang) => {
   if (isBrowser()) {
     const { pathname, search } = window.location;
     if (!pathname.startsWith(`/${selectedLang.id}/`)) {
+      // IMPORTANT: Don't change URL for popup-registration page
+      // This prevents duplication of language paths in the URL
+      if (pathname.includes("popup-registration")) {
+        return; // Don't navigate for popup-registration page
+      }
+
       const navigatePath =
         `${selectedLang.URIPart}` + pathname.replace(/\/[a-z]{2}\//, "/");
       navigate(`${navigatePath}${search}`);

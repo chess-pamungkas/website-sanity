@@ -15,12 +15,19 @@ import MainContainer from "../main-container";
 import Header from "../../header";
 import Footer from "../../footer";
 import { sendLog } from "../../../helpers/services/log-service";
+import { pushUTMParamsToDataLayer } from "../../../helpers/services/gtm-service";
+import { isBrowser } from "../../../helpers/services/is-browser";
 
 const Layout = ({ children }) => {
   try {
     const [isLoaded, setIsLoaded] = useState(false);
     useEffect(() => {
       setIsLoaded(true);
+
+      // Push UTM parameters to GTM dataLayer
+      if (isBrowser()) {
+        pushUTMParamsToDataLayer();
+      }
     }, []);
 
     return (

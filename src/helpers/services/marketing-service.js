@@ -24,6 +24,9 @@ export const getMarketingParamsFromUrl = () => {
     content: getParamsFromUrl().get(MARKETING_GET_PARAMS.content),
     sect1: getParamsFromUrl().get(MARKETING_GET_PARAMS.sect1),
     sect2: getParamsFromUrl().get(MARKETING_GET_PARAMS.sect2),
+    source: getParamsFromUrl().get(MARKETING_GET_PARAMS.source),
+    medium: getParamsFromUrl().get(MARKETING_GET_PARAMS.medium),
+    campaign: getParamsFromUrl().get(MARKETING_GET_PARAMS.campaign),
   };
 };
 
@@ -48,6 +51,15 @@ export const getCampaignParamsAndSetToStorage = () => {
       if (campaignCode) {
         localStorage.setItem(CAMPAIGN_PARAMS.campaign_code, campaignCode);
         localStorage.removeItem(IB_PARAMS.r_code);
+
+        // Store UTM parameters in localStorage if they exist
+        const utmSource = urlParams.get("utm_source");
+        const utmMedium = urlParams.get("utm_medium");
+        const utmCampaign = urlParams.get("utm_campaign");
+
+        if (utmSource) localStorage.setItem("utm_source", utmSource);
+        if (utmMedium) localStorage.setItem("utm_medium", utmMedium);
+        if (utmCampaign) localStorage.setItem("utm_campaign", utmCampaign);
       }
     }
 
@@ -59,10 +71,22 @@ export const getCampaignParamsAndSetToStorage = () => {
 export const setCampaignParamsToLink = () => {
   if (isBrowser()) {
     const campaign_code = localStorage.getItem(CAMPAIGN_PARAMS.campaign_code);
+    const utmSource = localStorage.getItem("utm_source");
+    const utmMedium = localStorage.getItem("utm_medium");
+    const utmCampaign = localStorage.getItem("utm_campaign");
+
+    let queryString = "";
 
     // Check conditions and construct the query string accordingly
     if (campaign_code) {
-      return `?${CAMPAIGN_PARAMS.campaign_code}=${campaign_code}`; // Only campaignCode
+      queryString = `?${CAMPAIGN_PARAMS.campaign_code}=${campaign_code}`;
+
+      // Add UTM parameters if they exist
+      if (utmSource) queryString += `&utm_source=${utmSource}`;
+      if (utmMedium) queryString += `&utm_medium=${utmMedium}`;
+      if (utmCampaign) queryString += `&utm_campaign=${utmCampaign}`;
+
+      return queryString;
     }
   }
 
