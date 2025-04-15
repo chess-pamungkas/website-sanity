@@ -128,9 +128,9 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
   }, [params]);
 
   // Log current params for debugging
-  useEffect(() => {
-    console.group("PopupRegistration Params");
-  }, [params, parsedParams]);
+  // useEffect(() => {
+  //   console.group("PopupRegistration Params");
+  // }, [params, parsedParams]);
 
   // Lock the language and RTL state immediately
   const forcedLanguage = parsedParams?.langParam;

@@ -263,14 +263,68 @@ const PopupRegistrationForm = ({ params }) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const { clientConfig } = useContext(ClientResolverContext);
   const { selectedLanguage } = useContext(LanguageContext);
+  const languageCode = PORTAL_LANGUAGES_MAP[selectedLanguage?.id];
+
+  // State to store language code sent from landing page
+  const [externalLangCode, setExternalLangCode] = useState(null);
+
+  // Function to get the final language code to be used
+  const getEffectiveLanguageCode = () => {
+    // Prioritize language code from external parameter if available
+    if (externalLangCode) {
+      return externalLangCode;
+    }
+    // Fallback to language code from Gatsby application
+    return languageCode || "en";
+  };
 
   // Parse params safely
   const safeParams = useMemo(() => {
     try {
+      let parsedParams = {};
+
+      // Try to parse JSON if params is a string
       if (typeof params === "string") {
-        return JSON.parse(params);
+        try {
+          parsedParams = JSON.parse(params);
+        } catch (jsonErr) {
+          console.warn("Could not parse params as JSON:", jsonErr);
+          // If JSON parsing fails, assume it might be a simple string like a language code
+          if (params && params.length <= 5) {
+            // Most language codes are 2-5 chars
+            parsedParams = { langParam: params };
+          }
+        }
+      } else {
+        parsedParams = params || {};
       }
-      return params || {};
+
+      // Explicitly check for URL parameters that might contain language info
+      if (typeof window !== "undefined") {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Check for language parameters with various names
+        const urlLangParam =
+          urlParams.get("language") ||
+          urlParams.get("lang") ||
+          urlParams.get("locale") ||
+          urlParams.get("i18nextLng");
+
+        // Only override if URL contains language param and it's not already set
+        if (urlLangParam && !parsedParams.langParam) {
+          parsedParams.langParam = urlLangParam;
+          console.log("Using language from URL query params:", urlLangParam);
+        }
+
+        // Handle data-lang parameter which may be set as br (for brazilian portuguese)
+        const urlDataLang = urlParams.get("data-lang");
+        if (urlDataLang && !parsedParams.langParam) {
+          parsedParams.langParam = urlDataLang;
+          console.log("Using data-lang from URL query params:", urlDataLang);
+        }
+      }
+
+      return parsedParams;
     } catch (e) {
       console.error("Error parsing params:", e);
       return {};
@@ -298,6 +352,17 @@ const PopupRegistrationForm = ({ params }) => {
     if (safeParams.referral_value) {
       setReferralValue(safeParams.referral_value);
     }
+    // Process langParam if available
+    if (safeParams.langParam) {
+      // Map to portal language format using PORTAL_LANGUAGES_MAP
+      const mappedLanguage =
+        PORTAL_LANGUAGES_MAP[safeParams.langParam] || safeParams.langParam;
+      setExternalLangCode(mappedLanguage);
+      console.log("Setting external language from params:", {
+        original: safeParams.langParam,
+        mapped: mappedLanguage,
+      });
+    }
   }, [safeParams]);
 
   // Listen for messages from parent window with higher priority
@@ -312,6 +377,8 @@ const PopupRegistrationForm = ({ params }) => {
         const msgIpAddress = data.ip_address || null;
         const msgCountryName = data.country_name || null;
         const msgCountryCode = data.country_code || null;
+        // Extract language data
+        const msgLanguage = data.language || data.lang || null;
 
         if (msgReferralType) setReferralType(msgReferralType);
         if (msgReferralValue) setReferralValue(msgReferralValue);
@@ -321,11 +388,23 @@ const PopupRegistrationForm = ({ params }) => {
         if (msgCountryName) setClientCountryName(msgCountryName);
         if (msgCountryCode) setClientCountryCode(msgCountryCode);
 
+        // Set language code if received from parent window
+        if (msgLanguage) {
+          const mappedLanguage =
+            PORTAL_LANGUAGES_MAP[msgLanguage] || msgLanguage;
+          setExternalLangCode(mappedLanguage);
+          console.log("Setting external language from parent message:", {
+            original: msgLanguage,
+            mapped: mappedLanguage,
+          });
+        }
+
         // ADDED: Log received data for debugging
         console.log("Received client data:", {
           ip: msgIpAddress,
           country: msgCountryName,
           code: msgCountryCode,
+          language: msgLanguage,
         });
       }
     };
@@ -336,8 +415,9 @@ const PopupRegistrationForm = ({ params }) => {
     const extractUrlParams = () => {
       try {
         const urlParams = new URLSearchParams(window.location.search);
+        console.log("URL search params:", window.location.search);
 
-        // Check all possible parameter formats
+        // Check all possible parameter formats for referral
         const urlReferralType =
           urlParams.get("referral_type") ||
           urlParams.get("referralType") ||
@@ -350,6 +430,25 @@ const PopupRegistrationForm = ({ params }) => {
 
         if (urlReferralType) setReferralType(urlReferralType);
         if (urlReferralValue) setReferralValue(urlReferralValue);
+
+        // Extract language parameters for debugging
+        const langParam =
+          urlParams.get("language") ||
+          urlParams.get("lang") ||
+          urlParams.get("locale") ||
+          urlParams.get("i18nextLng") ||
+          urlParams.get("data-lang");
+
+        if (langParam) {
+          console.log("Extracted language from URL:", langParam);
+          // Set language code from URL parameters
+          const mappedLanguage = PORTAL_LANGUAGES_MAP[langParam] || langParam;
+          setExternalLangCode(mappedLanguage);
+          console.log("Setting external language from URL:", {
+            original: langParam,
+            mapped: mappedLanguage,
+          });
+        }
       } catch (err) {
         console.error("Error extracting URL parameters:", err);
       }
@@ -357,6 +456,28 @@ const PopupRegistrationForm = ({ params }) => {
 
     // Extract parameters from URL immediately
     extractUrlParams();
+
+    // Also try to get data-lang from script element if available
+    try {
+      if (typeof window !== "undefined") {
+        const scriptElement = document.querySelector("script[data-lang]");
+        if (scriptElement) {
+          const scriptLang = scriptElement.getAttribute("data-lang");
+          if (scriptLang) {
+            console.log("Found data-lang attribute in script:", scriptLang);
+            const mappedLanguage =
+              PORTAL_LANGUAGES_MAP[scriptLang] || scriptLang;
+            setExternalLangCode(mappedLanguage);
+            console.log("Setting external language from script element:", {
+              original: scriptLang,
+              mapped: mappedLanguage,
+            });
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error checking script elements:", err);
+    }
 
     // Try again after a short delay (for late-loading cases)
     const timeout = setTimeout(extractUrlParams, 500);
@@ -408,25 +529,12 @@ const PopupRegistrationForm = ({ params }) => {
     }
   }, [clientIpAddress, clientCountryName, clientCountryCode, clientConfig]);
 
-  // Use the language parameter also to detect RTL
-  const forcedRTL =
-    safeParams.langParam && RTL_LANGUAGES.includes(safeParams.langParam);
-  const isRTLMode = isRTL || forcedRTL;
-
-  // Prioritize langParam from URL parameters over context language
-  // This ensures the language specified in the URL is used
-  const paramLangCode = safeParams.langParam;
-  const contextLangCode = selectedLanguage?.id || "en";
-
-  // Use the language from params if available, otherwise use context language
-  // This fixes the issue where language from URL is ignored
-  const languageCode = paramLangCode || contextLangCode;
-
-  // Map to portal language format (needed for API calls)
-  const portalLanguageCode = PORTAL_LANGUAGES_MAP[languageCode] || "en";
-
-  // Get translation function outside the effect to avoid the error
+  // Use the i18n translation function
   const { i18n } = useTranslation();
+
+  // Check for RTL languages using effective language code
+  const effectiveLanguageCode = getEffectiveLanguageCode();
+  const isRTLMode = isRTL || RTL_LANGUAGES.includes(effectiveLanguageCode);
 
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCountryCode, setSelectedCountryCode] = useState("");
@@ -440,6 +548,11 @@ const PopupRegistrationForm = ({ params }) => {
     loading: true,
     error: false,
   });
+
+  // Add state to track if we've already fetched policy links
+  const [hasFetchedPolicyLinks, setHasFetchedPolicyLinks] = useState(false);
+  // Add state to track the language we used for fetching
+  const [fetchedLanguage, setFetchedLanguage] = useState("");
 
   // Enhanced policy link click handler with improved tracking and error handling
   const handlePolicyLinkClick = (e, url) => {
@@ -572,19 +685,45 @@ const PopupRegistrationForm = ({ params }) => {
 
   useEffect(() => {
     const fetchPolicyLinks = async () => {
+      // Use effective language code for fetching policy links
+      const currentLanguageCode = getEffectiveLanguageCode();
+
+      // Skip fetching if we already have policy links and the language hasn't changed significantly
+      if (
+        hasFetchedPolicyLinks &&
+        fetchedLanguage &&
+        (fetchedLanguage === currentLanguageCode ||
+          (fetchedLanguage === "en" &&
+            !["pt", "es", "ar"].includes(currentLanguageCode)))
+      ) {
+        console.log(
+          `Using cached policy links. Previous: ${fetchedLanguage}, Current: ${currentLanguageCode}`
+        );
+        return;
+      }
+
       try {
         setPolicyLinks((prev) => ({ ...prev, loading: true, error: false }));
+
+        console.log(
+          `Fetching policy links for language: ${currentLanguageCode}`
+        );
 
         const response = await axios.get(`${API_URL}crm-register/policy-links`);
         const { privacy_policy, cookie_policy } = response.data;
 
+        console.log("Available policy languages:", {
+          privacy: privacy_policy.map((p) => p.language),
+          cookie: cookie_policy.map((c) => c.language),
+        });
+
         // First try to find policy in user's language
         let privacyLink = privacy_policy.find(
-          (p) => p.language === portalLanguageCode
+          (p) => p.language === currentLanguageCode
         )?.oss_url;
 
         let cookieLink = cookie_policy.find(
-          (c) => c.language === portalLanguageCode
+          (c) => c.language === currentLanguageCode
         )?.oss_url;
 
         // If not found, fallback to English
@@ -593,14 +732,14 @@ const PopupRegistrationForm = ({ params }) => {
             (p) => p.language === "en"
           )?.oss_url;
           console.log(
-            `Privacy policy not found in ${portalLanguageCode}, using English version`
+            `Privacy policy not found in ${currentLanguageCode}, using English version`
           );
         }
 
         if (!cookieLink) {
           cookieLink = cookie_policy.find((c) => c.language === "en")?.oss_url;
           console.log(
-            `Cookie policy not found in ${portalLanguageCode}, using English version`
+            `Cookie policy not found in ${currentLanguageCode}, using English version`
           );
         }
 
@@ -611,8 +750,12 @@ const PopupRegistrationForm = ({ params }) => {
           error: false,
         });
 
+        // Mark that we've fetched the links and store the language used
+        setHasFetchedPolicyLinks(true);
+        setFetchedLanguage(currentLanguageCode);
+
         // Log for debugging
-        console.log(`Policy links loaded. Language: ${portalLanguageCode}`);
+        console.log(`Policy links loaded. Language: ${currentLanguageCode}`);
         console.log(`Privacy policy: ${privacyLink}`);
         console.log(`Cookie policy: ${cookieLink}`);
       } catch (error) {
@@ -630,7 +773,7 @@ const PopupRegistrationForm = ({ params }) => {
     };
 
     fetchPolicyLinks();
-  }, [portalLanguageCode]);
+  }, [externalLangCode, languageCode, hasFetchedPolicyLinks, fetchedLanguage]);
 
   const filteredCountries = useMemo(() => {
     if (!searchCountry) return countries;
@@ -654,13 +797,19 @@ const PopupRegistrationForm = ({ params }) => {
 
   const handleRegistrationtForm = async (values) => {
     const token = await executeRecaptcha("popup_registration");
+    // Use effective language code for registration
+    const currentLanguageCode = getEffectiveLanguageCode();
+    console.log(
+      "Effective language code for registration:",
+      currentLanguageCode
+    );
 
     try {
       // Prepare submission data with referral parameters and ensure IP address is included
       const submissionData = {
         ...values,
         token,
-        language: portalLanguageCode,
+        language: currentLanguageCode,
         redirect: "register",
         // MODIFIED: Use the client IP address from parent if available or fallback to context
         register_ip: clientIpAddress || clientConfig.ipAddress || "",
@@ -692,6 +841,7 @@ const PopupRegistrationForm = ({ params }) => {
 
       console.log("Submitting registration with data:", {
         ip: submissionData.register_ip,
+        language: currentLanguageCode,
         country: values.country,
         code: values.country_code,
         referral_type,
@@ -709,6 +859,7 @@ const PopupRegistrationForm = ({ params }) => {
         handleApiResponse(true);
 
         const redirectAddress = response.data.redirect_address;
+        console.log("redirectAddress", redirectAddress);
         if (redirectAddress) {
           // Check if we're in an iframe
           if (window.parent !== window) {
