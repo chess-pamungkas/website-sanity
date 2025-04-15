@@ -263,68 +263,14 @@ const PopupRegistrationForm = ({ params }) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const { clientConfig } = useContext(ClientResolverContext);
   const { selectedLanguage } = useContext(LanguageContext);
-  const languageCode = PORTAL_LANGUAGES_MAP[selectedLanguage?.id];
-
-  // State to store language code sent from landing page
-  const [externalLangCode, setExternalLangCode] = useState(null);
-
-  // Function to get the final language code to be used
-  const getEffectiveLanguageCode = () => {
-    // Prioritize language code from external parameter if available
-    if (externalLangCode) {
-      return externalLangCode;
-    }
-    // Fallback to language code from Gatsby application
-    return languageCode || "en";
-  };
 
   // Parse params safely
   const safeParams = useMemo(() => {
     try {
-      let parsedParams = {};
-
-      // Try to parse JSON if params is a string
       if (typeof params === "string") {
-        try {
-          parsedParams = JSON.parse(params);
-        } catch (jsonErr) {
-          console.warn("Could not parse params as JSON:", jsonErr);
-          // If JSON parsing fails, assume it might be a simple string like a language code
-          if (params && params.length <= 5) {
-            // Most language codes are 2-5 chars
-            parsedParams = { langParam: params };
-          }
-        }
-      } else {
-        parsedParams = params || {};
+        return JSON.parse(params);
       }
-
-      // Explicitly check for URL parameters that might contain language info
-      if (typeof window !== "undefined") {
-        const urlParams = new URLSearchParams(window.location.search);
-
-        // Check for language parameters with various names
-        const urlLangParam =
-          urlParams.get("language") ||
-          urlParams.get("lang") ||
-          urlParams.get("locale") ||
-          urlParams.get("i18nextLng");
-
-        // Only override if URL contains language param and it's not already set
-        if (urlLangParam && !parsedParams.langParam) {
-          parsedParams.langParam = urlLangParam;
-          console.log("Using language from URL query params:", urlLangParam);
-        }
-
-        // Handle data-lang parameter which may be set as br (for brazilian portuguese)
-        const urlDataLang = urlParams.get("data-lang");
-        if (urlDataLang && !parsedParams.langParam) {
-          parsedParams.langParam = urlDataLang;
-          console.log("Using data-lang from URL query params:", urlDataLang);
-        }
-      }
-
-      return parsedParams;
+      return params || {};
     } catch (e) {
       console.error("Error parsing params:", e);
       return {};
@@ -339,11 +285,6 @@ const PopupRegistrationForm = ({ params }) => {
     safeParams.referral_value || null
   );
 
-  // ADDED: Store country and IP information with defaults
-  const [clientIpAddress, setClientIpAddress] = useState(null);
-  const [clientCountryName, setClientCountryName] = useState(null);
-  const [clientCountryCode, setClientCountryCode] = useState(null);
-
   // Update state values when params change
   useEffect(() => {
     if (safeParams.referral_type) {
@@ -351,17 +292,6 @@ const PopupRegistrationForm = ({ params }) => {
     }
     if (safeParams.referral_value) {
       setReferralValue(safeParams.referral_value);
-    }
-    // Process langParam if available
-    if (safeParams.langParam) {
-      // Map to portal language format using PORTAL_LANGUAGES_MAP
-      const mappedLanguage =
-        PORTAL_LANGUAGES_MAP[safeParams.langParam] || safeParams.langParam;
-      setExternalLangCode(mappedLanguage);
-      console.log("Setting external language from params:", {
-        original: safeParams.langParam,
-        mapped: mappedLanguage,
-      });
     }
   }, [safeParams]);
 
@@ -373,39 +303,8 @@ const PopupRegistrationForm = ({ params }) => {
         const msgReferralType = data.referral_type || null;
         const msgReferralValue = data.referral_value || null;
 
-        // ADDED: Extract client information from message
-        const msgIpAddress = data.ip_address || null;
-        const msgCountryName = data.country_name || null;
-        const msgCountryCode = data.country_code || null;
-        // Extract language data
-        const msgLanguage = data.language || data.lang || null;
-
         if (msgReferralType) setReferralType(msgReferralType);
         if (msgReferralValue) setReferralValue(msgReferralValue);
-
-        // ADDED: Set client information if available
-        if (msgIpAddress) setClientIpAddress(msgIpAddress);
-        if (msgCountryName) setClientCountryName(msgCountryName);
-        if (msgCountryCode) setClientCountryCode(msgCountryCode);
-
-        // Set language code if received from parent window
-        if (msgLanguage) {
-          const mappedLanguage =
-            PORTAL_LANGUAGES_MAP[msgLanguage] || msgLanguage;
-          setExternalLangCode(mappedLanguage);
-          console.log("Setting external language from parent message:", {
-            original: msgLanguage,
-            mapped: mappedLanguage,
-          });
-        }
-
-        // ADDED: Log received data for debugging
-        console.log("Received client data:", {
-          ip: msgIpAddress,
-          country: msgCountryName,
-          code: msgCountryCode,
-          language: msgLanguage,
-        });
       }
     };
 
@@ -415,9 +314,8 @@ const PopupRegistrationForm = ({ params }) => {
     const extractUrlParams = () => {
       try {
         const urlParams = new URLSearchParams(window.location.search);
-        console.log("URL search params:", window.location.search);
 
-        // Check all possible parameter formats for referral
+        // Check all possible parameter formats
         const urlReferralType =
           urlParams.get("referral_type") ||
           urlParams.get("referralType") ||
@@ -430,25 +328,6 @@ const PopupRegistrationForm = ({ params }) => {
 
         if (urlReferralType) setReferralType(urlReferralType);
         if (urlReferralValue) setReferralValue(urlReferralValue);
-
-        // Extract language parameters for debugging
-        const langParam =
-          urlParams.get("language") ||
-          urlParams.get("lang") ||
-          urlParams.get("locale") ||
-          urlParams.get("i18nextLng") ||
-          urlParams.get("data-lang");
-
-        if (langParam) {
-          console.log("Extracted language from URL:", langParam);
-          // Set language code from URL parameters
-          const mappedLanguage = PORTAL_LANGUAGES_MAP[langParam] || langParam;
-          setExternalLangCode(mappedLanguage);
-          console.log("Setting external language from URL:", {
-            original: langParam,
-            mapped: mappedLanguage,
-          });
-        }
       } catch (err) {
         console.error("Error extracting URL parameters:", err);
       }
@@ -456,28 +335,6 @@ const PopupRegistrationForm = ({ params }) => {
 
     // Extract parameters from URL immediately
     extractUrlParams();
-
-    // Also try to get data-lang from script element if available
-    try {
-      if (typeof window !== "undefined") {
-        const scriptElement = document.querySelector("script[data-lang]");
-        if (scriptElement) {
-          const scriptLang = scriptElement.getAttribute("data-lang");
-          if (scriptLang) {
-            console.log("Found data-lang attribute in script:", scriptLang);
-            const mappedLanguage =
-              PORTAL_LANGUAGES_MAP[scriptLang] || scriptLang;
-            setExternalLangCode(mappedLanguage);
-            console.log("Setting external language from script element:", {
-              original: scriptLang,
-              mapped: mappedLanguage,
-            });
-          }
-        }
-      }
-    } catch (err) {
-      console.error("Error checking script elements:", err);
-    }
 
     // Try again after a short delay (for late-loading cases)
     const timeout = setTimeout(extractUrlParams, 500);
@@ -488,53 +345,25 @@ const PopupRegistrationForm = ({ params }) => {
     };
   }, []);
 
-  // ADDED: Effect to set client information when it's updated
-  useEffect(() => {
-    // If we received client info from parent window and it's different from context
-    if (
-      clientIpAddress &&
-      (!clientConfig.ipAddress || clientConfig.ipAddress !== clientIpAddress)
-    ) {
-      console.log(
-        "Overriding client IP with data from parent:",
-        clientIpAddress
-      );
-      // Update the clientConfig object
-      clientConfig.ipAddress = clientIpAddress;
-    }
+  // Use the language parameter also to detect RTL
+  const forcedRTL =
+    safeParams.langParam && RTL_LANGUAGES.includes(safeParams.langParam);
+  const isRTLMode = isRTL || forcedRTL;
 
-    // Apply country information if we have it
-    if (
-      clientCountryName &&
-      (!clientConfig.countryName ||
-        clientConfig.countryName !== clientCountryName)
-    ) {
-      console.log(
-        "Overriding country with data from parent:",
-        clientCountryName
-      );
-      clientConfig.countryName = clientCountryName;
-    }
+  // Prioritize langParam from URL parameters over context language
+  // This ensures the language specified in the URL is used
+  const paramLangCode = safeParams.langParam;
+  const contextLangCode = selectedLanguage?.id || "en";
 
-    if (
-      clientCountryCode &&
-      (!clientConfig.countryCode ||
-        clientConfig.countryCode !== clientCountryCode)
-    ) {
-      console.log(
-        "Overriding country code with data from parent:",
-        clientCountryCode
-      );
-      clientConfig.countryCode = clientCountryCode;
-    }
-  }, [clientIpAddress, clientCountryName, clientCountryCode, clientConfig]);
+  // Use the language from params if available, otherwise use context language
+  // This fixes the issue where language from URL is ignored
+  const languageCode = paramLangCode || contextLangCode;
 
-  // Use the i18n translation function
+  // Map to portal language format (needed for API calls)
+  const portalLanguageCode = PORTAL_LANGUAGES_MAP[languageCode] || "en";
+
+  // Get translation function outside the effect to avoid the error
   const { i18n } = useTranslation();
-
-  // Check for RTL languages using effective language code
-  const effectiveLanguageCode = getEffectiveLanguageCode();
-  const isRTLMode = isRTL || RTL_LANGUAGES.includes(effectiveLanguageCode);
 
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCountryCode, setSelectedCountryCode] = useState("");
@@ -545,23 +374,11 @@ const PopupRegistrationForm = ({ params }) => {
   const [policyLinks, setPolicyLinks] = useState({
     privacyPolicy: "",
     cookiePolicy: "",
-    loading: true,
-    error: false,
   });
 
-  // Add state to track if we've already fetched policy links
-  const [hasFetchedPolicyLinks, setHasFetchedPolicyLinks] = useState(false);
-  // Add state to track the language we used for fetching
-  const [fetchedLanguage, setFetchedLanguage] = useState("");
-
-  // Enhanced policy link click handler with improved tracking and error handling
+  // Function to handle policy link clicks
   const handlePolicyLinkClick = (e, url) => {
     e.preventDefault();
-
-    if (!url) {
-      console.warn("Attempted to open policy link but URL is empty");
-      return;
-    }
 
     // Anti multi-click implementation with improved tracking
     const target = e.currentTarget;
@@ -574,206 +391,104 @@ const PopupRegistrationForm = ({ params }) => {
     // Set flag to prevent repeated clicks
     target.setAttribute("data-processing", "true");
 
-    // Generate a unique ID for this request
-    const requestId = Date.now();
-
     // Track which window was opened
     let policyWindow = null;
-    // Flag to track if the link was handled by parent
-    let handledByParent = false;
 
     // Reset flag after 3 seconds
     setTimeout(() => {
       target.removeAttribute("data-processing");
     }, 3000);
 
-    // Determine the policy type for tracking and messaging
-    const policyType = url.toLowerCase().includes("privacy")
-      ? "privacy"
-      : "cookie";
-    console.log(`Opening ${policyType} policy link: ${url}`);
-
     // Handle differently based on context
     if (window.parent !== window) {
       // If inside an iframe, first try sending a message to parent window
       try {
-        // Set up a listener to know if the parent handled the link - BEFORE sending the message
-        const messageListener = (event) => {
-          if (
-            event.data &&
-            event.data.type === "OQTIMA_LINK_OPENED" &&
-            event.data.url === url
-          ) {
-            console.log("Link was handled by parent window");
-            handledByParent = true;
-            window.removeEventListener("message", messageListener);
-          }
-        };
-
-        window.addEventListener("message", messageListener);
-
-        // Send a clear message to the parent window to handle opening the policy link
         window.parent.postMessage(
           {
             type: "OQTIMA_OPEN_LINK",
             url: url,
             isPolicyLink: true,
-            policyType: policyType,
-            openInNewTab: true, // Explicitly state this should open in a new tab
-            timestamp: requestId,
+            policyType: url.toLowerCase().includes("privacy")
+              ? "privacy"
+              : "cookie",
+            timestamp: Date.now(),
           },
           "*"
         );
 
-        // Fallback: try to open directly after a short delay if parent doesn't handle it
+        // As a fallback, try to open directly after a short delay
+        // This only happens if the parent handler doesn't handle it
         setTimeout(() => {
-          window.removeEventListener("message", messageListener);
-
-          // Only open in a new tab if the parent didn't handle it
-          if (!handledByParent && !policyWindow) {
+          // Check if a window was already opened by the parent
+          if (!policyWindow) {
             try {
-              console.log("Parent didn't handle link, opening directly:", url);
               policyWindow = window.open(url, "_blank", "noopener,noreferrer");
 
+              // If window was blocked, show a hint to the user
               if (!policyWindow) {
-                console.warn("Policy link popup was blocked by browser");
+                console.warn(
+                  "Popup was blocked by browser - consider enabling popups for this site"
+                );
               }
-            } catch (fallbackErr) {
-              console.error(
-                "Error in fallback policy link opening:",
-                fallbackErr
-              );
+            } catch (err) {
+              console.error("Error opening policy link directly:", err);
             }
           }
-        }, 400); // Increase timeout to ensure parent has time to handle the request
+        }, 500);
       } catch (err) {
-        console.error("Error sending policy link message to parent:", err);
+        console.error("Error sending message to parent for policy link:", err);
 
-        // Last resort: direct opening if message sending fails
+        // Fallback to direct opening if message sending fails
         try {
           policyWindow = window.open(url, "_blank", "noopener,noreferrer");
-        } catch (fallbackErr) {
-          console.error(
-            "Final attempt to open policy link failed:",
-            fallbackErr
-          );
-          sendLog({
-            message: `Failed to open policy link: ${fallbackErr.message}`,
-            type: fallbackErr.name,
-            url: url,
-          });
+        } catch (innerErr) {
+          console.error("Error in fallback policy link opening:", innerErr);
         }
       }
     } else {
-      // If not in an iframe, open the link directly in a new tab
+      // If not in an iframe, open the link directly
       try {
         policyWindow = window.open(url, "_blank", "noopener,noreferrer");
 
+        // If window was blocked, show a hint to the user
         if (!policyWindow) {
-          console.warn("Policy link popup was blocked by browser");
+          console.warn(
+            "Popup was blocked by browser - consider enabling popups for this site"
+          );
         }
       } catch (err) {
         console.error("Error opening policy link directly:", err);
-        sendLog({
-          message: `Failed to open policy link: ${err.message}`,
-          type: err.name,
-          url: url,
-        });
       }
     }
   };
 
   useEffect(() => {
     const fetchPolicyLinks = async () => {
-      // Use effective language code for fetching policy links
-      const currentLanguageCode = getEffectiveLanguageCode();
-
-      // Skip fetching if we already have policy links and the language hasn't changed significantly
-      if (
-        hasFetchedPolicyLinks &&
-        fetchedLanguage &&
-        (fetchedLanguage === currentLanguageCode ||
-          (fetchedLanguage === "en" &&
-            !["pt", "es", "ar"].includes(currentLanguageCode)))
-      ) {
-        console.log(
-          `Using cached policy links. Previous: ${fetchedLanguage}, Current: ${currentLanguageCode}`
-        );
-        return;
-      }
-
       try {
-        setPolicyLinks((prev) => ({ ...prev, loading: true, error: false }));
-
-        console.log(
-          `Fetching policy links for language: ${currentLanguageCode}`
-        );
-
         const response = await axios.get(`${API_URL}crm-register/policy-links`);
         const { privacy_policy, cookie_policy } = response.data;
 
-        console.log("Available policy languages:", {
-          privacy: privacy_policy.map((p) => p.language),
-          cookie: cookie_policy.map((c) => c.language),
-        });
+        const privacyLink =
+          privacy_policy.find((p) => p.language === portalLanguageCode)
+            ?.oss_url ||
+          privacy_policy.find((p) => p.language === "en")?.oss_url;
 
-        // First try to find policy in user's language
-        let privacyLink = privacy_policy.find(
-          (p) => p.language === currentLanguageCode
-        )?.oss_url;
-
-        let cookieLink = cookie_policy.find(
-          (c) => c.language === currentLanguageCode
-        )?.oss_url;
-
-        // If not found, fallback to English
-        if (!privacyLink) {
-          privacyLink = privacy_policy.find(
-            (p) => p.language === "en"
-          )?.oss_url;
-          console.log(
-            `Privacy policy not found in ${currentLanguageCode}, using English version`
-          );
-        }
-
-        if (!cookieLink) {
-          cookieLink = cookie_policy.find((c) => c.language === "en")?.oss_url;
-          console.log(
-            `Cookie policy not found in ${currentLanguageCode}, using English version`
-          );
-        }
+        const cookieLink =
+          cookie_policy.find((c) => c.language === portalLanguageCode)
+            ?.oss_url ||
+          cookie_policy.find((c) => c.language === "en")?.oss_url;
 
         setPolicyLinks({
-          privacyPolicy: privacyLink || "",
-          cookiePolicy: cookieLink || "",
-          loading: false,
-          error: false,
+          privacyPolicy: privacyLink,
+          cookiePolicy: cookieLink,
         });
-
-        // Mark that we've fetched the links and store the language used
-        setHasFetchedPolicyLinks(true);
-        setFetchedLanguage(currentLanguageCode);
-
-        // Log for debugging
-        console.log(`Policy links loaded. Language: ${currentLanguageCode}`);
-        console.log(`Privacy policy: ${privacyLink}`);
-        console.log(`Cookie policy: ${cookieLink}`);
       } catch (error) {
-        console.error("Error fetching policy links:", error);
-        setPolicyLinks((prev) => ({
-          ...prev,
-          loading: false,
-          error: true,
-        }));
-        sendLog({
-          message: `Failed to fetch policy links: ${error.message}`,
-          type: error.name,
-        });
+        sendLog({ message: error.message, type: error.name });
       }
     };
 
     fetchPolicyLinks();
-  }, [externalLangCode, languageCode, hasFetchedPolicyLinks, fetchedLanguage]);
+  }, [portalLanguageCode]);
 
   const filteredCountries = useMemo(() => {
     if (!searchCountry) return countries;
@@ -797,38 +512,19 @@ const PopupRegistrationForm = ({ params }) => {
 
   const handleRegistrationtForm = async (values) => {
     const token = await executeRecaptcha("popup_registration");
-    // Use effective language code for registration
-    const currentLanguageCode = getEffectiveLanguageCode();
-    console.log(
-      "Effective language code for registration:",
-      currentLanguageCode
-    );
 
     try {
-      // Prepare submission data with referral parameters and ensure IP address is included
+      // Prepare submission data with referral parameters
       const submissionData = {
         ...values,
         token,
-        language: currentLanguageCode,
+        language: portalLanguageCode,
         redirect: "register",
-        // MODIFIED: Use the client IP address from parent if available or fallback to context
-        register_ip: clientIpAddress || clientConfig.ipAddress || "",
+        register_ip: clientConfig.ipAddress,
         agreement: true,
         privacy: policyLinks.privacyPolicy,
         cookie: policyLinks.cookiePolicy,
       };
-
-      // Validate if policy links are available
-      if (!policyLinks.privacyPolicy || !policyLinks.cookiePolicy) {
-        console.warn("Missing policy links during form submission");
-        // Still include them in submission but log the issue
-        sendLog({
-          message: "Registration submitted with missing policy links",
-          type: "PolicyWarning",
-          privacy: policyLinks.privacyPolicy,
-          cookie: policyLinks.cookiePolicy,
-        });
-      }
 
       // Only add referral parameters if we have them
       if (referral_type) {
@@ -838,15 +534,6 @@ const PopupRegistrationForm = ({ params }) => {
       if (referral_value) {
         submissionData.referral_value = referral_value;
       }
-
-      console.log("Submitting registration with data:", {
-        ip: submissionData.register_ip,
-        language: currentLanguageCode,
-        country: values.country,
-        code: values.country_code,
-        referral_type,
-        referral_value,
-      });
 
       const response = await axios.post(
         `${API_URL}crm-register`,
@@ -859,126 +546,81 @@ const PopupRegistrationForm = ({ params }) => {
         handleApiResponse(true);
 
         const redirectAddress = response.data.redirect_address;
-        console.log("redirectAddress", redirectAddress);
         if (redirectAddress) {
           // Check if we're in an iframe
           if (window.parent !== window) {
-            // MODIFIED: Improved redirection handling for iframe context
-            console.log(
-              "Registration successful, redirecting to:",
-              redirectAddress
+            // ENHANCED: Send multiple message formats to ensure compatibility
+
+            // 1. Standard object format with REDIRECT_TO_URL type
+            window.parent.postMessage(
+              {
+                type: "REDIRECT_TO_URL",
+                url: redirectAddress,
+                success: true,
+                timestamp: Date.now(),
+              },
+              "*"
             );
 
+            // 2. Alternative object format with redirectUrl property
+            window.parent.postMessage(
+              {
+                type: "REDIRECT_TO_URL",
+                redirectUrl: redirectAddress,
+                success: true,
+                timestamp: Date.now(),
+              },
+              "*"
+            );
+
+            // 3. Registration success format
+            window.parent.postMessage(
+              {
+                type: "REGISTRATION_SUCCESS",
+                url: redirectAddress,
+                redirectUrl: redirectAddress,
+                success: true,
+                timestamp: Date.now(),
+              },
+              "*"
+            );
+
+            // 4. Simple string format (for the global handler)
+            window.parent.postMessage(`redirect:${redirectAddress}`, "*");
+
+            // 5. Direct URL string (for simple string extraction)
+            setTimeout(() => {
+              window.parent.postMessage(redirectAddress, "*");
+            }, 100);
+
+            // ENHANCED: Try direct redirection approach for some browsers
             try {
-              // STEP 1: Send multiple message formats to ensure compatibility
-
-              // Send detailed registration success message
-              window.parent.postMessage(
-                {
-                  type: "OQTIMA_REGISTRATION_SUCCESS",
-                  redirectUrl: redirectAddress,
-                  success: true,
-                  timestamp: Date.now(),
-                },
-                "*"
-              );
-
-              // STEP 2: Alternative message formats for different parent handlers
-              // Standard redirect message
-              window.parent.postMessage(
-                {
-                  type: "REDIRECT_TO_URL",
-                  url: redirectAddress,
-                  success: true,
-                  timestamp: Date.now(),
-                },
-                "*"
-              );
-
-              // Legacy format support
-              window.parent.postMessage(
-                {
-                  type: "REGISTRATION_SUCCESS",
-                  url: redirectAddress,
-                  redirectUrl: redirectAddress,
-                  success: true,
-                  timestamp: Date.now(),
-                },
-                "*"
-              );
-
-              // Simple format for basic handlers
-              window.parent.postMessage(`redirect:${redirectAddress}`, "*");
-
-              // STEP 3: Direct approach - try to set parent location directly
-              // This is the most reliable but might be blocked in some browsers
-              setTimeout(() => {
-                try {
-                  console.log("Attempting direct redirect to parent window");
-                  window.parent.location.href = redirectAddress;
-                } catch (directErr) {
-                  console.warn(
-                    "Direct parent redirect blocked:",
-                    directErr.message
-                  );
-
-                  // STEP 4: As last resort, if direct redirection fails, try to open in a new tab
+              // Some browsers allow this in certain contexts
+              if (window.top) {
+                setTimeout(() => {
                   try {
-                    console.log("Attempting fallback to new tab");
-                    const newWindow = window.open(redirectAddress, "_blank");
-
-                    if (newWindow) {
-                      newWindow.focus();
-                      // Close the current popup if new window was opened successfully
-                      window.parent.postMessage(
-                        {
-                          type: "OQTIMA_CLOSE_POPUP",
-                          reason: "redirect-success",
-                        },
-                        "*"
-                      );
-                    } else {
-                      console.error("Popup blocked - unable to redirect");
-                      // Display a user-friendly message about the redirect
-                      setErrorMessage(
-                        "Registration successful! The redirection was blocked by your browser. Please check for popup blockers."
-                      );
-                    }
-                  } catch (fallbackErr) {
-                    console.error(
-                      "All redirect methods failed:",
-                      fallbackErr.message
-                    );
+                    window.top.location.href = redirectAddress;
+                  } catch (err) {
+                    console.log("Could not directly set top location", err);
                   }
-                }
-              }, 500);
-
-              // STEP 5: Store redirect in localStorage for potential use by parent
-              try {
-                localStorage.setItem(
-                  "OQTIMA_PENDING_REDIRECT",
-                  redirectAddress
-                );
-                localStorage.setItem("OQTIMA_REGISTRATION_SUCCESS", "true");
-                localStorage.setItem(
-                  "OQTIMA_REGISTRATION_TIMESTAMP",
-                  Date.now().toString()
-                );
-              } catch (storageErr) {
-                console.warn(
-                  "Could not save to localStorage:",
-                  storageErr.message
-                );
+                }, 300);
               }
             } catch (err) {
-              console.error("Error during redirect process:", err.message);
+              console.log("Could not access top window", err);
+            }
 
-              // If all else fails, try one more redirect approach
-              try {
-                window.top.location.href = redirectAddress;
-              } catch (topErr) {
-                console.error("Final redirect attempt failed:", topErr.message);
-              }
+            // ENHANCED: As a final fallback, try to save to localStorage for use on page reload
+            try {
+              localStorage.setItem("OQTIMA_PENDING_REDIRECT", redirectAddress);
+
+              // Set a flag to indicate successful registration
+              localStorage.setItem("OQTIMA_REGISTRATION_SUCCESS", "true");
+              localStorage.setItem(
+                "OQTIMA_REGISTRATION_TIMESTAMP",
+                Date.now().toString()
+              );
+            } catch (err) {
+              console.log("Could not save to localStorage", err);
             }
           } else {
             // If not in iframe, redirect normally
@@ -1000,17 +642,14 @@ const PopupRegistrationForm = ({ params }) => {
         first_name: "",
         last_name: "",
         email: "",
-        // MODIFIED: Prioritize country data from parent window over context
-        country: clientCountryName || clientConfig?.countryName || "",
-        country_code:
-          clientCountryCode ||
-          (clientConfig?.countryName
-            ? countries.find(
-                (country) =>
-                  country.name.toLowerCase() ===
-                  clientConfig.countryName.toLowerCase()
-              )?.code || ""
-            : ""),
+        country: clientConfig?.countryName || "",
+        country_code: clientConfig?.countryCode
+          ? countries.find(
+              (country) =>
+                country.name.toLowerCase() ===
+                clientConfig.countryName.toLowerCase()
+            )?.code || ""
+          : "",
         mobile: "",
         is_subscribe: 1,
         agreement: 0,
@@ -1325,45 +964,35 @@ const PopupRegistrationForm = ({ params }) => {
                   }
                 />
                 <span>
-                  {policyLinks.loading ? (
-                    // Show loading state for policy links
-                    <span>{t("popup-registration-loading-policies")}</span>
-                  ) : policyLinks.error ? (
-                    // Show error state if policy links failed to load
-                    <span>{t("popup-registration-policies-error")}</span>
-                  ) : (
-                    <Trans i18nKey="popup-registration-consent" ns="index">
-                      I agree to allow the company to process my personal data
-                      to meet its regulatory obligations and I have read and
-                      understood the
-                      <a
-                        href={policyLinks.privacyPolicy}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link"
-                        onClick={(e) =>
-                          handlePolicyLinkClick(e, policyLinks.privacyPolicy)
-                        }
-                        data-policy-type="privacy"
-                      >
-                        Privacy Policy
-                      </a>
-                      and
-                      <a
-                        href={policyLinks.cookiePolicy}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link"
-                        onClick={(e) =>
-                          handlePolicyLinkClick(e, policyLinks.cookiePolicy)
-                        }
-                        data-policy-type="cookie"
-                      >
-                        Cookie Policy
-                      </a>
-                      of the Company.
-                    </Trans>
-                  )}
+                  <Trans i18nKey="popup-registration-consent" ns="index">
+                    I agree to allow the company to process my personal data to
+                    meet its regulatory obligations and I have read and
+                    understood the
+                    <a
+                      href={policyLinks.privacyPolicy}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="link"
+                      onClick={(e) =>
+                        handlePolicyLinkClick(e, policyLinks.privacyPolicy)
+                      }
+                    >
+                      Privacy Policy
+                    </a>
+                    and
+                    <a
+                      href={policyLinks.cookiePolicy}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="link"
+                      onClick={(e) =>
+                        handlePolicyLinkClick(e, policyLinks.cookiePolicy)
+                      }
+                    >
+                      Cookie Policy
+                    </a>
+                    of the Company.
+                  </Trans>
                 </span>
               </span>
               {errors.agreement && touched.agreement && (
