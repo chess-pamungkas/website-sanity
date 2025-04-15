@@ -14,6 +14,25 @@
 
   // API URL and Environment mapping based on hostname
   const getApiUrlFromHostname = () => {
+    // Try to find the script element that loaded this script
+    try {
+      const scripts = document.getElementsByTagName("script");
+      const registrationScript = Array.from(scripts).find((script) =>
+        script.src.includes("registration-popup-script.js")
+      );
+
+      if (registrationScript && registrationScript.src) {
+        // Extract the origin and path from the script src
+        const scriptUrl = new URL(registrationScript.src);
+        const baseUrl = `${scriptUrl.origin}/`;
+        console.log("[OQtima] Using script source for API URL:", baseUrl);
+        return baseUrl;
+      }
+    } catch (e) {
+      console.warn("[OQtima] Error determining API URL from script:", e);
+    }
+
+    // Fallback logic if script element cannot be found or URL parsing fails
     const hostname = window.location.hostname;
     const protocol = window.location.protocol;
 
@@ -27,24 +46,113 @@
       return "http://localhost:8000/";
     }
 
-    // For other environments, use current origin
-    return window.location.origin + "/";
+    // For development environment
+    if (hostname === "dev.oqt-ima.com") {
+      return "https://dev.oqt-ima.com/";
+    }
+
+    // For staging environment
+    if (hostname === "test.oqt-ima.com") {
+      return "https://test.oqt-ima.com/";
+    }
+
+    // For production environment
+    if (
+      hostname === "oqtima.com" ||
+      hostname === "lp.oqtima.com" ||
+      hostname === "www.oqtima.com"
+    ) {
+      return "https://oqtima.com/";
+    }
+
+    // For any other domain, use the current origin as the API URL
+    return `${window.location.origin}/`;
   };
 
   // Map frontend hostname to backend API server URL
   const mapBackendApiUrl = () => {
+    // Try to determine backend API URL from script source
+    try {
+      const scripts = document.getElementsByTagName("script");
+      const scriptPatterns = [
+        "registration-popup-script.js",
+        "registration-popup-script.min.js",
+      ];
+
+      const registrationScript = Array.from(scripts).find((script) => {
+        const src = script.src || "";
+        return scriptPatterns.some((pattern) => src.includes(pattern));
+      });
+
+      if (registrationScript && registrationScript.src) {
+        // Extract the origin from the script src
+        const scriptUrl = new URL(registrationScript.src);
+        const scriptOrigin = scriptUrl.origin;
+
+        // If script is served from the frontend, map to corresponding backend
+        if (
+          scriptOrigin.includes("localhost") ||
+          scriptOrigin.includes("127.0.0.1")
+        ) {
+          return "http://localhost:3000/";
+        }
+
+        if (scriptOrigin.includes("dev.oqt-ima.com")) {
+          return "https://dev-back.oqt-ima.com/";
+        }
+
+        if (scriptOrigin.includes("test.oqt-ima.com")) {
+          return "https://back.oqt-ima.com/";
+        }
+
+        if (scriptOrigin.includes("oqtima.com")) {
+          return "https://back.oqtima.com/";
+        }
+
+        // For custom domains, try to derive a backend URL
+        try {
+          const scriptUrlObj = new URL(scriptOrigin);
+          if (scriptUrlObj.hostname.includes(".")) {
+            const parts = scriptUrlObj.hostname.split(".");
+            // If already has subdomain, replace it with 'back'
+            if (parts.length > 2) {
+              parts[0] = "back";
+              return `${scriptUrlObj.protocol}//${parts.join(".")}/`;
+            }
+            // Otherwise add 'back' subdomain
+            else {
+              return `${scriptUrlObj.protocol}//back.${scriptUrlObj.hostname}/`;
+            }
+          }
+        } catch (e) {
+          console.warn(
+            "[OQtima] Error constructing backend URL from script origin:",
+            e
+          );
+        }
+      }
+    } catch (e) {
+      console.warn(
+        "[OQtima] Error determining backend API URL from script:",
+        e
+      );
+    }
+
+    // Fallback logic based on hostname if script detection fails
     const hostname = window.location.hostname;
     const protocol = window.location.protocol;
     const port = window.location.port;
-    // For file:// protocol or local development
+
+    // For file:// protocol, use localhost with explicit protocol
     if (protocol === "file:") {
       return "http://localhost:3000/";
     }
 
     // For local development with standard ports
     if (hostname === "localhost" || hostname === "127.0.0.1") {
-      // If custom port is specified, use it in the URL
-      if (port === "8000") {
+      // MODIFIED: Ensure proper handling of localhost with port 80 (standard HTTP port)
+      // which is typically hidden in the URL but still needs the backend on port 3000
+      if (port === "8000" || port === "80" || port === "") {
         return "http://localhost:3000/";
       }
       // For other ports, assume the backend is on the same port
@@ -68,45 +176,60 @@
       hostname === "lp.oqtima.com" ||
       hostname === "www.oqtima.com"
     ) {
-      return "https://back.oqtima.com/";
+      return "https://back.oqt-ima.com/";
     }
 
-    // Alternative approach: try to derive from current origin
-    // This is useful in development scenarios with custom domains
-    try {
-      const currentOrigin = window.location.origin;
-      if (currentOrigin.includes("localhost")) {
-        return "http://localhost:3000/";
-      }
-
-      // For any unknown production domain, make a best guess based on hostname
-      // Add 'back.' subdomain or replace current subdomain with 'back.'
-      const originUrl = new URL(currentOrigin);
-      if (originUrl.hostname.includes(".")) {
-        const parts = originUrl.hostname.split(".");
-        // If already has subdomain, replace it
-        if (parts.length > 2) {
-          parts[0] = "back";
-          return `${originUrl.protocol}//${parts.join(".")}/`;
-        }
-        // Otherwise add 'back' subdomain
-        else {
-          return `${originUrl.protocol}//back.${originUrl.hostname}/`;
-        }
-      }
-    } catch (e) {
-      // Ignore errors with URL construction
-      console.warn("[OQtima] Error constructing backend URL from origin:", e);
-    }
-
-    // Default fallback - use localhost for development
+    // Default fallback for unknown domains
     console.warn(
-      "[OQtima] Could not determine backend API URL from hostname, using default"
+      "[OQtima] Could not determine backend API URL from hostname or script, using default"
     );
-    return "http://localhost:3000/";
+    return "https://dev-back.oqt-ima.com/";
   };
 
   const getEnvironmentFromHostname = () => {
+    // Try to determine environment from script source
+    try {
+      const scripts = document.getElementsByTagName("script");
+      const scriptPatterns = [
+        "registration-popup-script.js",
+        "registration-popup-script.min.js",
+      ];
+
+      const registrationScript = Array.from(scripts).find((script) => {
+        const src = script.src || "";
+        return scriptPatterns.some((pattern) => src.includes(pattern));
+      });
+
+      if (registrationScript && registrationScript.src) {
+        // Extract the origin from the script src
+        const scriptUrl = new URL(registrationScript.src);
+        const scriptOrigin = scriptUrl.origin;
+
+        // Determine environment based on script source domain
+        if (
+          scriptOrigin.includes("localhost") ||
+          scriptOrigin.includes("127.0.0.1")
+        ) {
+          return "development";
+        }
+
+        if (scriptOrigin.includes("dev.oqt-ima.com")) {
+          return "development";
+        }
+
+        if (scriptOrigin.includes("test.oqt-ima.com")) {
+          return "staging";
+        }
+
+        if (scriptOrigin.includes("oqtima.com")) {
+          return "production";
+        }
+      }
+    } catch (e) {
+      console.warn("[OQtima] Error determining environment from script:", e);
+    }
+
+    // Fallback logic based on hostname if script detection fails
     const hostname = window.location.hostname;
     const protocol = window.location.protocol;
 
@@ -131,11 +254,19 @@
     }
 
     // For production environment
-    if (hostname === "oqtima.com" || hostname === "lp.oqtima.com") {
+    if (
+      hostname === "oqtima.com" ||
+      hostname === "lp.oqtima.com" ||
+      hostname === "www.oqtima.com"
+    ) {
       return "production";
     }
 
-    return false;
+    // For unknown domains, default to development
+    console.warn(
+      "[OQtima] Could not determine environment, defaulting to development"
+    );
+    return "development";
   };
 
   // Set API URL and Environment based on hostname
@@ -143,10 +274,10 @@
   const backendApiUrl = mapBackendApiUrl();
   const environment = getEnvironmentFromHostname();
 
-  // If either apiUrl or environment is false, don't proceed with initialization
-  if (!apiUrl || !environment) {
-    return;
-  }
+  // MODIFIED: Always proceed with initialization regardless of hostname or environment
+  // if (!apiUrl || !environment) {
+  //   return;
+  // }
 
   let isValidated = false;
 
@@ -155,39 +286,55 @@
    */
   async function initOqtimaRegistration() {
     try {
-      console.log(
-        "[OQtima] Starting initialization on host:",
-        window.location.host
-      );
+      // Get the API key from the script tag
+      const { apiKey, bypassVerification } = await getApiKey();
 
-      // Get API key first
-      const apiKeyResult = await getApiKey();
+      // If explicitly bypassing verification by configuration (data-bypass-verification="true"),
+      // proceed directly - this is only for testing purposes
+      if (bypassVerification) {
+        console.log("[OQtima] API key verification bypassed by configuration");
+        initRegistrationComponents();
+        return;
+      }
 
-      // Check for containers before continuing
-      const containersBeforeInit = document.querySelectorAll(
-        "[data-oqtima-register]"
-      );
-      console.log(
-        "[OQtima] Containers before init:",
-        containersBeforeInit.length
-      );
+      // Otherwise verify API key with backend
+      if (!apiKey) {
+        showAuthError(
+          "API key is missing. Add data-api-key attribute to the script tag."
+        );
+        return;
+      }
 
-      // Bypass API key verification - always treat as valid
-      // This line forces all API keys to be considered valid
-      const isValid = true;
-      console.log(
-        "[OQtima] API key verification bypassed - all keys are considered valid"
-      );
+      console.log("[OQtima] Verifying API key");
 
-      // Initialize registration components
-      initRegistrationComponents();
+      try {
+        // Make API call to verify the key
+        const isValid = await verifyApiKey(apiKey);
+
+        if (isValid) {
+          console.log("[OQtima] API key verified successfully");
+          isValidated = true;
+          initRegistrationComponents();
+        } else {
+          // Removed special case for development environments
+
+          showAuthError(
+            "Invalid API key. Registration button will not be displayed."
+          );
+        }
+      } catch (verifyError) {
+        // Additional error handling for verification failures
+        console.error("[OQtima] Verification process error:", verifyError);
+
+        // Removed auto-bypass for development environments
+
+        showAuthError(
+          `Error during API key verification: ${verifyError.message}`
+        );
+      }
     } catch (error) {
-      // Instead of showing error, still initialize the components
-      console.warn("[OQtima] Error occurred but bypassing:", error.message);
-      console.error("[OQtima] Full error:", error);
-
-      // Try to initialize anyway
-      initRegistrationComponents();
+      console.error("[OQtima] Initialization error:", error.message);
+      showAuthError("Registration initialization error: " + error.message);
     }
   }
 
@@ -197,118 +344,146 @@
   async function getApiKey() {
     try {
       const scripts = document.getElementsByTagName("script");
+      // Find script tag that includes our script (regular or minified version)
+      const scriptPatterns = [
+        "registration-popup-script.js",
+        "registration-popup-script.min.js",
+      ];
 
-      // Log all script sources for debugging
-      console.log(
-        "[OQtima] All scripts:",
-        Array.from(scripts).map((s) => s.src)
-      );
-
-      const currentScript = Array.from(scripts).find((script) =>
-        script.src.includes("registration-popup-script.js")
-      );
+      const currentScript = Array.from(scripts).find((script) => {
+        const src = script.src || "";
+        return scriptPatterns.some((pattern) => src.includes(pattern));
+      });
 
       if (!currentScript) {
-        // If script not found, allow initialization anyway
-        console.log(
-          "[OQtima] Script tag not found, using default bypass API key"
-        );
-        return { apiKey: "bypass_api_key", bypassVerification: true };
+        console.warn("[OQtima] Script tag not found");
+        return { apiKey: null, bypassVerification: false };
       }
 
-      // Get API key from attribute or use default bypass key
-      const apiKey =
-        currentScript.getAttribute("data-api-key") || "bypass_api_key";
-      const bypassVerification = true; // Always bypass verification
+      // Get API key from attribute
+      const apiKey = currentScript.getAttribute("data-api-key");
 
-      // Always return a valid result
+      // Check if verification should be bypassed (for development/testing)
+      const bypassVerification =
+        currentScript.getAttribute("data-bypass-verification") === "true";
+
       return { apiKey, bypassVerification };
     } catch (error) {
-      // In case of error, return default bypass values
-      console.error("[OQtima] Error in getApiKey:", error);
-      return { apiKey: "bypass_api_key", bypassVerification: true };
+      console.error("[OQtima] Error retrieving API key:", error);
+      return { apiKey: null, bypassVerification: false };
     }
   }
 
   /**
-   * Show authentication error message - disabled in bypass mode
+   * Verify API key with backend API server
+   */
+  async function verifyApiKey(apiKey) {
+    try {
+      // Determine backend API URL for verification endpoint
+      const verifyEndpoint = `${backendApiUrl}verify-api-key`;
+
+      console.log(
+        `[OQtima] Verifying API key with endpoint: ${verifyEndpoint}`
+      );
+
+      // MODIFIED: Add better error handling and timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10-second timeout
+
+      // Make POST request to verification endpoint with improved options
+      const response = await fetch(verifyEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-Requested-With": "XMLHttpRequest", // Help identify AJAX requests
+          Origin: window.location.origin, // Explicitly set origin header
+        },
+        body: JSON.stringify({ apiKey }),
+        credentials: "same-origin",
+        mode: "cors", // Explicitly request CORS mode
+        signal: controller.signal,
+        cache: "no-cache",
+      }).finally(() => clearTimeout(timeoutId));
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          `[OQtima] API key verification failed: ${response.status} ${errorText}`
+        );
+        return false;
+      }
+
+      const data = await response.json();
+      return data.isValid === true;
+    } catch (error) {
+      // MODIFIED: Special handling for "Failed to fetch" errors which often
+      // indicate network issues, CORS problems, or server unavailability
+      if (
+        error.name === "TypeError" &&
+        error.message.includes("Failed to fetch")
+      ) {
+        console.error(
+          "[OQtima] Network error verifying API key. This may indicate:",
+          "\n1. The backend server is not running or unreachable",
+          "\n2. CORS policy blocking the request",
+          "\n3. Network connectivity issues"
+        );
+
+        // REMOVED auto-bypass for development environments
+        // Always return false to require proper verification
+      }
+
+      console.error("[OQtima] Error verifying API key:", error);
+      return false;
+    }
+  }
+
+  /**
+   * Show authentication error message
    */
   function showAuthError(message) {
-    // Do nothing - bypass is active
-    console.warn("[OQtima] Auth error suppressed in bypass mode:", message);
+    console.warn("[OQtima] Authentication error:", message);
 
-    // Instead of showing error, initialize the components
-    initRegistrationComponents();
+    // Find all registration button containers
+    const containers = document.querySelectorAll("[data-oqtima-register]");
+
+    // Replace each container with an error message for developers
+    containers.forEach((container) => {
+      // Only show errors in console in production, but show in container during development
+      if (environment === "development") {
+        container.innerHTML = `
+          <div style="
+            padding: 10px; 
+            border: 1px solid #ff4400; 
+            border-radius: 4px; 
+            color: #ff4400; 
+            font-family: monospace; 
+            font-size: 12px;
+            background-color: rgba(255, 68, 0, 0.1);
+            text-align: left;
+          ">
+            <strong>OQtima Registration Button Error:</strong><br>
+            ${message}<br>
+            <small>(This error is only visible in development mode)</small>
+          </div>
+        `;
+      } else {
+        // In production, just hide the containers
+        container.style.display = "none";
+      }
+    });
   }
 
   /**
    * Initialize registration components
    */
   function initRegistrationComponents() {
-    // Added delayed execution to ensure DOM is fully loaded
-    setTimeout(() => {
-      const containers = document.querySelectorAll("[data-oqtima-register]");
-      console.log("[OQtima] Found containers:", containers.length);
+    const containers = document.querySelectorAll("[data-oqtima-register]");
+    if (containers.length === 0) return;
 
-      // Check if we need to create a container
-      if (containers.length === 0) {
-        console.log(
-          "[OQtima] No registration containers found. Creating containers..."
-        );
-
-        // Create multiple containers to ensure visibility
-        const createContainer = (position, style = "") => {
-          const newContainer = document.createElement("div");
-          newContainer.setAttribute("data-oqtima-register", "");
-          newContainer.setAttribute("data-text", "OPEN FREE ACCOUNT");
-          newContainer.setAttribute("data-lang", "en");
-
-          // Set position-specific styling if provided
-          if (style) {
-            newContainer.setAttribute("style", style);
-          }
-
-          // Handle different positions
-          if (position === "body") {
-            document.body.appendChild(newContainer);
-          } else if (position === "top") {
-            document.body.insertBefore(newContainer, document.body.firstChild);
-          } else if (position === "fixed") {
-            // Use absolute positioning for fixed container
-            document.body.appendChild(newContainer);
-          }
-
-          return newContainer;
-        };
-
-        // Create multiple containers in different positions to ensure visibility
-        const bodyContainer = createContainer("body");
-        const topContainer = createContainer("top");
-        const fixedContainer = createContainer(
-          "fixed",
-          "position: fixed; bottom: 20px; right: 20px; z-index: 999999;"
-        );
-
-        console.log("[OQtima] Created new containers in multiple positions");
-
-        // Add styles and create buttons
-        addStyles();
-
-        // Create buttons in all containers
-        const allContainers = document.querySelectorAll(
-          "[data-oqtima-register]"
-        );
-        allContainers.forEach((container) =>
-          createRegistrationButton(container)
-        );
-
-        return;
-      }
-
-      // If containers exist, proceed normally
-      addStyles();
-      containers.forEach((container) => createRegistrationButton(container));
-    }, 500); // Increased delay to ensure DOM is fully ready
+    addStyles();
+    containers.forEach((container) => createRegistrationButton(container));
   }
 
   /**
@@ -658,99 +833,106 @@
    * Opens the registration popup with the given parameters using iframe
    * Ensures consistent styling and behavior for both RTL and non-RTL languages
    */
-  function openRegistrationPopup(params = {}) {
-    console.log("[OQtima] Opening registration popup with params:", params);
-
-    // Save current body and html states
+  function openRegistrationPopup(params) {
+    // Save original body and html states
     const originalBodyClasses = document.body.className;
     const originalHtmlClasses = document.documentElement.className;
-    const originalBodyStyle = document.body.getAttribute("style") || "";
-    const originalHtmlStyle =
-      document.documentElement.getAttribute("style") || "";
+    const originalBodyStyle = document.body.style.cssText;
+    const originalHtmlStyle = document.documentElement.style.cssText;
     const originalBodyOverflow = document.body.style.overflow;
     const originalHtmlOverflow = document.documentElement.style.overflow;
-    const originalScrollPos = window.scrollY;
+    const originalScrollPos = { x: window.pageXOffset, y: window.pageYOffset };
 
-    // Extract parameters with fallbacks
-    const language = params.lang || "en";
-    const referralType = params.referralType || null;
-    const referralValue = params.referralValue || null;
+    // Extract parameters
+    const { lang = "en", referralType, referralValue } = params;
 
-    // Log for debugging
-    console.log("[OQtima] Opening popup with language:", language);
-    console.log("[OQtima] Referral data:", {
-      type: referralType,
-      value: referralValue,
-    });
+    // ADDED: Try to get IP and country info from the parent window
+    let ipAddress = null;
+    let countryName = null;
+    let countryCode = null;
 
-    // Improved browser/device detection
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    const isMobile =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        userAgent
+    // Try to extract IP address from meta tags if available
+    try {
+      const ipMeta = document.querySelector('meta[name="client-ip"]');
+      if (ipMeta) {
+        ipAddress = ipMeta.getAttribute("content");
+      }
+
+      const countryMeta = document.querySelector('meta[name="client-country"]');
+      if (countryMeta) {
+        countryName = countryMeta.getAttribute("content");
+      }
+
+      const countryCodeMeta = document.querySelector(
+        'meta[name="client-country-code"]'
       );
-    const isIOS = /iPad|iPhone|iPod/.test(userAgent);
-    const isAndroid = /Android/.test(userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
-
-    console.log("[OQtima] Device info:", {
-      isMobile,
-      isIOS,
-      isAndroid,
-      isSafari,
-      userAgent: userAgent.substring(0, 100), // Truncated for readability
-    });
-
-    // Check if we should use RTL layout
-    const isRTL = ["ar"].includes(language);
-
-    // Choose the appropriate popup mode
-    if (isRTL) {
-      // Use RTL fullscreen popup for RTL languages
-      createRtlFullscreenPopup(
-        language,
-        referralType,
-        referralValue,
-        originalBodyClasses,
-        originalHtmlClasses,
-        originalBodyStyle,
-        originalHtmlStyle,
-        originalBodyOverflow,
-        originalHtmlOverflow,
-        originalScrollPos
-      );
-    } else if (isMobile) {
-      // Use mobile optimized popup for mobile devices
-      createMobilePopup(
-        language,
-        referralType,
-        referralValue,
-        originalBodyClasses,
-        originalHtmlClasses,
-        originalBodyStyle,
-        originalHtmlStyle,
-        originalBodyOverflow,
-        originalHtmlOverflow,
-        originalScrollPos
-      );
-    } else {
-      // Use standard popup for desktop
-      createStandardPopup(
-        language,
-        referralType,
-        referralValue,
-        originalBodyClasses,
-        originalHtmlClasses,
-        originalBodyStyle,
-        originalHtmlStyle,
-        originalBodyOverflow,
-        originalHtmlOverflow,
-        originalScrollPos
+      if (countryCodeMeta) {
+        countryCode = countryCodeMeta.getAttribute("content");
+      }
+    } catch (e) {
+      console.warn(
+        "[OQtima] Error extracting client information from meta tags:",
+        e
       );
     }
 
-    // Set up global message handlers for cross-window communication
-    setupMessageHandlers();
+    // Check if RTL language
+    const isRTL = lang === "ar";
+
+    // Use special mobile handling for small screens
+    if (window.innerWidth <= 767) {
+      createMobilePopup(
+        lang,
+        referralType,
+        referralValue,
+        originalBodyClasses,
+        originalHtmlClasses,
+        originalBodyStyle,
+        originalHtmlStyle,
+        originalBodyOverflow,
+        originalHtmlOverflow,
+        originalScrollPos,
+        ipAddress,
+        countryName,
+        countryCode
+      );
+      return;
+    }
+
+    // Create popup based on RTL status for desktop
+    if (isRTL) {
+      createRtlFullscreenPopup(
+        lang,
+        referralType,
+        referralValue,
+        originalBodyClasses,
+        originalHtmlClasses,
+        originalBodyStyle,
+        originalHtmlStyle,
+        originalBodyOverflow,
+        originalHtmlOverflow,
+        originalScrollPos,
+        ipAddress,
+        countryName,
+        countryCode
+      );
+    } else {
+      createStandardPopup(
+        lang,
+        referralType,
+        referralValue,
+        originalBodyClasses,
+        originalHtmlClasses,
+        originalBodyStyle,
+        originalHtmlStyle,
+        originalBodyOverflow,
+        originalHtmlOverflow,
+        originalScrollPos,
+        ipAddress,
+        countryName,
+        countryCode
+      );
+    }
   }
 
   /**
@@ -766,7 +948,10 @@
     originalHtmlStyle,
     originalBodyOverflow,
     originalHtmlOverflow,
-    originalScrollPos
+    originalScrollPos,
+    ipAddress,
+    countryName,
+    countryCode
   ) {
     // Detect mobile
     const isMobile = window.innerWidth <= 768;
@@ -1011,6 +1196,10 @@
             referral_type: referralType,
             referral_value: referralValue,
             language: language,
+            // ADDED: Include IP and country information if available
+            ip_address: ipAddress,
+            country_name: countryName,
+            country_code: countryCode,
           },
           timestamp: Date.now(),
         };
@@ -1125,7 +1314,10 @@
     originalHtmlStyle,
     originalBodyOverflow,
     originalHtmlOverflow,
-    originalScrollPos
+    originalScrollPos,
+    ipAddress,
+    countryName,
+    countryCode
   ) {
     // Create modal container with RTL support
     const modalContainer = document.createElement("div");
@@ -1489,6 +1681,8 @@
     window.__OQTIMA_MESSAGE_HANDLER = function (event) {
       try {
         if (event.data && typeof event.data === "object") {
+          // MODIFIED: Improved message handling for redirects and policy links
+
           // Handle close popup messages
           if (
             event.data.type === "OQTIMA_CLOSE_POPUP" ||
@@ -1498,59 +1692,303 @@
             window.__OQTIMA_CLOSE_POPUP();
           }
 
-          // Handle registration success
+          // Handle registration success with improved redirection
           if (
             event.data.type === "OQTIMA_REGISTRATION_SUCCESS" ||
+            event.data.type === "REGISTRATION_SUCCESS" ||
             event.data.type === "registrationSuccess"
           ) {
-            if (event.data.redirectUrl) {
-              window.location.href = event.data.redirectUrl;
+            // Extract redirect URL with fallbacks for different message formats
+            const redirectUrl = event.data.redirectUrl || event.data.url || "";
+
+            if (redirectUrl) {
+              console.log(
+                "[OQtima] Registration successful. Redirecting to:",
+                redirectUrl
+              );
+
+              // Set a short timeout to allow any cleanup to happen first
+              setTimeout(function () {
+                try {
+                  // Navigate the main window to the redirect URL
+                  window.location.href = redirectUrl;
+                } catch (err) {
+                  console.error("[OQtima] Redirect error:", err);
+
+                  // Try an alternative approach if direct navigation fails
+                  try {
+                    window.top.location.href = redirectUrl;
+                  } catch (err2) {
+                    console.error(
+                      "[OQtima] Alternative redirect failed:",
+                      err2
+                    );
+                  }
+                }
+              }, 100);
             } else {
+              // If no redirect URL, just close the popup
               setTimeout(window.__OQTIMA_CLOSE_POPUP, 1000);
             }
           }
 
-          // Handle link clicks inside iframe
+          // Handle redirect message format
+          if (event.data.type === "REDIRECT_TO_URL") {
+            const redirectUrl = event.data.url || event.data.redirectUrl || "";
+
+            if (redirectUrl) {
+              console.log(
+                "[OQtima] Redirect request received. Redirecting to:",
+                redirectUrl
+              );
+
+              // Close popup and redirect
+              if (window.__OQTIMA_CLOSE_POPUP) {
+                window.__OQTIMA_CLOSE_POPUP();
+              }
+
+              setTimeout(function () {
+                window.location.href = redirectUrl;
+              }, 100);
+            }
+          }
+
+          // Handle link clicks inside iframe (specifically for policy links)
           if (event.data.type === "OQTIMA_OPEN_LINK") {
             try {
               const url = event.data.url || "";
+              // Remove the unused variable
+              const isPolicyLink = event.data.isPolicyLink === true;
+              const timestamp = event.data.timestamp || Date.now();
+              const policyType = event.data.policyType || "policy";
+              // Get the source of the message (the iframe)
+              const sourceIframe = Array.from(
+                document.querySelectorAll("iframe")
+              ).find((iframe) => iframe.contentWindow === event.source);
 
-              // Always allow policy and legal links regardless of domain
-              const isPolicyLink =
-                /privacy|cookie|policy|terms|legal|disclaimer|gdpr|oqtima\.com/i.test(
-                  url
-                );
+              if (url) {
+                // Determine if this is a policy link that should be allowed
+                // Always allow policy and legal links regardless of domain
+                const isPolicyOrLegalLink =
+                  isPolicyLink ||
+                  /privacy|cookie|policy|terms|legal|disclaimer|gdpr|oqtima\.com/i.test(
+                    url
+                  );
 
-              if (isPolicyLink) {
-                // Prevent multiple tabs by focusing on new tab
-                const newWindow = window.open(url, "_blank");
-                if (newWindow) {
-                  newWindow.focus();
+                if (isPolicyOrLegalLink) {
+                  console.log("[OQtima] Opening policy link in new tab:", url);
+                  let linkOpened = false;
+
+                  // ENHANCED: Create a visual feedback popup for policy links
+                  const createLinkFeedback = () => {
+                    // Create a small popup for user to manually open the link
+                    const feedbackPopup = document.createElement("div");
+                    feedbackPopup.id = "oqtima-policy-popup";
+                    feedbackPopup.innerHTML = `
+                      <div style="position: fixed; top: 20px; right: 20px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.2); 
+                                  border-radius: 5px; padding: 15px; z-index: 2147483647; max-width: 320px; font-family: -apple-system, 
+                                  BlinkMacSystemFont, sans-serif; font-size: 14px; line-height: 1.4; text-align: left;">
+                        <div style="margin-bottom: 10px; color: #333; font-weight: bold;">
+                          Policy Link Blocked
+                        </div>
+                        <div style="margin-bottom: 15px; color: #555;">
+                          Your browser blocked the automatic opening of the ${policyType} policy. Click the button below to view it.
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                          <a id="oqtima-manual-open" href="${url}" target="_blank" rel="noopener noreferrer"
+                             style="background: #ff4400; color: white; text-decoration: none; padding: 8px 15px; 
+                                    border-radius: 4px; font-weight: 500; display: inline-block; cursor: pointer;">
+                            Open ${
+                              policyType.charAt(0).toUpperCase() +
+                              policyType.slice(1)
+                            } Policy
+                          </a>
+                          <button id="oqtima-close-feedback" type="button"
+                                  style="background: #eee; border: none; padding: 8px 15px; margin-left: 8px;
+                                         border-radius: 4px; cursor: pointer; color: #333;">
+                            Close
+                          </button>
+                        </div>
+                      </div>
+                    `;
+                    document.body.appendChild(feedbackPopup);
+
+                    // Set up event listeners
+                    document
+                      .getElementById("oqtima-manual-open")
+                      .addEventListener("click", function (e) {
+                        linkOpened = true;
+                        if (event.source && event.source.postMessage) {
+                          event.source.postMessage(
+                            {
+                              type: "OQTIMA_LINK_OPENED",
+                              url: url,
+                              success: true,
+                              timestamp: timestamp,
+                              method: "manual",
+                            },
+                            "*"
+                          );
+                        }
+                        // Remove the popup after a short delay
+                        setTimeout(() => {
+                          if (feedbackPopup.parentNode) {
+                            feedbackPopup.parentNode.removeChild(feedbackPopup);
+                          }
+                        }, 500);
+                      });
+
+                    document
+                      .getElementById("oqtima-close-feedback")
+                      .addEventListener("click", function () {
+                        if (feedbackPopup.parentNode) {
+                          feedbackPopup.parentNode.removeChild(feedbackPopup);
+                        }
+                      });
+
+                    // Auto-remove after 15 seconds
+                    setTimeout(() => {
+                      if (feedbackPopup.parentNode) {
+                        feedbackPopup.parentNode.removeChild(feedbackPopup);
+                      }
+                    }, 15000);
+
+                    return feedbackPopup;
+                  };
+
+                  // Try multiple approaches sequentially
+
+                  // APPROACH 1: Standard window.open
+                  const newWindow = window.open(url, "_blank");
+                  if (newWindow) {
+                    try {
+                      newWindow.focus();
+                      linkOpened = true;
+                    } catch (focusErr) {
+                      console.warn(
+                        "[OQtima] Error focusing policy window:",
+                        focusErr
+                      );
+                    }
+                  }
+
+                  // APPROACH 2: If window.open fails, try DOM-based approach
+                  if (!linkOpened) {
+                    console.warn(
+                      "[OQtima] Standard window.open blocked, trying DOM method"
+                    );
+
+                    // Create an invisible anchor element and click it
+                    const fallbackLink = document.createElement("a");
+                    fallbackLink.href = url;
+                    fallbackLink.target = "_blank";
+                    fallbackLink.rel = "noopener noreferrer";
+                    fallbackLink.style.cssText =
+                      "position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px;";
+                    document.body.appendChild(fallbackLink);
+
+                    // Synthetic click event is more likely to work across browsers
+                    const clickEvent = new MouseEvent("click", {
+                      view: window,
+                      bubbles: true,
+                      cancelable: true,
+                      buttons: 1,
+                    });
+
+                    fallbackLink.dispatchEvent(clickEvent);
+                    linkOpened = true;
+
+                    // Clean up
+                    setTimeout(() => {
+                      if (document.body.contains(fallbackLink)) {
+                        document.body.removeChild(fallbackLink);
+                      }
+                    }, 100);
+                  }
+
+                  // APPROACH 3: If both methods fail, show a manual link popup
+                  if (!linkOpened || !newWindow) {
+                    console.warn(
+                      "[OQtima] All automatic methods blocked, showing manual link popup"
+                    );
+                    createLinkFeedback();
+                  }
+
+                  // Always send confirmation back to iframe
+                  try {
+                    if (event.source && event.source.postMessage) {
+                      event.source.postMessage(
+                        {
+                          type: "OQTIMA_LINK_OPENED",
+                          url: url,
+                          success: linkOpened,
+                          timestamp: timestamp,
+                          method: linkOpened
+                            ? newWindow
+                              ? "window.open"
+                              : "dom"
+                            : "manual",
+                        },
+                        "*"
+                      );
+                      console.log(
+                        "[OQtima] Sent link opened confirmation to iframe"
+                      );
+                    }
+                  } catch (msgError) {
+                    console.warn(
+                      "[OQtima] Error sending confirmation:",
+                      msgError
+                    );
+                  }
+
+                  // Prevent event from propagating if we handled it
+                  if (linkOpened) {
+                    if (event.stopPropagation) {
+                      event.stopPropagation();
+                    }
+                    if (event.preventDefault) {
+                      event.preventDefault();
+                    }
+                  }
                 } else {
-                  console.warn("Browser blocked popup, using fallback method");
-
-                  // Fallback method if popup is blocked
-                  const fallbackLink = document.createElement("a");
-                  fallbackLink.href = url;
-                  fallbackLink.target = "_blank";
-                  fallbackLink.rel = "noopener noreferrer";
-                  fallbackLink.style.display = "none";
-                  document.body.appendChild(fallbackLink);
-                  fallbackLink.click();
-                  setTimeout(() => {
-                    document.body.removeChild(fallbackLink);
-                  }, 100);
+                  console.warn(
+                    "[OQtima] Non-policy link request was ignored for security reasons:",
+                    url
+                  );
                 }
-              } else {
-                console.warn("Blocked potentially unsafe link:", url);
               }
             } catch (e) {
-              // Error opening link
+              console.error("[OQtima] Error handling link open request:", e);
+            }
+          }
+        }
+
+        // Handle string-based redirect message (fallback format)
+        if (typeof event.data === "string") {
+          // Handle redirect string format
+          if (event.data.startsWith("redirect:")) {
+            const redirectUrl = event.data.substring(9);
+            if (redirectUrl) {
+              console.log(
+                "[OQtima] String redirect request received. Redirecting to:",
+                redirectUrl
+              );
+
+              // Close popup if possible
+              if (window.__OQTIMA_CLOSE_POPUP) {
+                window.__OQTIMA_CLOSE_POPUP();
+              }
+
+              // Redirect the parent window
+              setTimeout(function () {
+                window.location.href = redirectUrl;
+              }, 100);
             }
           }
         }
       } catch (error) {
-        // Error handling message
+        console.error("[OQtima] Error in message handler:", error);
       }
     };
 
@@ -1577,52 +2015,117 @@
       .replace(/[^a-z]/g, "");
 
     // Check if RTL language
-    const isRTL = ["ar"].includes(normalizedLanguage);
+    const isRTL = normalizedLanguage === "ar";
 
-    // Base URL construction
-    const baseUrl = apiUrl;
-    const baseParams = `langParam=${normalizedLanguage}&isPopup=true&isMobile=${
-      isMobile ? "true" : "false"
-    }&isRTL=${isRTL ? "true" : "false"}`;
+    // Get the baseUrl from the script source
+    let baseUrl;
 
-    // Log the base parameters
-    console.log("[OQtima] Base iframe parameters:", baseParams);
+    // First try to get the server URL from the current script
+    try {
+      const scripts = document.getElementsByTagName("script");
+      // Look for both minified and non-minified versions of the script
+      const scriptPatterns = [
+        "registration-popup-script.js",
+        "registration-popup-script.min.js",
+      ];
 
-    // Prepare multiple formats of referral parameters for maximum compatibility
-    let referralParams = "";
-
-    // Only add referral parameters if both type and value are present
-    if (referralType && referralValue) {
-      // Add standard underscore format
-      referralParams += `&referral_type=${encodeURIComponent(
-        referralType
-      )}&referral_value=${encodeURIComponent(referralValue)}`;
-
-      // Add camelCase format
-      referralParams += `&referralType=${encodeURIComponent(
-        referralType
-      )}&referralValue=${encodeURIComponent(referralValue)}`;
-
-      // Add hyphenated format
-      referralParams += `&referral-type=${encodeURIComponent(
-        referralType
-      )}&referral-value=${encodeURIComponent(referralValue)}`;
-
-      console.log("[OQtima] Added referral parameters:", {
-        type: referralType,
-        value: referralValue,
-        params: referralParams,
+      const registrationScript = Array.from(scripts).find((script) => {
+        const src = script.src || "";
+        return scriptPatterns.some((pattern) => src.includes(pattern));
       });
-    } else {
-      console.log("[OQtima] No referral parameters to add");
+
+      if (registrationScript && registrationScript.src) {
+        // Extract the origin from the script src
+        const scriptUrl = new URL(registrationScript.src);
+        baseUrl = scriptUrl.origin;
+        console.log("[OQtima] Using script server for iframe:", baseUrl);
+      } else {
+        // If script not found, use the value from getApiUrlFromHostname()
+        baseUrl = apiUrl.replace(/\/+$/, ""); // Remove trailing slash
+        console.log("[OQtima] Using API URL for iframe:", baseUrl);
+      }
+    } catch (e) {
+      console.warn("[OQtima] Error determining base URL from script:", e);
+      // Fallback to apiUrl which already has the same detection logic
+      baseUrl = apiUrl.replace(/\/+$/, ""); // Remove trailing slash
     }
 
-    // Construct the full URL
-    const fullUrl = `${baseUrl}?${baseParams}${referralParams}`;
+    // Make sure baseUrl doesn't end with a slash
+    baseUrl = baseUrl.replace(/\/+$/, "");
 
-    console.log("[OQtima] Constructed iframe URL:", fullUrl);
+    // Preserve the original URL path structure as requested
+    let urlPath =
+      normalizedLanguage !== "en"
+        ? `/${normalizedLanguage}/popup-registration`
+        : "/popup-registration";
 
-    return fullUrl;
+    // Base parameters for all versions
+    const params = new URLSearchParams({
+      popup: "true",
+      clean: "true",
+      hideHeader: "true",
+      hideFooter: "true",
+      embedded: "true",
+      standalone: "true",
+      formOnly: "true",
+      minimal: "true",
+      hideNav: "true",
+      hideExtras: "true",
+      cleanLayout: "true",
+      allowScroll: "true",
+      linkHelper: "true",
+      // Add timestamp to prevent caching
+      _t: Date.now(),
+    });
+
+    // CRITICAL: Add language parameters with high priority
+    params.append("oqtima_lang_locked", normalizedLanguage); // Lock language
+    params.append("oqtima_lang", normalizedLanguage);
+    params.append("language", normalizedLanguage);
+    params.append("lang", normalizedLanguage);
+    params.append("locale", normalizedLanguage);
+    params.append("langParam", normalizedLanguage);
+    params.append("selectedLanguage", normalizedLanguage);
+    params.append("i18nextLng", normalizedLanguage);
+    params.append("forceLang", "true");
+    params.append("forceLanguage", "true");
+
+    // Add RTL parameters if needed
+    if (isRTL) {
+      params.append("isRtl", "true");
+      params.append("forceRtl", "true");
+      params.append("direction", "rtl");
+      params.append("dir", "rtl");
+      params.append("textDirection", "rtl");
+      params.append("oqtima_rtl", "true");
+      params.append("layout", "rtl");
+      params.append("uiMode", "rtl");
+    }
+
+    // Add mobile-specific parameters
+    if (isMobile) {
+      params.append("isMobile", "true");
+      params.append("mobileView", "true");
+      params.append("mobileScroll", "true");
+    }
+
+    // Add referral parameters if provided - using all possible variations
+    if (referralType && referralValue) {
+      // Primary format that the form component expects
+      params.set("referral_type", referralType);
+      params.set("referral_value", referralValue);
+
+      // Alternative formats for compatibility
+      params.set("referralType", referralType);
+      params.set("referralValue", referralValue);
+      params.set("referral-type", referralType);
+      params.set("referral-value", referralValue);
+    }
+
+    // Construct the URL path
+    let finalUrl = `${baseUrl}${urlPath}?${params.toString()}#registration-form`;
+
+    return finalUrl;
   }
 
   // Function to inject link handler script into iframe
@@ -1640,8 +2143,67 @@
             (function() {
               // Function to handle links
               function handleLinks() {
+                // Create a loading indicator for link clicks
+                function createLinkLoadingIndicator(link) {
+                  const originalText = link.innerHTML;
+                  const originalColor = getComputedStyle(link).color;
+                  
+                  // Add loading state
+                  link.style.position = 'relative';
+                  link.innerHTML = originalText + '<span class="link-loading-dot">...</span>';
+                  link.style.pointerEvents = 'none';
+                  link.style.opacity = '0.7';
+                  
+                  // Create inline style for animation
+                  const style = document.createElement('style');
+                  style.innerHTML = \`
+                    @keyframes linkLoadingPulse {
+                      0% { opacity: 0.2; }
+                      50% { opacity: 1; }
+                      100% { opacity: 0.2; }
+                    }
+                    .link-loading-dot {
+                      animation: linkLoadingPulse 1.5s infinite;
+                      margin-left: 2px;
+                    }
+                  \`;
+                  document.head.appendChild(style);
+                  
+                  // Return cleanup function
+                  return function cleanupLinkLoading() {
+                    link.innerHTML = originalText;
+                    link.style.pointerEvents = '';
+                    link.style.opacity = '';
+                    if (style.parentNode) style.parentNode.removeChild(style);
+                  };
+                }
+                
+                // More comprehensive policy link detection
+                function isPolicyLink(href, element) {
+                  // Check URL pattern
+                  const urlPattern = /(privacy|cookie|terms|policy|legal|disclaimer|gdpr)/i;
+                  if (urlPattern.test(href)) return true;
+                  
+                  // Check element attributes
+                  if (element.getAttribute('data-policy-type')) return true;
+                  if (element.classList.contains('link') && 
+                      element.closest('.popup-registration__consent')) return true;
+                  
+                  // Check element text content
+                  const textContent = element.textContent.toLowerCase();
+                  return /privacy|cookie|policy|terms|gdpr/.test(textContent);
+                }
+                
+                // Track link opening status
+                let isAwaitingLinkResponse = false;
+                let currentLinkCleanup = null;
+                let linkResponseTimeout = null;
+                
                 // Create a more robust link handling mechanism
                 document.addEventListener('click', function(e) {
+                  // Don't process a new link if we're still waiting for a response
+                  if (isAwaitingLinkResponse) return;
+                  
                   // Find if the clicked element is a link or inside a link
                   let target = e.target;
                   let link = null;
@@ -1659,9 +2221,8 @@
                   if (link && link.href) {
                     // Detect policy links - broader pattern matching
                     const href = link.href;
-                    const isPolicy = /(privacy|cookie|terms|policy|legal|disclaimer|gdpr)/i.test(href);
                     
-                    if (isPolicy) {
+                    if (isPolicyLink(href, link)) {
                       // Prevent default behavior
                       e.preventDefault();
                       e.stopPropagation();
@@ -1670,12 +2231,18 @@
                       const now = Date.now();
                       const lastClick = parseInt(link.getAttribute('data-last-click') || '0');
                       
-                      if (now - lastClick < 1000) {
+                      if (now - lastClick < 1000 || isAwaitingLinkResponse) {
                         return false;
                       }
                       
-                      // Mark as clicked
+                      // Mark as clicked and set loading state
                       link.setAttribute('data-last-click', now);
+                      isAwaitingLinkResponse = true;
+                      currentLinkCleanup = createLinkLoadingIndicator(link);
+                      
+                      // Determine policy type for better user feedback
+                      const policyType = href.toLowerCase().includes('privacy') ? 'privacy' : 
+                                        href.toLowerCase().includes('cookie') ? 'cookie' : 'policy';
                       
                       // Try multiple methods to open the link
                       
@@ -1684,48 +2251,108 @@
                         window.parent.postMessage({
                           type: 'OQTIMA_OPEN_LINK',
                           url: href,
+                          isPolicyLink: true,
+                          policyType: policyType,
                           timestamp: now
                         }, '*');
+                        
+                        // Set a response timeout
+                        linkResponseTimeout = setTimeout(function() {
+                          // If no response from parent after 1.5 seconds, clean up and show fallback
+                          if (isAwaitingLinkResponse) {
+                            isAwaitingLinkResponse = false;
+                            if (currentLinkCleanup) {
+                              currentLinkCleanup();
+                              currentLinkCleanup = null;
+                            }
+                            
+                            // Show a prompt to user that they can click again
+                            link.innerHTML += ' <span style="color: #ff4400; font-size: 0.9em;">(try again)</span>';
+                            
+                            setTimeout(() => {
+                              // Remove the "try again" text after 5 seconds
+                              link.innerHTML = link.innerHTML.replace(' <span style="color: #ff4400; font-size: 0.9em;">(try again)</span>', '');
+                            }, 5000);
+                          }
+                        }, 1500);
+                        
                       } catch (err) {
-                        // Error sending message to parent
-                      }
-                      
-                      // Method 2: Direct open in new tab (fallback)
-                      setTimeout(function() {
+                        // Error sending message to parent - clean up immediately
+                        isAwaitingLinkResponse = false;
+                        if (currentLinkCleanup) {
+                          currentLinkCleanup();
+                          currentLinkCleanup = null;
+                        }
+                        clearTimeout(linkResponseTimeout);
+                        
+                        // Method 2: Direct open in new tab as fallback
                         try {
                           window.open(href, '_blank');
-                        } catch (err) {
-                          // Error opening link with fallback
+                        } catch (err2) {
+                          // Both methods failed, just restore the link
+                          link.innerHTML += ' <span style="color: #ff4400; font-size: 0.9em;">(click again)</span>';
+                          
+                          setTimeout(() => {
+                            // Remove the "click again" text after 5 seconds
+                            link.innerHTML = link.innerHTML.replace(' <span style="color: #ff4400; font-size: 0.9em;">(click again)</span>', '');
+                          }, 5000);
                         }
-                      }, 100);
-                      
-                      // Method 3: Update parent window location directly (last resort)
-                      setTimeout(function() {
-                        try {
-                          if (window.parent && window.parent !== window) {
-                            const policyWindow = window.parent.open(href, '_blank');
-                            if (policyWindow) policyWindow.focus();
-                          }
-                        } catch (err) {
-                          // Error with last resort method
-                        }
-                      }, 200);
+                      }
                       
                       return false;
+                    }
+                  }
+                }, true);
+                
+                // Listen for messages from parent about link opening
+                window.addEventListener('message', function(event) {
+                  if (event.data && event.data.type === 'OQTIMA_LINK_OPENED') {
+                    // Clear the timeout 
+                    clearTimeout(linkResponseTimeout);
+                    
+                    // Reset the awaiting state
+                    isAwaitingLinkResponse = false;
+                    
+                    // Clear any loading indicators
+                    if (currentLinkCleanup) {
+                      currentLinkCleanup();
+                      currentLinkCleanup = null;
                     }
                   }
                 });
                 
                 // Add styling to make policy links more visible and clickable
                 const style = document.createElement('style');
-                style.innerHTML = '.popup-registration__consent .link { color: #ff4400; text-decoration: underline; cursor: pointer; margin: 0 4px; } .popup-registration__consent .link:hover { color: #cc3600; }';
+                style.innerHTML = \`
+                  .popup-registration__consent .link { 
+                    color: #ff4400 !important; 
+                    text-decoration: underline !important; 
+                    cursor: pointer !important; 
+                    margin: 0 4px !important;
+                    user-select: none !important;
+                    position: relative !important;
+                    display: inline-block !important;
+                    transition: all 0.2s !important;
+                  } 
+                  .popup-registration__consent .link:hover { 
+                    color: #cc3600 !important; 
+                    text-decoration: underline !important;
+                  }
+                  .popup-registration__consent .link:active { 
+                    transform: scale(0.98) !important;
+                  }
+                \`;
                 document.head.appendChild(style);
               }
+              
+              // Initialize the link handler
+              handleLinks();
             })();
           `;
         document.head.appendChild(script);
       } catch (error) {
         // Error injecting script
+        console.warn("Failed to inject link handler script:", error);
       }
     } catch (error) {
       // Error handling script injection
@@ -1743,7 +2370,10 @@
     originalHtmlStyle,
     originalBodyOverflow,
     originalHtmlOverflow,
-    originalScrollPos
+    originalScrollPos,
+    ipAddress,
+    countryName,
+    countryCode
   ) {
     // PENDEKATAN PALING RADIKAL UNTUK MOBILE SCROLLING
 
@@ -2218,95 +2848,39 @@
     return fullscreenContainer;
   }
 
-  // Create an initialization function that can be called multiple times
-  function tryInitialize() {
-    console.log("[OQtima] Attempting initialization");
-
-    // Check for containers
+  // Initialize when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      // Ensure the container exists before initializing
+      const containers = document.querySelectorAll("[data-oqtima-register]");
+      if (containers.length > 0) {
+        // Add loading state to all buttons
+        addLoadingStateToButtons(containers);
+        // Initialize registration process
+        initOqtimaRegistration();
+      } else {
+        console.warn("Registration container not found");
+      }
+    });
+  } else {
+    // Check if container exists before initializing
     const containers = document.querySelectorAll("[data-oqtima-register]");
-    console.log("[OQtima] Found containers:", containers.length);
-
     if (containers.length > 0) {
       // Add loading state to all buttons
       addLoadingStateToButtons(containers);
       // Initialize registration process
       initOqtimaRegistration();
-
-      return true; // Success
     } else {
-      console.log("[OQtima] No containers found at this time");
-      return false; // No containers found
+      console.warn("Registration container not found");
     }
-  }
-
-  // Retry initialization a few times
-  function scheduleInitializationRetries() {
-    console.log("[OQtima] Setting up initialization retries");
-
-    // Try immediately
-    const initialSuccess = tryInitialize();
-
-    if (!initialSuccess) {
-      // Try again after short delays
-      const retryTimes = [500, 1000, 2000, 3000];
-
-      retryTimes.forEach((delay, index) => {
-        setTimeout(() => {
-          console.log(`[OQtima] Retry attempt ${index + 1}`);
-
-          const success = tryInitialize();
-
-          // If still no success on final attempt, create containers automatically
-          if (!success && index === retryTimes.length - 1) {
-            console.log(
-              "[OQtima] No containers found after retries. Creating containers..."
-            );
-
-            // Create container
-            const newContainer = document.createElement("div");
-            newContainer.setAttribute("data-oqtima-register", "");
-            newContainer.setAttribute("data-text", "OPEN FREE ACCOUNT");
-            newContainer.setAttribute("data-lang", "en");
-
-            // Add to body
-            document.body.appendChild(newContainer);
-
-            // Initialize with new container
-            const containers = document.querySelectorAll(
-              "[data-oqtima-register]"
-            );
-            addLoadingStateToButtons(containers);
-            initOqtimaRegistration();
-          }
-        }, delay);
-      });
-    }
-  }
-
-  // Start the initialization
-  if (document.readyState === "loading") {
-    // If document is still loading, wait for it to be ready
-    document.addEventListener(
-      "DOMContentLoaded",
-      scheduleInitializationRetries
-    );
-  } else {
-    // If document is already loaded, run immediately
-    scheduleInitializationRetries();
   }
 
   /**
    * Add loading state to registration button containers
    */
   function addLoadingStateToButtons(containers) {
-    console.log(
-      "[OQtima] Creating buttons for",
-      containers.length,
-      "containers"
-    );
-
     // Create a default button text
-    const defaultButtonText = "OPEN FREE ACCOUNT";
+    const defaultButtonText = "GET STARTED";
 
     // Skip loading state and immediately create the buttons
     containers.forEach((container) => {
@@ -2317,9 +2891,9 @@
       const referralValue = container.getAttribute("data-referral-value");
 
       // Log the button creation
-      console.log("[OQtima] Creating registration button with text:", text);
+      console.log("[OQtima] Creating registration button with bypass mode");
 
-      // Create button element with enhanced styling and visibility
+      // Create button element with full styling
       container.innerHTML = `
         <button 
           type="button" 
@@ -2337,59 +2911,24 @@
             font-weight: 600 !important;
             cursor: pointer !important;
             position: relative !important;
-            z-index: 999999 !important;
+            z-index: 99999 !important;
             margin: 10px !important;
             pointer-events: auto !important;
             transition: all 0.3s ease-in-out !important;
             text-align: center !important;
             text-decoration: none !important;
             box-shadow: 0 4px 6px rgba(255, 68, 0, 0.1) !important;
-            min-width: 200px !important;
-            min-height: 30px !important;
-            overflow: visible !important;
-            outline: none !important;
-            transform: none !important;
-            animation: oqtimaButtonPulse 2s infinite !important;
           "
         >${text}</button>
       `;
 
-      // Add pulse animation style
-      if (!document.getElementById("oqtima-button-animation")) {
-        const styleEl = document.createElement("style");
-        styleEl.id = "oqtima-button-animation";
-        styleEl.innerHTML = `
-          @keyframes oqtimaButtonPulse {
-            0% { transform: scale(1); box-shadow: 0 4px 6px rgba(255, 68, 0, 0.1); }
-            50% { transform: scale(1.05); box-shadow: 0 8px 15px rgba(255, 68, 0, 0.2); }
-            100% { transform: scale(1); box-shadow: 0 4px 6px rgba(255, 68, 0, 0.1); }
-          }
-        `;
-        document.head.appendChild(styleEl);
-      }
-
       // Add click event listener
       const button = container.querySelector(".oqtima-registration-button");
       if (button) {
-        // Make sure the button is visible
-        button.style.display = "inline-block !important";
-        button.style.visibility = "visible !important";
-        button.style.opacity = "1 !important";
-
         button.addEventListener("click", function (event) {
           event.preventDefault();
-          console.log("[OQtima] Button clicked with params:", {
-            lang,
-            referralType,
-            referralValue,
-          });
           openRegistrationPopup({ lang, referralType, referralValue });
         });
-
-        // Log successful button creation
-        console.log("[OQtima] Button created and event listener attached");
-      } else {
-        console.warn("[OQtima] Failed to find button after creation");
       }
     });
   }
