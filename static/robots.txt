@@ -1,7 +1,9 @@
 User-agent: *
 Disallow: /popup-registration
 Disallow: /scripts/registration-popup-script.js
+Disallow: /scripts/registration-popup-script.min.js
 
 User-agent: Googlebot
 Disallow: /popup-registration
 Disallow: /scripts/registration-popup-script.js
+Disallow: /scripts/registration-popup-script.min.js

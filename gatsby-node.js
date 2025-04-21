@@ -20,6 +20,3 @@ exports.onPostBuild = async ({ reporter }) => {
     reporter.error("Error copying registration script", err);
   }
 };
-
-// Your existing gatsby-node.js code below
-// ... existing code ...

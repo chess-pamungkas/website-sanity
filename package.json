@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "start": "gatsby develop",
-    "build": "gatsby build",
+    "build": "npm run copy:registration-script && gatsby build",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "split-locales": "node src/scripts/split-locales/index.js",

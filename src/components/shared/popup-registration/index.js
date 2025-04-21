@@ -18,7 +18,7 @@ const isLoadedFromExternalScript = () => {
   try {
     // Check if we're in an iframe
     const isInIframe = window !== window.top;
-    // Check if the script is loaded
+    // Check if the script is loaded (check both old and new naming conventions)
     const hasPopupScript = !!document.querySelector(
       'script[src*="registration-popup-script"]'
     );
@@ -33,6 +33,52 @@ const isLoadedFromExternalScript = () => {
     return true;
   }
 };
+
+// Initialize tab-specific language on page load
+if (typeof window !== "undefined") {
+  try {
+    // On page load, check if we have a saved language for this tab
+    const tabLanguage = sessionStorage.getItem("oqtima_tab_language");
+    const tabRtl = sessionStorage.getItem("oqtima_tab_rtl") === "true";
+
+    if (tabLanguage) {
+      // This overrides any localStorage setting to ensure consistent language in this tab
+      console.log(
+        `Tab-specific language found: ${tabLanguage}, RTL: ${tabRtl}`
+      );
+
+      // Set HTML attributes on initial page load
+      document.documentElement.setAttribute("lang", tabLanguage);
+      document.documentElement.setAttribute("dir", tabRtl ? "rtl" : "ltr");
+
+      // Update classes
+      if (tabRtl) {
+        document.documentElement.classList.add("rtl-active");
+        document.body.classList.add("rtl-active");
+      } else {
+        document.documentElement.classList.remove(
+          "rtl-active",
+          "rtl",
+          "is-rtl"
+        );
+        document.body.classList.remove("rtl-active", "rtl", "is-rtl");
+      }
+
+      // Set global vars
+      window.__OQTIMA_COMPONENT_LANGUAGE = tabLanguage;
+      window.__OQTIMA_LOCKED_LANG = tabLanguage;
+      window.__FORCE_RTL__ = tabRtl;
+      window.__ORIGINAL_RTL__ = tabRtl;
+
+      // Override i18next language if needed
+      if (localStorage.getItem("i18nextLng") !== tabLanguage) {
+        localStorage.setItem("i18nextLng", tabLanguage);
+      }
+    }
+  } catch (e) {
+    console.warn("Could not initialize tab-specific language:", e);
+  }
+}
 
 const benefitsConfig = [
   { label: "popup-registration-benefits-pips", entities: ["CYSEC", "FSA"] },
@@ -101,9 +147,138 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     }
   });
 
+  // Clear any existing RTL settings on initial mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Generate unique session ID for this tab to avoid cross-tab contamination
+    if (!window.__OQTIMA_SESSION_ID__) {
+      window.__OQTIMA_SESSION_ID__ =
+        Date.now().toString(36) + Math.random().toString(36).substr(2);
+      console.log("New session initialized:", window.__OQTIMA_SESSION_ID__);
+    }
+
+    // Create a clean slate for language settings
+    const cleanLanguageState = () => {
+      // Remove RTL styles
+      const rtlStyles = document.getElementById(
+        "popup-registration-rtl-styles"
+      );
+      if (rtlStyles) rtlStyles.remove();
+
+      // Reset document attributes
+      const htmlLang = document.documentElement.getAttribute("lang") || "";
+      const htmlDir = document.documentElement.getAttribute("dir") || "";
+
+      console.log("Initial state - html lang:", htmlLang, "dir:", htmlDir);
+
+      // Only reset if we're not supposed to be in RTL mode
+      if (!params?.dataLang || params.dataLang !== "ar") {
+        // Remove RTL classes
+        document.documentElement.classList.remove(
+          "rtl-active",
+          "rtl",
+          "is-rtl"
+        );
+        document.body.classList.remove("rtl-active", "rtl", "is-rtl");
+
+        // Force LTR for non-Arabic language
+        if (htmlDir === "rtl" && (!htmlLang || htmlLang !== "ar")) {
+          document.documentElement.setAttribute("dir", "ltr");
+          document.body.setAttribute("dir", "ltr");
+          console.log("Force reset RTL to LTR on initial load");
+        }
+      }
+
+      // Use sessionStorage instead of localStorage to avoid cross-tab contamination
+      try {
+        // Store language state in session storage (per tab)
+        const desiredLang =
+          params?.langParam || params?.language || params?.dataLang || "en";
+        sessionStorage.setItem("oqtima_tab_language", desiredLang);
+        console.log("Tab language set to:", desiredLang);
+
+        // Override any localStorage settings with the sessionStorage value
+        if (window.gatsby_i18next_language) {
+          window.gatsby_i18next_language = desiredLang;
+        }
+      } catch (e) {
+        console.warn("Error setting session storage:", e);
+      }
+    };
+
+    // Run cleanup immediately
+    cleanLanguageState();
+
+    // Listen for storage events from other tabs (defensive measure)
+    const handleStorageEvent = (event) => {
+      if (
+        event.key === "i18nextLng" ||
+        event.key === "gatsby-i18next-language"
+      ) {
+        // Don't let other tabs affect our language
+        try {
+          const tabLang = sessionStorage.getItem("oqtima_tab_language");
+          if (tabLang) {
+            localStorage.setItem("i18nextLng", tabLang);
+            console.log(
+              "Prevented cross-tab language contamination, restored:",
+              tabLang
+            );
+          }
+        } catch (e) {
+          console.warn("Error in storage event handler:", e);
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorageEvent);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageEvent);
+    };
+  }, [params]);
+
+  // Log initial params for debugging
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      console.log("Current window location:", window.location.pathname);
+      console.log("Current window search:", window.location.search);
+
+      // Debug existing language settings
+      console.log("Current language settings:");
+      console.log(
+        "- document.documentElement.lang:",
+        document.documentElement.lang
+      );
+      console.log(
+        "- document.documentElement.dir:",
+        document.documentElement.dir
+      );
+
+      if (window.localStorage) {
+        console.log(
+          "- localStorage i18nextLng:",
+          localStorage.getItem("i18nextLng")
+        );
+      }
+
+      if (window.gatsby_i18next_language) {
+        console.log(
+          "- gatsby_i18next_language:",
+          window.gatsby_i18next_language
+        );
+      }
+
+      console.log("Parameters passed to component:", params);
+      console.log("Parsed parameters:", parsedParams);
+    }
+  }, []);
+
   // Update parsed params when the input params change
   useEffect(() => {
     try {
+      console.log("params", params);
       if (typeof params === "string") {
         const newParams = JSON.parse(params);
         setParsedParams((prevParams) => ({
@@ -127,15 +302,168 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     }
   }, [params]);
 
-  // Log current params for debugging
-  // useEffect(() => {
-  //   console.group("PopupRegistration Params");
-  // }, [params, parsedParams]);
-
   // Lock the language and RTL state immediately
   const forcedLanguage = parsedParams?.langParam;
-  const forcedRTL = forcedLanguage && RTL_LANGUAGES.includes(forcedLanguage);
+
+  // FIXED: Reset any global language variables that might be causing issues
+  useEffect(() => {
+    if (typeof window !== "undefined" && forcedLanguage) {
+      // Clear any overriding language settings
+      if (window.__OQTIMA_COMPONENT_LANGUAGE !== forcedLanguage) {
+        window.__OQTIMA_COMPONENT_LANGUAGE = forcedLanguage;
+      }
+
+      if (window.__OQTIMA_LOCKED_LANG !== forcedLanguage) {
+        window.__OQTIMA_LOCKED_LANG = forcedLanguage;
+      }
+
+      // Try to clear Gatsby i18next language if not matching
+      if (
+        window.gatsby_i18next_language &&
+        window.gatsby_i18next_language !== forcedLanguage
+      ) {
+        try {
+          window.gatsby_i18next_language = forcedLanguage;
+        } catch (e) {
+          console.warn("Could not update gatsby_i18next_language");
+        }
+      }
+
+      // Override i18next language storage if needed
+      try {
+        if (localStorage.getItem("i18nextLng") !== forcedLanguage) {
+          localStorage.setItem("i18nextLng", forcedLanguage);
+        }
+      } catch (e) {
+        console.warn("Could not update localStorage i18nextLng");
+      }
+
+      console.log("Language forced to:", forcedLanguage);
+    }
+  }, [forcedLanguage]);
+
+  // Enhanced RTL detection - only use Arabic language to trigger RTL
+  // FIXED: Make the RTL detection more specific and explicit
+  let forcedRTL = false;
+
+  // Check if auto RTL detection is specifically disabled
+  if (typeof window !== "undefined" && window.__OQTIMA_DISABLE_AUTO_RTL__) {
+    console.log(
+      "RTL detection explicitly disabled by __OQTIMA_DISABLE_AUTO_RTL__"
+    );
+    forcedRTL = false;
+  }
+  // Only set forcedRTL if language is explicitly set to an RTL language
+  else if (
+    forcedLanguage &&
+    RTL_LANGUAGES.includes(forcedLanguage.toLowerCase())
+  ) {
+    forcedRTL = true;
+    console.log(`RTL mode enabled from forcedLanguage: ${forcedLanguage}`);
+  }
+  // Check data-lang attribute but ONLY if forcedLanguage is not set
+  else if (
+    !forcedLanguage &&
+    parsedParams?.dataLang &&
+    RTL_LANGUAGES.includes(parsedParams.dataLang.toLowerCase())
+  ) {
+    // CRITICAL FIX: Only enable RTL for data-lang="ar" if we don't have an explicit non-RTL language
+    if (
+      !(
+        parsedParams.language &&
+        !RTL_LANGUAGES.includes(parsedParams.language.toLowerCase())
+      )
+    ) {
+      forcedRTL = true;
+      console.log(`RTL mode enabled from data-lang: ${parsedParams.dataLang}`);
+    } else {
+      console.log(
+        `RTL mode disabled because explicit language overrides data-lang`
+      );
+    }
+  }
+  // URL path check only if no other language indicators exist
+  else if (
+    !forcedLanguage &&
+    !parsedParams?.dataLang &&
+    typeof window !== "undefined"
+  ) {
+    const pathParts = window.location.pathname.split("/").filter(Boolean);
+    if (pathParts.includes("ar")) {
+      forcedRTL = true;
+      console.log("RTL mode enabled from URL path: /ar/");
+    } else {
+      // IMPORTANT: Explicitly disable RTL for non-Arabic paths
+      forcedRTL = false;
+      console.log("RTL mode explicitly disabled for non-Arabic path");
+    }
+  }
+
+  // Override RTL detection if we have a direct conflict between HTML lang and RTL settings
+  if (typeof window !== "undefined") {
+    const htmlLang = document.documentElement.getAttribute("lang");
+    if (
+      htmlLang &&
+      !RTL_LANGUAGES.includes(htmlLang.toLowerCase()) &&
+      forcedRTL
+    ) {
+      console.log(
+        `Overriding RTL detection because HTML lang="${htmlLang}" is not an RTL language`
+      );
+      forcedRTL = false;
+    }
+  }
+
   const isRTLMode = forcedRTL || isRTL;
+
+  // Add effect to update RTL mode when forcedLanguage changes
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // First, clear any previous RTL settings
+    document.documentElement.classList.remove("rtl-active");
+    document.body.classList.remove("rtl-active");
+    const existingRtlStyle = document.getElementById(
+      "popup-registration-rtl-styles"
+    );
+    if (existingRtlStyle) existingRtlStyle.remove();
+
+    console.log("Updating RTL mode:", isRTLMode ? "RTL" : "LTR");
+
+    // Update global flags when language changes
+    window.__ORIGINAL_LANGUAGE__ = forcedLanguage || params?.langParam || "en";
+    window.__FORCE_RTL__ = isRTLMode;
+    window.__ORIGINAL_RTL__ = isRTLMode;
+
+    // Update document classes and attributes immediately
+    document.documentElement.setAttribute("dir", isRTLMode ? "rtl" : "ltr");
+    document.body.setAttribute("dir", isRTLMode ? "rtl" : "ltr");
+    document.documentElement.setAttribute(
+      "lang",
+      forcedLanguage || params?.langParam || (isRTLMode ? "ar" : "en")
+    );
+
+    if (isRTLMode) {
+      document.documentElement.classList.add("rtl-active");
+      document.body.classList.add("rtl-active");
+    } else {
+      // Remove all possible RTL classes
+      document.documentElement.classList.remove("rtl-active", "rtl", "is-rtl");
+      document.body.classList.remove("rtl-active", "rtl", "is-rtl");
+      // Remove data attributes related to RTL
+      document.documentElement.removeAttribute("data-rtl");
+      document.body.removeAttribute("data-rtl");
+    }
+
+    // Force UI update by triggering a reflow
+    const reflow = document.body.offsetHeight;
+
+    console.log(
+      `Language state updated - Language: ${
+        forcedLanguage || "default"
+      }, RTL mode: ${isRTLMode}`
+    );
+  }, [forcedLanguage, isRTLMode, params]);
 
   // Add loading state management
   const [isStylesLoaded, setIsStylesLoaded] = React.useState(false);
@@ -326,19 +654,19 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
 
   // RTL setup effect
   useEffect(() => {
-    if (
-      typeof window === "undefined" ||
-      !initialRenderRef.current ||
-      !isExternalLoad
-    )
-      return;
-    initialRenderRef.current = false;
+    if (typeof window === "undefined" || !isExternalLoad) return;
+
+    // Update RTL global flags
+    window.__FORCE_RTL__ = isRTLMode;
+    window.__ORIGINAL_RTL__ = isRTLMode;
 
     const setupRTL = async () => {
+      // Clean up previous RTL settings first
+      document.documentElement.setAttribute("dir", isRTLMode ? "rtl" : "ltr");
+      document.body.setAttribute("dir", isRTLMode ? "rtl" : "ltr");
+
       if (isRTLMode) {
-        // Set RTL attributes immediately
-        document.documentElement.setAttribute("dir", "rtl");
-        document.body.setAttribute("dir", "rtl");
+        // Add RTL classes
         document.documentElement.classList.add("rtl-active");
         document.body.classList.add("rtl-active");
 
@@ -347,64 +675,103 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
           const rtlStyle = document.createElement("style");
           rtlStyle.id = "popup-registration-rtl-styles";
           rtlStyle.innerHTML = `
-            .popup-registration--rtl {
+            /* Force RTL direction */
+            html[dir="rtl"], body[dir="rtl"] {
+              direction: rtl !important;
+            }
+            
+            /* RTL container layout */
+            .popup-registration--rtl,
+            [dir="rtl"] .popup-registration {
               direction: rtl !important;
               text-align: right !important;
             }
 
-            /* Base RTL Container */
-            .popup-registration--rtl .popup-registration__container {
+            /* Base RTL Container - multiple selectors for specificity */
+            .popup-registration--rtl .popup-registration__container,
+            [dir="rtl"] .popup-registration__container,
+            .popup-registration__container[dir="rtl"],
+            [dir="rtl"] .popup-registration .popup-registration__container {
+              flex-direction: row-reverse !important;
+            }
+
+            /* Direct style to ensure RTL layout */
+            .popup-registration__container[dir="rtl"] {
+              display: flex !important;
               flex-direction: row-reverse !important;
             }
 
             /* RTL form elements */
             .popup-registration--rtl input,
             .popup-registration--rtl select,
-            .popup-registration--rtl textarea {
+            .popup-registration--rtl textarea,
+            [dir="rtl"] .popup-registration input,
+            [dir="rtl"] .popup-registration select,
+            [dir="rtl"] .popup-registration textarea {
               direction: rtl !important;
               text-align: right !important;
               padding-right: 15px !important;
             }
 
             /* RTL form labels */
-            .popup-registration--rtl .popup-registration__label {
+            .popup-registration--rtl .popup-registration__label,
+            [dir="rtl"] .popup-registration .popup-registration__label {
               text-align: right !important;
               margin-right: 0 !important;
               margin-left: auto !important;
             }
 
             /* RTL dropdowns */
-            .popup-registration--rtl .custom-dropdown__selected {
+            .popup-registration--rtl .custom-dropdown__selected,
+            [dir="rtl"] .popup-registration .custom-dropdown__selected {
               text-align: right !important;
               padding-right: 15px !important;
             }
 
-            .popup-registration--rtl .custom-dropdown__arrow {
+            .popup-registration--rtl .custom-dropdown__arrow,
+            [dir="rtl"] .popup-registration .custom-dropdown__arrow {
               right: auto !important;
               left: 15px !important;
             }
 
             /* RTL checkboxes */
             .popup-registration--rtl .popup-registration__newsletter input[type="checkbox"],
-            .popup-registration--rtl .popup-registration__consent input[type="checkbox"] {
+            .popup-registration--rtl .popup-registration__consent input[type="checkbox"],
+            [dir="rtl"] .popup-registration .popup-registration__newsletter input[type="checkbox"],
+            [dir="rtl"] .popup-registration .popup-registration__consent input[type="checkbox"] {
               margin-right: 0 !important;
               margin-left: 10px !important;
             }
 
             /* RTL error messages */
-            .popup-registration--rtl .popup-registration__error {
+            .popup-registration--rtl .popup-registration__error,
+            [dir="rtl"] .popup-registration .popup-registration__error {
               text-align: right !important;
               margin-right: 0 !important;
             }
 
+            /* RTL sidebar positioning */
+            .popup-registration--rtl .popup-registration__sidebar,
+            [dir="rtl"] .popup-registration .popup-registration__sidebar {
+              order: 2 !important;
+            }
+
+            .popup-registration--rtl .popup-registration__content,
+            [dir="rtl"] .popup-registration .popup-registration__content {
+              order: 1 !important;
+            }
+
             /* RTL mobile adjustments */
             @media screen and (max-width: 767px) {
-              .popup-registration--rtl .popup-registration__container {
+              .popup-registration--rtl .popup-registration__container,
+              [dir="rtl"] .popup-registration .popup-registration__container {
                 flex-direction: column !important;
               }
 
               .popup-registration--rtl .popup-registration__sidebar,
-              .popup-registration--rtl .popup-registration__content {
+              .popup-registration--rtl .popup-registration__content,
+              [dir="rtl"] .popup-registration .popup-registration__sidebar,
+              [dir="rtl"] .popup-registration .popup-registration__content {
                 width: 100% !important;
                 border-radius: 10px !important;
               }
@@ -412,6 +779,16 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
           `;
           document.head.appendChild(rtlStyle);
         }
+      } else {
+        // Remove RTL classes
+        document.documentElement.classList.remove("rtl-active");
+        document.body.classList.remove("rtl-active");
+
+        // Remove RTL styles
+        const rtlStyle = document.getElementById(
+          "popup-registration-rtl-styles"
+        );
+        if (rtlStyle) rtlStyle.remove();
       }
 
       // Mark styles as loaded after a short delay to ensure smooth transition
@@ -437,6 +814,48 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
       }
     };
   }, [isRTLMode, isExternalLoad]);
+
+  // Add message listener for RTL changes from iframe
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleIframeMessages = (event) => {
+      // Check if the message is an RTL change notification
+      if (event.data && event.data.type === "OQTIMA_RTL_CHANGE") {
+        const { isRTL: newRtlState, language } = event.data;
+        console.log(
+          `Received RTL change message from iframe: isRTL=${newRtlState}, language=${language}`
+        );
+
+        // Force re-render of the component by updating a state variable
+        // This is a defensive measure to ensure RTL changes are reflected
+        setIsContentReady(false);
+
+        // Reset RTL state according to the message
+        setTimeout(() => {
+          // Update RTL classes immediately
+          if (newRtlState) {
+            document.documentElement.classList.add("rtl-active");
+            document.body.classList.add("rtl-active");
+          } else {
+            document.documentElement.classList.remove(
+              "rtl-active",
+              "rtl",
+              "is-rtl"
+            );
+            document.body.classList.remove("rtl-active", "rtl", "is-rtl");
+          }
+          setIsContentReady(true);
+        }, 50);
+      }
+    };
+
+    window.addEventListener("message", handleIframeMessages);
+
+    return () => {
+      window.removeEventListener("message", handleIframeMessages);
+    };
+  }, []);
 
   if (!isOpen) return null;
 
@@ -471,6 +890,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     <>
       {isLoading && isExternalLoad && <LoadingSpinner />}
       <div
+        key={isRTLMode ? "rtl-popup" : "ltr-popup"}
         className={cn("popup-registration", {
           "popup-registration--rtl": isRTLMode,
           "styles-loaded": isStylesLoaded,
@@ -510,16 +930,27 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
           dir={isRTLMode ? "rtl" : "ltr"}
         >
           <div
+            key={isRTLMode ? "rtl-container" : "ltr-container"}
             className={cn("popup-registration__container", className, {
               "popup-registration__container--rtl": isRTLMode,
             })}
             dir={isRTLMode ? "rtl" : "ltr"}
+            style={
+              isRTLMode
+                ? {
+                    flexDirection: "row-reverse !important",
+                    display: "flex !important",
+                  }
+                : {}
+            }
+            data-rtl={isRTLMode.toString()}
           >
             <div
               className={cn("popup-registration__sidebar", {
                 "popup-registration__sidebar--rtl": isRTLMode,
               })}
               data-rtl={isRTLMode ? "true" : "false"}
+              style={isRTLMode ? { order: "2 !important" } : {}}
             >
               {(isRTLMode ||
                 isMobile ||
@@ -557,6 +988,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
                 "popup-registration__content--rtl": isRTLMode,
               })}
               data-rtl={isRTLMode ? "true" : "false"}
+              style={isRTLMode ? { order: "1 !important" } : {}}
             >
               {!isRTLMode && !isMobile && (
                 <img

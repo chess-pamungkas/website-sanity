@@ -26,6 +26,6 @@ jobs:
           aws-region: ap-east-1
       - name: Deploy static site to S3 bucket
         run: |
-          aws s3 sync ./public/ s3://lp.oqtima.com --delete --exclude "*" --include "*.html" --include "page-data/*" --include "app-data.json" --cache-control "public, max-age=0, must-revalidate"
-          aws s3 sync ./public/ s3://lp.oqtima.com --delete --exclude "*.html" --exclude "page-data/*" --exclude "app-data.json" --cache-control "public, max-age=31536000, immutable"
+          aws s3 sync ./public/ s3://lp.oqtima.com --delete --exclude "*" --include "*.html" --include "page-data/*" --include "app-data.json" --include "scripts/registration-popup-script*.js" --cache-control "public, max-age=0, must-revalidate"
+          aws s3 sync ./public/ s3://lp.oqtima.com --delete --exclude "*.html" --exclude "page-data/*" --exclude "app-data.json" --exclude "scripts/registration-popup-script*.js" --cache-control "public, max-age=31536000, immutable"
           aws s3 cp ./public/sw.js s3://lp.oqtima.com/sw.js --cache-control "public, max-age=0, must-revalidate"

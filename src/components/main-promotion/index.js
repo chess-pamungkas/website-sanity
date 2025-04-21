@@ -81,6 +81,7 @@ const MainPromotion = ({ className, isShowHero = true }) => {
         <div
           className={cn("main-promotion__wrapper", {
             "main-promotion__wrapper--without-hero": !isShowHero,
+            "main-promotion__wrapper--rtl": isRTL,
           })}
         >
           <div className="main-promotion__block">
