@@ -857,6 +857,22 @@
       params.referral_value = params.referralValue;
     }
 
+    // CRITICAL FIX: Ensure referral_type is parsed as an integer when it should be numeric
+    if (params.referral_type) {
+      // Check if the value can be parsed as a valid integer
+      const parsedType = parseInt(params.referral_type, 10);
+      if (!isNaN(parsedType)) {
+        // Only set as integer if it's a valid number
+        params.referral_type = parsedType;
+        console.log("Converted referral_type to integer:", parsedType);
+      } else {
+        console.warn(
+          "referral_type is not a valid integer:",
+          params.referral_type
+        );
+      }
+    }
+
     // Log referral parameters to confirm they are properly passed
     if (params.referral_type && params.referral_value) {
       console.log("Referral parameters detected:", {
@@ -1264,7 +1280,11 @@
         const messageData = {
           type: "REGISTRATION_PARAMS",
           data: {
-            referral_type: referralType,
+            // Ensure referral_type is passed as an integer if it's numeric
+            referral_type:
+              typeof referralType === "string"
+                ? parseInt(referralType, 10) || referralType
+                : referralType,
             referral_value: referralValue,
             language: language,
             lang: language, // Add lang as alternative format
@@ -1894,209 +1914,263 @@
           if (event.data.type === "OQTIMA_OPEN_LINK") {
             try {
               const url = event.data.url || "";
-              // Remove the unused variable
               const isPolicyLink = event.data.isPolicyLink === true;
               const timestamp = event.data.timestamp || Date.now();
               const policyType = event.data.policyType || "policy";
-              // Get the source of the message (the iframe)
-              const sourceIframe = Array.from(
-                document.querySelectorAll("iframe")
-              ).find((iframe) => iframe.contentWindow === event.source);
 
-              if (url) {
-                // Determine if this is a policy link that should be allowed
-                // Always allow policy and legal links regardless of domain
-                const isPolicyOrLegalLink =
-                  isPolicyLink ||
-                  /privacy|cookie|policy|terms|legal|disclaimer|gdpr|oqtima\.com/i.test(
-                    url
-                  );
+              // Validate the URL before attempting to open it
+              if (!url || typeof url !== "string") {
+                console.error(
+                  "[OQtima] Invalid URL in link open request:",
+                  url
+                );
+                return;
+              }
 
-                if (isPolicyOrLegalLink) {
-                  console.log("[OQtima] Opening policy link in new tab:", url);
-                  let linkOpened = false;
+              console.log(`[OQtima] Processing link open request:`, {
+                url,
+                isPolicyLink,
+                policyType,
+                timestamp,
+              });
 
-                  // ENHANCED: Create a visual feedback popup for policy links
-                  const createLinkFeedback = () => {
-                    // Create a small popup for user to manually open the link
-                    const feedbackPopup = document.createElement("div");
-                    feedbackPopup.id = "oqtima-policy-popup";
-                    feedbackPopup.innerHTML = `
-                      <div style="position: fixed; top: 20px; right: 20px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.2); 
-                                  border-radius: 5px; padding: 15px; z-index: 2147483647; max-width: 320px; font-family: -apple-system, 
-                                  BlinkMacSystemFont, sans-serif; font-size: 14px; line-height: 1.4; text-align: left;">
-                        <div style="margin-bottom: 10px; color: #333; font-weight: bold;">
-                          Policy Link Blocked
-                        </div>
-                        <div style="margin-bottom: 15px; color: #555;">
-                          Your browser blocked the automatic opening of the ${policyType} policy. Click the button below to view it.
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                          <a id="oqtima-manual-open" href="${url}" target="_blank" rel="noopener noreferrer"
-                             style="background: #ff4400; color: white; text-decoration: none; padding: 8px 15px; 
-                                    border-radius: 4px; font-weight: 500; display: inline-block; cursor: pointer;">
-                            Open ${
-                              policyType.charAt(0).toUpperCase() +
-                              policyType.slice(1)
-                            } Policy
-                          </a>
-                          <button id="oqtima-close-feedback" type="button"
-                                  style="background: #eee; border: none; padding: 8px 15px; margin-left: 8px;
-                                         border-radius: 4px; cursor: pointer; color: #333;">
-                            Close
-                          </button>
-                        </div>
-                      </div>
-                    `;
-                    document.body.appendChild(feedbackPopup);
+              // Determine if this is a policy link that should be allowed
+              // Always allow policy and legal links regardless of domain
+              const isPolicyOrLegalLink =
+                isPolicyLink ||
+                /privacy|cookie|policy|terms|legal|disclaimer|gdpr|oqtima\.com/i.test(
+                  url
+                );
 
-                    // Set up event listeners
-                    document
-                      .getElementById("oqtima-manual-open")
-                      .addEventListener("click", function (e) {
-                        linkOpened = true;
-                        if (event.source && event.source.postMessage) {
-                          event.source.postMessage(
-                            {
-                              type: "OQTIMA_LINK_OPENED",
-                              url: url,
-                              success: true,
-                              timestamp: timestamp,
-                              method: "manual",
-                            },
-                            "*"
-                          );
-                        }
-                        // Remove the popup after a short delay
-                        setTimeout(() => {
-                          if (feedbackPopup.parentNode) {
-                            feedbackPopup.parentNode.removeChild(feedbackPopup);
-                          }
-                        }, 500);
-                      });
+              if (isPolicyOrLegalLink) {
+                console.log("[OQtima] Opening policy link in new tab:", url);
+                let linkOpened = false;
+                let manualPopupShown = false;
 
-                    document
-                      .getElementById("oqtima-close-feedback")
-                      .addEventListener("click", function () {
-                        if (feedbackPopup.parentNode) {
-                          feedbackPopup.parentNode.removeChild(feedbackPopup);
-                        }
-                      });
+                // Try multiple approaches in parallel for better success rate
 
-                    // Auto-remove after 15 seconds
-                    setTimeout(() => {
-                      if (feedbackPopup.parentNode) {
-                        feedbackPopup.parentNode.removeChild(feedbackPopup);
-                      }
-                    }, 15000);
+                // APPROACH 1: Create a real link element and trigger a user-initiated click
+                const createAndClickLink = () => {
+                  // Create a visible button that's more likely to not be blocked
+                  const linkButton = document.createElement("a");
+                  linkButton.href = url;
+                  linkButton.target = "_blank";
+                  linkButton.rel = "noopener noreferrer";
+                  linkButton.setAttribute("data-purpose", "policy-link");
+                  linkButton.setAttribute("role", "button");
 
-                    return feedbackPopup;
+                  // Style it as a temporary floating button in bottom right
+                  linkButton.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: #ff4400;
+                    color: white;
+                    padding: 10px 15px;
+                    border-radius: 4px;
+                    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                    font-size: 14px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                    text-decoration: none;
+                    z-index: 2147483647;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                  `;
+
+                  // Label shows which policy is being opened
+                  linkButton.innerText = `Open ${
+                    policyType.charAt(0).toUpperCase() + policyType.slice(1)
+                  } Policy`;
+
+                  // Add hover effect
+                  linkButton.onmouseover = () => {
+                    linkButton.style.backgroundColor = "#e53e00";
+                  };
+                  linkButton.onmouseout = () => {
+                    linkButton.style.backgroundColor = "#ff4400";
                   };
 
-                  // Try multiple approaches sequentially
-
-                  // APPROACH 1: Standard window.open
-                  const newWindow = window.open(url, "_blank");
-                  if (newWindow) {
-                    try {
-                      newWindow.focus();
-                      linkOpened = true;
-                    } catch (focusErr) {
-                      console.warn(
-                        "[OQtima] Error focusing policy window:",
-                        focusErr
-                      );
-                    }
-                  }
-
-                  // APPROACH 2: If window.open fails, try DOM-based approach
-                  if (!linkOpened) {
-                    console.warn(
-                      "[OQtima] Standard window.open blocked, trying DOM method"
-                    );
-
-                    // Create an invisible anchor element and click it
-                    const fallbackLink = document.createElement("a");
-                    fallbackLink.href = url;
-                    fallbackLink.target = "_blank";
-                    fallbackLink.rel = "noopener noreferrer";
-                    fallbackLink.style.cssText =
-                      "position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px;";
-                    document.body.appendChild(fallbackLink);
-
-                    // Synthetic click event is more likely to work across browsers
-                    const clickEvent = new MouseEvent("click", {
-                      view: window,
-                      bubbles: true,
-                      cancelable: true,
-                      buttons: 1,
-                    });
-
-                    fallbackLink.dispatchEvent(clickEvent);
+                  // On click, mark as successful and clean up
+                  linkButton.onclick = (e) => {
                     linkOpened = true;
 
-                    // Clean up
-                    setTimeout(() => {
-                      if (document.body.contains(fallbackLink)) {
-                        document.body.removeChild(fallbackLink);
-                      }
-                    }, 100);
-                  }
-
-                  // APPROACH 3: If both methods fail, show a manual link popup
-                  if (!linkOpened || !newWindow) {
-                    console.warn(
-                      "[OQtima] All automatic methods blocked, showing manual link popup"
-                    );
-                    createLinkFeedback();
-                  }
-
-                  // Always send confirmation back to iframe
-                  try {
+                    // Notify the iframe that the link was successfully opened
                     if (event.source && event.source.postMessage) {
                       event.source.postMessage(
                         {
                           type: "OQTIMA_LINK_OPENED",
                           url: url,
-                          success: linkOpened,
+                          success: true,
                           timestamp: timestamp,
-                          method: linkOpened
-                            ? newWindow
-                              ? "window.open"
-                              : "dom"
-                            : "manual",
+                          method: "user-click",
                         },
                         "*"
                       );
-                      console.log(
-                        "[OQtima] Sent link opened confirmation to iframe"
+                    }
+
+                    // Remove after a small delay
+                    setTimeout(() => {
+                      if (document.body.contains(linkButton)) {
+                        linkButton.style.opacity = "0";
+                        setTimeout(() => {
+                          if (document.body.contains(linkButton)) {
+                            document.body.removeChild(linkButton);
+                          }
+                        }, 300);
+                      }
+                    }, 500);
+
+                    // Don't auto-remove if clicked
+                    if (linkButton._removeTimeout) {
+                      clearTimeout(linkButton._removeTimeout);
+                    }
+                  };
+
+                  // Append to body
+                  document.body.appendChild(linkButton);
+
+                  // Auto-remove after 12 seconds if not clicked
+                  linkButton._removeTimeout = setTimeout(() => {
+                    if (document.body.contains(linkButton)) {
+                      linkButton.style.opacity = "0";
+                      setTimeout(() => {
+                        if (document.body.contains(linkButton)) {
+                          document.body.removeChild(linkButton);
+                        }
+                      }, 300);
+                    }
+                  }, 12000);
+
+                  return linkButton;
+                };
+
+                // APPROACH 2: Try window.open with fallback
+                const tryWindowOpen = () => {
+                  try {
+                    // Standard window.open approach
+                    const newWindow = window.open(url, "_blank");
+
+                    // Check if successful
+                    if (newWindow && !newWindow.closed) {
+                      try {
+                        // Focus the new window
+                        newWindow.focus();
+                        linkOpened = true;
+                        return true;
+                      } catch (focusErr) {
+                        console.warn(
+                          "[OQtima] Error focusing policy window:",
+                          focusErr
+                        );
+                      }
+                    } else {
+                      console.warn(
+                        "[OQtima] window.open was blocked or returned null"
                       );
                     }
-                  } catch (msgError) {
-                    console.warn(
-                      "[OQtima] Error sending confirmation:",
-                      msgError
+                  } catch (err) {
+                    console.warn("[OQtima] Error in window.open:", err);
+                  }
+                  return false;
+                };
+
+                // First try the standard window.open approach
+                const windowOpenSucceeded = tryWindowOpen();
+
+                // If window.open works, we're done
+                if (windowOpenSucceeded) {
+                  console.log(
+                    "[OQtima] Successfully opened policy link with window.open"
+                  );
+
+                  // Notify the iframe
+                  if (event.source && event.source.postMessage) {
+                    event.source.postMessage(
+                      {
+                        type: "OQTIMA_LINK_OPENED",
+                        url: url,
+                        success: true,
+                        timestamp: timestamp,
+                        method: "window.open",
+                      },
+                      "*"
                     );
                   }
+                }
+                // If window.open fails, show the click button
+                else {
+                  console.log(
+                    "[OQtima] window.open failed, showing click button instead"
+                  );
+                  createAndClickLink();
+                  manualPopupShown = true;
+                }
 
-                  // Prevent event from propagating if we handled it
-                  if (linkOpened) {
-                    if (event.stopPropagation) {
-                      event.stopPropagation();
-                    }
-                    if (event.preventDefault) {
-                      event.preventDefault();
-                    }
-                  }
-                } else {
-                  console.warn(
-                    "[OQtima] Non-policy link request was ignored for security reasons:",
-                    url
+                // Send confirmation that we at least attempted to handle it
+                // This prevents the iframe from trying its own fallback mechanisms
+                if (event.source && event.source.postMessage) {
+                  event.source.postMessage(
+                    {
+                      type: "OQTIMA_LINK_OPENED",
+                      url: url,
+                      success: linkOpened || manualPopupShown,
+                      timestamp: timestamp,
+                      method: linkOpened
+                        ? "window.open"
+                        : manualPopupShown
+                        ? "manual-button"
+                        : "failed",
+                    },
+                    "*"
+                  );
+                  console.log(
+                    "[OQtima] Sent link handling confirmation to iframe"
+                  );
+                }
+              } else {
+                console.warn(
+                  "[OQtima] Non-policy link request was ignored for security reasons:",
+                  url
+                );
+
+                // Still send a response to the iframe so it doesn't hang
+                if (event.source && event.source.postMessage) {
+                  event.source.postMessage(
+                    {
+                      type: "OQTIMA_LINK_OPENED",
+                      url: url,
+                      success: false,
+                      timestamp: timestamp,
+                      method: "rejected",
+                      reason: "security",
+                    },
+                    "*"
                   );
                 }
               }
             } catch (e) {
               console.error("[OQtima] Error handling link open request:", e);
+
+              // Try to notify the iframe even if we had an error
+              try {
+                if (event.source && event.source.postMessage) {
+                  event.source.postMessage(
+                    {
+                      type: "OQTIMA_LINK_OPENED",
+                      success: false,
+                      error: e.message,
+                      timestamp: Date.now(),
+                      method: "error",
+                    },
+                    "*"
+                  );
+                }
+              } catch (notifyError) {
+                console.error(
+                  "[OQtima] Failed to notify iframe of error:",
+                  notifyError
+                );
+              }
             }
           }
         }
@@ -2306,212 +2380,158 @@
         script.type = "text/javascript";
         script.innerHTML = `
             (function() {
-              // Function to handle links
-              function handleLinks() {
-                // Create a loading indicator for link clicks
-                function createLinkLoadingIndicator(link) {
-                  const originalText = link.innerHTML;
-                  const originalColor = getComputedStyle(link).color;
-                  
-                  // Add loading state
-                  link.style.position = 'relative';
-                  link.innerHTML = originalText + '<span class="link-loading-dot">...</span>';
-                  link.style.pointerEvents = 'none';
-                  link.style.opacity = '0.7';
-                  
-                  // Create inline style for animation
-                  const style = document.createElement('style');
-                  style.innerHTML = \`
-                    @keyframes linkLoadingPulse {
-                      0% { opacity: 0.2; }
-                      50% { opacity: 1; }
-                      100% { opacity: 0.2; }
-                    }
-                    .link-loading-dot {
-                      animation: linkLoadingPulse 1.5s infinite;
-                      margin-left: 2px;
-                    }
-                  \`;
-                  document.head.appendChild(style);
-                  
-                  // Return cleanup function
-                  return function cleanupLinkLoading() {
-                    link.innerHTML = originalText;
-                    link.style.pointerEvents = '';
-                    link.style.opacity = '';
-                    if (style.parentNode) style.parentNode.removeChild(style);
-                  };
-                }
+              // Function to enhance and handle policy links
+              function enhancePolicyLinks() {
+                // Add CSS to make policy links more visible
+                const style = document.createElement('style');
+                style.innerHTML = 
+                  '.popup-registration__consent .link, ' +
+                  'a[href*="policy"], a[href*="terms"], a[href*="privacy"], a[href*="cookie"] { ' +
+                  '  color: #ff4400 !important; ' +
+                  '  text-decoration: underline !important; ' +
+                  '  cursor: pointer !important; ' +
+                  '  margin: 0 4px !important; ' +
+                  '  transition: all 0.2s !important; ' +
+                  '} ' +
+                  '.popup-registration__consent .link:hover, ' +
+                  'a[href*="policy"]:hover, a[href*="terms"]:hover, ' +
+                  'a[href*="privacy"]:hover, a[href*="cookie"]:hover { ' +
+                  '  color: #cc3600 !important; ' +
+                  '  text-decoration: underline !important; ' +
+                  '} ' +
+                  '.popup-registration__consent { ' +
+                  '  display: block !important; ' +
+                  '  margin: 16px 0 !important; ' +
+                  '  line-height: 1.5 !important; ' +
+                  '}';
+                document.head.appendChild(style);
                 
-                // More comprehensive policy link detection
-                function isPolicyLink(href, element) {
-                  // Check URL pattern
-                  const urlPattern = /(privacy|cookie|terms|policy|legal|disclaimer|gdpr)/i;
-                  if (urlPattern.test(href)) return true;
-                  
-                  // Check element attributes
-                  if (element.getAttribute('data-policy-type')) return true;
-                  if (element.classList.contains('link') && 
-                      element.closest('.popup-registration__consent')) return true;
-                  
-                  // Check element text content
-                  const textContent = element.textContent.toLowerCase();
-                  return /privacy|cookie|policy|terms|gdpr/.test(textContent);
-                }
+                // Tracking variables for link handling
+                let processingLink = false;
+                let linkTimeout = null;
                 
-                // Track link opening status
-                let isAwaitingLinkResponse = false;
-                let currentLinkCleanup = null;
-                let linkResponseTimeout = null;
-                
-                // Create a more robust link handling mechanism
+                // Handle all link clicks through event delegation
                 document.addEventListener('click', function(e) {
-                  // Don't process a new link if we're still waiting for a response
-                  if (isAwaitingLinkResponse) return;
+                  // Find policy links
+                  const link = e.target.closest('a.link, a[href*="policy"], a[href*="terms"], a[href*="privacy"], a[href*="cookie"]');
                   
-                  // Find if the clicked element is a link or inside a link
-                  let target = e.target;
-                  let link = null;
-                  
-                  // Traverse up to find closest link
-                  while (target && target !== document) {
-                    if (target.tagName === 'A') {
-                      link = target;
-                      break;
-                    }
-                    target = target.parentNode;
-                  }
-                  
-                  // If we found a link with href
                   if (link && link.href) {
-                    // Detect policy links - broader pattern matching
-                    const href = link.href;
-                    
-                    if (isPolicyLink(href, link)) {
-                      // Prevent default behavior
+                    // Check if it matches a policy link pattern
+                    if (/policy|privacy|cookie|terms|legal|disclaimer/.test(link.href)) {
                       e.preventDefault();
-                      e.stopPropagation();
                       
-                      // Anti-duplicate click protection
-                      const now = Date.now();
-                      const lastClick = parseInt(link.getAttribute('data-last-click') || '0');
+                      // Don't process if already handling a link
+                      if (processingLink) return false;
                       
-                      if (now - lastClick < 1000 || isAwaitingLinkResponse) {
-                        return false;
-                      }
+                      // Mark as processing
+                      processingLink = true;
                       
-                      // Mark as clicked and set loading state
-                      link.setAttribute('data-last-click', now);
-                      isAwaitingLinkResponse = true;
-                      currentLinkCleanup = createLinkLoadingIndicator(link);
+                      // Store original link text
+                      const originalText = link.innerHTML;
                       
-                      // Determine policy type for better user feedback
-                      const policyType = href.toLowerCase().includes('privacy') ? 'privacy' : 
-                                        href.toLowerCase().includes('cookie') ? 'cookie' : 'policy';
+                      // Add loading indicator
+                      link.innerHTML = originalText + ' <span style="display: inline-block; animation: pulse 1s infinite;">...</span>';
                       
-                      // Try multiple methods to open the link
+                      // Determine policy type
+                      const policyType = 
+                        link.href.toLowerCase().includes('privacy') ? 'Privacy' :
+                        link.href.toLowerCase().includes('cookie') ? 'Cookie' :
+                        link.href.toLowerCase().includes('terms') ? 'Terms' : 'Policy';
                       
-                      // Method 1: Send message to parent window
+                      // Send message to parent window
                       try {
                         window.parent.postMessage({
                           type: 'OQTIMA_OPEN_LINK',
-                          url: href,
+                          url: link.href,
                           isPolicyLink: true,
-                          policyType: policyType,
-                          timestamp: now
+                          policyType: policyType.toLowerCase(),
+                          timestamp: Date.now()
                         }, '*');
                         
-                        // Set a response timeout
-                        linkResponseTimeout = setTimeout(function() {
-                          // If no response from parent after 1.5 seconds, clean up and show fallback
-                          if (isAwaitingLinkResponse) {
-                            isAwaitingLinkResponse = false;
-                            if (currentLinkCleanup) {
-                              currentLinkCleanup();
-                              currentLinkCleanup = null;
-                            }
-                            
-                            // Show a prompt to user that they can click again
-                            link.innerHTML += ' <span style="color: #ff4400; font-size: 0.9em;">(try again)</span>';
-                            
-                            setTimeout(() => {
-                              // Remove the "try again" text after 5 seconds
-                              link.innerHTML = link.innerHTML.replace(' <span style="color: #ff4400; font-size: 0.9em;">(try again)</span>', '');
-                            }, 5000);
-                          }
-                        }, 1500);
-                        
-                        } catch (err) {
-                        // Error sending message to parent - clean up immediately
-                        isAwaitingLinkResponse = false;
-                        if (currentLinkCleanup) {
-                          currentLinkCleanup();
-                          currentLinkCleanup = null;
-                        }
-                        clearTimeout(linkResponseTimeout);
-                        
-                        // Method 2: Direct open in new tab as fallback
-                        try {
-                          window.open(href, '_blank');
-                        } catch (err2) {
-                          // Both methods failed, just restore the link
-                          link.innerHTML += ' <span style="color: #ff4400; font-size: 0.9em;">(click again)</span>';
+                        // Set fallback timeout
+                        linkTimeout = setTimeout(function() {
+                          // Try direct fallback if parent doesn't respond
+                          processingLink = false;
+                          link.innerHTML = originalText;
                           
-                          setTimeout(() => {
-                            // Remove the "click again" text after 5 seconds
-                            link.innerHTML = link.innerHTML.replace(' <span style="color: #ff4400; font-size: 0.9em;">(click again)</span>', '');
-                          }, 5000);
+                          try {
+                            // Try to open directly
+                            window.open(link.href, '_blank');
+                          } catch(err) {
+                            console.log('Both parent and direct open failed');
+                            
+                            // Make the link more prominent as last resort
+                            link.style.color = '#ff4400';
+                            link.style.fontWeight = 'bold';
+                            link.innerHTML = originalText + ' (click again)';
+                            
+                            // Create fallback button
+                            const fallback = document.createElement('a');
+                            fallback.href = link.href;
+                            fallback.target = '_blank';
+                            fallback.style.position = 'fixed';
+                            fallback.style.bottom = '20px';
+                            fallback.style.left = '20px';
+                            fallback.style.background = '#ff4400';
+                            fallback.style.color = 'white';
+                            fallback.style.padding = '10px 15px';
+                            fallback.style.borderRadius = '4px';
+                            fallback.style.textDecoration = 'none';
+                            fallback.style.fontWeight = 'bold';
+                            fallback.style.zIndex = '999999';
+                            fallback.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+                            fallback.textContent = 'Open ' + policyType + ' Policy';
+                            
+                            document.body.appendChild(fallback);
+                            
+                            // Remove after 15 seconds
+                            setTimeout(function() {
+                              if (fallback.parentNode) {
+                                fallback.parentNode.removeChild(fallback);
+                              }
+                            }, 15000);
+                          }
+                        }, 1000);
+                      } catch(err) {
+                        // Reset on error
+                        processingLink = false;
+                        link.innerHTML = originalText;
+                        
+                        // Try direct open
+                        try {
+                          window.open(link.href, '_blank');
+                        } catch(err2) {
+                          console.log('Link open failed completely');
                         }
                       }
                       
                       return false;
                     }
                   }
-                }, true);
-                
-                // Listen for messages from parent about link opening
-                window.addEventListener('message', function(event) {
-                  if (event.data && event.data.type === 'OQTIMA_LINK_OPENED') {
-                    // Clear the timeout 
-                    clearTimeout(linkResponseTimeout);
-                    
-                    // Reset the awaiting state
-                    isAwaitingLinkResponse = false;
-                    
-                    // Clear any loading indicators
-                    if (currentLinkCleanup) {
-                      currentLinkCleanup();
-                      currentLinkCleanup = null;
-                    }
-                  }
                 });
                 
-                // Add styling to make policy links more visible and clickable
-                const style = document.createElement('style');
-                style.innerHTML = \`
-                  .popup-registration__consent .link { 
-                    color: #ff4400 !important; 
-                    text-decoration: underline !important; 
-                    cursor: pointer !important; 
-                    margin: 0 4px !important;
-                    user-select: none !important;
-                    position: relative !important;
-                    display: inline-block !important;
-                    transition: all 0.2s !important;
-                  } 
-                  .popup-registration__consent .link:hover { 
-                    color: #cc3600 !important; 
-                    text-decoration: underline !important;
+                // Listen for parent window response
+                window.addEventListener('message', function(event) {
+                  if (event.data && event.data.type === 'OQTIMA_LINK_OPENED') {
+                    // Clear timeout and reset state
+                    clearTimeout(linkTimeout);
+                    processingLink = false;
+                    
+                    // Find all policy links matching the URL
+                    const links = document.querySelectorAll('a.link, a[href*="policy"], a[href*="terms"], a[href*="privacy"], a[href*="cookie"]');
+                    links.forEach(function(link) {
+                      // Reset any links with loading indicators
+                      if (link.querySelector('span') && link.innerHTML.includes('...')) {
+                        // Remove any loading indicators
+                        link.innerHTML = link.innerHTML.replace(/ <span style="display: inline-block; animation: pulse 1s infinite;">...<\\/span>/, '');
+                      }
+                    });
                   }
-                  .popup-registration__consent .link:active { 
-                    transform: scale(0.98) !important;
-                  }
-                \`;
-                document.head.appendChild(style);
+                });
               }
               
-              // Initialize the link handler
-              handleLinks();
+              // Initialize right away
+              enhancePolicyLinks();
             })();
           `;
         document.head.appendChild(script);
@@ -3121,8 +3141,24 @@
       // Get button attributes if available
       const text = container.getAttribute("data-text") || defaultButtonText;
       const lang = container.getAttribute("data-lang") || "en";
-      const referralType = container.getAttribute("data-referral-type");
+
+      // FIXED: Parse referral_type as integer when reading from data attribute
+      let referralType = container.getAttribute("data-referral-type");
       const referralValue = container.getAttribute("data-referral-value");
+
+      // Convert referral_type to integer if it's numeric
+      if (referralType) {
+        const parsedType = parseInt(referralType, 10);
+        if (!isNaN(parsedType)) {
+          referralType = parsedType;
+          console.log("Parsed data-referral-type as integer:", parsedType);
+        } else {
+          console.warn(
+            "data-referral-type is not a valid integer:",
+            referralType
+          );
+        }
+      }
 
       // IMPORTANT: We always keep the container in LTR mode, even if data-lang="ar"
       // This prevents the button from shifting to the right side of the page

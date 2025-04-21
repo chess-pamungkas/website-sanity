@@ -969,18 +969,12 @@ const PopupRegistrationForm = ({ params }) => {
     // All Brazilian Portuguese variations should map to "pt" for API calls
     portalLanguageCode = "pt";
   } else {
+    console.log("effectiveLanguage", effectiveLanguage);
     // For other languages, use the standard mapping
-    portalLanguageCode =
-      PORTAL_LANGUAGES_MAP[effectiveLanguage] || effectiveLanguage || "en";
+    portalLanguageCode = PORTAL_LANGUAGES_MAP[effectiveLanguage];
   }
 
-  // FINAL VALIDATION: Make sure portalLanguageCode doesn't contain invalid characters
-  if (
-    portalLanguageCode &&
-    (portalLanguageCode.includes("?") || portalLanguageCode.length > 5)
-  ) {
-    portalLanguageCode = "en";
-  }
+  console.log("portalLanguageCode", portalLanguageCode);
 
   // Double-check if we're in a Brazilian Portuguese URL path but didn't catch it earlier
   if (typeof window !== "undefined" && window.location.pathname) {
@@ -1008,10 +1002,16 @@ const PopupRegistrationForm = ({ params }) => {
   const handlePolicyLinkClick = (e, url) => {
     e.preventDefault();
 
-    // Anti multi-click implementation with improved tracking
-    const target = e.currentTarget;
+    // Validate URL
+    if (!url) {
+      console.error("Empty or invalid policy URL");
+      return;
+    }
 
-    // Check if link is in process (throttling)
+    console.log(`Attempting to open policy link: ${url}`);
+
+    // Anti multi-click implementation
+    const target = e.currentTarget;
     if (target.getAttribute("data-processing") === "true") {
       return;
     }
@@ -1019,19 +1019,27 @@ const PopupRegistrationForm = ({ params }) => {
     // Set flag to prevent repeated clicks
     target.setAttribute("data-processing", "true");
 
-    // Track which window was opened
-    let policyWindow = null;
-    let linkHandledByParent = false;
+    // Add visual feedback to the link to indicate it's being processed
+    const originalText = target.innerHTML;
+    target.innerHTML = `${originalText} <span style="display: inline-block; margin-left: 5px;">↗</span>`;
 
-    // Reset flag after 3 seconds
-    setTimeout(() => {
+    // Reset link after 3 seconds in any case
+    const resetTimeout = setTimeout(() => {
       target.removeAttribute("data-processing");
+      target.innerHTML = originalText;
     }, 3000);
 
-    // Handle differently based on context
+    // Track which approach succeeded
+    let linkSucceeded = false;
+    let policyWindow = null;
+
+    // If we're in an iframe, first try to send a message to parent window
     if (window.parent !== window) {
-      // If inside an iframe, first try sending a message to parent window
       try {
+        console.log(
+          "Running in iframe, attempting to send message to parent window"
+        );
+
         // Setup a listener to detect if the parent successfully handled the link
         const messageListener = (event) => {
           if (
@@ -1039,15 +1047,51 @@ const PopupRegistrationForm = ({ params }) => {
             event.data.type === "OQTIMA_LINK_OPENED" &&
             event.data.url === url
           ) {
-            linkHandledByParent = true;
+            console.log(
+              "Received confirmation from parent window:",
+              event.data
+            );
+            linkSucceeded = event.data.success;
+
+            // Clean up the listener since we got our answer
             window.removeEventListener("message", messageListener);
+
+            // Update link appearance based on success
+            if (linkSucceeded) {
+              target.innerHTML = `${originalText} <span style="display: inline-block; margin-left: 5px; color: green;">✓</span>`;
+              setTimeout(() => {
+                target.innerHTML = originalText;
+              }, 1500);
+            } else if (
+              event.data.method === "failed" ||
+              event.data.method === "error"
+            ) {
+              // Parent tried but failed - show a helpful message and make link more obvious
+              target.innerHTML = `${originalText} <span style="display: inline-block; margin-left: 5px; color: #ff4400; font-size: 0.9em;">(click again)</span>`;
+
+              // Make link more prominent as a hint to the user
+              target.style.textDecoration = "underline";
+              target.style.fontWeight = "bold";
+              target.style.color = "#ff4400";
+
+              // Reset style after 10 seconds
+              setTimeout(() => {
+                target.innerHTML = originalText;
+                target.style.textDecoration = "";
+                target.style.fontWeight = "";
+                target.style.color = "";
+              }, 10000);
+            }
+
+            // Clear the reset timeout since we're handling it
+            clearTimeout(resetTimeout);
           }
         };
 
         // Add the listener before sending the message
         window.addEventListener("message", messageListener);
 
-        // Send message to parent
+        // Send message to parent window
         window.parent.postMessage(
           {
             type: "OQTIMA_OPEN_LINK",
@@ -1061,45 +1105,178 @@ const PopupRegistrationForm = ({ params }) => {
           "*"
         );
 
-        // As a fallback, try to open directly after a short delay
-        // This only happens if the parent handler doesn't handle it
-        setTimeout(() => {
-          // Remove the listener since we're handling it ourselves now
-          window.removeEventListener("message", messageListener);
+        // If parent doesn't respond in time, try our own fallback
+        const fallbackTimeout = setTimeout(() => {
+          // Only attempt fallback if parent didn't already handle it
+          if (!linkSucceeded) {
+            console.log(
+              "No response from parent window, trying fallback method"
+            );
 
-          // Only open if parent didn't already handle it
-          if (!linkHandledByParent && !policyWindow) {
+            // Try to open the window ourselves
             try {
               policyWindow = window.open(url, "_blank", "noopener,noreferrer");
 
-              // If window was blocked, show a hint to the user
-              if (!policyWindow) {
-                // Popup was blocked
+              // Check if the window opened successfully
+              if (policyWindow && !policyWindow.closed) {
+                linkSucceeded = true;
+
+                // Update link to show success
+                target.innerHTML = `${originalText} <span style="display: inline-block; margin-left: 5px; color: green;">✓</span>`;
+                setTimeout(() => {
+                  target.innerHTML = originalText;
+                }, 1500);
+              } else {
+                console.warn("Fallback window.open was blocked");
+
+                // Create a more obvious policy link as a last resort
+                createFallbackLink(
+                  url,
+                  url.toLowerCase().includes("privacy") ? "Privacy" : "Cookie"
+                );
+
+                // Update link to show it was blocked
+                target.innerHTML = `${originalText} <span style="display: inline-block; margin-left: 5px; color: #ff4400;">↗</span>`;
+                target.style.textDecoration = "underline";
               }
             } catch (err) {
-              // Error handling
+              console.error("Error in fallback window.open:", err);
+              // Create fallback link on error too
+              createFallbackLink(
+                url,
+                url.toLowerCase().includes("privacy") ? "Privacy" : "Cookie"
+              );
             }
+
+            // Clean up the message listener since we're done waiting
+            window.removeEventListener("message", messageListener);
           }
-        }, 800); // Increased timeout to give parent more time to respond
+        }, 1000); // Wait 1 second for parent response
+
+        // Function to create a fixed position fallback link
+        const createFallbackLink = (url, policyType) => {
+          // Create a floating button in case all else fails
+          const fallbackLink = document.createElement("a");
+          fallbackLink.href = url;
+          fallbackLink.target = "_blank";
+          fallbackLink.rel = "noopener noreferrer";
+          fallbackLink.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #ff4400;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            text-decoration: none;
+            z-index: 999999;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+          `;
+          fallbackLink.innerText = `Open ${policyType} Policy`;
+
+          // Add hover effect
+          fallbackLink.onmouseover = () => {
+            fallbackLink.style.backgroundColor = "#e53e00";
+          };
+          fallbackLink.onmouseout = () => {
+            fallbackLink.style.backgroundColor = "#ff4400";
+          };
+
+          // Clean up on click
+          fallbackLink.onclick = () => {
+            setTimeout(() => {
+              if (document.body.contains(fallbackLink)) {
+                document.body.removeChild(fallbackLink);
+              }
+            }, 100);
+          };
+
+          document.body.appendChild(fallbackLink);
+
+          // Auto-remove after 15 seconds
+          setTimeout(() => {
+            if (document.body.contains(fallbackLink)) {
+              fallbackLink.style.opacity = "0";
+              setTimeout(() => {
+                if (document.body.contains(fallbackLink)) {
+                  document.body.removeChild(fallbackLink);
+                }
+              }, 300);
+            }
+          }, 15000);
+        };
       } catch (err) {
-        // Fallback to direct opening if message sending fails
+        console.error("Error sending message to parent:", err);
+
+        // If messaging fails, try direct approach
         try {
           policyWindow = window.open(url, "_blank", "noopener,noreferrer");
+          if (!policyWindow) {
+            console.warn("Direct window.open was blocked");
+            target.innerHTML = `${originalText} <span style="color: #ff4400;">(click again)</span>`;
+          }
         } catch (innerErr) {
-          // Error handling
+          console.error("Error in direct window.open:", innerErr);
         }
       }
     } else {
-      // If not in an iframe, open the link directly
+      // Not in iframe, just try to open directly
+      console.log("Not in iframe, opening link directly");
       try {
         policyWindow = window.open(url, "_blank", "noopener,noreferrer");
 
-        // If window was blocked, show a hint to the user
-        if (!policyWindow) {
-          // Popup was blocked
+        if (policyWindow && !policyWindow.closed) {
+          linkSucceeded = true;
+          target.innerHTML = `${originalText} <span style="display: inline-block; margin-left: 5px; color: green;">✓</span>`;
+          setTimeout(() => {
+            target.innerHTML = originalText;
+          }, 1500);
+        } else {
+          console.warn("Direct window.open was blocked");
+
+          // Create a special button when link is blocked
+          const fallbackBtn = document.createElement("a");
+          fallbackBtn.href = url;
+          fallbackBtn.target = "_blank";
+          fallbackBtn.rel = "noopener noreferrer";
+          fallbackBtn.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff4400;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            text-decoration: none;
+            z-index: 999999;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+          `;
+          fallbackBtn.innerText = `Open ${
+            url.toLowerCase().includes("privacy") ? "Privacy" : "Cookie"
+          } Policy`;
+
+          document.body.appendChild(fallbackBtn);
+
+          // Auto-remove after 15 seconds
+          setTimeout(() => {
+            if (document.body.contains(fallbackBtn)) {
+              document.body.removeChild(fallbackBtn);
+            }
+          }, 15000);
+
+          // Make the original link more obvious
+          target.style.textDecoration = "underline";
+          target.style.fontWeight = "bold";
+          target.style.color = "#ff4400";
+          target.innerHTML = `${originalText} <span style="color: #ff4400;">(try again)</span>`;
         }
       } catch (err) {
-        // Error handling
+        console.error("Error opening policy window:", err);
       }
     }
   };
@@ -1199,15 +1376,15 @@ const PopupRegistrationForm = ({ params }) => {
 
     // Create a local copy of portalLanguageCode that we can modify
     let submissionLanguage = portalLanguageCode;
-
+    console.log("submissionLanguage", submissionLanguage);
     // CRITICAL FIX: Additional safety check to ensure language is valid
     // If language still contains "?" or is longer than 5 chars, it's probably invalid
-    if (
-      submissionLanguage &&
-      (submissionLanguage.includes("?") || submissionLanguage.length > 5)
-    ) {
-      submissionLanguage = "en";
-    }
+    // if (
+    //   submissionLanguage &&
+    //   (submissionLanguage.includes("?") || submissionLanguage.length > 5)
+    // ) {
+    //   submissionLanguage = "en";
+    // }
 
     // Check if we're in a Brazilian Portuguese URL path
     const urlPath =
@@ -1250,7 +1427,7 @@ const PopupRegistrationForm = ({ params }) => {
       if (referral_value) {
         submissionData.referral_value = referral_value;
       }
-
+      console.log("submissionData", submissionData);
       const response = await axios.post(
         `${API_URL}crm-register`,
         submissionData
