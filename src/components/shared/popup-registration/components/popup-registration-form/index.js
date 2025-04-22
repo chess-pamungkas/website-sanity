@@ -459,55 +459,6 @@ const PopupRegistrationForm = ({ params }) => {
         parsedParams = params || {};
       }
 
-      // IMPORTANT - DEBUG: Log raw params to help debugging
-      console.log(
-        "[DEBUG] Raw params passed to PopupRegistrationForm:",
-        params
-      );
-      console.log("[DEBUG] Initial parsed params:", parsedParams);
-
-      // DIRECT REFERRAL MAPPING: Map common referral parameter variations to expected names
-      // We need to check all possible formats that might be passed from landing pages
-      const referralTypeVariations = [
-        "referral_type",
-        "referralType",
-        "referral-type",
-        "data-referral-type",
-        "data-referralType",
-      ];
-
-      const referralValueVariations = [
-        "referral_value",
-        "referralValue",
-        "referral-value",
-        "data-referral-value",
-        "data-referralValue",
-      ];
-
-      // Check all potential referral_type parameter names
-      for (const key of referralTypeVariations) {
-        if (parsedParams[key] !== undefined && !parsedParams.referral_type) {
-          parsedParams.referral_type = parsedParams[key];
-          console.log(
-            `Mapped referral_type from ${key}:`,
-            parsedParams.referral_type
-          );
-          break;
-        }
-      }
-
-      // Check all potential referral_value parameter names
-      for (const key of referralValueVariations) {
-        if (parsedParams[key] !== undefined && !parsedParams.referral_value) {
-          parsedParams.referral_value = parsedParams[key];
-          console.log(
-            `Mapped referral_value from ${key}:`,
-            parsedParams.referral_value
-          );
-          break;
-        }
-      }
-
       // IMPORTANT FIX: Sanitize the langParam if it contains a query string format
       if (parsedParams.langParam) {
         // Check if langParam mistakenly contains "?language=" or similar prefixes
@@ -555,80 +506,6 @@ const PopupRegistrationForm = ({ params }) => {
           parsedParams.langParam = urlDataLang;
         }
 
-        // NEW: Check for referral parameters in URL if not already present in parsedParams
-        // Check all common variations of parameter names
-        if (!parsedParams.referral_type) {
-          parsedParams.referral_type =
-            urlParams.get("referral_type") ||
-            urlParams.get("referralType") ||
-            urlParams.get("referral-type");
-        }
-
-        if (!parsedParams.referral_value) {
-          parsedParams.referral_value =
-            urlParams.get("referral_value") ||
-            urlParams.get("referralValue") ||
-            urlParams.get("referral-value");
-        }
-
-        // Try sessionStorage as another source of referral parameters
-        if (
-          !parsedParams.referral_type &&
-          typeof sessionStorage !== "undefined"
-        ) {
-          const storedReferralType = sessionStorage.getItem(
-            "oqtima_referral_type"
-          );
-          if (storedReferralType) {
-            console.log(
-              "Found referral_type in sessionStorage:",
-              storedReferralType
-            );
-            parsedParams.referral_type = storedReferralType;
-          }
-        }
-
-        if (
-          !parsedParams.referral_value &&
-          typeof sessionStorage !== "undefined"
-        ) {
-          const storedReferralValue = sessionStorage.getItem(
-            "oqtima_referral_value"
-          );
-          if (storedReferralValue) {
-            console.log(
-              "Found referral_value in sessionStorage:",
-              storedReferralValue
-            );
-            parsedParams.referral_value = storedReferralValue;
-          }
-        }
-
-        // Check global window variables as a last resort
-        if (
-          !parsedParams.referral_type &&
-          typeof window !== "undefined" &&
-          window.__OQTIMA_REFERRAL_TYPE__
-        ) {
-          console.log(
-            "Found referral_type in window globals:",
-            window.__OQTIMA_REFERRAL_TYPE__
-          );
-          parsedParams.referral_type = window.__OQTIMA_REFERRAL_TYPE__;
-        }
-
-        if (
-          !parsedParams.referral_value &&
-          typeof window !== "undefined" &&
-          window.__OQTIMA_REFERRAL_VALUE__
-        ) {
-          console.log(
-            "Found referral_value in window globals:",
-            window.__OQTIMA_REFERRAL_VALUE__
-          );
-          parsedParams.referral_value = window.__OQTIMA_REFERRAL_VALUE__;
-        }
-
         // NEW: If URL parameters are empty, try to extract language from the iframe's src attribute
         // This is needed because some environments (like dev.oqt-ima.com) may not properly pass URL parameters
         if (!parsedParams.langParam && window.location.pathname) {
@@ -646,7 +523,6 @@ const PopupRegistrationForm = ({ params }) => {
 
       return parsedParams;
     } catch (e) {
-      console.error("Error in safeParams parsing:", e);
       return {};
     }
   }, [params]);
@@ -658,13 +534,6 @@ const PopupRegistrationForm = ({ params }) => {
   const [referral_value, setReferralValue] = useState(
     safeParams.referral_value || null
   );
-
-  // Log initial referral parameters for debugging
-  useEffect(() => {
-    console.log("Initial safeParams:", safeParams);
-    console.log("Initial referral_type state:", referral_type);
-    console.log("Initial referral_value state:", referral_value);
-  }, []);
 
   // ADDED: Store country and IP information with defaults
   const [clientIpAddress, setClientIpAddress] = useState(null);
@@ -1309,21 +1178,19 @@ const PopupRegistrationForm = ({ params }) => {
   };
 
   const handleRegistrationtForm = async (values) => {
-    // DEBUGGING: Log the current state of all relevant parameters
-    console.log("📋 FORM SUBMISSION PARAMETERS:", {
-      referral_type_state: referral_type,
-      referral_value_state: referral_value,
-      referral_type_from_safeParams: safeParams.referral_type,
-      referral_value_from_safeParams: safeParams.referral_value,
-      values: values,
-      rawParams: params,
-    });
-
     const token = await executeRecaptcha("popup_registration");
 
     // Create a local copy of portalLanguageCode that we can modify
     let submissionLanguage = portalLanguageCode;
     console.log("submissionLanguage", submissionLanguage);
+    // CRITICAL FIX: Additional safety check to ensure language is valid
+    // If language still contains "?" or is longer than 5 chars, it's probably invalid
+    // if (
+    //   submissionLanguage &&
+    //   (submissionLanguage.includes("?") || submissionLanguage.length > 5)
+    // ) {
+    //   submissionLanguage = "en";
+    // }
 
     // Check if we're in a Brazilian Portuguese URL path
     const urlPath =
@@ -1333,42 +1200,6 @@ const PopupRegistrationForm = ({ params }) => {
     }
 
     try {
-      // Get the latest referral parameters from state, URL, session or globals
-      let currentReferralType = referral_type;
-      let currentReferralValue = referral_value;
-
-      // If still null, try to get them from URL or storage one more time
-      if (!currentReferralType || !currentReferralValue) {
-        if (typeof window !== "undefined") {
-          const urlParams = new URLSearchParams(window.location.search);
-          // Check for referral parameters again
-          if (!currentReferralType) {
-            currentReferralType =
-              urlParams.get("referral_type") ||
-              urlParams.get("referralType") ||
-              urlParams.get("referral-type") ||
-              sessionStorage.getItem("oqtima_referral_type") ||
-              window.__OQTIMA_REFERRAL_TYPE__ ||
-              null;
-          }
-
-          if (!currentReferralValue) {
-            currentReferralValue =
-              urlParams.get("referral_value") ||
-              urlParams.get("referralValue") ||
-              urlParams.get("referral-value") ||
-              sessionStorage.getItem("oqtima_referral_value") ||
-              window.__OQTIMA_REFERRAL_VALUE__ ||
-              null;
-          }
-        }
-      }
-
-      console.log("Final referral params before submission:", {
-        currentReferralType,
-        currentReferralValue,
-      });
-
       // Prepare submission data with referral parameters
       const submissionData = {
         ...values,
@@ -1394,17 +1225,17 @@ const PopupRegistrationForm = ({ params }) => {
         });
       }
 
-      console.log("referral_type", currentReferralType);
+      console.log("referral_type", referral_type);
       // Only add referral parameters if we have them
-      if (currentReferralType) {
-        submissionData.referral_type = currentReferralType;
+      if (referral_type) {
+        submissionData.referral_type = referral_type;
       }
 
-      console.log("referral_value", currentReferralValue);
-      if (currentReferralValue) {
-        submissionData.referral_value = currentReferralValue;
+      console.log("referral_value", referral_value);
+      if (referral_value) {
+        submissionData.referral_value = referral_value;
       }
-      console.log("Final submissionData:", submissionData);
+      console.log("submissionData", submissionData);
       const response = await axios.post(
         `${API_URL}crm-register`,
         submissionData
@@ -1414,6 +1245,92 @@ const PopupRegistrationForm = ({ params }) => {
         handleApiResponse(false, response.data.message, response.data.code);
       } else {
         handleApiResponse(true);
+
+        const redirectAddress = response.data.redirect_address;
+        if (redirectAddress) {
+          // Check if we're in an iframe
+          if (window.parent !== window) {
+            // ENHANCED: Send multiple message formats to ensure compatibility
+
+            // 1. Standard object format with REDIRECT_TO_URL type
+            window.parent.postMessage(
+              {
+                type: "REDIRECT_TO_URL",
+                url: redirectAddress,
+                success: true,
+                timestamp: Date.now(),
+              },
+              "*"
+            );
+
+            // 2. Alternative object format with redirectUrl property
+            window.parent.postMessage(
+              {
+                type: "REDIRECT_TO_URL",
+                redirectUrl: redirectAddress,
+                success: true,
+                timestamp: Date.now(),
+              },
+              "*"
+            );
+
+            // 3. Registration success format
+            window.parent.postMessage(
+              {
+                type: "REGISTRATION_SUCCESS",
+                url: redirectAddress,
+                redirectUrl: redirectAddress,
+                success: true,
+                timestamp: Date.now(),
+              },
+              "*"
+            );
+
+            // 4. Simple string format (for the global handler)
+            window.parent.postMessage(`redirect:${redirectAddress}`, "*");
+
+            // 5. Direct URL string (for simple string extraction)
+            setTimeout(() => {
+              window.parent.postMessage(redirectAddress, "*");
+            }, 100);
+
+            // ENHANCED: Try direct redirection approach for some browsers
+            try {
+              // Some browsers allow this in certain contexts
+              if (window.top) {
+                setTimeout(() => {
+                  try {
+                    window.top.location.href = redirectAddress;
+                  } catch (err) {
+                    // Could not set top location
+                  }
+                }, 300);
+              }
+            } catch (err) {
+              // Could not access top window
+            }
+
+            // ENHANCED: As a final fallback, try to save to sessionStorage for use on page reload
+            try {
+              sessionStorage.setItem(
+                "OQTIMA_PENDING_REDIRECT",
+                redirectAddress
+              );
+
+              // Set a flag to indicate successful registration
+              sessionStorage.setItem("OQTIMA_REGISTRATION_SUCCESS", "true");
+              sessionStorage.setItem(
+                "OQTIMA_REGISTRATION_TIMESTAMP",
+                Date.now().toString()
+              );
+            } catch (err) {
+              // Could not save to sessionStorage
+            }
+          } else {
+            // If not in iframe, redirect normally
+            window.location.href = redirectAddress;
+          }
+        }
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || "An error occurred";

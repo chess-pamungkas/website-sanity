@@ -470,32 +470,8 @@
     const containers = document.querySelectorAll("[data-oqtima-register]");
     if (containers.length === 0) return;
 
-    console.log("[OQtima] Found registration containers:", containers.length);
-
-    // Add styles first
     addStyles();
-
-    // Process each container
-    containers.forEach((container, index) => {
-      console.log(`[OQtima] Processing container #${index + 1}`);
-
-      // Extract all data attributes to ensure we capture everything
-      const dataAttributes = {};
-      Array.from(container.attributes).forEach((attr) => {
-        if (attr.name.startsWith("data-")) {
-          const key = attr.name.substring(5); // Remove 'data-' prefix
-          const value = attr.value;
-          dataAttributes[key] = value;
-          console.log(`[OQtima] Found data attribute: ${attr.name} = ${value}`);
-        }
-      });
-
-      // Store data attributes on the container element for later access
-      container.dataset.oqtimaParams = JSON.stringify(dataAttributes);
-
-      // Create registration button with extracted data attributes
-      createRegistrationButton(container, dataAttributes);
-    });
+    containers.forEach((container) => createRegistrationButton(container));
   }
 
   /**
@@ -804,30 +780,12 @@
   /**
    * Create a registration button within the provided container
    */
-  function createRegistrationButton(container, dataAttributes = {}) {
-    // Get button attributes with fallbacks from data attributes if available
-    const text =
-      container.getAttribute("data-text") ||
-      dataAttributes.text ||
-      "GET STARTED";
-    const lang =
-      container.getAttribute("data-lang") || dataAttributes.lang || "en";
-
-    // For referral parameters, we need to be extra careful
-    // First check direct attribute, then check from dataAttributes object, normalize names
-    const referralType =
-      container.getAttribute("data-referral-type") ||
-      dataAttributes["referral-type"] ||
-      container.getAttribute("data-referralType") ||
-      dataAttributes.referralType ||
-      null;
-
-    const referralValue =
-      container.getAttribute("data-referral-value") ||
-      dataAttributes["referral-value"] ||
-      container.getAttribute("data-referralValue") ||
-      dataAttributes.referralValue ||
-      null;
+  function createRegistrationButton(container) {
+    // Get button attributes
+    const text = container.getAttribute("data-text") || "GET STARTED";
+    const lang = container.getAttribute("data-lang") || "en";
+    const referralType = container.getAttribute("data-referral-type");
+    const referralValue = container.getAttribute("data-referral-value");
 
     // Log attributes for debugging
     console.log("[OQtima] Creating registration button with attributes:", {
@@ -835,7 +793,6 @@
       lang,
       referralType,
       referralValue,
-      dataAttributes,
     });
 
     // Create button element
@@ -863,60 +820,11 @@
     // Add click handler
     button.addEventListener("click", function (event) {
       event.preventDefault();
-
-      // Create proper parameter object with normalized keys
-      const popupParams = {
-        lang: lang,
-      };
-
-      // Properly set referral parameters using standard keys
-      if (referralType) {
-        popupParams.referral_type = referralType;
-        console.log(
-          "[OQtima] Setting referral_type from data attribute:",
-          referralType
-        );
-      }
-
-      if (referralValue) {
-        popupParams.referral_value = referralValue;
-        console.log(
-          "[OQtima] Setting referral_value from data attribute:",
-          referralValue
-        );
-      }
-
-      // Add any other data attributes that might be present
-      for (const [key, value] of Object.entries(dataAttributes)) {
-        // Skip already processed attributes
-        if (
-          key === "text" ||
-          key === "lang" ||
-          key === "referral-type" ||
-          key === "referralType" ||
-          key === "referral-value" ||
-          key === "referralValue"
-        ) {
-          continue;
-        }
-
-        // Convert kebab-case to snake_case for consistency
-        const normalizedKey = key.replace(/-/g, "_");
-        if (!popupParams[normalizedKey]) {
-          popupParams[normalizedKey] = value;
-          console.log(
-            `[OQtima] Added additional param: ${normalizedKey} = ${value}`
-          );
-        }
-      }
-
       console.log(
-        "[OQtima] Button clicked, opening popup with params:",
-        popupParams
+        "[OQtima] Button clicked, opening popup with language:",
+        lang
       );
-
-      // Open popup with normalized parameters
-      openRegistrationPopup(popupParams);
+      openRegistrationPopup({ lang, referralType, referralValue });
     });
 
     return button;
@@ -935,41 +843,6 @@
 
     // ENHANCED: Create standardized params object with all possible variations of parameters
     const params = { ...options };
-
-    // CRITICAL FIX: Normalize data attribute parameter names from HTML elements
-    // For example, convert data-referral-type to referral_type format
-    if (params["data-referral-type"] !== undefined && !params.referral_type) {
-      params.referral_type = params["data-referral-type"];
-      console.log(
-        "[OQtima] Converted data-referral-type to referral_type:",
-        params.referral_type
-      );
-    }
-
-    if (params["data-referral-value"] !== undefined && !params.referral_value) {
-      params.referral_value = params["data-referral-value"];
-      console.log(
-        "[OQtima] Converted data-referral-value to referral_value:",
-        params.referral_value
-      );
-    }
-
-    // Also handle camelCase versions that might come from data attributes
-    if (params.referralType !== undefined && !params.referral_type) {
-      params.referral_type = params.referralType;
-      console.log(
-        "[OQtima] Converted referralType to referral_type:",
-        params.referral_type
-      );
-    }
-
-    if (params.referralValue !== undefined && !params.referral_value) {
-      params.referral_value = params.referralValue;
-      console.log(
-        "[OQtima] Converted referralValue to referral_value:",
-        params.referral_value
-      );
-    }
 
     // ENHANCED: Normalize language parameter - support multiple parameter names
     params.language =
@@ -2749,7 +2622,7 @@
                             document.body.appendChild(fallback);
                             
                             // Remove after 15 seconds
-                      setTimeout(function() {
+                            setTimeout(function() {
                               if (fallback.parentNode) {
                                 fallback.parentNode.removeChild(fallback);
                               }
