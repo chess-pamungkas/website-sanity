@@ -489,7 +489,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
         right: 0;
         bottom: 0;
         z-index: 2147483647;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.7);
         display: flex;
         justify-content: center;
         align-items: flex-start;
@@ -911,7 +911,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
                 zIndex: 9999,
               }
             : {
@@ -1005,7 +1005,25 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
               >
                 {t("popup-registration-register")}
               </h1>
-              <PopupRegistrationForm params={JSON.stringify(parsedParams)} />
+              <PopupRegistrationForm
+                params={JSON.stringify({
+                  ...parsedParams,
+                  // Explicitly ensure referral parameters are passed with the correct names
+                  referral_type:
+                    parsedParams.referral_type ||
+                    parsedParams.referralType ||
+                    parsedParams["referral-type"] ||
+                    parsedParams["data-referral-type"],
+                  referral_value:
+                    parsedParams.referral_value ||
+                    parsedParams.referralValue ||
+                    parsedParams["referral-value"] ||
+                    parsedParams["data-referral-value"],
+                  // Add other parameters that might be useful for debugging
+                  _source: "popup-registration-component",
+                  _timestamp: Date.now(),
+                })}
+              />
               <div className="risk-warning-container">
                 <div className="risk-warning-content">
                   <p className="risk-warning-text">
