@@ -871,7 +871,7 @@
       if (typeof window !== "undefined" && window.location.pathname) {
         const pathParts = window.location.pathname.split("/").filter(Boolean);
         // If first path segment looks like a language code, use it as priority
-        if (pathParts.length > 0 && pathParts[0].length <= 5) {
+        if (pathParts.length > 0 && pathParts[0].length <= 7) {
           console.log("[OQtima] Detected language in URL path:", pathParts[0]);
           // Special handling for Brazilian Portuguese
           if (pathParts[0] === "br") {

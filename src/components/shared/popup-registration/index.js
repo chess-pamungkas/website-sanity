@@ -1275,8 +1275,8 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
               .filter(Boolean);
             if (pathParts.length > 0) {
               const potentialLang = pathParts[0];
-              if (potentialLang.length <= 5) {
-                // Most language codes are 2-5 chars
+              if (potentialLang.length <= 7) {
+                // Most language codes are 2-7 chars
                 console.log("Setting language from URL path:", potentialLang);
 
                 try {
@@ -1492,7 +1492,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
           const pathParts = window.location.pathname.split("/").filter(Boolean);
 
           // If the path starts with a language code (like /id/ or /en/)
-          if (pathParts.length > 0 && pathParts[0].length <= 5) {
+          if (pathParts.length > 0 && pathParts[0].length <= 7) {
             const pathLanguage = pathParts[0];
             console.log("Detected language from URL path:", pathLanguage);
 
