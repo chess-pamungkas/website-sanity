@@ -176,7 +176,7 @@
       hostname === "lp.oqtima.com" ||
       hostname === "www.oqtima.com"
     ) {
-      return "https://back.oqt-ima.com/";
+      return "https://back.oqtima.com/";
     }
 
     // Default fallback for unknown domains
