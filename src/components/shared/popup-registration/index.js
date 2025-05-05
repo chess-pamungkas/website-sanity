@@ -17,38 +17,6 @@ const RTL_LANGUAGES = ["ar"];
 export const cleanRTLAttributes = () => {
   if (typeof window === "undefined") return;
 
-  // Check if the current language is Arabic
-  const isArabic = () => {
-    // Check multiple sources for language information
-    const htmlLang = document.documentElement.getAttribute("lang");
-    const sessionLang = sessionStorage.getItem("oqtima_tab_language");
-    const localStorageLang = localStorage.getItem("i18nextLng");
-    const globalLang = window.__OQTIMA_COMPONENT_LANGUAGE;
-
-    // Check if any of these sources indicate Arabic
-    return (
-      (htmlLang && htmlLang.toLowerCase() === "ar") ||
-      (sessionLang && sessionLang.toLowerCase() === "ar") ||
-      (localStorageLang && localStorageLang.toLowerCase() === "ar") ||
-      (globalLang && globalLang.toLowerCase() === "ar")
-    );
-  };
-
-  // Early exit if language is Arabic - maintain RTL attributes
-  if (isArabic()) {
-    console.log("Arabic language detected - preserving RTL attributes");
-
-    // Instead of cleaning, ensure RTL attributes are properly set
-    document.documentElement.setAttribute("dir", "rtl");
-    document.documentElement.classList.add("rtl-active", "rtl");
-    document.documentElement.setAttribute("data-rtl", "true");
-    document.body.setAttribute("dir", "rtl");
-    document.body.classList.add("rtl-active", "rtl");
-    document.body.setAttribute("data-rtl", "true");
-
-    return;
-  }
-
   console.log("Cleaning all RTL attributes and classes");
 
   // Remove RTL classes from document element
@@ -58,8 +26,8 @@ export const cleanRTLAttributes = () => {
 
   // Remove RTL classes from body
   document.body.classList.remove("rtl-active", "rtl", "is-rtl");
-  document.body.setAttribute("dir", "ltr");
-  document.body.removeAttribute("data-rtl");
+  // document.body.setAttribute("dir", "ltr");
+  // document.body.removeAttribute("data-rtl");
 
   // Remove RTL styles
   const rtlStyleElement = document.getElementById(
@@ -83,36 +51,20 @@ export const cleanRTLAttributes = () => {
   );
   if (registrationContainers.length > 0) {
     registrationContainers.forEach((container) => {
-      container.classList.remove(
-        "rtl-active",
-        "popup-registration--rtl",
-        "rtl",
-        "is-rtl"
-      );
+      container.classList.remove("rtl-active", "popup-registration--rtl");
       container.setAttribute("dir", "ltr");
       container.removeAttribute("data-rtl");
     });
   }
 
   // Reset form elements
-  const rtlElements = document.querySelectorAll(
-    "[dir='rtl'], .rtl-element, [data-rtl='true']"
-  );
+  const rtlElements = document.querySelectorAll(".rtl-element");
   if (rtlElements.length > 0) {
     rtlElements.forEach((el) => {
-      el.classList.remove("rtl-element", "rtl-active", "rtl", "is-rtl");
-      el.setAttribute("dir", "ltr");
-      el.removeAttribute("data-rtl");
+      el.classList.remove("rtl-element");
+      el.removeAttribute("dir");
     });
   }
-
-  // Force a complete removal on the body tag specifically
-  document.body.className = document.body.className
-    .replace(/rtl(-active)?|is-rtl/gi, "")
-    .trim();
-  document.body.setAttribute("dir", "ltr");
-  document.body.removeAttribute("data-rtl");
-  document.body.style.direction = "ltr";
 
   // Force UI update by triggering a reflow
   const reflow = document.body.offsetHeight;
@@ -214,37 +166,7 @@ if (typeof window !== "undefined") {
       if (localStorage.getItem("i18nextLng") !== tabLanguage) {
         localStorage.setItem("i18nextLng", tabLanguage);
       }
-
-      // Ensure non-Arabic languages don't have RTL attributes
-      if (tabLanguage !== "ar") {
-        // Clean RTL attributes for non-Arabic languages
-        cleanRTLAttributes();
-      }
     }
-
-    // Make cleanRTLAttributes function globally available
-    window.cleanRTLAttributes = cleanRTLAttributes;
-
-    // Add a MutationObserver to watch for language changes
-    const languageObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === "lang") {
-          const currentLang = document.documentElement.getAttribute("lang");
-          if (currentLang && currentLang.toLowerCase() !== "ar") {
-            console.log(
-              "MutationObserver: Non-Arabic language detected, cleaning RTL attributes"
-            );
-            cleanRTLAttributes();
-          }
-        }
-      });
-    });
-
-    // Start observing language changes
-    languageObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["lang"],
-    });
   } catch (e) {
     console.warn("Could not initialize tab-specific language:", e);
   }
@@ -406,7 +328,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
         // Force LTR for non-Arabic language
         if (htmlDir === "rtl" && (!htmlLang || htmlLang !== "ar")) {
           document.documentElement.setAttribute("dir", "ltr");
-          document.body.setAttribute("dir", "ltr");
+          // document.body.setAttribute("dir", "ltr");
           console.log("Force reset RTL to LTR on initial load");
         }
       }
@@ -567,17 +489,6 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
   // FIXED: Make the RTL detection more specific and explicit
   let forcedRTL = false;
 
-  // Check if we already have an RTL setting in sessionStorage (set by parent script)
-  if (typeof window !== "undefined") {
-    const storedRtl = sessionStorage.getItem("oqtima_tab_rtl");
-    if (storedRtl === "true") {
-      forcedRTL = true;
-      console.log(
-        "RTL mode enabled from sessionStorage oqtima_tab_rtl setting"
-      );
-    }
-  }
-
   // Check if auto RTL detection is specifically disabled
   if (typeof window !== "undefined" && window.__OQTIMA_DISABLE_AUTO_RTL__) {
     console.log(
@@ -614,17 +525,6 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
       );
     }
   }
-  // Check language parameter
-  else if (
-    !forcedRTL &&
-    parsedParams?.language &&
-    RTL_LANGUAGES.includes(parsedParams.language.toLowerCase())
-  ) {
-    forcedRTL = true;
-    console.log(
-      `RTL mode enabled from language parameter: ${parsedParams.language}`
-    );
-  }
   // URL path check only if no other language indicators exist
   else if (
     !forcedLanguage &&
@@ -645,11 +545,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
   // Override RTL detection if we have a direct conflict between HTML lang and RTL settings
   if (typeof window !== "undefined") {
     const htmlLang = document.documentElement.getAttribute("lang");
-    if (htmlLang && htmlLang.toLowerCase() === "ar") {
-      // If HTML lang is Arabic, force RTL regardless of other settings
-      forcedRTL = true;
-      console.log(`Forcing RTL mode because HTML lang="${htmlLang}" is Arabic`);
-    } else if (
+    if (
       htmlLang &&
       !RTL_LANGUAGES.includes(htmlLang.toLowerCase()) &&
       forcedRTL
@@ -664,12 +560,6 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
         cleanRTLAttributes();
       }
     }
-  }
-
-  // Check global RTL flags too
-  if (typeof window !== "undefined" && window.__FORCE_RTL__) {
-    forcedRTL = true;
-    console.log("RTL mode enabled from global __FORCE_RTL__ flag");
   }
 
   const isRTLMode = forcedRTL || isRTL;
@@ -706,7 +596,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
 
     // Update document classes and attributes immediately
     document.documentElement.setAttribute("dir", isRTLMode ? "rtl" : "ltr");
-    document.body.setAttribute("dir", isRTLMode ? "rtl" : "ltr");
+    // document.body.setAttribute("dir", isRTLMode ? "rtl" : "ltr");
 
     if (isRTLMode) {
       document.documentElement.classList.add("rtl-active");
@@ -714,7 +604,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
       document.documentElement.setAttribute("data-rtl", "true");
       document.body.classList.add("rtl-active");
       document.body.classList.add("rtl");
-      document.body.setAttribute("data-rtl", "true");
+      // document.body.setAttribute("data-rtl", "true");
     } else {
       // Remove all possible RTL classes
       document.documentElement.classList.remove("rtl-active", "rtl", "is-rtl");
@@ -972,36 +862,15 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     window.__FORCE_RTL__ = isRTLMode;
     window.__ORIGINAL_RTL__ = isRTLMode;
 
-    // Log current RTL status
-    console.log("RTL Mode Status:", {
-      isRTLMode: isRTLMode,
-      forcedRTL: forcedRTL,
-      hookIsRTL: isRTL,
-      documentDir: document.documentElement.getAttribute("dir"),
-      documentLang: document.documentElement.getAttribute("lang"),
-      sessionRTL: sessionStorage.getItem("oqtima_tab_rtl"),
-      forceRTLFlag: window.__FORCE_RTL__,
-    });
-
     const setupRTL = async () => {
       // Clean up previous RTL settings first
       document.documentElement.setAttribute("dir", isRTLMode ? "rtl" : "ltr");
-      document.body.setAttribute("dir", isRTLMode ? "rtl" : "ltr");
+      // document.body.setAttribute("dir", isRTLMode ? "rtl" : "ltr");
 
       if (isRTLMode) {
         // Add RTL classes
-        document.documentElement.classList.add("rtl-active", "rtl");
-        document.documentElement.setAttribute("data-rtl", "true");
-        document.body.classList.add("rtl-active", "rtl");
-        document.body.setAttribute("data-rtl", "true");
-
-        // Ensure Arabic language is also set
-        if (document.documentElement.getAttribute("lang") !== "ar") {
-          document.documentElement.setAttribute("lang", "ar");
-        }
-
-        // Store RTL state in sessionStorage
-        sessionStorage.setItem("oqtima_tab_rtl", "true");
+        document.documentElement.classList.add("rtl-active");
+        document.body.classList.add("rtl-active");
 
         // Add RTL styles
         if (!document.getElementById("popup-registration-rtl-styles")) {
@@ -1024,8 +893,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
             .popup-registration--rtl .popup-registration__container,
             [dir="rtl"] .popup-registration__container,
             .popup-registration__container[dir="rtl"],
-            [dir="rtl"] .popup-registration .popup-registration__container,
-            html[dir="rtl"] .popup-registration .popup-registration__container {
+            [dir="rtl"] .popup-registration .popup-registration__container {
               flex-direction: row-reverse !important;
             }
 
@@ -1086,14 +954,12 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
 
             /* RTL sidebar positioning */
             .popup-registration--rtl .popup-registration__sidebar,
-            [dir="rtl"] .popup-registration .popup-registration__sidebar,
-            html[dir="rtl"] .popup-registration .popup-registration__sidebar {
+            [dir="rtl"] .popup-registration .popup-registration__sidebar {
               order: 2 !important;
             }
 
             .popup-registration--rtl .popup-registration__content,
-            [dir="rtl"] .popup-registration .popup-registration__content,
-            html[dir="rtl"] .popup-registration .popup-registration__content {
+            [dir="rtl"] .popup-registration .popup-registration__content {
               order: 1 !important;
             }
 
@@ -1117,17 +983,8 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
         }
       } else {
         // Remove RTL classes
-        document.documentElement.classList.remove(
-          "rtl-active",
-          "rtl",
-          "is-rtl"
-        );
-        document.body.classList.remove("rtl-active", "rtl", "is-rtl");
-        document.documentElement.removeAttribute("data-rtl");
-        document.body.removeAttribute("data-rtl");
-
-        // Store RTL state in sessionStorage
-        sessionStorage.setItem("oqtima_tab_rtl", "false");
+        document.documentElement.classList.remove("rtl-active");
+        document.body.classList.remove("rtl-active");
 
         // Remove RTL styles
         const rtlStyle = document.getElementById(
@@ -1147,17 +1004,10 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
 
     return () => {
       if (isRTLMode) {
-        // Don't remove RTL settings on unmount if we're in RTL mode
-        // This prevents flashing between RTL and LTR
-      } else {
         document.documentElement.removeAttribute("dir");
         document.body.removeAttribute("dir");
-        document.documentElement.classList.remove(
-          "rtl-active",
-          "rtl",
-          "is-rtl"
-        );
-        document.body.classList.remove("rtl-active", "rtl", "is-rtl");
+        document.documentElement.classList.remove("rtl-active");
+        document.body.classList.remove("rtl-active");
 
         const rtlStyle = document.getElementById(
           "popup-registration-rtl-styles"
@@ -1209,100 +1059,6 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
 
         try {
           const { data } = event.data;
-
-          // Handle language parameters - high priority
-          let languageHandled = false;
-          const languageKeys = [
-            "language",
-            "data-lang",
-            "data_lang",
-            "oqtima_tab_language",
-            "tab_language",
-            "lang",
-          ];
-
-          for (const key of languageKeys) {
-            if (data[key] !== undefined && data[key] !== null) {
-              const langValue = data[key];
-              console.log(
-                `Setting language from message parameter ${key}:`,
-                langValue
-              );
-
-              // Store in sessionStorage and localStorage
-              try {
-                sessionStorage.setItem("oqtima_tab_language", langValue);
-                localStorage.setItem("i18nextLng", langValue);
-
-                // Set global variables
-                window.__OQTIMA_TAB_LANGUAGE__ = langValue;
-                window.__OQTIMA_LOCKED_LANG__ = langValue;
-                window.__OQTIMA_COMPONENT_LANGUAGE__ = langValue;
-                window.__FORCE_LANGUAGE__ = true;
-
-                // Set on document element
-                document.documentElement.setAttribute("lang", langValue);
-
-                // CRITICAL: If language is not Arabic, ensure RTL attributes are removed
-                if (langValue.toLowerCase() !== "ar") {
-                  console.log(
-                    "Non-Arabic language received via message, cleaning RTL attributes"
-                  );
-                  cleanRTLAttributes();
-
-                  // Also set RTL flag to false explicitly in sessionStorage
-                  sessionStorage.setItem("oqtima_tab_rtl", "false");
-
-                  // Update global RTL flags
-                  window.__FORCE_RTL__ = false;
-                  window.__ORIGINAL_RTL__ = false;
-                }
-
-                // Log success
-                console.log("Successfully set language to:", langValue);
-                languageHandled = true;
-                break; // Stop after first successful language parameter
-              } catch (e) {
-                console.error("Error setting language:", e);
-              }
-            }
-          }
-
-          // Check URL path for language if no language parameter was found
-          if (!languageHandled && typeof window !== "undefined") {
-            const pathParts = window.location.pathname
-              .split("/")
-              .filter(Boolean);
-            if (pathParts.length > 0) {
-              const potentialLang = pathParts[0];
-              if (potentialLang.length <= 7) {
-                // Most language codes are 2-7 chars
-                console.log("Setting language from URL path:", potentialLang);
-
-                try {
-                  // Store language from URL path
-                  sessionStorage.setItem("oqtima_tab_language", potentialLang);
-                  localStorage.setItem("i18nextLng", potentialLang);
-
-                  // Set global variables
-                  window.__OQTIMA_TAB_LANGUAGE__ = potentialLang;
-                  window.__OQTIMA_LOCKED_LANG__ = potentialLang;
-                  window.__OQTIMA_COMPONENT_LANGUAGE__ = potentialLang;
-                  window.__FORCE_LANGUAGE__ = true;
-
-                  // Set on document element
-                  document.documentElement.setAttribute("lang", potentialLang);
-
-                  console.log(
-                    "Successfully set language from URL path to:",
-                    potentialLang
-                  );
-                } catch (e) {
-                  console.error("Error setting language from URL path:", e);
-                }
-              }
-            }
-          }
 
           // Store referral parameters in session storage
           if (data.referral_type !== undefined && data.referral_type !== null) {
@@ -1492,7 +1248,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
           const pathParts = window.location.pathname.split("/").filter(Boolean);
 
           // If the path starts with a language code (like /id/ or /en/)
-          if (pathParts.length > 0 && pathParts[0].length <= 7) {
+          if (pathParts.length > 0 && pathParts[0].length <= 5) {
             const pathLanguage = pathParts[0];
             console.log("Detected language from URL path:", pathLanguage);
 
@@ -1673,54 +1429,6 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     };
   }, [parsedParams]);
 
-  // Add language detection logic to maintain RTL for Arabic language
-  if (typeof window !== "undefined") {
-    try {
-      // Check if the current language is Arabic
-      const checkIfArabic = () => {
-        // Check multiple sources for language information
-        const htmlLang = document.documentElement.getAttribute("lang");
-        const sessionLang = sessionStorage.getItem("oqtima_tab_language");
-        const localStorageLang = localStorage.getItem("i18nextLng");
-        const globalLang = window.__OQTIMA_COMPONENT_LANGUAGE;
-
-        // Check if any of these sources indicate Arabic
-        const isArabic =
-          (htmlLang && htmlLang.toLowerCase() === "ar") ||
-          (sessionLang && sessionLang.toLowerCase() === "ar") ||
-          (localStorageLang && localStorageLang.toLowerCase() === "ar") ||
-          (globalLang && globalLang.toLowerCase() === "ar");
-
-        return isArabic;
-      };
-
-      // If Arabic is the current language, ensure RTL attributes are set
-      if (checkIfArabic()) {
-        console.log("Arabic language detected - maintaining RTL attributes");
-
-        // Set RTL attributes on HTML element
-        document.documentElement.setAttribute("dir", "rtl");
-        document.documentElement.setAttribute("lang", "ar");
-        document.documentElement.classList.add("rtl-active", "rtl");
-        document.documentElement.setAttribute("data-rtl", "true");
-
-        // Set RTL attributes on body element
-        document.body.setAttribute("dir", "rtl");
-        document.body.classList.add("rtl-active", "rtl");
-        document.body.setAttribute("data-rtl", "true");
-
-        // Set global RTL flags
-        window.__FORCE_RTL__ = true;
-        window.__ORIGINAL_RTL__ = true;
-
-        // Store RTL setting in session storage
-        sessionStorage.setItem("oqtima_tab_rtl", "true");
-      }
-    } catch (e) {
-      console.warn("Error in initial Arabic language detection:", e);
-    }
-  }
-
   if (!isOpen) return null;
 
   const benefits = benefitsConfig.filter(({ entities }) =>
@@ -1761,8 +1469,6 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
           "content-ready": isContentReady,
           "popup-registration--external": isExternalLoad,
           "popup-registration--internal": !isExternalLoad,
-          "rtl-active": isRTLMode,
-          rtl: isRTLMode,
         })}
         data-rtl={isRTLMode ? "true" : "false"}
         dir={isRTLMode ? "rtl" : "ltr"}
@@ -1787,24 +1493,18 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
                 display: "flex",
                 flexDirection: "column",
               }),
-          ...(isRTLMode ? { direction: "rtl" } : { direction: "ltr" }),
         }}
       >
         <div
           className={cn("popup-registration__wrapper", {
             "popup-registration__wrapper--rtl": isRTLMode,
-            "rtl-active": isRTLMode,
-            rtl: isRTLMode,
           })}
           dir={isRTLMode ? "rtl" : "ltr"}
-          data-rtl={isRTLMode ? "true" : "false"}
         >
           <div
             key={isRTLMode ? "rtl-container" : "ltr-container"}
             className={cn("popup-registration__container", className, {
               "popup-registration__container--rtl": isRTLMode,
-              "rtl-active": isRTLMode,
-              rtl: isRTLMode,
             })}
             dir={isRTLMode ? "rtl" : "ltr"}
             style={
@@ -1812,23 +1512,17 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
                 ? {
                     flexDirection: "row-reverse !important",
                     display: "flex !important",
-                    direction: "rtl",
                   }
                 : {}
             }
-            data-rtl={isRTLMode ? "true" : "false"}
+            data-rtl={isRTLMode.toString()}
           >
             <div
               className={cn("popup-registration__sidebar", {
                 "popup-registration__sidebar--rtl": isRTLMode,
-                "rtl-active": isRTLMode,
-                rtl: isRTLMode,
               })}
               data-rtl={isRTLMode ? "true" : "false"}
-              dir={isRTLMode ? "rtl" : "ltr"}
-              style={
-                isRTLMode ? { order: "2 !important", direction: "rtl" } : {}
-              }
+              style={isRTLMode ? { order: "2 !important" } : {}}
             >
               {(isRTLMode ||
                 isMobile ||
@@ -1864,14 +1558,9 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
             <div
               className={cn("popup-registration__content", {
                 "popup-registration__content--rtl": isRTLMode,
-                "rtl-active": isRTLMode,
-                rtl: isRTLMode,
               })}
               data-rtl={isRTLMode ? "true" : "false"}
-              dir={isRTLMode ? "rtl" : "ltr"}
-              style={
-                isRTLMode ? { order: "1 !important", direction: "rtl" } : {}
-              }
+              style={isRTLMode ? { order: "1 !important" } : {}}
             >
               {!isRTLMode && !isMobile && (
                 <img
