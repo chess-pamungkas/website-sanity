@@ -124,8 +124,8 @@ const manuallySetLanguage = async (lang, i18nInstance) => {
       // Apply RTL classes to HTML and body
       document.documentElement.classList.add("rtl-active");
       document.documentElement.setAttribute("dir", "rtl");
-      document.body.classList.add("rtl-active");
-      document.body.setAttribute("dir", "rtl");
+      // document.body.classList.add("rtl-active");
+      // document.body.setAttribute("dir", "rtl");
 
       // Force text direction on critical elements
       const styleTag = document.createElement("style");
@@ -373,8 +373,8 @@ const PopupRegistrationPage = ({ location, data }) => {
                 // Add RTL classes and attributes to HTML and body
                 document.documentElement.setAttribute("dir", "rtl");
                 document.documentElement.classList.add("rtl-active");
-                document.body.setAttribute("dir", "rtl");
-                document.body.classList.add("rtl-active");
+                // document.body.setAttribute("dir", "rtl");
+                // document.body.classList.add("rtl-active");
 
                 // Load RTL stylesheet if needed
                 if (!document.getElementById("rtl-stylesheet")) {
@@ -447,8 +447,8 @@ const PopupRegistrationPage = ({ location, data }) => {
                 // Remove RTL if it's not an RTL language
                 document.documentElement.removeAttribute("dir");
                 document.documentElement.classList.remove("rtl-active");
-                document.body.removeAttribute("dir");
-                document.body.classList.remove("rtl-active");
+                // document.body.removeAttribute("dir");
+                // document.body.classList.remove("rtl-active");
 
                 // Remove RTL from registration container
                 const registrationContainer = document.querySelector(
@@ -739,8 +739,8 @@ const PopupRegistrationPage = ({ location, data }) => {
               // Apply RTL to document
               document.documentElement.classList.add("rtl-active");
               document.documentElement.setAttribute("dir", "rtl");
-              document.body.classList.add("rtl-active");
-              document.body.setAttribute("dir", "rtl");
+              // document.body.classList.add("rtl-active");
+              // document.body.setAttribute("dir", "rtl");
 
               // Add RTL class to main registration container
               const registrationContainer = document.querySelector(
@@ -766,8 +766,8 @@ const PopupRegistrationPage = ({ location, data }) => {
               // Remove RTL if not an RTL language
               document.documentElement.classList.remove("rtl-active");
               document.documentElement.removeAttribute("dir");
-              document.body.classList.remove("rtl-active");
-              document.body.removeAttribute("dir");
+              // document.body.classList.remove("rtl-active");
+              // document.body.removeAttribute("dir");
 
               const registrationContainer = document.querySelector(
                 ".popup-registration"

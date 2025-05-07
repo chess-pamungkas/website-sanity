@@ -10,14 +10,6 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
     script.defer = true;
     script.id = "google-recaptcha-v3";
 
-    // script.onload = () => {
-    //   console.log("reCAPTCHA script loaded successfully");
-    // };
-
-    // script.onerror = (error) => {
-    //   console.error("Error loading reCAPTCHA script:", error);
-    // };
-
     document.body.appendChild(script);
 
     // Update style to position badge at bottom left
