@@ -326,11 +326,11 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
         document.body.classList.remove("rtl-active", "rtl", "is-rtl");
 
         // Force LTR for non-Arabic language
-        if (htmlDir === "rtl" && (!htmlLang || htmlLang !== "ar")) {
-          document.documentElement.setAttribute("dir", "ltr");
-          // document.body.setAttribute("dir", "ltr");
-          console.log("Force reset RTL to LTR on initial load");
-        }
+        // if (htmlDir === "rtl" && (!htmlLang || htmlLang !== "ar")) {
+        // document.documentElement.setAttribute("dir", "ltr");
+        // document.body.setAttribute("dir", "ltr");
+        //   console.log("Force reset RTL to LTR on initial load");
+        // }
       }
 
       // Use sessionStorage instead of localStorage to avoid cross-tab contamination
@@ -1131,12 +1131,72 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
       const currentLang = document.documentElement.getAttribute("lang");
       console.log(`Language change detected: ${currentLang}`);
 
+      // Fix for query string incorrectly set as the language
+      if (currentLang && currentLang.includes("?language=")) {
+        // Extract the actual language code from the query string
+        const langMatch = currentLang.match(/\?language=([a-zA-Z-]+)/);
+        if (langMatch && langMatch[1]) {
+          const actualLang = langMatch[1];
+          console.log(
+            `Fixing incorrectly set language from '${currentLang}' to '${actualLang}'`
+          );
+
+          // Update the HTML lang attribute with the correct value
+          document.documentElement.setAttribute("lang", actualLang);
+
+          // Update language in storage
+          try {
+            sessionStorage.setItem("oqtima_tab_language", actualLang);
+            window.__OQTIMA_COMPONENT_LANGUAGE = actualLang;
+            window.__OQTIMA_LOCKED_LANG = actualLang;
+            localStorage.setItem("i18nextLng", actualLang);
+          } catch (e) {}
+
+          // Check if this is Arabic and set RTL if needed
+          if (actualLang.toLowerCase() === "ar") {
+            console.log("Arabic language detected, applying RTL mode");
+
+            // Apply RTL settings directly instead of calling setupRTL
+            document.documentElement.setAttribute("dir", "rtl");
+            document.documentElement.classList.add("rtl-active");
+            document.body.classList.add("rtl-active");
+
+            // Store RTL state
+            try {
+              sessionStorage.setItem("oqtima_tab_rtl", "true");
+              window.__FORCE_RTL__ = true;
+              window.__ORIGINAL_RTL__ = true;
+            } catch (e) {
+              console.error("Error storing RTL state:", e);
+            }
+
+            return; // Exit early as we've fixed it
+          }
+        }
+      }
+
+      // Normal processing for correctly set languages
       if (currentLang && currentLang.toLowerCase() !== "ar") {
         // If language is not Arabic, ensure we clean up all RTL attributes
         console.log(
           `Non-Arabic language '${currentLang}' detected, cleaning RTL attributes`
         );
         cleanRTLAttributes();
+      } else if (currentLang && currentLang.toLowerCase() === "ar") {
+        // For Arabic language, set RTL attributes
+        console.log("Arabic language detected, applying RTL mode");
+        document.documentElement.setAttribute("dir", "rtl");
+        document.documentElement.classList.add("rtl-active");
+        document.body.classList.add("rtl-active");
+
+        // Store RTL state
+        try {
+          sessionStorage.setItem("oqtima_tab_rtl", "true");
+          window.__FORCE_RTL__ = true;
+          window.__ORIGINAL_RTL__ = true;
+        } catch (e) {
+          console.error("Error storing RTL state:", e);
+        }
       }
     };
 
@@ -1321,21 +1381,29 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
             if (value) {
               console.log(`Found language parameter ${param} in URL:`, value);
 
+              // Clean the language value before using it
+              const cleanLanguageValue = value
+                .trim()
+                .replace(/[^a-zA-Z\-_]/g, "");
+
               // Enforce this language
-              sessionStorage.setItem("oqtima_tab_language", value);
-              window.__OQTIMA_COMPONENT_LANGUAGE = value;
-              window.__OQTIMA_LOCKED_LANG = value;
+              sessionStorage.setItem("oqtima_tab_language", cleanLanguageValue);
+              window.__OQTIMA_COMPONENT_LANGUAGE = cleanLanguageValue;
+              window.__OQTIMA_LOCKED_LANG = cleanLanguageValue;
               window.__FORCE_LANGUAGE__ = true;
-              document.documentElement.setAttribute("lang", value);
+              document.documentElement.setAttribute("lang", cleanLanguageValue);
 
               try {
-                localStorage.setItem("i18nextLng", value);
+                localStorage.setItem("i18nextLng", cleanLanguageValue);
                 if (window.gatsby_i18next_language) {
-                  window.gatsby_i18next_language = value;
+                  window.gatsby_i18next_language = cleanLanguageValue;
                 }
               } catch (e) {}
 
-              console.log("Language from URL parameter enforced:", value);
+              console.log(
+                "Language from URL parameter enforced:",
+                cleanLanguageValue
+              );
               break;
             }
           }

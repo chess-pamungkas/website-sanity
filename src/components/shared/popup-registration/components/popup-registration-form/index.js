@@ -823,16 +823,40 @@ const PopupRegistrationForm = ({ params }) => {
 
     // Explicitly set the language on document element and in storage
     if (detectedLanguage) {
-      document.documentElement.setAttribute("lang", detectedLanguage);
-      sessionStorage.setItem("oqtima_tab_language", detectedLanguage);
-      window.__OQTIMA_TAB_LANGUAGE__ = detectedLanguage;
+      // IMPORTANT: Clean the detected language with our sanitizing function
+      const cleanedLanguage =
+        typeof sanitizeLanguageCode === "function"
+          ? sanitizeLanguageCode(detectedLanguage)
+          : detectedLanguage;
+
+      // If the language was sanitized, log it
+      if (cleanedLanguage !== detectedLanguage) {
+        console.log(
+          `PopupRegistrationForm: Sanitized language from "${detectedLanguage}" to "${cleanedLanguage}"`
+        );
+      }
+
+      document.documentElement.setAttribute("lang", cleanedLanguage);
+      sessionStorage.setItem("oqtima_tab_language", cleanedLanguage);
+      window.__OQTIMA_TAB_LANGUAGE__ = cleanedLanguage;
 
       try {
-        localStorage.setItem("i18nextLng", detectedLanguage);
+        localStorage.setItem("i18nextLng", cleanedLanguage);
       } catch (e) {}
 
+      // Special handling for Arabic language
+      if (cleanedLanguage.toLowerCase() === "ar") {
+        console.log("Arabic language detected, setting RTL mode");
+
+        // Set RTL attributes
+        document.documentElement.setAttribute("dir", "rtl");
+        document.documentElement.classList.add("rtl-active");
+        sessionStorage.setItem("oqtima_tab_rtl", "true");
+        window.__FORCE_RTL__ = true;
+        window.__ORIGINAL_RTL__ = true;
+      }
       // If language is not Arabic, ensure RTL attributes are removed
-      if (detectedLanguage.toLowerCase() !== "ar") {
+      else if (cleanedLanguage.toLowerCase() !== "ar") {
         console.log("Non-Arabic language detected, cleaning RTL attributes");
 
         try {
@@ -877,7 +901,7 @@ const PopupRegistrationForm = ({ params }) => {
         window.__ORIGINAL_RTL__ = false;
       }
 
-      console.log("Language set throughout application:", detectedLanguage);
+      console.log("Language set throughout application:", cleanedLanguage);
     }
   }, [safeParams]);
 
