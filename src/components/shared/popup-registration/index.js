@@ -25,7 +25,7 @@ export const cleanRTLAttributes = () => {
   document.documentElement.removeAttribute("data-rtl");
 
   // Remove RTL classes from body
-  document.body.classList.remove("rtl-active", "rtl", "is-rtl");
+  // document.body.classList.remove("rtl-active", "rtl", "is-rtl");
   // document.body.setAttribute("dir", "ltr");
   // document.body.removeAttribute("data-rtl");
 
@@ -153,7 +153,7 @@ if (typeof window !== "undefined") {
           "rtl",
           "is-rtl"
         );
-        document.body.classList.remove("rtl-active", "rtl", "is-rtl");
+        // document.body.classList.remove("rtl-active", "rtl", "is-rtl");
       }
 
       // Set global vars
@@ -323,7 +323,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
           "rtl",
           "is-rtl"
         );
-        document.body.classList.remove("rtl-active", "rtl", "is-rtl");
+        // document.body.classList.remove("rtl-active", "rtl", "is-rtl");
 
         // Force LTR for non-Arabic language
         // if (htmlDir === "rtl" && (!htmlLang || htmlLang !== "ar")) {
@@ -598,8 +598,8 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
       document.documentElement.classList.add("rtl-active");
       document.documentElement.classList.add("rtl");
       document.documentElement.setAttribute("data-rtl", "true");
-      document.body.classList.add("rtl-active");
-      document.body.classList.add("rtl");
+      // document.body.classList.add("rtl-active");
+      // document.body.classList.add("rtl");
       // document.body.setAttribute("data-rtl", "true");
     } else {
       // Remove all possible RTL classes
@@ -1001,7 +1001,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     return () => {
       if (isRTLMode) {
         document.documentElement.removeAttribute("dir");
-        document.body.removeAttribute("dir");
+        // document.body.removeAttribute("dir");
         document.documentElement.classList.remove("rtl-active");
         // document.body.classList.remove("rtl-active");
 
@@ -1041,7 +1041,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
               "rtl",
               "is-rtl"
             );
-            document.body.classList.remove("rtl-active", "rtl", "is-rtl");
+            // document.body.classList.remove("rtl-active", "rtl", "is-rtl");
           }
           setIsContentReady(true);
         }, 50);
