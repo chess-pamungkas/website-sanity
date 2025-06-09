@@ -32,6 +32,10 @@ const FOREX = {
       text: "all-markets_market-items-list-forex-adv2-fsa",
     },
     {
+      key: "adv2-1",
+      text: "all-markets_market-items-list-forex-adv2-1-fsa",
+    },
+    {
       key: "adv3",
       text: "all-markets_market-items-list-forex-adv3",
     },
@@ -75,6 +79,10 @@ const INDICES = {
       text: "all-markets_market-items-list-indices-adv2-fsa",
     },
     {
+      key: "adv2-1",
+      text: "all-markets_market-items-list-indices-adv2-1-fsa",
+    },
+    {
       key: "adv3",
       text: "all-markets_market-items-list-indices-adv3",
     },
@@ -112,6 +120,10 @@ const SHARES = {
     {
       key: "adv2",
       text: "all-markets_market-items-list-shares-adv2-fsa",
+    },
+    {
+      key: "adv2-1",
+      text: "all-markets_market-items-list-shares-adv2-1-fsa",
     },
     {
       key: "adv3",
@@ -156,6 +168,10 @@ const METALS = {
       text: "all-markets_market-items-list-commodities-adv2-fsa",
     },
     {
+      key: "adv2-1",
+      text: "all-markets_market-items-list-commodities-adv2-1-fsa",
+    },
+    {
       key: "adv3",
       text: "all-markets_market-items-list-commodities-adv3",
     },
@@ -193,6 +209,10 @@ const ENERGIES = {
     {
       key: "adv2",
       text: "all-markets_market-items-list-energies-adv2-fsa",
+    },
+    {
+      key: "adv2-1",
+      text: "all-markets_market-items-list-energies-adv2-1-fsa",
     },
     {
       key: "adv3",
@@ -234,6 +254,10 @@ const CRYPTO = {
       text: "all-markets_market-items-list-crypto-adv2-fsa",
     },
     {
+      key: "adv2-1",
+      text: "all-markets_market-items-list-crypto-adv2-1-fsa",
+    },
+    {
       key: "adv3",
       text: "all-markets_market-items-list-crypto-adv3-fsa",
     },
@@ -271,6 +295,10 @@ const ETF = {
     {
       key: "adv2",
       text: "all-markets_market-items-list-etf-adv2-fsa",
+    },
+    {
+      key: "adv2-1",
+      text: "all-markets_market-items-list-etf-adv2-1-fsa",
     },
     {
       key: "adv3",

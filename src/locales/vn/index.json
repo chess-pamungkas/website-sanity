@@ -9,7 +9,7 @@
   "header-nav-tab-top-markets-shares-title": "Cổ phiếu",
   "header-nav-tab-top-markets-shares-desc": "Giao dịch các cổ phiếu được tìm kiếm nhiều nhất với sức mạnh của CFD ngay bây giờ",
   "header-nav-tab-top-markets-energies-title": "Năng lượng",
-  "header-nav-tab-top-markets-energies-desc": "WTI, Brent, Khí đốt tự nhiên và hơn thế nữa",
+  "header-nav-tab-top-markets-energies-desc": "WTI, Brent và hơn thế nữa",
   "header-nav-tab-top-markets-allmarkets-title": "Tổng quan về tất cả các thị trường",
   "header-nav-tab-top-markets-allmarkets-desc": "Tổng quan về các thị trường bạn có thể giao dịch với OQtima",
   "header-nav-tab-top-markets-crypto-title-fsa": "Tiền điện tử",
@@ -427,8 +427,8 @@
   "energies-top-market-promo-text-accent": "",
   "energies_trading-ticker-title": "NĂNG LƯỢNG PHỔ BIẾN ĐỂ GIAO DỊCH",
   "energies_top-market-promo-btn": "Giao dịch năng lượng ngay bây giờ",
-  "energies_top-market-promotion-promo-text": "Với OQtima, bạn có thể giao dịch các nguồn năng lượng nổi tiếng nhất trên hành tinh mà không cần sở hữu tài sản đó, nhờ sức mạnh của giao dịch CFD. Giao dịch Hợp đồng Tương lai Dầu thô WTI, Dầu thô Brent, Khí tự nhiên và Dầu với một cú nhấp chuột.",
-  "energies-top-market-promotion-promo-text-accent": "2,28,29,30,31,32,33,35,36",
+  "energies_top-market-promotion-promo-text": "Với OQtima, bạn có thể giao dịch các nguồn năng lượng nổi tiếng nhất trên hành tinh mà không cần sở hữu tài sản đó, nhờ sức mạnh của giao dịch CFD. Giao dịch Hợp đồng Tương lai Dầu thô WTI và Dầu thô Brent, với một cú nhấp chuột.",
+  "energies-top-market-promotion-promo-text-accent": "2,39,40,41,43,44,45",
   "energies_top-market-layout-title": "Chênh lệch giao dịch năng lượng",
   "energies_top-market-layout-btn": "Hãy thử OQtima",
   "energies_faq-title1": "Có hoa hồng khi giao dịch Năng lượng không?",
@@ -500,8 +500,8 @@
   "shares_top-market-promo-text-accent-fsa": "6,7,8,9,10,23,24,33",
   "shares_trading-ticker-title": "CỔ PHIẾU PHỔ BIẾN ĐỂ GIAO DỊCH",
 
-  "shares_top-market-promotion-promo-text-fsa": "Với OQtima, bạn có thể giao dịch các cổ phiếu hấp dẫn nhất, mua hay bán, với MT4, có quyền truy cập vào các tùy chọn biểu đồ nâng cao, các công cụ hữu ích và thông tin chi tiết về thị trường.",
-  "shares_top-market-promotion-promo-text-accent-fsa": "2,7,8,13",
+  "shares_top-market-promotion-promo-text-fsa": "Với OQtima, bạn có thể giao dịch các cổ phiếu hấp dẫn nhất, mua hay bán, với MT4 và MT5, có quyền truy cập vào các tùy chọn biểu đồ nâng cao, các công cụ hữu ích và thông tin chi tiết về thị trường.",
+  "shares_top-market-promotion-promo-text-accent-fsa": "2,8,9,10,11,12,13,18,20",
   "shares_top-market-promo-btn": "BẮT ĐẦU GIAO DỊCH CỔ PHIẾU CFD",
   "shares_faq-title1": "Tôi có thể bán cũng như mua cổ phiếu không?",
   "shares_faq-content1": "Tất cả cổ phiếu của chúng tôi đều là CFD, nghĩa là bạn có thể mua và bán mà không cần phải mua cổ phiếu cơ bản. CFD là khi bạn đang suy đoán về biến động giá, vì vậy bạn không bị giới hạn chỉ mua một cổ phiếu, bạn có thể mở giao dịch mua hoặc bán và lãi/lỗ của bạn sẽ được xác định bằng chênh lệch giữa giá mở và giá đóng.",
@@ -526,7 +526,7 @@
   "all-markets_market-items-list-forex-text": "Tận dụng những thay đổi kinh tế vĩ mô toàn cầu với {{ forex-currency-pairs }} cặp tiền tệ theo ý của bạn với các thị trường có tính thanh khoản cao nhất trên thế giới mở cửa 24/5.",
   "all-markets_market-items-list-forex-adv1": "{{ forex-currency-pairs }} cặp tiền tệ",
   "all-markets_market-items-list-forex-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-forex-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-forex-adv3": "Ứng dụng dành cho thiết bị di động, Máy tính để bàn, Ứng dụng web",
   "all-markets_market-items-list-forex-adv4": "Chênh lệch từ 0.0",
   "all-markets_market-items-list-forex-adv5": "Thanh khoản sâu",
@@ -538,7 +538,7 @@
   "all-markets_market-items-list-indices-text3": "Giao dịch CFD trên các chỉ số và suy đoán về hiệu suất của các thị trường chứng khoán khác nhau trên thế giới ngay bây giờ.",
   "all-markets_market-items-list-indices-adv1": "{{ indices-number }} chỉ số",
   "all-markets_market-items-list-indices-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-indices-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-indices-adv3": "Ứng dụng dành cho thiết bị di động, Máy tính để bàn, Ứng dụng web",
   "all-markets_market-items-list-indices-adv4": "Chênh lệch từ 0.0",
   "all-markets_market-items-list-indices-adv5": "Thanh khoản sâu",
@@ -548,9 +548,8 @@
   "all-markets_market-items-list-shares-text-fsa": "Với OQtima, bạn có thể giao dịch tất cả các cổ phiếu được tìm kiếm nhiều nhất và nóng nhất, mua hay bán, với MT4, có quyền truy cập vào các tùy chọn biểu đồ nâng cao, các công cụ hữu ích và thông tin chi tiết về thị trường. Chọn cổ phiếu mà bạn tin rằng sẽ bùng nổ hoặc bạn cho là được định giá quá cao và mua hoặc bán với sức mạnh của giao dịch CFD.",
 
   "all-markets_market-items-list-shares-adv1-fsa": "{{ shares-number-fsa }} cổ phiếu",
-
   "all-markets_market-items-list-shares-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-shares-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-shares-adv3": "Ứng dụng dành cho thiết bị di động, Máy tính để bàn, Ứng dụng web",
   "all-markets_market-items-list-shares-adv4": "Chênh lệch từ 0.0",
   "all-markets_market-items-list-shares-adv5": "Thanh khoản sâu",
@@ -561,7 +560,7 @@
   "all-markets_market-items-list-commodities-text2": "Giao dịch Vàng, Bạc và các kim loại khác với các loại tiền tệ quan trọng nhất hoặc quyết định xem giá của chúng sẽ tăng hay giảm chỉ bằng một cú nhấp chuột.",
   "all-markets_market-items-list-commodities-adv1": "{{ metals-number }} loại kim loại",
   "all-markets_market-items-list-commodities-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-commodities-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-commodities-adv3": "Ứng dụng dành cho thiết bị di động, Máy tính để bàn, Ứng dụng web",
   "all-markets_market-items-list-commodities-adv4": "Chênh lệch từ 0.0",
   "all-markets_market-items-list-commodities-adv5": "Thanh khoản sâu",
@@ -571,7 +570,7 @@
   "all-markets_market-items-list-energies-text": "Với OQtima, bạn có thể giao dịch nguồn năng lượng nổi tiếng nhất trên hành tinh mà không cần sở hữu tài sản đó, nhờ sức mạnh của giao dịch CFD. Giao dịch Hợp đồng Tương lai Dầu thô WTI, Dầu thô Brent, Khí tự nhiên và Dầu với một cú nhấp chuột.",
   "all-markets_market-items-list-energies-adv1": "{{ energies-number }} loại năng lượng",
   "all-markets_market-items-list-energies-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-energies-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-energies-adv3": "Ứng dụng dành cho thiết bị di động, Máy tính để bàn, Ứng dụng web",
   "all-markets_market-items-list-energies-adv4": "Chênh lệch từ 0.0",
   "all-markets_market-items-list-energies-adv5": "Thanh khoản sâu",
@@ -581,6 +580,7 @@
   "all-markets_market-items-list-crypto-text-fsa": "Tiền điện tử là một lĩnh vực mới đầy cơ hội và hứng thú cho các nhà giao dịch từ khắp nơi trên thế giới, hãy tham gia đội quân giao dịch tiền điện tử của OQtima. Giao dịch 24/7 với thị trường biến động nhất hiện nay.",
   "all-markets_market-items-list-crypto-adv1-fsa": "Hơn {{ crypto-number }} loại tiền điện tử để giao dịch",
   "all-markets_market-items-list-crypto-adv2-fsa": "MT4",
+  "all-markets_market-items-list-crypto-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-crypto-adv3-fsa": "Ứng dụng dành cho thiết bị di động, Máy tính để bàn, Ứng dụng web",
   "all-markets_market-items-list-crypto-adv4-fsa": "Chênh lệch từ 0.0",
   "all-markets_market-items-list-crypto-adv5-fsa": "Thanh khoản sâu",
@@ -589,7 +589,7 @@
   "all-markets_market-items-list-etf-title": "ETF",
   "all-markets_market-items-list-etf-adv1": "{{ etf-number }}+ ETF",
   "all-markets_market-items-list-etf-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-etf-adv2-1-fsa": "MT5",
   "platforms_top-market-promo-text": "Mỗi nền tảng đã được tối ưu hóa với sự trợ giúp của các nhà phân tích và thương nhân của chúng tôi để mang lại Trải nghiệm OQtima.",
   "platforms_meta-trader-4-title": "MetaTrader 4",
   "platforms_meta-trader-4-text-1": "Nền tảng giao dịch nổi tiếng và được sử dụng nhiều nhất trên thế giới, MT4 cung cấp một cách chuyên sâu để tùy chỉnh cách bạn giao dịch.",
@@ -842,7 +842,7 @@
   "withdrawal_data-method-sticpay-fsa": "STICPAY",
   "withdrawal_data-method-sticpay-currencies-fsa": "CAD, GBP, JPY, USD",
   "withdrawal_data-method-pix-fsa": "PIX",
-  "withdrawal_data-method-pix-currencies-fsa": "BRL, USD",
+  "withdrawal_data-method-pix-currencies-fsa": "USD",
   "withdrawal_data-method-e-wallet-fsa": "Ví Điện Tử",
   "withdrawal_data-method-e-wallet-currencies-fsa": "Tiền Tệ Địa Phương Được Chấp Nhận",
 
@@ -852,8 +852,8 @@
 
   "withdrawal_disclaimer1-fsa": "Chúng tôi ở đây vì bạn bất cứ lúc nào trong ngày, nhưng không phải tất cả các tổ chức tài chính đều hoạt động suốt 24 giờ. Đội ngũ xử lý của chúng tôi sẽ đảm bảo rằng yêu cầu rút tiền của bạn được xử lý trong ngày làm việc, từ thứ Hai đến thứ Sáu từ 9 giờ sáng đến 3 giờ chiều (Giờ Chuẩn Đông Âu).",
   "withdrawal_disclaimer2-fsa": "Chúng tôi sẽ không thu bất kỳ khoản phí nào từ phía chúng tôi, nhưng ngân hàng hoặc phương thức tài trợ của bạn có thể thu phí từ phía họ, điều này nằm ngoài tầm kiểm soát của chúng tôi.",
-  "withdrawal_disclaimer3_1-fsa": "Chúng tôi có quyền thu phí 3% trong trường hợp bạn yêu cầu rút tiền nhiều hơn 5 lần trong một tháng.",
-  "withdrawal_disclaimer3_2-fsa": "Chúng tôi cũng có quyền thu phí 3% nếu yêu cầu rút tiền được thực hiện với hoạt động giao dịch tối thiểu hoặc không có.",
+  "withdrawal_disclaimer3_1-fsa": "Chúng tôi có quyền thu phí 6% trong trường hợp bạn yêu cầu rút tiền nhiều hơn 5 lần trong một tháng.",
+  "withdrawal_disclaimer3_2-fsa": "Chúng tôi cũng có quyền thu phí 6% nếu yêu cầu rút tiền được thực hiện với hoạt động giao dịch tối thiểu hoặc không có.",
   "withdrawal_disclaimer4-fsa": "Rút tiền qua chuyển khoản ngân hàng có thể mất 3-5 ngày để nhận được.",
 
   "education_top-market-promo-note": "Chăm sóc khách hàng rất quan trong, khách hàng sẽ theo khách hàng, như lúc chuyển dạ và những cơn đau.",
@@ -1106,7 +1106,7 @@
   "accounts-type_account-type1-ending-allowed-title": "Cho phép hedge",
   "accounts-type_account-type1-scalpers-welcome-title": "EA và Scalpers được phép",
   "accounts-type_account-type1-currencies-title": "Tiền tệ cơ sở",
-  "accounts-type_account-type1-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, CHF, SGD, ZAR",
+  "accounts-type_account-type1-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, SGD",
   "accounts-type_account-type1-funding-fees-title": "Phí nạp tiền",
   "accounts-type_account-type1-funding-fees-value": "${{ account-type1-funding-fees }}",
   "accounts-type_account-type1-withdrawals-fees-title": "Phí rút tiền",
@@ -1132,7 +1132,7 @@
   "accounts-type_account-type2-ending-allowed-title": "Cho phép hedge",
   "accounts-type_account-type2-scalpers-welcome-title": "EA và Scalpers được phép",
   "accounts-type_account-type2-currencies-title": "Tiền tệ cơ sở",
-  "accounts-type_account-type2-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, CHF, SGD, ZAR",
+  "accounts-type_account-type2-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, SGD",
 
   "accounts-type_account-type2-funding-fees-title": "Phí nạp tiền",
   "accounts-type_account-type2-funding-fees-value": "${{ account-type2-funding-fees }}",
@@ -1362,7 +1362,7 @@
   "company_company-advantages-text1-2-fsa": "Là một thực thể được quy định, OQtima được yêu cầu đáp ứng các tiêu chuẩn tài chính nghiêm ngặt, bao gồm năng lực vốn và yêu cầu kiểm toán.",
 
   "energies_faq-title3": "CFD trên năng lượng là gì?",
-  "energies_faq-content3": "CFD trên năng lượng là các công cụ tài chính cho phép nhà giao dịch đầu tư vào việc dự đoán sự thay đổi giá cả của các sản phẩm năng lượng như dầu thô, khí đốt tự nhiên, mà không cần sở hữu tài sản cơ bản.",
+  "energies_faq-content3": "CFD trên năng lượng là các công cụ tài chính cho phép nhà giao dịch đầu tư vào việc dự đoán sự thay đổi giá cả của các sản phẩm năng lượng như dầu thô, mà không cần sở hữu tài sản cơ bản.",
   "energies_faq-title4": "CFD trên năng lượng hoạt động như thế nào?",
   "energies_faq-content4": "Khi bạn giao dịch CFDs trên hàng hóa năng lượng, bạn về cơ bản đã ký kết một hợp đồng với người môi giới của mình, đồng ý trao đổi sự khác biệt trong giá của hàng hóa từ lúc mở đến lúc đóng hợp đồng. Nếu bạn có một vị trí mua và giá tăng, bạn sẽ có lợi nhuận; tuy nhiên, nếu nó giảm, bạn sẽ chịu lỗ. Ngược lại, nếu bạn giữ một vị trí bán và giá tăng, bạn sẽ chịu lỗ, nhưng nếu giá giảm, bạn sẽ có lợi nhuận.",
   "energies_faq-title5": "Các lợi ích của giao dịch CFD trên năng lượng là gì?",
@@ -1451,7 +1451,7 @@
   "crypto_marketing-circle-bottom-fsa": "Không giới hạn và không yêu cầu báo giá lại",
   "crypto_marketing-circle-left-bottom-fsa": "Dòng tiền sâu từ nhà cung cấp hạng nhất",
   "crypto_marketing-circle-right-bottom-fsa": "Có sẵn micro lots",
-  "energies_top-market-title": "Giao dịch dài hoặc ngắn mà không bị hạn chế trên Khí đốt tự nhiên, Brent và Dầu thô.",
+  "energies_top-market-title": "Giao dịch dài hoặc ngắn mà không bị hạn chế trên Brent và Dầu thô.",
   "energies_marketing-circle-upper": "{{ energies-number }} CFD năng lượng để giao dịch với sức mạnh đòn bẩy",
   "energies_marketing-circle-left-upper": "Thực hiện siêu nhanh và ổn định",
   "energies_marketing-circle-right-upper": "Không có hoa hồng",

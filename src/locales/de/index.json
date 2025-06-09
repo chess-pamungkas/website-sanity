@@ -834,7 +834,7 @@
   "withdrawal_data-method-sticpay-fsa": "STICPAY",
   "withdrawal_data-method-sticpay-currencies-fsa": "CAD, GBP, JPY, USD",
   "withdrawal_data-method-pix-fsa": "PIX",
-  "withdrawal_data-method-pix-currencies-fsa": "BRL, USD",
+  "withdrawal_data-method-pix-currencies-fsa": "USD",
   "withdrawal_data-method-e-wallet-fsa": "E-Wallets",
   "withdrawal_data-method-e-wallet-currencies-fsa": "Lokale Währungen Akzeptiert",
 
@@ -844,8 +844,8 @@
 
   "withdrawal_disclaimer1-fsa": "Tage dienen nur zur Orientierung und OQTIMA haftet nicht für Verzögerungen bei der Bearbeitung, wenn diese außerhalb der Kontrolle von OQTIMA liegen. Die Finanzabteilung von OQTIMA arbeitet von Montag bis Freitag von 9 bis 15 Uhr (Osteuropäische Standardzeit). Anfragen nach diesen Zeiten werden am nächsten Arbeitstag bearbeitet.",
   "withdrawal_disclaimer2-fsa": "OQTIMA berechnet Ihnen keine Gebühren für die Bearbeitung Ihrer Einzahlungen oder Auszahlungen. Allerdings kann die von Ihnen gewählte Methode Gebühren erheben, die außerhalb von OQTIMA liegen.",
-  "withdrawal_disclaimer3_1-fsa": "Wir behalten uns das Recht vor, Ihnen eine Gebühr von 3% zu berechnen, wenn Sie mehr als 5 Abhebungen pro Monat beantragen.",
-  "withdrawal_disclaimer3_2-fsa": "Wir behalten uns das Recht vor, Ihnen eine Gebühr von 3% zu berechnen, wenn eine Auszahlung bei minimaler oder keiner Handelsaktivität angefordert wird.",
+  "withdrawal_disclaimer3_1-fsa": "Wir behalten uns das Recht vor, Ihnen eine Gebühr von 6% zu berechnen, wenn Sie mehr als 5 Abhebungen pro Monat beantragen.",
+  "withdrawal_disclaimer3_2-fsa": "Wir behalten uns das Recht vor, Ihnen eine Gebühr von 6% zu berechnen, wenn eine Auszahlung bei minimaler oder keiner Handelsaktivität angefordert wird.",
   "withdrawal_disclaimer4-fsa": "Banküberweisungen können 3-5 Tage dauern, um eingehen zu können.",
 
   "education_top-market-promo-note": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.",
@@ -1142,7 +1142,7 @@
   "accounts-type_account-type1-ending-allowed-title": "Hedging erlaubt",
   "accounts-type_account-type1-scalpers-welcome-title": "EA und Scalpers willkommen",
   "accounts-type_account-type1-currencies-title": "Basiswährungen",
-  "accounts-type_account-type1-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, CHF, SGD, ZAR",
+  "accounts-type_account-type1-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, SGD",
 
   "accounts-type_account-type1-funding-fees-title": "Finanzierungskosten",
   "accounts-type_account-type1-funding-fees-value": "${{ account-type1-funding-fees }}",
@@ -1167,7 +1167,7 @@
   "accounts-type_account-type2-ending-allowed-title": "Hedging erlaubt",
   "accounts-type_account-type2-scalpers-welcome-title": "EA und Scalpers willkommen",
   "accounts-type_account-type2-currencies-title": "Basiskontowährungen",
-  "accounts-type_account-type2-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, CHF, SGD, ZAR",
+  "accounts-type_account-type2-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, SGD",
   "accounts-type_account-type2-funding-fees-title": "Finanzierungskosten",
   "accounts-type_account-type2-funding-fees-value": "${{ account-type2-funding-fees }}",
   "accounts-type_account-type2-withdrawals-fees-title": "Abhebungsgebühren",

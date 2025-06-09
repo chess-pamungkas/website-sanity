@@ -77,7 +77,7 @@ export const getLocalizationVariables = () => {
     "mt5-total-orders-fsa": "500",
     "mt5-pre-build-indicators": "38",
     "account-type1-spreads-from": "0.0",
-    "account-type1-commissions": "3.00",
+    "account-type1-commissions": "1.5",
     "account-type1-min-deposit": "200",
     // "account-type1-min-deposit-fsa": isIncreasedMinDeposit() ? "100" : "20",
     "account-type1-min-deposit-fsa": "100",

@@ -9,7 +9,7 @@
   "header-nav-tab-top-markets-shares-title": "Shares",
   "header-nav-tab-top-markets-shares-desc": "Trade the most sought after shares with the power of CFDs now",
   "header-nav-tab-top-markets-energies-title": "Energies",
-  "header-nav-tab-top-markets-energies-desc": "WTI, Brent, Natural Gas and more",
+  "header-nav-tab-top-markets-energies-desc": "WTI, Brent and more",
   "header-nav-tab-top-markets-allmarkets-title": "All Markets Overview",
   "header-nav-tab-top-markets-allmarkets-desc": "An overview of the markets you can trade with OQtima",
   "header-nav-tab-top-markets-crypto-title-fsa": "Crypto",
@@ -516,15 +516,15 @@
   "crypto_marketing-circle-right-bottom-fsa": "Micro lots available",
   "crypto_marketing-circle-right-bottom-accent-fsa": "1",
 
-  "energies_top-market-title": "Trade long or short with no restriction on Natural Gas, Brent and Crude Oil.",
+  "energies_top-market-title": "Trade long or short with no restriction on Brent and Crude Oil.",
   "energies_top-market-btn1": "Try our demo account",
   "energies_top-market-btn2": "Trade energies now",
   "energies_top-market-promo-text": "In the current geopolitical and macroeconomic situation, Energies are one of the favourite instruments for OQtima experienced traders",
   "energies-top-market-promo-text-accent": "",
   "energies_trading-ticker-title": "POPULAR ENERGIES TO TRADE",
   "energies_top-market-promo-btn": "Trade energies now",
-  "energies_top-market-promotion-promo-text": "With OQtima you can trade the most renowned sources of energy on the planet without owning the assets itself, thanks to the power of CFD trading. Trade WTI Crude, Brent Crude, Natural Gas with a click.",
-  "energies-top-market-promotion-promo-text-accent": "2,28,29,30,31,32,33",
+  "energies_top-market-promotion-promo-text": "With OQtima you can trade the most renowned sources of energy on the planet without owning the assets itself, thanks to the power of CFD trading. Trade WTI Crude and Brent Crude with a click.",
+  "energies-top-market-promotion-promo-text-accent": "2,28,29,31,32",
   "energies_top-market-layout-title": "Spreads on Energies",
   "energies_top-market-layout-btn": "Try OQtima",
   "energies_faq-title1": "Is there commission when trading Energies?",
@@ -534,7 +534,7 @@
   "energies_faq-content2-2": "Trading CFD spot energies, but you are not taking physical ownership of the goods, you are simply trading based on price speculation.",
 
   "energies_faq-title3": "What are CFDs on energies?",
-  "energies_faq-content3": "CFDs on energies are financial instruments that allow traders to speculate on the price movements of energy commodities such as crude oil, natural gas, without owning the underlying assets.",
+  "energies_faq-content3": "CFDs on energies are financial instruments that allow traders to speculate on the price movements of energy commodities such as crude oil, without owning the underlying assets.",
   "energies_faq-title4": "How do CFDs on energies work?",
   "energies_faq-content4": "When you trade CFDs on energy commodities, you essentially enter into a contract with your broker, agreeing to exchange the difference in the commodity's price between the opening and closing of the contract. If you have a long position and the price rises, you stand to make a profit; however, if it falls, you incur a loss. Conversely, if you hold a short position and the price rises, you experience a loss, but if the price falls, you make a profit.",
   "energies_faq-title5": "What are the benefits of trading CFDs on energies?",
@@ -656,8 +656,8 @@
   "shares_top-market-promo-text-accent-fsa": "6,7,8,9,10,23,24,33",
   "shares_trading-ticker-title": "POPULAR SHARES TO TRADE",
 
-  "shares_top-market-promotion-promo-text-fsa": "With OQtima you can trade the hottest shares, long or short, with MT4, getting access to advanced charting options, helpful tools, and markets insights.",
-  "shares_top-market-promotion-promo-text-accent-fsa": "2,7,8,13",
+  "shares_top-market-promotion-promo-text-fsa": "With OQtima you can trade the hottest shares, long or short, with MT4 and MT5, getting access to advanced charting options, helpful tools, and markets insights.",
+  "shares_top-market-promotion-promo-text-accent-fsa": "2,7,8,13,15",
   "shares_top-market-promo-btn": "START TRADING SHARES CFD",
   "shares_faq-title1": "Can I sell as well as buy shares?",
   "shares_faq-content1": "All our shares are CFDs which means you get to buy and sell without having to purchase the underlying share. A CFD is when you are speculating on the price movement, so you are not limited to only buying a share, you can open either a buy or sell trade and your profit/loss will be determined by the difference between the open and close price.",
@@ -701,7 +701,7 @@
   "all-markets_market-items-list-forex-text": "Take advantage of global macroeconomics changes with {{ forex-currency-pairs }} currency pairs at your disposal with the most liquid markets in the world open 24/5.",
   "all-markets_market-items-list-forex-adv1": "{{ forex-currency-pairs }} currency pairs",
   "all-markets_market-items-list-forex-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-forex-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-forex-adv3": "Mobile App, Desktop, WebApp",
   "all-markets_market-items-list-forex-adv4": "Spreads from 0.0",
   "all-markets_market-items-list-forex-adv5": "Deep Liquidity",
@@ -713,7 +713,7 @@
   "all-markets_market-items-list-indices-text3": "Trade CFDs on indices and speculate on the performance of the various stock markets around the world now.",
   "all-markets_market-items-list-indices-adv1": "{{ indices-number }} indices",
   "all-markets_market-items-list-indices-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-indices-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-indices-adv3": "Mobile App, Desktop, WebApp",
   "all-markets_market-items-list-indices-adv4": "Spreads from 0.0",
   "all-markets_market-items-list-indices-adv5": "Deep Liquidity",
@@ -725,7 +725,7 @@
   "all-markets_market-items-list-shares-adv1-fsa": "{{ shares-number-fsa }} Shares",
 
   "all-markets_market-items-list-shares-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-shares-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-shares-adv3": "Mobile App, Desktop, WebApp",
   "all-markets_market-items-list-shares-adv4": "Spreads from 0.0",
   "all-markets_market-items-list-shares-adv5": "Deep Liquidity",
@@ -736,7 +736,7 @@
   "all-markets_market-items-list-commodities-text2": "Trade Gold, Silver and other metals against the most important currencies or decide if their price will soar or drop with a click.",
   "all-markets_market-items-list-commodities-adv1": "{{ metals-number }} Metals",
   "all-markets_market-items-list-commodities-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-commodities-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-commodities-adv3": "Mobile App, Desktop, WebApp",
   "all-markets_market-items-list-commodities-adv4": "Spreads from 0.0",
   "all-markets_market-items-list-commodities-adv5": "Deep Liquidity",
@@ -746,7 +746,7 @@
   "all-markets_market-items-list-energies-text": "With OQtima you can trade the most renowned source of energies on the planet without owning the assets itself, thanks to the power of CFD trading. Trade WTI Crude, Brent Crude, Natural Gas and Oil Futures with a click.",
   "all-markets_market-items-list-energies-adv1": "{{ energies-number }} Energies",
   "all-markets_market-items-list-energies-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-energies-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-energies-adv3": "Mobile App, Desktop, WebApp",
   "all-markets_market-items-list-energies-adv4": "Spreads from 0.0",
   "all-markets_market-items-list-energies-adv5": "Deep Liquidity",
@@ -756,6 +756,7 @@
   "all-markets_market-items-list-crypto-text-fsa": "Cryptocurrencies are a new realm of opportunities and excitement for traders from all around the world, join the OQtima army of crypto traders. Trade 24/7 with the most volatile market currently available.",
   "all-markets_market-items-list-crypto-adv1-fsa": "{{ crypto-number }}+ Crypto crosses to trade",
   "all-markets_market-items-list-crypto-adv2-fsa": "MT4",
+  "all-markets_market-items-list-crypto-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-crypto-adv3-fsa": "Mobile App, Desktop, WebApp",
   "all-markets_market-items-list-crypto-adv4-fsa": "Spreads from 0.0",
   "all-markets_market-items-list-crypto-adv5-fsa": "Deep Liquidity",
@@ -765,7 +766,7 @@
   "all-markets_market-items-list-etf-text": "Invest in the world's most popular Exchange-Traded Funds (ETFs) without the need to own the underlying assets. With the power of CFDs trading, you can access the range of OQtima ETFs with just a few clicks. Pick among of 100 of the most widely traded ETF now.",
   "all-markets_market-items-list-etf-adv1": "{{ etf-number }}+ ETF",
   "all-markets_market-items-list-etf-adv2-fsa": "MT4",
-
+  "all-markets_market-items-list-etf-adv2-1-fsa": "MT5",
   "all-markets_market-items-list-etf-adv3": "Mobile App, Desktop, WebApp",
   "all-markets_market-items-list-etf-adv4": "Super competitive Spread",
   "all-markets_market-items-list-etf-adv5": "Deep Liquidity",
@@ -1041,7 +1042,7 @@
   "withdrawal_data-method-sticpay-fsa": "STICPAY",
   "withdrawal_data-method-sticpay-currencies-fsa": "CAD, GBP, JPY, USD",
   "withdrawal_data-method-pix-fsa": "PIX",
-  "withdrawal_data-method-pix-currencies-fsa": "BRL, USD",
+  "withdrawal_data-method-pix-currencies-fsa": "USD",
   "withdrawal_data-method-e-wallet-fsa": "E-Wallets",
   "withdrawal_data-method-e-wallet-currencies-fsa": "Local Currencies Accepted",
 
@@ -1051,8 +1052,8 @@
 
   "withdrawal_disclaimer1-fsa": "We are here for you any time of the day but not all financial institutions work around the clock. Our processing team will make sure your withdrawals are processed within the working day, Monday to Friday 9am - 3pm (Eastern European Standard Time).",
   "withdrawal_disclaimer2-fsa": "We won't charge you a cent from our side but your bank or funding method may charge a fee from their side which is beyond our control.",
-  "withdrawal_disclaimer3_1-fsa": "We reserve the right to charge you a fee of 3% in case you request more than 5 withdrawals on a monthly basis",
-  "withdrawal_disclaimer3_2-fsa": "We reserve the right to charge you a fee of 3% if a withdrawal is requested with minimal or no trading activity",
+  "withdrawal_disclaimer3_1-fsa": "We reserve the right to charge you a fee of 6% in case you request more than 5 withdrawals on a monthly basis",
+  "withdrawal_disclaimer3_2-fsa": "We reserve the right to charge you a fee of 6% if a withdrawal is requested with minimal or no trading activity",
   "withdrawal_disclaimer4-fsa": "Bank wire withdrawals may take 3-5 days to be received",
 
   "education_top-market-promo-note": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.",
@@ -1374,7 +1375,7 @@
   "accounts-type_account-type1-ending-allowed-title": "Hedging Allowed",
   "accounts-type_account-type1-scalpers-welcome-title": "EA and Scalpers welcome",
   "accounts-type_account-type1-currencies-title": "Base Currencies",
-  "accounts-type_account-type1-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, CHF, SGD, ZAR",
+  "accounts-type_account-type1-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, SGD",
 
   "accounts-type_account-type1-funding-fees-title": "Funding Fees",
   "accounts-type_account-type1-funding-fees-value": "${{ account-type1-funding-fees }}",
@@ -1403,7 +1404,7 @@
   "accounts-type_account-type2-ending-allowed-title": "Hedging Allowed",
   "accounts-type_account-type2-scalpers-welcome-title": "EA and Scalpers welcome",
   "accounts-type_account-type2-currencies-title": "Base Currencies",
-  "accounts-type_account-type2-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, CHF, SGD, ZAR",
+  "accounts-type_account-type2-currencies-value-fsa": "USD, EUR, JPY, GBP, CAD, SGD",
 
   "accounts-type_account-type2-funding-fees-title": "Funding Fees",
   "accounts-type_account-type2-funding-fees-value": "${{ account-type2-funding-fees }}",
