@@ -1281,7 +1281,7 @@
   "accounts-type_account-type1-spreads-from-title": "Spreads à partir de ",
   "accounts-type_account-type1-spreads-from-value": "{{ account-type1-spreads-from }} pips",
   "accounts-type_account-type1-commissions-title": "Commissions",
-  "accounts-type_account-type1-commissions-value": "{{ account-type1-commissions }} comm par trade par side",
+  "accounts-type_account-type1-commissions-value": "$ {{ account-type1-commissions }} comm par trade par side",
   "accounts-type_account-type1-min-deposit-title": "Min. dépôt",
 
   "accounts-type_account-type1-min-deposit-value-fsa": "${{ account-type1-min-deposit-fsa }}",
