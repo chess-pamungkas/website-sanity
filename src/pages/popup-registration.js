@@ -305,328 +305,275 @@ const PopupRegistrationPage = ({ location, data }) => {
   // Prevent language routing redirects for popup
   useEffect(() => {
     // Disable routing redirects for popup pages
-    if (typeof window !== "undefined") {
-      window.__DISABLE_LANGUAGE_REDIRECT__ = true;
-      window.__FORCE_LANGUAGE__ = true;
-      window.__PREVENT_LANGUAGE_PATH_REDIRECT__ = true; // Additional flag to prevent path redirect
-      window.__USING_URL_LANG_PARAM__ = true; // Indicate to use parameter, not path
+    const disableRouting = () => {
+      if (typeof window !== "undefined" && window.___navigate) {
+        window.___navigate = () => {};
+      }
+    };
+    disableRouting();
 
-      // Listen for language force messages from parent
-      const handleMessage = (event) => {
-        // Check origin (optional - for security)
-        if (event.data && event.data.type === "FORCE_LANGUAGE") {
-          const forcedLang = event.data.language;
-          const forceApply = event.data.forceApply || false;
-          const override = event.data.override || false;
-          const isRTL = event.data.isRTL || RTL_LANGUAGES.includes(forcedLang);
+    // CRITICAL: Check if popup is in isolated mode
+    const urlParams = new URLSearchParams(window.location.search);
+    const isPopupIsolated =
+      urlParams.get("popup_isolated") === "true" ||
+      urlParams.get("prevent_lang_switch") === "true";
 
-          // CRITICAL: Enable language change permission flag for FORCE_LANGUAGE messages
-          window.__OQTIMA_ALLOW_FORCE_LANG = true;
+    if (isPopupIsolated) {
+      // Set isolation flag
+      window.__POPUP_IS_ISOLATED = true;
+      console.log(
+        "[Popup Registration] Running in isolated mode - language switching disabled"
+      );
 
-          // CRITICAL: Check if there's a language that must be used from URL parameters
-          if (window.__OQTIMA_LANG_MUST_USE && !override && !forceApply) {
-            // If override or forceApply is not true, we need to check if the language matches
-            if (forcedLang === window.__OQTIMA_LANG_MUST_USE) {
-              // Continue because language matches the desired one
-            } else {
-              return; // Don't continue if it doesn't match
-            }
-          } else {
-            // Either no URL param constraint exists OR override/forceApply is true
-            window.__OQTIMA_LANG_MUST_USE = forcedLang;
-            window.__OQTIMA_LANG_SOURCE = "forced_message";
+      // CRITICAL FIX: Completely override localStorage for popup isolation
+      const originalLocalStorage = window.localStorage;
+      const popupSpecificStorage = {};
 
-            // Store the language in localStorage to maintain consistency
-            try {
-              localStorage.setItem("__OQTIMA_ORIGINAL_LANGUAGE", forcedLang);
-              localStorage.setItem("__OQTIMA_SELECTED_LANGUAGE", forcedLang);
-              localStorage.setItem(
-                "__OQTIMA_REGISTRATION_LANGUAGE",
-                forcedLang
-              );
-              localStorage.setItem("i18nextLng", forcedLang);
-              localStorage.setItem("gatsby-i18next-language", forcedLang);
-              document.cookie = `i18next=${forcedLang};path=/`;
-              document.cookie = `last_language=${forcedLang};path=/`;
-            } catch (e) {
-              // Error setting storage
-            }
+      // Create isolated localStorage that doesn't affect parent
+      window.localStorage = {
+        getItem: function (key) {
+          // For language-related keys, use popup-specific storage
+          if (key === "i18nextLng" || key === "gatsby-i18next-language") {
+            return popupSpecificStorage[key] || null;
           }
-
-          if (forcedLang) {
-            // Apply language immediately
-            try {
-              // Use our dedicated helper function to ensure proper language application
-              manuallySetLanguage(forcedLang, i18n).then(() => {});
-
-              // Update DOM
-              document.documentElement.lang = forcedLang;
-              document
-                .querySelector('meta[http-equiv="content-language"]')
-                ?.setAttribute("content", forcedLang);
-
-              // Body classes for styling
-              document.body.classList.add(`lang-${forcedLang}`);
-
-              // Handle RTL styling
-              if (isRTL) {
-                // Add RTL classes and attributes to HTML and body
-                document.documentElement.setAttribute("dir", "rtl");
-                document.documentElement.classList.add("rtl-active");
-                // document.body.setAttribute("dir", "rtl");
-                // document.body.classList.add("rtl-active");
-
-                // Load RTL stylesheet if needed
-                if (!document.getElementById("rtl-stylesheet")) {
-                  const rtlStylesheet = document.createElement("link");
-                  rtlStylesheet.id = "rtl-stylesheet";
-                  rtlStylesheet.rel = "stylesheet";
-                  rtlStylesheet.href = "/styles/rtl.css";
-                  document.head.appendChild(rtlStylesheet);
-                }
-
-                // Add RTL classes to registration components
-                const registrationContainer = document.querySelector(
-                  ".popup-registration"
-                );
-                if (registrationContainer) {
-                  registrationContainer.classList.add("rtl-active");
-                  registrationContainer.setAttribute("dir", "rtl");
-                  registrationContainer.setAttribute("data-rtl", "true");
-                }
-
-                // Add RTL to form elements
-                const formElements = document.querySelectorAll(
-                  "input, select, textarea, button, label"
-                );
-                if (formElements.length > 0) {
-                  formElements.forEach((el) => {
-                    el.classList.add("rtl-element");
-                    el.setAttribute("dir", "rtl");
-                  });
-                }
-
-                // Inject RTL specific CSS
-                if (!document.getElementById("rtl-inline-styles")) {
-                  const rtlInlineStyles = document.createElement("style");
-                  rtlInlineStyles.id = "rtl-inline-styles";
-                  rtlInlineStyles.innerHTML = `
-                    .rtl-active input, 
-                    .rtl-active textarea, 
-                    .rtl-active select {
-                      direction: rtl !important;
-                      text-align: right !important;
-                    }
-                    
-                    .rtl-active .form-item {
-                      direction: rtl !important; 
-                    }
-                    
-                    .rtl-active .popup-registration__content {
-                      direction: rtl !important;
-                    }
-                    
-                    /* Mirror spacing and positioning */
-                    .rtl-active .form-item label {
-                      text-align: right !important;
-                    }
-                    
-                    .rtl-active .form-checkbox label {
-                      padding-right: 25px !important;
-                      padding-left: 0 !important;
-                    }
-                    
-                    .rtl-active .form-checkbox input[type="checkbox"] {
-                      right: 0 !important;
-                      left: auto !important;
-                    }
-                  `;
-                  document.head.appendChild(rtlInlineStyles);
-                }
-              } else {
-                // Remove RTL if it's not an RTL language
-                document.documentElement.removeAttribute("dir");
-                document.documentElement.classList.remove("rtl-active");
-                // document.body.removeAttribute("dir");
-                // document.body.classList.remove("rtl-active");
-
-                // Remove RTL from registration container
-                const registrationContainer = document.querySelector(
-                  ".popup-registration"
-                );
-                if (registrationContainer) {
-                  registrationContainer.classList.remove("rtl-active");
-                  registrationContainer.removeAttribute("dir");
-                  registrationContainer.removeAttribute("data-rtl");
-                }
-
-                // Remove RTL from form elements
-                const formElements = document.querySelectorAll(".rtl-element");
-                if (formElements.length > 0) {
-                  formElements.forEach((el) => {
-                    el.classList.remove("rtl-element");
-                    el.removeAttribute("dir");
-                  });
-                }
-              }
-
-              // Update language context if available
-              if (languageContext && languageContext.setSelectedLanguage) {
-                languageContext.setSelectedLanguage({
-                  id: forcedLang,
-                  title: forcedLang.toUpperCase(),
-                  URIPart: `/${forcedLang}/`,
-                  isRTL: isRTL,
-                });
-              }
-            } catch (err) {
-              // Error forcing language
-            }
+          return originalLocalStorage.getItem(key);
+        },
+        setItem: function (key, value) {
+          // For language-related keys, use popup-specific storage
+          if (key === "i18nextLng" || key === "gatsby-i18next-language") {
+            popupSpecificStorage[key] = value;
+            return;
           }
-        }
+          return originalLocalStorage.setItem(key, value);
+        },
+        removeItem: function (key) {
+          if (key === "i18nextLng" || key === "gatsby-i18next-language") {
+            delete popupSpecificStorage[key];
+            return;
+          }
+          return originalLocalStorage.removeItem(key);
+        },
+        clear: originalLocalStorage.clear.bind(originalLocalStorage),
+        key: originalLocalStorage.key.bind(originalLocalStorage),
+        get length() {
+          return originalLocalStorage.length;
+        },
       };
 
-      window.addEventListener("message", handleMessage);
+      // Set the popup language immediately in isolated storage
+      const popupLanguage =
+        urlParams.get("language") ||
+        urlParams.get("lang") ||
+        urlParams.get("langParam") ||
+        urlParams.get("data-lang") ||
+        "en";
 
-      return () => {
-        // Cleanup listener on unmount
-        window.removeEventListener("message", handleMessage);
+      // Set in popup-specific storage
+      popupSpecificStorage["i18nextLng"] = popupLanguage;
+      popupSpecificStorage["gatsby-i18next-language"] = popupLanguage;
 
-        // Cleanup when component unmounts
-        if (typeof window !== "undefined") {
-          window.__DISABLE_LANGUAGE_REDIRECT__ = false;
-          window.__FORCE_LANGUAGE__ = false;
-          window.__PREVENT_LANGUAGE_PATH_REDIRECT__ = false;
-          window.__USING_URL_LANG_PARAM__ = false;
-        }
-      };
+      // Store in sessionStorage for this popup session
+      sessionStorage.setItem("popup_isolated_language", popupLanguage);
+
+      // CRITICAL: Override parent language completely
+      sessionStorage.setItem("oqtima_parent_lang", popupLanguage);
+      sessionStorage.setItem("oqtima_parent_dir", "ltr"); // Default, will be set by popup if RTL
+
+      console.log(
+        `[Popup Registration] Isolated popup language set to: ${popupLanguage}`
+      );
+      console.log(
+        `[Popup Registration] Parent language overridden to: ${popupLanguage}`
+      );
+
+      // Cleanup on page unload
+      window.addEventListener("beforeunload", () => {
+        window.localStorage = originalLocalStorage;
+      });
     }
-  }, [i18n, languageContext]);
 
-  useEffect(() => {
+    const handleMessage = (event) => {
+      try {
+        if (event.data && typeof event.data === "object") {
+          // Handle force language command - only if not isolated or if explicitly allowed
+          if (event.data.type === "FORCE_LANGUAGE" && event.data.language) {
+            // Check if we're isolated and this is not an allowed change
+            if (isPopupIsolated && !event.data.isolated) {
+              console.warn(
+                "[Popup Protection] Ignoring external language change request while in isolated mode"
+              );
+              return;
+            }
+
+            const forcedLang = event.data.language.toLowerCase();
+
+            // Check if this change should be respected based on URL params
+            const currentLangParam = effectiveLangParam || "en";
+            if (currentLangParam !== "en" && forcedLang === "en") {
+              console.warn(
+                `[Popup Protection] Ignoring attempt to force English when URL expects ${currentLangParam}`
+              );
+              return;
+            } else {
+              // Either no URL param constraint exists OR override/forceApply is true
+              window.__OQTIMA_LANG_MUST_USE = forcedLang;
+              window.__OQTIMA_LANG_SOURCE = "forced_message";
+
+              // Store the language in localStorage to maintain consistency - only if not isolated
+              if (!isPopupIsolated) {
+                try {
+                  localStorage.setItem(
+                    "__OQTIMA_ORIGINAL_LANGUAGE",
+                    forcedLang
+                  );
+                  localStorage.setItem(
+                    "__OQTIMA_SELECTED_LANGUAGE",
+                    forcedLang
+                  );
+                  localStorage.setItem(
+                    "__OQTIMA_REGISTRATION_LANGUAGE",
+                    forcedLang
+                  );
+                  localStorage.setItem("i18nextLng", forcedLang);
+                  localStorage.setItem("gatsby-i18next-language", forcedLang);
+                  document.cookie = `i18next=${forcedLang};path=/`;
+                  document.cookie = `last_language=${forcedLang};path=/`;
+                } catch (e) {
+                  // Error setting storage
+                }
+              }
+            }
+          }
+
+          // Handle registration parameters
+          if (event.data.type === "REGISTRATION_PARAMS" && event.data.data) {
+            const messageData = event.data.data;
+
+            // If this is an isolated popup, prioritize isolation parameters
+            if (messageData.popup_isolated === "true" || messageData.isolated) {
+              console.log("[Popup Registration] Received isolated parameters");
+              window.__POPUP_IS_ISOLATED = true;
+
+              // Use the isolated language parameters
+              if (
+                messageData.language ||
+                messageData.lang ||
+                messageData.langParam
+              ) {
+                const isolatedLang =
+                  messageData.language ||
+                  messageData.lang ||
+                  messageData.langParam;
+                window.__ISOLATED_POPUP_LANGUAGE = isolatedLang;
+
+                // Only set necessary session storage for iframe, don't affect parent
+                try {
+                  sessionStorage.setItem(
+                    "popup_isolated_language",
+                    isolatedLang
+                  );
+                  sessionStorage.setItem("prevent_lang_switch", "true");
+                } catch (e) {
+                  // Ignore storage errors
+                }
+              }
+            }
+
+            // Handle storage keys with isolation awareness
+            if (messageData.storeInSessionStorage && messageData.storageKeys) {
+              messageData.storageKeys.forEach((item) => {
+                if (item.key && item.value !== undefined) {
+                  try {
+                    // Only set global language keys if not isolated
+                    if (
+                      isPopupIsolated &&
+                      (item.key === "i18nextLng" ||
+                        item.key === "gatsby-i18next-language" ||
+                        item.key === "oqtima_tab_language")
+                    ) {
+                      // Use popup-specific keys instead
+                      sessionStorage.setItem(`popup_${item.key}`, item.value);
+                    } else {
+                      sessionStorage.setItem(item.key, item.value);
+                    }
+                  } catch (e) {
+                    console.warn(
+                      "[Popup Registration] Failed to set storage item:",
+                      item.key
+                    );
+                  }
+                }
+              });
+            }
+
+            // Set global variables from message data
+            if (messageData.language)
+              window.__OQTIMA_LANGUAGE__ = messageData.language;
+            if (messageData.referral_type)
+              window.__OQTIMA_REFERRAL_TYPE__ = messageData.referral_type;
+            if (messageData.referral_value)
+              window.__OQTIMA_REFERRAL_VALUE__ = messageData.referral_value;
+
+            // Send confirmation back to parent
+            window.parent.postMessage(
+              {
+                type: "REGISTRATION_PARAMS_RECEIVED",
+                timestamp: Date.now(),
+                isolated: isPopupIsolated,
+              },
+              "*"
+            );
+          }
+        }
+      } catch (error) {
+        console.error("[Popup Registration] Error handling message:", error);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
     try {
-      // Parse query parameters correctly and catch logs
-      const searchParamsString = location.search || "";
-      const searchParams = new URLSearchParams(searchParamsString);
+      // Enhanced parameter extraction with isolation awareness
+      const searchParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(
+        window.location.hash ? window.location.hash.substring(1) : ""
+      );
 
-      // Try to get language from URL hash (highest priority)
-      const hashLang = getLanguageFromHash();
+      // Language parameter extraction with isolation priority
+      let effectiveLangParam = "en";
 
-      // CRITICAL FIX: Use global marker if exists
-      let effectiveLangParam;
-      if (window.__OQTIMA_LANG_MUST_USE) {
-        effectiveLangParam = window.__OQTIMA_LANG_MUST_USE;
-      } else {
-        // Extract language parameter - prioritize locked parameter
-        const lockedParam = searchParams.get("oqtima_lang_locked");
+      // First check for isolated language parameters
+      if (isPopupIsolated) {
+        // Check isolated-specific parameters first
         effectiveLangParam =
-          lockedParam ||
-          hashLang ||
-          searchParams.get("lang") ||
           searchParams.get("language") ||
+          searchParams.get("lang") ||
+          searchParams.get("langParam") ||
+          searchParams.get("data-lang") ||
+          hashParams.get("lang") ||
+          "en";
+
+        console.log(
+          "[Popup Registration] Using isolated language:",
+          effectiveLangParam
+        );
+      } else {
+        // Standard language detection
+        effectiveLangParam =
+          getLanguageFromHash() ||
+          searchParams.get("language") ||
+          searchParams.get("lang") ||
+          searchParams.get("langParam") ||
+          searchParams.get("data-lang") ||
+          hashParams.get("lang") ||
           "en";
       }
 
-      // Lock language to prevent changes
-      lockLanguage(effectiveLangParam, i18n);
-
-      // Force apply language immediately
-      if (effectiveLangParam) {
-        try {
-          const normalizedLang = effectiveLangParam.toLowerCase().trim();
-
-          // Apply language to i18n safely
-          try {
-            // If original function exists, use it to avoid recursion
-            if (window.__ORIGINAL_CHANGE_LANGUAGE) {
-              window.__ORIGINAL_CHANGE_LANGUAGE.call(i18n, normalizedLang);
-            } else {
-              // Fallback to alternative approach
-              i18n.language = normalizedLang;
-              i18n.languages = [normalizedLang];
-              i18n.resolvedLanguage = normalizedLang;
-            }
-          } catch (langError) {
-            // Fallback to most basic approach
-            i18n.language = normalizedLang;
-          }
-
-          // Set language in HTML
-          document.documentElement.lang = normalizedLang;
-          document.documentElement.setAttribute("lang", normalizedLang);
-
-          // Set class on body for CSS targeting
-          document.body.classList.add(`lang-${normalizedLang}`);
-          document.body.dataset.language = normalizedLang;
-
-          // Check if RTL language
-          const isRtlLanguage = RTL_LANGUAGES.includes(normalizedLang);
-          if (isRtlLanguage) {
-            document.documentElement.dir = "rtl";
-            document.body.classList.add("rtl-mode");
-          }
-
-          // Verify i18n was properly set
-          // Force language in DOM
-          const metaLang = document.querySelector(
-            'meta[http-equiv="content-language"]'
-          );
-          if (metaLang) {
-            metaLang.setAttribute("content", normalizedLang);
-          } else {
-            const newMeta = document.createElement("meta");
-            newMeta.setAttribute("http-equiv", "content-language");
-            newMeta.setAttribute("content", normalizedLang);
-            document.head.appendChild(newMeta);
-          }
-
-          // Force localStorage and cookies for ALL languages
-          try {
-            localStorage.setItem("i18nextLng", normalizedLang);
-            localStorage.setItem("gatsby-i18next-language", normalizedLang);
-            document.cookie = `i18next=${normalizedLang};path=/`;
-            document.cookie = `last_language=${normalizedLang};path=/`;
-          } catch (err) {
-            // Error setting storage
-          }
-
-          // Update language context if available
-          if (languageContext && languageContext.setSelectedLanguage) {
-            languageContext.setSelectedLanguage({
-              id: normalizedLang,
-              title: normalizedLang.toUpperCase(),
-              URIPart: `/${normalizedLang}/`,
-              isRTL: isRtlLanguage,
-            });
-          }
-        } catch (err) {
-          // Error pre-applying language
-        }
-      }
-
-      // IMPORTANT: Detect and prevent URL-based path changes
-      const hasLanguagePath = location.pathname.match(
-        /\/[a-z]{2}\/popup-registration/
-      );
-      if (hasLanguagePath) {
-        // URL has language path, should use query param instead
-      }
-
-      // Check if this is being loaded in a popup
-      const popupMode = searchParams.get("popup") === "true";
-      setIsPopupMode(popupMode);
-
-      // Extract registration parameters
-      const registrationParams = {};
-      if (searchParams.get("referral_type")) {
-        registrationParams.referral_type = parseInt(
-          searchParams.get("referral_type"),
-          10
-        );
-      }
-      if (searchParams.get("referral_value")) {
-        registrationParams.referral_value = searchParams.get("referral_value");
-      }
+      const registrationParams = {
+        referral_type: null,
+        referral_value: null,
+        langParam: effectiveLangParam,
+      };
 
       // CRITICAL: Check oqtima_lang_locked parameter if exists
       if (searchParams.get("oqtima_lang_locked")) {
@@ -637,15 +584,17 @@ const PopupRegistrationPage = ({ location, data }) => {
         window.__OQTIMA_LANG_MUST_USE = lockedLang;
         window.__OQTIMA_LANG_SOURCE = "oqtima_lang_locked";
         window.__OQTIMA_ALLOW_FORCE_LANG = true;
-        // Save to storage
-        try {
-          localStorage.setItem("__OQTIMA_LOCKED_LANG", lockedLang);
-          localStorage.setItem(
-            "__OQTIMA_LOCKED_LANG_TIME",
-            Date.now().toString()
-          );
-        } catch (e) {
-          // Error saving to localStorage
+        // Save to storage only if not isolated
+        if (!isPopupIsolated) {
+          try {
+            localStorage.setItem("__OQTIMA_LOCKED_LANG", lockedLang);
+            localStorage.setItem(
+              "__OQTIMA_LOCKED_LANG_TIME",
+              Date.now().toString()
+            );
+          } catch (e) {
+            // Error saving to localStorage
+          }
         }
       } else if (effectiveLangParam) {
         // CRITICAL: Use effectiveLangParam (not langParam) to ensure consistency
@@ -668,6 +617,7 @@ const PopupRegistrationPage = ({ location, data }) => {
             type: "POPUP_READY",
             currentLanguage: registrationParams.langParam || "en",
             timestamp: Date.now(),
+            isolated: isPopupIsolated,
           },
           "*"
         );
@@ -675,6 +625,10 @@ const PopupRegistrationPage = ({ location, data }) => {
     } catch (err) {
       setError(err.message);
     }
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
   }, [location, i18n, languageContext]);
 
   // Handle popup close

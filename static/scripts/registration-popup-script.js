@@ -4406,370 +4406,67 @@ const RTL_LANGUAGES = ["ar"];
     countryName,
     countryCode
   ) {
-    // MOBILE FIX: Creating a persistent language enforcement that survives navigation
-    // This is crucial for iOS/Android which may handle postMessage differently
+    // CRITICAL FIX: Completely isolate popup language from parent window interference
+    let finalLanguage = language;
+
+    // Only check URL path language (highest priority) - simplified approach
     try {
-      // First, detect language from URL path with highest priority
-      const urlPathLanguage = (() => {
-        try {
-          const pathParts = window.location.pathname.split("/").filter(Boolean);
-          if (pathParts.length > 0 && pathParts[0].length <= 5) {
-            const pathLang = pathParts[0].toLowerCase();
-            // console.log(
-            //   "[Mobile Fix] Detected language from URL path:",
-            //   pathLang
-            // );
-            return pathLang;
-          }
-          return null;
-        } catch (e) {
-          console.error("[Mobile Fix] Error detecting URL path language:", e);
-          return null;
-        }
-      })();
-
-      // Prioritize URL path language over all other sources
-      if (urlPathLanguage) {
-        // Save in all possible places to ensure it's available across contexts
-        window.__OQTIMA_URL_PATH_LANG = urlPathLanguage;
-        window.__OQTIMA_LANG_MUST_USE = urlPathLanguage;
-        window.__OQTIMA_LOCKED_LANG = urlPathLanguage;
-        window.__FINAL_DETERMINED_LANGUAGE = urlPathLanguage;
-        window.__FORCE_LANGUAGE__ = true;
-
-        // Save in DOM for cross-context availability
-        document.documentElement.dataset.urlPathLang = urlPathLanguage;
-        document.documentElement.dataset.enforcedLang = urlPathLanguage;
-        document.documentElement.dataset.mobileFinalLang = urlPathLanguage;
-
-        // Store in multiple storage locations
-        try {
-          sessionStorage.setItem("oqtima_url_path_lang", urlPathLanguage);
-          sessionStorage.setItem("oqtima_enforced_language", urlPathLanguage);
-          sessionStorage.setItem("oqtima_final_language", urlPathLanguage);
-          sessionStorage.setItem("oqtima_tab_language", urlPathLanguage);
-          sessionStorage.setItem("LANG_LOCKED", "true");
-
-          // Force the language to be used in all contexts
-          window.__OQTIMA_COMPONENT_LANGUAGE = urlPathLanguage;
-
-          // console.log(
-          //   "[Mobile Fix] URL path language enforced throughout app:",
-          //   urlPathLanguage
-          // );
-
-          // Force override the passed language
-          language = urlPathLanguage;
-        } catch (e) {
-          console.warn("[Mobile Fix] Storage error:", e);
+      const pathParts = window.location.pathname.split("/").filter(Boolean);
+      if (pathParts.length > 0 && /^[a-z]{2}(-[a-z]{2})?$/.test(pathParts[0])) {
+        const urlPathLang = pathParts[0].toLowerCase();
+        if (urlPathLang && urlPathLang !== "en") {
+          finalLanguage = urlPathLang;
+          // console.log("[Mobile Fix] Using URL path language:", finalLanguage);
         }
       }
     } catch (e) {
-      console.error("[Mobile Fix] Error in language enforcement setup:", e);
+      // Ignore URL parsing errors, use passed language
     }
 
-    // Multiple checks for language enforcement
-    // 1. Check for URL path language (highest priority)
-    const urlPathLanguage =
-      window.__OQTIMA_URL_PATH_LANG ||
-      document.documentElement.dataset.urlPathLang ||
-      document.documentElement.dataset.enforcedLang ||
-      sessionStorage.getItem("oqtima_url_path_lang");
+    // CRITICAL: Store parent window language state and prevent interference
+    const parentLanguageBackup = {
+      gatsbyLang:
+        typeof window !== "undefined" ? window.gatsby_i18next_language : null,
+      localStorage_i18nextLng: null,
+      localStorage_gatsbyLang: null,
+      sessionStorage_oqtimaTabLang: null,
+    };
 
-    // 2. Check for explicitly enforced language
-    const enforcedLanguage =
-      window.__OQTIMA_LANG_MUST_USE ||
-      window.__FINAL_DETERMINED_LANGUAGE ||
-      sessionStorage.getItem("oqtima_enforced_language") ||
-      sessionStorage.getItem("oqtima_final_language");
-
-    // 3. Check for locked language state
-    const isLanguageLocked =
-      window.__OQTIMA_LANG_LOCKED ||
-      sessionStorage.getItem("LANG_LOCKED") === "true" ||
-      window.__OQTIMA_LOCKED_LANG;
-
-    // Determine the final language to use - in strict priority order
-    const finalDeterminedLanguage =
-      urlPathLanguage || enforcedLanguage || language || "en";
-
-    // Store the finalDeterminedLanguage for global use
-    window.__FINAL_DETERMINED_LANGUAGE = finalDeterminedLanguage;
-    document.documentElement.dataset.mobileFinalLang = finalDeterminedLanguage;
-
-    // Log all language-related variables for debugging
-    // console.log("[Mobile] Language determination process:", {
-    //   providedLanguage: language,
-    //   urlPathLanguage: urlPathLanguage,
-    //   enforcedLanguage: enforcedLanguage,
-    //   isLanguageLocked: isLanguageLocked,
-    //   finalLanguage: finalDeterminedLanguage,
-    // });
-
-    // Override the provided language with our determined language
-    if (finalDeterminedLanguage !== language) {
-      // console.log(
-      //   `[Mobile] ⚠️ Overriding provided language '${language}' with determined language '${finalDeterminedLanguage}'`
-      // );
-      language = finalDeterminedLanguage;
-    }
-
-    // Final check: store the determined language for iframe use
-    const finalLanguage = language;
-
-    // MOBILE FIX: Force the language in iframe query string to ensure it's passed through URL parameters
-    const iframeUrlWithForcedLanguage = (() => {
-      try {
-        // Start with the standard URL construction
-        let baseUrl = constructIframeUrl(
-          finalLanguage,
-          referralType,
-          referralValue,
-          true
-        );
-
-        // Ensure the language parameter is correctly set in the URL
-        const url = new URL(baseUrl);
-        const params = new URLSearchParams(url.search);
-
-        // Add explicit language parameters that will be parsed by the iframe
-        params.set("language", finalLanguage);
-        params.set("lang", finalLanguage);
-        params.set("_lang", finalLanguage);
-        params.set("forceLang", "true");
-        params.set("mobileLang", finalLanguage);
-
-        // Add RTL flag if needed
-        const isRTL = finalLanguage === "ar";
-        if (isRTL) {
-          params.set("rtl", "true");
-          params.set("dir", "rtl");
-        }
-
-        // Add timestamp for cache busting
-        params.set("_t", Date.now());
-
-        // Set the modified search parameters
-        url.search = params.toString();
-
-        // Add language to hash for redundancy
-        url.hash = url.hash
-          ? `${url.hash}&lang=${finalLanguage}`
-          : `#lang=${finalLanguage}`;
-
-        // console.log(
-        //   "[Mobile Fix] Created iframe URL with forced language parameters:",
-        //   url.toString()
-        // );
-        return url.toString();
-      } catch (e) {
-        console.error("[Mobile Fix] Error creating iframe URL:", e);
-        // Fall back to standard URL construction
-        return constructIframeUrl(
-          finalLanguage,
-          referralType,
-          referralValue,
-          true
+    // Backup and isolate parent window language settings
+    try {
+      if (typeof localStorage !== "undefined") {
+        parentLanguageBackup.localStorage_i18nextLng =
+          localStorage.getItem("i18nextLng");
+        parentLanguageBackup.localStorage_gatsbyLang = localStorage.getItem(
+          "gatsby-i18next-language"
         );
       }
-    })();
+      if (typeof sessionStorage !== "undefined") {
+        parentLanguageBackup.sessionStorage_oqtimaTabLang =
+          sessionStorage.getItem("oqtima_tab_language");
+      }
+    } catch (e) {
+      // Ignore storage errors
+    }
 
-    // console.log(`[Mobile] Creating popup for language: ${language}`, {
-    //   referralType,
-    //   referralValue,
-    // });
+    // Create unique popup-specific storage keys to avoid conflicts
+    const POPUP_LANG_KEY = `oqtima_popup_lang_${Date.now()}`;
+    const POPUP_ISOLATED_FLAG = `oqtima_popup_isolated_${Date.now()}`;
+
+    // Store the final language with isolation
+    try {
+      sessionStorage.setItem(POPUP_LANG_KEY, finalLanguage);
+      sessionStorage.setItem(POPUP_ISOLATED_FLAG, "true");
+      window.__POPUP_FINAL_LANGUAGE = finalLanguage;
+      window.__POPUP_ISOLATED = true;
+    } catch (e) {
+      // Ignore storage errors
+    }
 
     // Check if the language is RTL
-    const isRTL = RTL_LANGUAGES.includes(language);
-    if (isRTL) {
-      // console.log("[Mobile] Creating mobile popup with RTL support");
-    }
+    const isRTL = RTL_LANGUAGES.includes(finalLanguage);
 
-    // Advanced language detection applied above
-    const normalizedLanguage = language.toLowerCase().trim();
-
-    // Check specifically for BR language to ensure consistency
-    const isBrVariant = /^(br|pt[-_]?br)$/i.test(normalizedLanguage);
-    // Update existing finalLanguage variable rather than redeclaring it
-    if (isBrVariant && finalLanguage !== "br") {
-      // console.log("[Mobile] Normalizing Brazilian Portuguese variant to 'br'");
-      // Update the finalLanguage variable
-      language = "br";
-    }
-
-    // Set a super-priority flag to ensure the language is never changed
-    window.__FINAL_DETERMINED_LANGUAGE = finalLanguage;
-    document.documentElement.dataset.mobileFinalLang = finalLanguage;
-
-    // console.log(
-    //   `[Mobile] Using normalized language: ${finalLanguage} (original: ${language})`
-    // );
-
-    // Inject a script into the document head to intercept and control language changes
-    try {
-      if (!window.__LANGUAGE_MONITOR_SCRIPT_ADDED) {
-        const script = document.createElement("script");
-        script.id = "oqtima-language-monitor";
-        script.textContent = `
-          // Language enforcement script
-          (function() {
-            // Store the final language to enforce
-            window.__FINAL_DETERMINED_LANGUAGE = "${finalLanguage}";
-            
-            // Monitor session storage for changes
-            const originalSetItem = Storage.prototype.setItem;
-            Storage.prototype.setItem = function(key, value) {
-              // Language-related keys to protect
-              const languageKeys = ['language', 'lang', 'i18nextLng', 'oqtima_tab_language'];
-              
-              if (languageKeys.includes(key) && value !== "${finalLanguage}") {
-                // console.warn(\`[Language Monitor] Prevented changing \${key} from "${finalLanguage}" to \${value}\`);
-                return originalSetItem.call(this, key, "${finalLanguage}");
-              }
-              
-              return originalSetItem.call(this, key, value);
-            };
-            
-            // console.log("[Language Monitor] Language protection active for: ${finalLanguage}");
-          })();
-        `;
-        document.head.appendChild(script);
-        window.__LANGUAGE_MONITOR_SCRIPT_ADDED = true;
-        // console.log(
-        //   "[Mobile] Added language enforcement script to document head"
-        // );
-      }
-    } catch (e) {
-      console.warn("[Mobile] Error adding language monitor script:", e);
-    }
-
-    // Force language into every possible storage mechanism to ensure consistency
-    try {
-      // Store in all language-related variables
-      window.__OQTIMA_COMPONENT_LANGUAGE = finalLanguage;
-      window.__OQTIMA_LOCKED_LANG = finalLanguage;
-      window.__OQTIMA_TAB_LANGUAGE__ = finalLanguage;
-      window.__OQTIMA_LANG_MUST_USE = finalLanguage;
-      window.__FORCE_LANGUAGE = true;
-      window.__PROTECTED_LANGUAGE = finalLanguage;
-      window.__OQTIMA_FINAL_LANGUAGE = finalLanguage;
-
-      // Update language in HTML and body
-      document.documentElement.setAttribute("lang", finalLanguage);
-      document.documentElement.dataset.enforcedLang = finalLanguage;
-      document.body.setAttribute("lang", finalLanguage);
-
-      // 1. Session Storage
-      sessionStorage.setItem("oqtima_tab_language", finalLanguage);
-      sessionStorage.setItem("i18nextLng", finalLanguage);
-      sessionStorage.setItem("lang", finalLanguage);
-      sessionStorage.setItem("language", finalLanguage);
-      sessionStorage.setItem("gatsby-i18next-language", finalLanguage);
-      sessionStorage.setItem("forceLanguage", "true");
-      sessionStorage.setItem(
-        "oqtima_language_timestamp",
-        Date.now().toString()
-      );
-      sessionStorage.setItem("oqtima_final_language", finalLanguage);
-      sessionStorage.setItem("oqtima_enforced_language", finalLanguage);
-      sessionStorage.setItem("LANG_LOCKED", "true");
-
-      // 2. Local Storage
-      try {
-        localStorage.setItem("i18nextLng", finalLanguage);
-        localStorage.setItem("gatsby-i18next-language", finalLanguage);
-        localStorage.setItem("language", finalLanguage);
-        localStorage.setItem("oqtima_saved_language", finalLanguage);
-      } catch (lsError) {
-        console.warn("[Mobile] Local storage error:", lsError);
-      }
-
-      // 3. Cookies
-      document.cookie = `i18next=${finalLanguage};path=/;max-age=3600`;
-      document.cookie = `oqtima_language=${finalLanguage};path=/;max-age=3600`;
-      document.cookie = `last_language=${finalLanguage};path=/;max-age=3600`;
-
-      // console.log(
-      //   "[Mobile] Enhanced language setup complete for:",
-      //   finalLanguage
-      // );
-
-      // Store referral type if valid
-      if (referralType !== null && referralType !== undefined) {
-        window.__OQTIMA_REFERRAL_TYPE__ = referralType;
-        sessionStorage.setItem("oqtima_referral_type", referralType);
-        // console.log("[Mobile] Set referral_type to:", referralType);
-      } else {
-        // Clear if not provided
-        delete window.__OQTIMA_REFERRAL_TYPE__;
-        sessionStorage.removeItem("oqtima_referral_type");
-      }
-
-      // Store referral value if valid
-      if (referralValue !== null && referralValue !== undefined) {
-        window.__OQTIMA_REFERRAL_VALUE__ = referralValue;
-        sessionStorage.setItem("oqtima_referral_value", referralValue);
-        // console.log("[Mobile] Set referral_value to:", referralValue);
-      } else {
-        // Clear if not provided
-        delete window.__OQTIMA_REFERRAL_VALUE__;
-        sessionStorage.removeItem("oqtima_referral_value");
-      }
-
-      // Set RTL flags if needed
-      if (isRTL) {
-        window.__FORCE_RTL__ = true;
-        window.__ORIGINAL_RTL__ = true;
-        sessionStorage.setItem("oqtima_tab_rtl", "true");
-        sessionStorage.setItem("isRTL", "true");
-        document.cookie = `isRTL=true;path=/;max-age=3600`;
-        // console.log("[Mobile] Set RTL flags for Arabic");
-      }
-
-      // Set up language protection monitor for mobile
-      if (!window.__MOBILE_LANGUAGE_MONITOR) {
-        window.__MOBILE_LANGUAGE_MONITOR = setInterval(() => {
-          try {
-            const currentStoredLang = sessionStorage.getItem(
-              "oqtima_tab_language"
-            );
-            if (currentStoredLang !== finalLanguage) {
-              console.warn(
-                `[Mobile] Language changed from ${finalLanguage} to ${currentStoredLang}, restoring...`
-              );
-              sessionStorage.setItem("oqtima_tab_language", finalLanguage);
-              sessionStorage.setItem("i18nextLng", finalLanguage);
-              sessionStorage.setItem("lang", finalLanguage);
-            }
-          } catch (e) {
-            console.error("[Mobile] Language monitor error:", e);
-          }
-        }, 1000);
-
-        // Clear the monitor after 30 seconds
-        setTimeout(() => {
-          if (window.__MOBILE_LANGUAGE_MONITOR) {
-            clearInterval(window.__MOBILE_LANGUAGE_MONITOR);
-            window.__MOBILE_LANGUAGE_MONITOR = null;
-            // console.log("[Mobile] Language monitor stopped");
-          }
-        }, 30000);
-      }
-    } catch (e) {
-      console.warn("[Mobile] Error setting storage parameters:", e);
-    }
-
-    // Get the container element (create if it doesn't exist)
-    const existingContainer = document.querySelector(
-      ".popup-registration__mobile-container"
-    );
-
-    // If a container already exists, remove it first
-    if (existingContainer) {
-      existingContainer.remove();
-    }
-
-    // Create a fullscreen overlay that covers the entire viewport
+    // Create mobile popup container
     const modalContainer = document.createElement("div");
     modalContainer.className = "popup-registration__mobile-container";
     modalContainer.style.position = "fixed";
@@ -4805,64 +4502,77 @@ const RTL_LANGUAGES = ["ar"];
     iframe.style.overflow = "hidden";
     iframe.style.transition = "all 0.3s ease-in-out";
 
-    // Set RTL and language attributes for iframe to ensure they're passed to content document
+    // Set RTL and language attributes for iframe
     iframe.setAttribute("lang", finalLanguage);
     if (isRTL) {
       iframe.setAttribute("dir", "rtl");
     }
 
-    // Construct the iframe URL with parameters directly injected
-    const url = constructIframeUrl(
-      finalLanguage,
-      referralType,
-      referralValue,
-      true
-    );
+    // CRITICAL FIX: Construct iframe URL with language embedded from the start
+    let iframeUrl;
+    try {
+      // Get base URL using the existing function
+      iframeUrl = constructIframeUrl(
+        finalLanguage,
+        referralType,
+        referralValue,
+        true
+      );
 
-    // Add additional parameters to ensure they're properly passed
-    const finalUrl = new URL(url);
-    const searchParams = new URLSearchParams(finalUrl.search);
+      // Parse URL and enhance with additional language parameters
+      const url = new URL(iframeUrl);
+      const params = new URLSearchParams(url.search);
 
-    // IMPORTANT: Add a cache-busting timestamp to force a fresh load
-    const timestamp = Date.now();
-    searchParams.set("_t", timestamp);
+      // CRITICAL: Add multiple language parameters to ensure they're available immediately
+      params.set("language", finalLanguage);
+      params.set("lang", finalLanguage);
+      params.set("langParam", finalLanguage);
+      params.set("data-lang", finalLanguage);
+      params.set("i18nextLng", finalLanguage);
+      params.set("gatsby-i18next-language", finalLanguage);
+      params.set("forceLang", "true");
+      params.set("forceLanguage", "true");
+      params.set("mobile", "true");
+      params.set("isMobile", "true");
+      params.set("popup_isolated", "true");
+      params.set("prevent_lang_switch", "true");
 
-    // Ensure language parameters are included with maximum redundancy for mobile browsers
-    searchParams.set("language", finalLanguage);
-    searchParams.set("lang", finalLanguage);
-    searchParams.set("data-lang", finalLanguage);
-    searchParams.set("i18nextLng", finalLanguage);
-    searchParams.set("oqtima_lang_locked", finalLanguage);
-    searchParams.set("oqtima_tab_language", finalLanguage);
-    searchParams.set("force_language", "true");
-    searchParams.set("forceLanguage", "true");
-    searchParams.set("__force_language", "true");
-    searchParams.set("langParam", finalLanguage);
+      // Add cache busting to prevent cached English content
+      params.set("_t", Date.now().toString());
+      params.set("_mobile", "1");
+      params.set("_isolated", "1");
 
-    // Enhanced mobile device detection
-    searchParams.set("isMobile", "true");
-    searchParams.set("mobile", "true");
-    searchParams.set("m", "true");
-    searchParams.set("mobileView", "true");
+      // Set referral parameters if provided
+      if (referralType !== null && referralType !== undefined) {
+        params.set("referral_type", referralType);
+        params.set("referralType", referralType);
+      }
+      if (referralValue !== null && referralValue !== undefined) {
+        params.set("referral_value", referralValue);
+        params.set("referralValue", referralValue);
+      }
 
-    // Ensure referral parameters are included if provided
-    if (referralType !== null && referralType !== undefined) {
-      searchParams.set("referral_type", referralType);
-      searchParams.set("referralType", referralType);
-      searchParams.set("referral-type", referralType);
+      // Apply enhanced search parameters
+      url.search = params.toString();
+
+      // Also add language to hash as fallback
+      url.hash = `lang=${finalLanguage}&isolated=true`;
+
+      iframeUrl = url.toString();
+      // console.log("[Mobile Fix] Enhanced iframe URL:", iframeUrl);
+    } catch (e) {
+      console.error("[Mobile Fix] Error enhancing iframe URL:", e);
+      // Fallback to basic URL construction
+      iframeUrl = constructIframeUrl(
+        finalLanguage,
+        referralType,
+        referralValue,
+        true
+      );
     }
-    if (referralValue !== null && referralValue !== undefined) {
-      searchParams.set("referral_value", referralValue);
-      searchParams.set("referralValue", referralValue);
-      searchParams.set("referral-value", referralValue);
-    }
 
-    // Set iframe URL with enhanced parameters
-    // Add the language as a URL fragment as an additional fallback mechanism
-    finalUrl.search = searchParams.toString();
-    finalUrl.hash = `lang=${finalLanguage}`;
-    iframe.src = finalUrl.toString();
-    // console.log("[Mobile] Using iframe URL:", iframe.src);
+    // Set the iframe source
+    iframe.src = iframeUrl;
 
     // Add the iframe to the container
     modalContainer.appendChild(iframe);
@@ -4870,128 +4580,152 @@ const RTL_LANGUAGES = ["ar"];
     // Add the container to the document body
     document.body.appendChild(modalContainer);
 
-    // Function to clean up popup and restore original document state
-    function cleanupPopup() {
-      // console.log("[OQtima] Closing mobile popup and cleaning up");
-
-      // Remove iframe and container
-      if (modalContainer && modalContainer.parentNode) {
-        modalContainer.parentNode.removeChild(modalContainer);
-      }
-
-      // Remove any styles we added
-      const popupStyles = document.getElementById(
-        "popup-registration-mobile-styles"
-      );
-      if (popupStyles && popupStyles.parentNode) {
-        popupStyles.parentNode.removeChild(popupStyles);
-      }
-
-      // Remove message event listener
-      if (messageHandler) {
-        window.removeEventListener("message", messageHandler);
-      }
-
-      // Remove keyboard event listener
-      if (keyDownHandler) {
-        document.removeEventListener("keydown", keyDownHandler);
-      }
-
-      // Restore body scrolling
-      document.body.classList.remove("oqtima-popup-open");
-      document.documentElement.classList.remove("oqtima-popup-open");
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      document.body.style.overflow = originalBodyOverflow || "";
-      document.documentElement.style.overflow = originalHtmlOverflow || "";
-
-      // Restore original classes
-      document.body.className = originalBodyClasses || "";
-      document.documentElement.className = originalHtmlClasses || "";
-
-      // Restore original styles
-      if (originalBodyStyle) {
-        document.body.setAttribute("style", originalBodyStyle);
-      } else {
-        document.body.removeAttribute("style");
-      }
-
-      if (originalHtmlStyle) {
-        document.documentElement.setAttribute("style", originalHtmlStyle);
-      } else {
-        document.documentElement.removeAttribute("style");
-      }
-
-      // Restore scroll position
-      if (originalScrollPos) {
-        window.scrollTo(0, originalScrollPos);
-      }
-
-      // console.log("[OQtima] Mobile popup closed successfully");
-    }
-
-    // Apply inline styles for the popup with enhanced RTL support
+    // Add styles
     const styleEl = document.createElement("style");
-    styleEl.id = "popup-registration-mobile-styles";
-    styleEl.innerHTML = `
-      body {
-        overflow: hidden !important;
+    styleEl.textContent = `
+      .popup-registration__mobile-container {
+        font-family: Arial, sans-serif;
       }
       
-      /* RTL specific styles for mobile popup */
-      html[dir="rtl"] .popup-registration__mobile-fullscreen,
-      [dir="rtl"] .popup-registration__mobile-fullscreen,
+      .popup-registration__mobile-fullscreen {
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      ${
+        isRTL
+          ? `
+      .popup-registration__mobile-container[dir="rtl"] {
+        direction: rtl;
+        text-align: right;
+      }
+      
       .popup-registration__mobile-fullscreen[dir="rtl"] {
-        direction: rtl !important;
+        direction: rtl;
       }
-      
-      @media (max-width: 767px) {
-        /* Make sure mobile popup is full height on iOS Safari */
-        .popup-registration__mobile-fullscreen {
-          height: -webkit-fill-available !important;
-          min-height: 100vh !important;
-        }
-        
-        /* RTL support for mobile */
-        html[dir="rtl"] .popup-registration__mobile-fullscreen input,
-        html[dir="rtl"] .popup-registration__mobile-fullscreen select,
-        html[dir="rtl"] .popup-registration__mobile-fullscreen textarea,
-        [dir="rtl"] .popup-registration__mobile-fullscreen input,
-        [dir="rtl"] .popup-registration__mobile-fullscreen select,
-        [dir="rtl"] .popup-registration__mobile-fullscreen textarea,
-        .popup-registration__mobile-fullscreen[dir="rtl"] input,
-        .popup-registration__mobile-fullscreen[dir="rtl"] select,
-        .popup-registration__mobile-fullscreen[dir="rtl"] textarea {
-          text-align: right !important;
-          direction: rtl !important;
-        }
-        
-        html[dir="rtl"] .popup-registration__mobile-fullscreen .form-group,
-        html[dir="rtl"] .popup-registration__mobile-fullscreen .form-field,
-        [dir="rtl"] .popup-registration__mobile-fullscreen .form-group,
-        [dir="rtl"] .popup-registration__mobile-fullscreen .form-field,
-        .popup-registration__mobile-fullscreen[dir="rtl"] .form-group,
-        .popup-registration__mobile-fullscreen[dir="rtl"] .form-field {
-          text-align: right !important;
-          direction: rtl !important;
-        }
-        
-        /* Language-specific overrides for mobile */
-        [lang="ar"] .popup-registration__mobile-fullscreen,
-        .popup-registration__mobile-fullscreen[lang="ar"] {
-          direction: rtl !important;
-        }
-        
-        /* Force language font styles on mobile */
-        .popup-registration__mobile-fullscreen[lang] {
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
-        }
+      `
+          : ""
       }
     `;
     document.head.appendChild(styleEl);
 
-    // Also set up keyboard event to close on Escape key
+    // CRITICAL: Install language protection to prevent parent window interference
+    let protectionInstalled = false;
+    const installLanguageProtection = () => {
+      if (protectionInstalled) return;
+      protectionInstalled = true;
+
+      // Override storage setters to protect popup language
+      const originalSetItem = Storage.prototype.setItem;
+      Storage.prototype.setItem = function (key, value) {
+        // Only allow popup-specific language changes when popup is open
+        if (
+          window.__POPUP_ISOLATED &&
+          (key === "i18nextLng" ||
+            key === "gatsby-i18next-language" ||
+            key === "oqtima_tab_language")
+        ) {
+          // If trying to set a different language than popup language, prevent it
+          if (value !== finalLanguage) {
+            console.warn(
+              `[Popup Protection] Prevented parent window from changing ${key} from ${finalLanguage} to ${value}`
+            );
+            return originalSetItem.call(this, key, finalLanguage);
+          }
+        }
+        return originalSetItem.call(this, key, value);
+      };
+
+      // Protect against direct window property changes
+      if (typeof window.gatsby_i18next_language !== "undefined") {
+        let protectedGatsbyLang = finalLanguage;
+        Object.defineProperty(window, "gatsby_i18next_language", {
+          get: function () {
+            return protectedGatsbyLang;
+          },
+          set: function (value) {
+            if (window.__POPUP_ISOLATED && value !== finalLanguage) {
+              console.warn(
+                `[Popup Protection] Prevented gatsby_i18next_language change from ${finalLanguage} to ${value}`
+              );
+              return;
+            }
+            protectedGatsbyLang = value;
+          },
+          configurable: true,
+        });
+      }
+    };
+
+    // Install protection immediately
+    installLanguageProtection();
+
+    // Cleanup function
+    function cleanupPopup() {
+      try {
+        // Remove language protection
+        window.__POPUP_ISOLATED = false;
+        protectionInstalled = false;
+
+        // Restore original parent window language settings
+        try {
+          if (parentLanguageBackup.localStorage_i18nextLng !== null) {
+            localStorage.setItem(
+              "i18nextLng",
+              parentLanguageBackup.localStorage_i18nextLng
+            );
+          }
+          if (parentLanguageBackup.localStorage_gatsbyLang !== null) {
+            localStorage.setItem(
+              "gatsby-i18next-language",
+              parentLanguageBackup.localStorage_gatsbyLang
+            );
+          }
+          if (parentLanguageBackup.sessionStorage_oqtimaTabLang !== null) {
+            sessionStorage.setItem(
+              "oqtima_tab_language",
+              parentLanguageBackup.sessionStorage_oqtimaTabLang
+            );
+          }
+          if (parentLanguageBackup.gatsbyLang !== null) {
+            window.gatsby_i18next_language = parentLanguageBackup.gatsbyLang;
+          }
+        } catch (e) {
+          // Ignore restoration errors
+        }
+
+        // Clean up popup-specific storage
+        sessionStorage.removeItem(POPUP_LANG_KEY);
+        sessionStorage.removeItem(POPUP_ISOLATED_FLAG);
+
+        if (modalContainer && modalContainer.parentNode) {
+          modalContainer.parentNode.removeChild(modalContainer);
+        }
+        if (styleEl && styleEl.parentNode) {
+          styleEl.parentNode.removeChild(styleEl);
+        }
+
+        // Restore original styles
+        document.body.className = originalBodyClasses || "";
+        document.documentElement.className = originalHtmlClasses || "";
+        if (originalBodyStyle) {
+          document.body.setAttribute("style", originalBodyStyle);
+        } else {
+          document.body.removeAttribute("style");
+        }
+        if (originalHtmlStyle) {
+          document.documentElement.setAttribute("style", originalHtmlStyle);
+        } else {
+          document.documentElement.removeAttribute("style");
+        }
+        document.body.style.overflow = originalBodyOverflow || "";
+        document.documentElement.style.overflow = originalHtmlOverflow || "";
+        window.scrollTo(0, originalScrollPos || 0);
+      } catch (e) {
+        console.error("[Mobile] Error in cleanup:", e);
+      }
+    }
+
+    // Set up keyboard event to close on Escape key
     const keyDownHandler = function (e) {
       if (e.key === "Escape" || e.keyCode === 27) {
         cleanupPopup();
@@ -5000,487 +4734,152 @@ const RTL_LANGUAGES = ["ar"];
     };
     document.addEventListener("keydown", keyDownHandler);
 
-    // Enhanced message handler for mobile - sends parameters to iframe when it's ready
+    // ENHANCED: Send parameters to iframe with strong language isolation
     const sendParamsToIframe = () => {
       try {
-        // Use the strongest enforced language with highest priority
-        const finalEnforcedLanguage =
-          window.__FINAL_DETERMINED_LANGUAGE ||
-          document.documentElement.dataset.mobileFinalLang ||
-          urlPathLanguage || // Explicitly add URL path language as highest priority
-          window.__OQTIMA_URL_PATH_LANG ||
-          sessionStorage.getItem("oqtima_url_path_lang") ||
-          sessionStorage.getItem("oqtima_enforced_language") ||
-          sessionStorage.getItem("oqtima_final_language") ||
-          finalLanguage;
-
-        // MOBILE FIX: Extra persistent storage for iOS/Android
-        try {
-          // Store language in cookie with long expiration for iOS/Android persistence
-          document.cookie = `oqtima_mobile_language=${finalEnforcedLanguage};path=/;max-age=3600`;
-          document.cookie = `oqtima_enforced_language=${finalEnforcedLanguage};path=/;max-age=3600`;
-
-          // Store in sessionStorage with specific mobile keys
-          sessionStorage.setItem("mobile_language", finalEnforcedLanguage);
-          sessionStorage.setItem("__mobile_lang", finalEnforcedLanguage);
-        } catch (e) {
-          console.warn("[Mobile Fix] Error setting persistent storage:", e);
-        }
-
-        // console.log(
-        //   "[Mobile] Using enforced language for iframe:",
-        //   finalEnforcedLanguage
-        // );
-
-        // Create a complete message with all necessary data - enhanced for mobile
         const messageData = {
           type: "REGISTRATION_PARAMS",
           data: {
-            // Special language enforcement flags
-            ENFORCE_LANGUAGE: "true",
-            LANGUAGE_LOCKED: "true",
-            FINAL_LANGUAGE: finalEnforcedLanguage,
-            CANNOT_OVERRIDE: "true",
-            MOBILE_SPECIFIC: "true", // Add mobile specific flag
-
-            // Add URL path language if available (highest priority)
-            urlPathLanguage: urlPathLanguage || null,
-            languagePriority: "url_path_first", // Changed to emphasize URL path priority
-            forcedLanguage: finalEnforcedLanguage,
-
-            // Language parameters with highest priority
-            language: finalEnforcedLanguage,
-            "data-lang": finalEnforcedLanguage,
-            lang: finalEnforcedLanguage,
-            data_lang: finalEnforcedLanguage,
-            tab_language: finalEnforcedLanguage,
-            i18nextLng: finalEnforcedLanguage,
+            // Language parameters - use final determined language with isolation flags
+            language: finalLanguage,
+            lang: finalLanguage,
+            langParam: finalLanguage,
+            "data-lang": finalLanguage,
+            i18nextLng: finalLanguage,
+            "gatsby-i18next-language": finalLanguage,
             forceLang: "true",
             forceLanguage: "true",
-            oqtima_tab_language: finalEnforcedLanguage,
-            oqtima_lang_locked: finalEnforcedLanguage,
-            __force_language: "true",
-            oqtima_final_language: finalEnforcedLanguage,
-            oqtima_enforced_language: finalEnforcedLanguage,
 
-            // MOBILE FIX: Additional mobile-specific parameters
-            mobile_language: finalEnforcedLanguage,
-            __mobile_lang: finalEnforcedLanguage,
+            // Isolation flags
+            popup_isolated: "true",
+            prevent_lang_switch: "true",
+            ignore_parent_lang: "true",
 
-            // Add device type information
-            device: "mobile", // Explicitly indicate this is mobile
-            deviceType: "mobile",
-            isMobileDevice: "true",
-
-            // Additional URL language parameters
-            urlPathLang: urlPathLanguage || null,
-            originalLanguage: language,
-
-            // Mobile-specific flags
+            // Device information
             isMobile: "true",
             mobile: "true",
-            mobileView: "true",
+            device: "mobile",
 
-            // Referral parameters with all variant formats
+            // Referral parameters
             referral_type: referralType,
             referralType: referralType,
-            "referral-type": referralType,
-
             referral_value: referralValue,
             referralValue: referralValue,
-            "referral-value": referralValue,
 
-            // RTL settings if needed
-            isRTL: isRTL,
-            isRtl: isRTL,
-            rtl: isRTL,
-            dir: isRTL ? "rtl" : "ltr",
-
-            // Add timestamp for caching prevention
-            timestamp: Date.now(),
-            _t: Date.now(),
-
-            // Cross-domain storage instructions
+            // Store in session storage with popup-specific keys
             storeInSessionStorage: true,
-            storeInLocalStorage: true, // Add local storage for better persistence
             storageKeys: [
-              { key: "oqtima_referral_type", value: referralType },
-              { key: "oqtima_referral_value", value: referralValue },
-              { key: "oqtima_tab_language", value: finalEnforcedLanguage },
-              { key: "mobile_language", value: finalEnforcedLanguage },
-              { key: "lang", value: finalEnforcedLanguage },
-              { key: "language", value: finalEnforcedLanguage },
-              { key: "i18nextLng", value: finalEnforcedLanguage },
-              { key: "oqtima_tab_rtl", value: isRTL ? "true" : "false" },
-              { key: "isRTL", value: isRTL ? "true" : "false" },
-              { key: "oqtima_lang_locked", value: finalEnforcedLanguage },
-              { key: "gatsby-i18next-language", value: finalEnforcedLanguage },
-              { key: "forceLanguage", value: "true" },
-              { key: "LANG_LOCKED", value: "true" },
-              { key: "oqtima_final_language", value: finalEnforcedLanguage },
-              { key: "oqtima_enforced_language", value: finalEnforcedLanguage },
-              {
-                key: "oqtima_url_path_lang",
-                value: urlPathLanguage || finalEnforcedLanguage,
-              },
+              { key: POPUP_LANG_KEY, value: finalLanguage },
+              { key: "popup_language", value: finalLanguage },
+              { key: "isolated_language", value: finalLanguage },
+              // Also store in standard keys but only for iframe use
+              { key: "i18nextLng", value: finalLanguage },
+              { key: "gatsby-i18next-language", value: finalLanguage },
             ],
           },
           timestamp: Date.now(),
-          source: "mobile_parent",
+          isolated: true,
+          finalLanguage: finalLanguage,
         };
 
-        // console.log("[Mobile] Sending enforced parameters to iframe:", {
-        //   language: finalEnforcedLanguage,
-        //   referralType,
-        //   referralValue,
-        // });
-
-        // Try to access the iframe's contentWindow as early as possible
-        // Attempt multiple techniques with increasing delays
+        // Send message to iframe
         iframe.contentWindow.postMessage(messageData, "*");
 
-        // Take a more aggressive approach - inject a <script> directly to the parent document
-        // to enforce language settings
-        try {
-          if (!window.__INJECTED_IFRAME_SYNC_SCRIPT) {
-            const syncScript = document.createElement("script");
-            syncScript.id = "oqtima-iframe-language-sync";
-            syncScript.textContent = `
-              // Iframe language sync script - ensures message is delivered
-              (function() {
-                const sendLanguage = () => {
-                  try {
-                    const iframes = document.querySelectorAll('iframe');
-                    iframes.forEach(iframe => {
-                      if (iframe.contentWindow) {
-                        iframe.contentWindow.postMessage({
-                          type: "ENFORCE_LANGUAGE",
-                          language: "${finalEnforcedLanguage}",
-                          forceLanguage: true,
-                          timestamp: Date.now()
-                        }, "*");
-                      }
-                    });
-                  } catch(e) {
-                    // console.warn("Error in iframe sync script:", e);
-                  }
-                };
-                
-                // Send immediately and repeatedly for a short time
-                sendLanguage();
-                const interval = setInterval(sendLanguage, 300);
-                setTimeout(() => clearInterval(interval), 3000);
-              })();
-            `;
-            document.head.appendChild(syncScript);
-            window.__INJECTED_IFRAME_SYNC_SCRIPT = true;
-          }
-        } catch (e) {
-          console.warn("[Mobile] Error injecting iframe sync script:", e);
-        }
-
-        // Schedule multiple retries with different techniques to ensure the message is received
-        // First retry - basic postMessage
+        // Single retry after short delay
         setTimeout(() => {
-          try {
-            iframe.contentWindow.postMessage(messageData, "*");
-          } catch (err) {
-            console.error("[Mobile] Error in retry 1:", err);
-          }
-        }, 300);
-
-        // Second retry - try to inject script directly if same origin
-        setTimeout(() => {
-          try {
-            iframe.contentWindow.postMessage(messageData, "*");
-
-            // Also try to access document directly if same origin
-            try {
-              const iframeDocument = iframe.contentWindow.document;
-              if (iframeDocument) {
-                // console.log(
-                //   "[Mobile] Successfully accessed iframe document, setting language directly"
-                // );
-
-                // Set language directly on the document
-                iframeDocument.documentElement.setAttribute(
-                  "lang",
-                  finalLanguage
-                );
-
-                // Set RTL if needed
-                if (isRTL) {
-                  iframeDocument.documentElement.setAttribute("dir", "rtl");
-                  iframeDocument.body.classList.add("rtl-active");
-                }
-
-                // Try to inject script to set language
-                const script = iframeDocument.createElement("script");
-                script.textContent = `
-                  // Set language globals
-                  window.__OQTIMA_COMPONENT_LANGUAGE = "${finalLanguage}";
-                  window.__OQTIMA_LOCKED_LANG = "${finalLanguage}";
-                  window.i18nextLng = "${finalLanguage}";
-                  
-                  // Set storage
-                  try {
-                    sessionStorage.setItem("i18nextLng", "${finalLanguage}");
-                    sessionStorage.setItem("oqtima_tab_language", "${finalLanguage}");
-                    localStorage.setItem("i18nextLng", "${finalLanguage}");
-                  } catch(e) {
-                    // console.warn("Storage error:", e);
-                  }
-                  
-                  // console.log("[Mobile Iframe] Language directly set to: ${finalLanguage}");
-                `;
-                iframeDocument.head.appendChild(script);
-              }
-            } catch (domErr) {
-              // Cross-origin access not allowed - expected in most cases
-            }
-          } catch (err) {
-            // console.error("[Mobile] Error in retry 2:", err);
-          }
-        }, 800);
-
-        // Final retry with the highest delay
-        setTimeout(() => {
-          try {
-            iframe.contentWindow.postMessage(messageData, "*");
-            // console.log("[Mobile] Final retry sending message to iframe");
-
-            // Add fallback using URL reloading as last resort
-            setTimeout(() => {
-              try {
-                // Check if language is still incorrect
-                const iframeLang = iframe.getAttribute("lang");
-                if (iframeLang !== finalLanguage) {
-                  // console.log(
-                  //   "[Mobile] Iframe language still not set correctly, applying additional fallbacks"
-                  // );
-
-                  // One last attempt - try to reload with explicit language parameters
-                  const reloadUrl = new URL(iframe.src);
-                  const reloadParams = new URLSearchParams(reloadUrl.search);
-
-                  // Add even more language parameters
-                  reloadParams.set("__reload_lang", finalLanguage);
-                  reloadParams.set("_forceLang", finalLanguage);
-                  reloadParams.set("_t", Date.now()); // Cache busting
-                  reloadUrl.search = reloadParams.toString();
-                  reloadUrl.hash = `lang=${finalLanguage}`;
-
-                  iframe.src = reloadUrl.toString();
-                  // console.log(
-                  //   "[Mobile] Last resort: Reloaded iframe with explicit language:",
-                  //   reloadUrl.toString()
-                  // );
-                }
-              } catch (reloadErr) {
-                // console.warn("[Mobile] Error in reload fallback:", reloadErr);
-              }
-            }, 2500);
-          } catch (err) {
-            // console.error("[Mobile] Error in final retry:", err);
-          }
-        }, 1500);
+          iframe.contentWindow.postMessage(messageData, "*");
+        }, 100);
       } catch (err) {
-        // console.error("[Mobile] Error sending parameters to iframe:", err);
+        console.error("[Mobile] Error sending parameters to iframe:", err);
       }
     };
 
-    // Set up iframe load event to send parameters
+    // Set up iframe load event
     iframe.addEventListener("load", function () {
-      // console.log("[Mobile] Iframe loaded, sending parameters");
+      // Send parameters immediately when iframe loads
       sendParamsToIframe();
     });
 
-    // Listen for messages from the iframe (e.g., for close requests)
+    // Listen for messages from the iframe
     const messageHandler = function (event) {
       try {
-        // Make sure we only process messages from our iframe or trusted sources
         if (event.data && typeof event.data === "object") {
-          // Get the final enforced language that should never change
-          const finalEnforcedLanguage =
-            window.__FINAL_DETERMINED_LANGUAGE ||
-            document.documentElement.dataset.mobileFinalLang ||
-            urlPathLanguage || // Added URL path language as highest priority
-            window.__OQTIMA_URL_PATH_LANG ||
-            sessionStorage.getItem("oqtima_url_path_lang") ||
-            sessionStorage.getItem("oqtima_enforced_language") ||
-            finalLanguage;
-
-          // If iframe says it's ready, send params again
-          if (event.data.type === "IFRAME_READY") {
-            // console.log(
-            //   "[Mobile] Iframe signaled ready, sending enforced parameters"
-            // );
-            sendParamsToIframe();
-          }
-
-          // Handle iframe language parameter requests or notifications
-          if (event.data.type === "LANGUAGE_CHANGED" && event.data.language) {
-            // If iframe reports a language change, force sync back to our decided language
-            // console.log(
-            //   "[Mobile] Iframe reports language changed to:",
-            //   event.data.language
-            // );
-
-            // Check if it matches what we expect
-            if (event.data.language !== finalEnforcedLanguage) {
-              // console.warn(
-              //   `[Mobile] ⚠️⚠️ Iframe language changed to '${event.data.language}' doesn't match enforced '${finalEnforcedLanguage}', enforcing correct language`
-              // );
-
-              // Take multiple actions to enforce correct language:
-
-              // 1. Re-send our parameters to force the correct language
-              sendParamsToIframe();
-
-              // 2. Force a direct language enforcement message
-              try {
-                iframe.contentWindow.postMessage(
-                  {
-                    type: "ENFORCE_LANGUAGE",
-                    language: finalEnforcedLanguage,
-                    forceLanguage: true,
-                    timestamp: Date.now(),
-                  },
-                  "*"
-                );
-              } catch (e) {
-                console.warn(
-                  "[Mobile] Error sending direct language enforcement:",
-                  e
-                );
-              }
-
-              // 3. If multiple changes detected, consider direct DOM manipulation
-              if (window.__LANGUAGE_CHANGE_ATTEMPTS >= 2) {
-                console.warn(
-                  "[Mobile] Multiple language change attempts detected, trying direct DOM manipulation"
-                );
-                try {
-                  const iframeDoc =
-                    iframe.contentDocument || iframe.contentWindow.document;
-                  if (iframeDoc) {
-                    // Set language directly on the iframe document
-                    iframeDoc.documentElement.setAttribute(
-                      "lang",
-                      finalEnforcedLanguage
-                    );
-                    iframeDoc.body.setAttribute("lang", finalEnforcedLanguage);
-
-                    // Inject a script to force language
-                    const script = iframeDoc.createElement("script");
-                    script.textContent = `
-                      // Emergency language override
-                      (function() {
-                        // Force all language variables
-                        window.__OQTIMA_LOCKED_LANG = "${finalEnforcedLanguage}";
-                        window.__OQTIMA_COMPONENT_LANGUAGE = "${finalEnforcedLanguage}";
-                        window.__FORCE_LANGUAGE = "${finalEnforcedLanguage}";
-                        window.i18nextLng = "${finalEnforcedLanguage}";
-                        
-                        // Force storage
-                        sessionStorage.setItem("i18nextLng", "${finalEnforcedLanguage}");
-                        sessionStorage.setItem("oqtima_tab_language", "${finalEnforcedLanguage}");
-                        sessionStorage.setItem("language", "${finalEnforcedLanguage}");
-                        sessionStorage.setItem("lang", "${finalEnforcedLanguage}");
-                        
-                        // console.log("[Iframe] EMERGENCY language override applied: ${finalEnforcedLanguage}");
-                      })();
-                    `;
-                    iframeDoc.head.appendChild(script);
-                  }
-                } catch (domErr) {
-                  // Expected - security prevents cross-origin DOM access
-                  // console.log(
-                  //   "[Mobile] Could not access iframe DOM (expected security limitation)"
-                  // );
-                }
-              }
-
-              // Track language change attempts
-              window.__LANGUAGE_CHANGE_ATTEMPTS =
-                (window.__LANGUAGE_CHANGE_ATTEMPTS || 0) + 1;
-            } else {
-              // console.log(
-              //   "[Mobile] ✓ Iframe language matches enforced language"
-              // );
-              window.__LANGUAGE_CHANGE_ATTEMPTS = 0;
-            }
-          }
-
-          // Handle language initialization request from iframe
-          if (event.data.type === "REQUEST_LANGUAGE") {
-            // console.log(
-            //   "[Mobile] Received language request from iframe, sending enforced language"
-            // );
-            sendParamsToIframe();
-
-            // Also send direct enforcement
-            try {
-              iframe.contentWindow.postMessage(
-                {
-                  type: "ENFORCE_LANGUAGE",
-                  language: finalEnforcedLanguage,
-                  forceLanguage: true,
-                  timestamp: Date.now(),
-                },
-                "*"
-              );
-            } catch (e) {
-              console.warn(
-                "[Mobile] Error sending direct language enforcement:",
-                e
-              );
-            }
-          }
-
           // Handle close popup message
           if (event.data.type === "OQTIMA_CLOSE_POPUP") {
-            // console.log("[OQtima] Received close request from iframe");
             cleanupPopup();
+            window.removeEventListener("message", messageHandler);
+            document.removeEventListener("keydown", keyDownHandler);
           }
 
-          // Handle registration success message
-          if (event.data.type === "OQTIMA_REGISTRATION_SUCCESS") {
-            // console.log(
-            //   "[OQtima] Registration success received, closing popup"
-            // );
+          // Handle iframe ready message - send params again if needed
+          if (event.data.type === "IFRAME_READY") {
+            sendParamsToIframe();
+          }
 
-            // If there's a redirect URL, prepare to redirect after closing
-            if (event.data.redirectUrl) {
-              const redirectUrl = event.data.redirectUrl;
-              const redirectTimeout = event.data.redirectTimeout || 100;
-
-              // console.log(
-              //   `[OQtima] Will redirect to ${redirectUrl} after popup closes`
-              // );
-
-              // Close popup first
-              cleanupPopup();
-
-              // Then redirect
-              setTimeout(function () {
-                window.location.href = redirectUrl;
-              }, redirectTimeout);
-            } else {
-              // Just close the popup if no redirect
-              cleanupPopup();
-            }
+          // CRITICAL: Prevent iframe from being influenced by parent language changes
+          if (
+            event.data.type === "LANGUAGE_CHANGED" &&
+            event.data.language !== finalLanguage
+          ) {
+            console.warn(
+              `[Popup Protection] Iframe tried to change language from ${finalLanguage} to ${event.data.language}, reverting`
+            );
+            // Send the correct language back
+            sendParamsToIframe();
           }
         }
-      } catch (err) {
-        console.error("[OQtima] Error processing message from iframe:", err);
+      } catch (e) {
+        console.error("[Mobile] Error handling message:", e);
       }
     };
 
-    // Add the message listener
+    // Add message listener
     window.addEventListener("message", messageHandler);
 
-    return modalContainer;
+    // Auto-cleanup after 30 minutes for safety
+    setTimeout(() => {
+      cleanupPopup();
+      window.removeEventListener("message", messageHandler);
+      document.removeEventListener("keydown", keyDownHandler);
+    }, 30 * 60 * 1000);
+
+    // CRITICAL: Override ALL parent window language references
+    try {
+      // Force override parent language settings
+      sessionStorage.setItem("oqtima_parent_lang", finalLanguage); // Override parent lang
+      sessionStorage.setItem("oqtima_parent_dir", isRTL ? "rtl" : "ltr");
+      sessionStorage.setItem("oqtima_popup_isolated", "true");
+
+      // Set all possible language storage keys to final language
+      const languageKeys = [
+        "i18nextLng",
+        "gatsby-i18next-language",
+        "oqtima_tab_language",
+        "oqtima_enforced_language",
+        "oqtima_final_language",
+        "oqtima_selected_language",
+        "lang",
+        "language",
+        "locale",
+      ];
+
+      languageKeys.forEach((key) => {
+        try {
+          sessionStorage.setItem(key, finalLanguage);
+          // Also try localStorage if available
+          localStorage.setItem(key, finalLanguage);
+        } catch (e) {
+          // Ignore storage errors
+        }
+      });
+
+      console.log(`[Mobile Popup] All language keys set to: ${finalLanguage}`);
+      console.log(
+        `[Mobile Popup] Parent language overridden from en to: ${finalLanguage}`
+      );
+    } catch (e) {
+      console.warn("[Mobile Popup] Error setting language overrides:", e);
+    }
   }
 
   // Initialize when DOM is ready
