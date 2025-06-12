@@ -1,4 +1,4 @@
-﻿import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
+﻿﻿import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import { Formik } from "formik";
 import cn from "classnames";
 import { PopupRegistrationSchema } from "../../../../../validations/popup-registration";
@@ -2370,24 +2370,18 @@ const PopupRegistrationForm = ({ params }) => {
       };
 
       // Only include referral parameters if they exist and this is a specific referral type
-      if (finalReferralType !== null && finalReferralType !== undefined) {
-        // FIXED: Ensure referral_type is always a valid integer
-        const referralTypeInt = parseInt(finalReferralType, 10);
-        if (!isNaN(referralTypeInt)) {
-          registrationData.referral_type = referralTypeInt;
+      if (finalReferralType !== null) {
+        registrationData.referral_type = finalReferralType;
 
-          if (isSpecificReferralType) {
-            // console.log("Including referral parameters in API request:", {
-            //   referral_type: referralTypeInt,
-            //   referral_value: finalReferralValue || null,
-            // });
-          } else {
-            // console.log(
-            //   "Normal Registration with referral_type but no referral_value"
-            // );
-          }
+        if (isSpecificReferralType) {
+          // console.log("Including referral parameters in API request:", {
+          //   referral_type: finalReferralType,
+          //   referral_value: finalReferralValue || null,
+          // });
         } else {
-          // console.log("Invalid referral_type value, skipping:", finalReferralType);
+          // console.log(
+          //   "Normal Registration with referral_type but no referral_value"
+          // );
         }
       } else {
         // console.log(

@@ -1604,10 +1604,38 @@ const RTL_LANGUAGES = ["ar"];
 
     // Prevent background scrolling for non-embedded popups
     if (typeof window !== "undefined" && !params.embedded) {
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
-      document.body.style.top = `-${originalScrollPos}px`;
+      // Check if this will be a mobile popup
+      const isMobileDetection =
+        window.innerWidth <= 767 ||
+        params.forceMobile === true ||
+        params.isMobile === true ||
+        params.mobile === true;
+
+      if (isMobileDetection) {
+        // MOBILE SPECIFIC: Use different approach to prevent background scrolling
+        // Store additional properties that might affect mobile scrolling
+        window.__OQTIMA_MOBILE_ORIGINAL_TOUCH_ACTION =
+          document.body.style.touchAction || "";
+        window.__OQTIMA_MOBILE_ORIGINAL_WEBKIT_OVERFLOW =
+          document.body.style.webkitOverflowScrolling || "";
+
+        // For mobile, use a gentler approach that won't break scroll restoration
+        document.body.style.overflow = "hidden";
+        document.body.style.touchAction = "none";
+        document.body.style.webkitOverflowScrolling = "auto";
+
+        // Store mobile-specific scroll position
+        window.__OQTIMA_MOBILE_SCROLL_X =
+          window.scrollX || window.pageXOffset || 0;
+        window.__OQTIMA_MOBILE_SCROLL_Y =
+          window.scrollY || window.pageYOffset || 0;
+      } else {
+        // DESKTOP: Use the existing fixed positioning approach
+        document.body.style.overflow = "hidden";
+        document.body.style.position = "fixed";
+        document.body.style.width = "100%";
+        document.body.style.top = `-${originalScrollPos}px`;
+      }
     }
 
     // Store all parameters in sessionStorage for the iframe
@@ -2402,35 +2430,6 @@ const RTL_LANGUAGES = ["ar"];
     // Add the container to the document body
     document.body.appendChild(modalContainer);
 
-    // CRITICAL: Force iframe scrolling capability independently of parent body styles
-    // Add class to body to trigger CSS rules that override overflow:hidden
-    document.body.classList.add("oqtima-iframe-open");
-
-    // Force iframe scroll properties directly with setTimeout to ensure DOM is ready
-    setTimeout(() => {
-      if (iframe && iframe.style) {
-        iframe.style.overflow = "auto";
-        iframe.style.overflowY = "auto";
-        iframe.style.overflowX = "hidden";
-        iframe.style.webkitOverflowScrolling = "touch";
-        iframe.style.isolation = "isolate";
-
-        // Ensure iframe content document can scroll when loaded
-        iframe.onload = function () {
-          try {
-            // Force scroll on iframe content if accessible
-            if (iframe.contentDocument && iframe.contentDocument.body) {
-              iframe.contentDocument.body.style.overflow = "auto";
-              iframe.contentDocument.body.style.overflowY = "auto";
-              iframe.contentDocument.documentElement.style.overflow = "auto";
-            }
-          } catch (e) {
-            // Cross-origin restrictions - this is expected and okay
-          }
-        };
-      }
-    }, 0);
-
     // Lock body scroll
     if (isMobile) {
       document.body.style.cssText += `
@@ -2971,78 +2970,21 @@ const RTL_LANGUAGES = ["ar"];
         document.documentElement.classList.remove("oqtima-mobile-popup-open");
         document.body.classList.remove("oqtima-mobile-popup-open");
 
-        // ENHANCED SCROLL RESTORATION - especially critical for mobile
-        // Remove all scroll-blocking classes first
-        const scrollBlockingClasses = [
-          "popup-open",
-          "modal-open",
-          "no-scroll",
-          "scroll-disabled",
-          "overflow-hidden",
-        ];
-
-        scrollBlockingClasses.forEach((className) => {
-          document.body.classList.remove(className);
-          document.documentElement.classList.remove(className);
-        });
-
         // CRITICAL FIX: Explicitly reset all scroll-affecting properties
         // We need to first remove the fixed position that prevents scrolling
         document.body.style.position = "";
         document.body.style.width = "";
-        document.body.style.height = "";
         document.body.style.top = "";
-        document.body.style.left = "";
-        document.body.style.transform = "";
-
-        // Force restore scroll properties for mobile
-        document.body.style.overflow = originalBodyOverflow || "auto";
-        document.body.style.overflowY = "auto";
-        document.body.style.overflowX = "hidden";
-        document.body.style.webkitOverflowScrolling = "touch";
-        document.body.style.touchAction = "auto";
-
-        document.documentElement.style.overflow =
-          originalHtmlOverflow || "auto";
-        document.documentElement.style.overflowY = "auto";
-        document.documentElement.style.overflowX = "hidden";
-        document.documentElement.style.position = "";
-        document.documentElement.style.width = "";
-        document.documentElement.style.height = "";
-        document.documentElement.style.top = "";
-        document.documentElement.style.left = "";
-        document.documentElement.style.transform = "";
-        document.documentElement.style.touchAction = "auto";
-
-        // Mobile Safari specific fixes
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-          document.body.style.webkitTransform = "translateZ(0)";
-        }
+        document.body.style.overflow = originalBodyOverflow || "";
+        document.documentElement.style.overflow = originalHtmlOverflow || "";
 
         // IMPORTANT: Restore scroll position AFTER removing fixed positioning
-        const targetScrollPos = originalScrollPos;
-
-        // Multiple scroll restoration attempts for mobile reliability
-        if (targetScrollPos && typeof targetScrollPos === "object") {
-          window.scrollTo(targetScrollPos.x || 0, targetScrollPos.y || 0);
-
-          // Additional mobile restoration attempts
-          setTimeout(() => {
-            window.scrollTo(targetScrollPos.x || 0, targetScrollPos.y || 0);
-          }, 50);
-        } else if (typeof targetScrollPos === "number") {
-          window.scrollTo(0, targetScrollPos);
-
-          // Additional mobile restoration attempts
-          setTimeout(() => {
-            window.scrollTo(0, targetScrollPos);
-          }, 50);
-        } else {
-          // Default to top of page
-          window.scrollTo(0, 0);
+        if (originalScrollPos && typeof originalScrollPos === "object") {
+          window.scrollTo(originalScrollPos.x || 0, originalScrollPos.y || 0);
+        } else if (typeof originalScrollPos === "number") {
+          window.scrollTo(0, originalScrollPos);
         }
 
-        // Restore original styles after scroll restoration
         if (originalBodyStyle) {
           document.body.setAttribute("style", originalBodyStyle);
         } else {
@@ -3054,6 +2996,9 @@ const RTL_LANGUAGES = ["ar"];
         } else {
           document.documentElement.removeAttribute("style");
         }
+
+        // Log cleanup success
+        // console.log("[OQtima] Successfully restored original document state");
       } catch (error) {
         console.error("[OQtima] Error closing registration popup:", error);
 
@@ -4485,11 +4430,7 @@ const RTL_LANGUAGES = ["ar"];
     iframe.style.border = "none";
     iframe.style.backgroundColor = "#ffffff";
     iframe.style.zIndex = "1000000";
-    // CRITICAL FIX: Ensure iframe can scroll internally
-    iframe.style.overflow = "auto";
-    iframe.style.overflowY = "auto";
-    iframe.style.overflowX = "hidden";
-    iframe.style.webkitOverflowScrolling = "touch";
+    iframe.style.overflow = "hidden";
     iframe.style.transition = "all 0.3s ease-in-out";
 
     // Set RTL and language attributes for iframe
@@ -4587,46 +4528,10 @@ const RTL_LANGUAGES = ["ar"];
     styleEl.textContent = `
       .popup-registration__mobile-container {
         font-family: Arial, sans-serif;
-        /* Ensure modal container doesn't interfere with iframe scrolling */
-        overflow: visible;
       }
       
       .popup-registration__mobile-fullscreen {
-        /* CRITICAL: Enable touch scrolling for mobile */
         -webkit-overflow-scrolling: touch;
-        /* Ensure iframe content can scroll */
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        /* Mobile Safari optimizations */
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-        /* Prevent scrolling issues on iOS */
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-      }
-      
-      /* Additional mobile-specific fixes */
-      @media (max-width: 767px) {
-        .popup-registration__mobile-fullscreen {
-          /* Force enable scrolling on small screens */
-          overflow-y: scroll !important;
-          -webkit-overflow-scrolling: touch !important;
-          /* Prevent zoom on form focus */
-          font-size: 16px;
-        }
-      }
-      
-      /* Force iframe to be scrollable even if body is overflow:hidden */
-      body.oqtima-iframe-open .popup-registration__mobile-fullscreen,
-      body[style*="overflow: hidden"] .popup-registration__mobile-fullscreen,
-      body[style*="overflow:hidden"] .popup-registration__mobile-fullscreen {
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        /* Force independent scrolling context */
-        contain: layout style paint;
-        isolation: isolate;
-        will-change: scroll-position;
       }
       
       ${
@@ -4639,9 +4544,6 @@ const RTL_LANGUAGES = ["ar"];
       
       .popup-registration__mobile-fullscreen[dir="rtl"] {
         direction: rtl;
-        /* Ensure RTL doesn't affect scrolling */
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
       }
       `
           : ""
@@ -4738,7 +4640,6 @@ const RTL_LANGUAGES = ["ar"];
         sessionStorage.removeItem(POPUP_LANG_KEY);
         sessionStorage.removeItem(POPUP_ISOLATED_FLAG);
 
-        // Remove modal elements
         if (modalContainer && modalContainer.parentNode) {
           modalContainer.parentNode.removeChild(modalContainer);
         }
@@ -4746,147 +4647,153 @@ const RTL_LANGUAGES = ["ar"];
           styleEl.parentNode.removeChild(styleEl);
         }
 
-        // ENHANCED MOBILE SCROLL RESTORATION
-        // First restore original classes and styles
+        // MOBILE SPECIFIC FIX: Enhanced restoration for mobile scroll behavior
+        // Restore original styles
         document.body.className = originalBodyClasses || "";
         document.documentElement.className = originalHtmlClasses || "";
 
+        // Clear all potential CSS properties that might prevent scrolling on mobile
+        const bodyStyle = document.body.style;
+        const htmlStyle = document.documentElement.style;
+
+        // Reset body styles
         if (originalBodyStyle) {
           document.body.setAttribute("style", originalBodyStyle);
         } else {
           document.body.removeAttribute("style");
         }
 
+        // Reset html styles
         if (originalHtmlStyle) {
           document.documentElement.setAttribute("style", originalHtmlStyle);
         } else {
           document.documentElement.removeAttribute("style");
         }
 
-        // CRITICAL FOR MOBILE: Force restore scroll properties
-        // Remove all possible scroll-blocking styles (ONLY on parent window elements)
-        document.body.style.overflow = originalBodyOverflow || "auto";
-        document.body.style.overflowY = "auto";
-        document.body.style.overflowX = "hidden";
-        document.body.style.position = "";
-        document.body.style.width = "";
-        document.body.style.height = "";
-        document.body.style.top = "";
-        document.body.style.left = "";
-        document.body.style.transform = "";
-        document.body.style.webkitOverflowScrolling = "touch";
+        // CRITICAL MOBILE FIX: Force restore scroll capability
+        bodyStyle.overflow = originalBodyOverflow || "";
+        htmlStyle.overflow = originalHtmlOverflow || "";
 
-        document.documentElement.style.overflow =
-          originalHtmlOverflow || "auto";
-        document.documentElement.style.overflowY = "auto";
-        document.documentElement.style.overflowX = "hidden";
-        document.documentElement.style.position = "";
-        document.documentElement.style.width = "";
-        document.documentElement.style.height = "";
-        document.documentElement.style.top = "";
-        document.documentElement.style.left = "";
-        document.documentElement.style.transform = "";
+        // Additional mobile-specific CSS resets
+        bodyStyle.position = "";
+        bodyStyle.height = "";
+        bodyStyle.maxHeight = "";
+        bodyStyle.touchAction = "";
+        bodyStyle.webkitOverflowScrolling = "";
+        bodyStyle.overflowScrolling = "";
 
-        // Remove any popup-related classes that might prevent scrolling (ONLY on parent window)
-        const scrollBlockingClasses = [
-          "oqtima-iframe-open",
-          "oqtima-mobile-open",
-          "oqtima-mobile-modal-open",
-          "oqtima-mobile-popup-open",
-          "popup-open",
-          "modal-open",
-          "no-scroll",
-          "scroll-disabled",
-          "overflow-hidden",
-        ];
+        htmlStyle.position = "";
+        htmlStyle.height = "";
+        htmlStyle.maxHeight = "";
+        htmlStyle.touchAction = "";
+        htmlStyle.webkitOverflowScrolling = "";
+        htmlStyle.overflowScrolling = "";
 
-        scrollBlockingClasses.forEach((className) => {
-          document.body.classList.remove(className);
-          document.documentElement.classList.remove(className);
-        });
+        // Force enable scrolling on mobile
+        if (window.innerWidth <= 767) {
+          // Mobile specific fixes using stored values
+          bodyStyle.overflow = originalBodyOverflow || "auto";
+          htmlStyle.overflow = originalHtmlOverflow || "auto";
+          bodyStyle.touchAction =
+            window.__OQTIMA_MOBILE_ORIGINAL_TOUCH_ACTION || "auto";
+          bodyStyle.webkitOverflowScrolling =
+            window.__OQTIMA_MOBILE_ORIGINAL_WEBKIT_OVERFLOW || "touch";
 
-        // MOBILE-SPECIFIC: Force enable touch scrolling (ONLY on parent window)
-        document.body.style.touchAction = "auto";
-        document.documentElement.style.touchAction = "auto";
+          // Remove any fixed positioning that might interfere
+          bodyStyle.position = originalBodyStyle?.includes("position")
+            ? originalBodyStyle.match(/position:\s*([^;]+)/)?.[1] || ""
+            : "";
+          htmlStyle.position = originalHtmlStyle?.includes("position")
+            ? originalHtmlStyle.match(/position:\s*([^;]+)/)?.[1] || ""
+            : "";
 
-        // Force re-enable scroll on mobile Safari (ONLY on parent window)
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-          document.body.style.webkitOverflowScrolling = "touch";
-          document.body.style.webkitTransform = "translateZ(0)";
+          // Ensure body and html can scroll
+          bodyStyle.height = originalBodyStyle?.includes("height")
+            ? originalBodyStyle.match(/height:\s*([^;]+)/)?.[1] || ""
+            : "";
+          htmlStyle.height = originalHtmlStyle?.includes("height")
+            ? originalHtmlStyle.match(/height:\s*([^;]+)/)?.[1] || ""
+            : "";
+
+          // Remove the top positioning that was applied for fixed positioning
+          bodyStyle.top = "";
+          bodyStyle.width = originalBodyStyle?.includes("width")
+            ? originalBodyStyle.match(/width:\s*([^;]+)/)?.[1] || ""
+            : "";
+
+          // Clear mobile-specific stored variables
+          delete window.__OQTIMA_MOBILE_ORIGINAL_TOUCH_ACTION;
+          delete window.__OQTIMA_MOBILE_ORIGINAL_WEBKIT_OVERFLOW;
         }
 
-        // Restore scroll position with multiple attempts for mobile reliability
-        const targetScrollPos = originalScrollPos || 0;
-
-        // Immediate scroll restoration
-        window.scrollTo(0, targetScrollPos);
-
-        // Delayed scroll restoration for mobile browsers
+        // Restore scroll position with a small delay for mobile
         setTimeout(() => {
-          window.scrollTo(0, targetScrollPos);
+          // Use mobile-specific scroll coordinates if available, otherwise fallback to originalScrollPos
+          const mobileScrollX = window.__OQTIMA_MOBILE_SCROLL_X || 0;
+          const mobileScrollY =
+            window.__OQTIMA_MOBILE_SCROLL_Y || originalScrollPos || 0;
 
-          // Force a reflow to ensure styles are applied
-          const forceReflow = document.body.offsetHeight;
+          window.scrollTo(mobileScrollX, mobileScrollY);
 
-          // Final scroll attempt
-          requestAnimationFrame(() => {
-            window.scrollTo(0, targetScrollPos);
-          });
-        }, 50);
+          // Additional mobile scroll restoration attempts
+          if (window.innerWidth <= 767) {
+            // Try multiple scroll restoration methods for mobile
+            document.body.scrollTop = mobileScrollY;
+            document.documentElement.scrollTop = mobileScrollY;
 
-        // Additional mobile scroll fix - use scrollIntoView as fallback
-        setTimeout(() => {
-          try {
-            if (targetScrollPos > 0) {
-              window.scrollTo({
-                top: targetScrollPos,
-                left: 0,
-                behavior: "auto",
-              });
-            } else {
-              // Scroll to top of page
-              document.body.scrollTop = 0;
-              document.documentElement.scrollTop = 0;
-            }
-          } catch (scrollError) {
-            // Final fallback - manual scroll
-            document.body.scrollTop = targetScrollPos;
-            document.documentElement.scrollTop = targetScrollPos;
+            // Force reflow to ensure styles are applied
+            document.body.offsetHeight;
+            document.documentElement.offsetHeight;
+
+            // Final scroll attempt
+            setTimeout(() => {
+              window.scrollTo(mobileScrollX, mobileScrollY);
+
+              // Clean up mobile scroll variables
+              delete window.__OQTIMA_MOBILE_SCROLL_X;
+              delete window.__OQTIMA_MOBILE_SCROLL_Y;
+            }, 50);
           }
-        }, 100);
+        }, 10);
       } catch (e) {
         console.error("[Mobile] Error in cleanup:", e);
 
-        // Emergency mobile scroll restoration if cleanup fails
-        try {
-          document.body.style.overflow = "auto";
-          document.body.style.overflowY = "auto";
-          document.body.style.position = "";
-          document.body.style.width = "";
-          document.body.style.height = "";
-          document.body.style.webkitOverflowScrolling = "touch";
-          document.documentElement.style.overflow = "auto";
-          document.documentElement.style.overflowY = "auto";
+        // Emergency mobile scroll fix in case of errors
+        if (window.innerWidth <= 767) {
+          try {
+            document.body.style.overflow = "auto";
+            document.documentElement.style.overflow = "auto";
+            document.body.style.touchAction =
+              window.__OQTIMA_MOBILE_ORIGINAL_TOUCH_ACTION || "auto";
+            document.body.style.webkitOverflowScrolling =
+              window.__OQTIMA_MOBILE_ORIGINAL_WEBKIT_OVERFLOW || "touch";
+            document.body.style.position = "";
+            document.documentElement.style.position = "";
+            document.body.style.height = "";
+            document.documentElement.style.height = "";
+            document.body.style.top = "";
+            document.body.style.width = "";
 
-          // Remove common scroll-blocking classes
-          document.body.classList.remove(
-            "oqtima-mobile-open",
-            "popup-open",
-            "modal-open"
-          );
-          document.documentElement.classList.remove(
-            "oqtima-mobile-open",
-            "popup-open",
-            "modal-open"
-          );
+            // Use stored mobile scroll coordinates for emergency restoration
+            const emergencyScrollX = window.__OQTIMA_MOBILE_SCROLL_X || 0;
+            const emergencyScrollY =
+              window.__OQTIMA_MOBILE_SCROLL_Y || originalScrollPos || 0;
 
-          window.scrollTo(0, 0);
-        } catch (emergencyError) {
-          // Last resort logging
-          console.error(
-            "[Mobile] Emergency scroll restoration also failed:",
-            emergencyError
-          );
+            setTimeout(() => {
+              window.scrollTo(emergencyScrollX, emergencyScrollY);
+
+              // Clean up mobile variables in emergency case too
+              delete window.__OQTIMA_MOBILE_SCROLL_X;
+              delete window.__OQTIMA_MOBILE_SCROLL_Y;
+              delete window.__OQTIMA_MOBILE_ORIGINAL_TOUCH_ACTION;
+              delete window.__OQTIMA_MOBILE_ORIGINAL_WEBKIT_OVERFLOW;
+            }, 100);
+          } catch (emergencyError) {
+            console.error(
+              "[Mobile] Emergency scroll fix failed:",
+              emergencyError
+            );
+          }
         }
       }
     }
@@ -5556,102 +5463,38 @@ const RTL_LANGUAGES = ["ar"];
 
   // Create global emergency restore function that can be called from console
   window.__OQTIMA_EMERGENCY_RESTORE_SCROLL = function () {
+    // console.log("[OQtima] Emergency scroll restoration initiated");
     try {
-      // ENHANCED EMERGENCY SCROLL RESTORATION FOR MOBILE
-      // Reset all scroll-affecting properties comprehensively
+      // Reset all scroll-affecting properties
       document.body.style.position = "";
       document.body.style.width = "";
-      document.body.style.height = "";
       document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.transform = "";
-      document.body.style.webkitTransform = "";
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
 
-      // Force restore scroll properties
-      document.body.style.overflow = "auto";
-      document.body.style.overflowY = "auto";
-      document.body.style.overflowX = "hidden";
-      document.body.style.webkitOverflowScrolling = "touch";
-      document.body.style.touchAction = "auto";
-
-      // Reset document element styles
-      document.documentElement.style.overflow = "auto";
-      document.documentElement.style.overflowY = "auto";
-      document.documentElement.style.overflowX = "hidden";
-      document.documentElement.style.position = "";
-      document.documentElement.style.width = "";
-      document.documentElement.style.height = "";
-      document.documentElement.style.top = "";
-      document.documentElement.style.left = "";
-      document.documentElement.style.transform = "";
-      document.documentElement.style.touchAction = "auto";
-
-      // Remove any popup-related classes that might block scrolling
-      const scrollBlockingClasses = [
-        "oqtima-iframe-open",
-        "oqtima-mobile-open",
-        "oqtima-mobile-modal-open",
-        "oqtima-mobile-popup-open",
-        "popup-open",
-        "modal-open",
-        "no-scroll",
-        "scroll-disabled",
-        "overflow-hidden",
-      ];
-
-      scrollBlockingClasses.forEach((className) => {
-        document.body.classList.remove(className);
-        document.documentElement.classList.remove(className);
-      });
-
-      // Mobile Safari specific fixes
-      if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        document.body.style.webkitTransform = "translateZ(0)";
-        document.body.style.webkitBackfaceVisibility = "hidden";
-      }
+      // Remove any popup-related classes
+      document.body.classList.remove("oqtima-iframe-open");
+      document.body.classList.remove("oqtima-mobile-open");
+      document.body.classList.remove("popup-open");
+      document.documentElement.classList.remove("oqtima-mobile-open");
+      document.body.classList.remove("oqtima-mobile-modal-open");
+      document.documentElement.classList.remove("oqtima-mobile-popup-open");
+      document.body.classList.remove("oqtima-mobile-popup-open");
 
       // Try to remove any modal containers that might be left
-      const modalSelectors = [
-        ".popup-registration",
-        ".oqtima-loading-overlay",
-        ".oqtima-modal",
-        "[data-popup-container]",
-      ];
-
-      modalSelectors.forEach((selector) => {
-        const elements = document.querySelectorAll(selector);
-        elements.forEach((element) => {
-          if (element && element.parentNode) {
-            element.parentNode.removeChild(element);
-          }
-        });
-      });
-
-      // Force scroll to top and trigger reflow
-      window.scrollTo(0, 0);
-
-      // Force reflow to ensure styles are applied
-      const forceReflow = document.body.offsetHeight;
-
-      // Multiple scroll restoration attempts for mobile reliability
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-      }, 50);
-
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-      }, 100);
-    } catch (e) {
-      // Absolute last resort - basic scroll restoration
-      try {
-        document.body.style.overflow = "auto";
-        document.documentElement.style.overflow = "auto";
-        window.scrollTo(0, 0);
-      } catch (finalError) {
-        // Even the emergency failed
+      const modalContainer = document.querySelector(".popup-registration");
+      if (modalContainer && modalContainer.parentNode) {
+        modalContainer.parentNode.removeChild(modalContainer);
       }
+
+      const loadingOverlay = document.querySelector(".oqtima-loading-overlay");
+      if (loadingOverlay && loadingOverlay.parentNode) {
+        loadingOverlay.parentNode.removeChild(loadingOverlay);
+      }
+
+      // console.log("[OQtima] Emergency scroll restoration completed");
+    } catch (e) {
+      // console.error("[OQtima] Error in emergency scroll restoration:", e);
     }
   };
 
