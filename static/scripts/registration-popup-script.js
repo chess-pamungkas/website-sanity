@@ -2402,6 +2402,35 @@ const RTL_LANGUAGES = ["ar"];
     // Add the container to the document body
     document.body.appendChild(modalContainer);
 
+    // CRITICAL: Force iframe scrolling capability independently of parent body styles
+    // Add class to body to trigger CSS rules that override overflow:hidden
+    document.body.classList.add("oqtima-iframe-open");
+
+    // Force iframe scroll properties directly with setTimeout to ensure DOM is ready
+    setTimeout(() => {
+      if (iframe && iframe.style) {
+        iframe.style.overflow = "auto";
+        iframe.style.overflowY = "auto";
+        iframe.style.overflowX = "hidden";
+        iframe.style.webkitOverflowScrolling = "touch";
+        iframe.style.isolation = "isolate";
+
+        // Ensure iframe content document can scroll when loaded
+        iframe.onload = function () {
+          try {
+            // Force scroll on iframe content if accessible
+            if (iframe.contentDocument && iframe.contentDocument.body) {
+              iframe.contentDocument.body.style.overflow = "auto";
+              iframe.contentDocument.body.style.overflowY = "auto";
+              iframe.contentDocument.documentElement.style.overflow = "auto";
+            }
+          } catch (e) {
+            // Cross-origin restrictions - this is expected and okay
+          }
+        };
+      }
+    }, 0);
+
     // Lock body scroll
     if (isMobile) {
       document.body.style.cssText += `
@@ -4456,7 +4485,11 @@ const RTL_LANGUAGES = ["ar"];
     iframe.style.border = "none";
     iframe.style.backgroundColor = "#ffffff";
     iframe.style.zIndex = "1000000";
-    iframe.style.overflow = "hidden";
+    // CRITICAL FIX: Ensure iframe can scroll internally
+    iframe.style.overflow = "auto";
+    iframe.style.overflowY = "auto";
+    iframe.style.overflowX = "hidden";
+    iframe.style.webkitOverflowScrolling = "touch";
     iframe.style.transition = "all 0.3s ease-in-out";
 
     // Set RTL and language attributes for iframe
@@ -4554,10 +4587,46 @@ const RTL_LANGUAGES = ["ar"];
     styleEl.textContent = `
       .popup-registration__mobile-container {
         font-family: Arial, sans-serif;
+        /* Ensure modal container doesn't interfere with iframe scrolling */
+        overflow: visible;
       }
       
       .popup-registration__mobile-fullscreen {
+        /* CRITICAL: Enable touch scrolling for mobile */
         -webkit-overflow-scrolling: touch;
+        /* Ensure iframe content can scroll */
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        /* Mobile Safari optimizations */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        /* Prevent scrolling issues on iOS */
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+      }
+      
+      /* Additional mobile-specific fixes */
+      @media (max-width: 767px) {
+        .popup-registration__mobile-fullscreen {
+          /* Force enable scrolling on small screens */
+          overflow-y: scroll !important;
+          -webkit-overflow-scrolling: touch !important;
+          /* Prevent zoom on form focus */
+          font-size: 16px;
+        }
+      }
+      
+      /* Force iframe to be scrollable even if body is overflow:hidden */
+      body.oqtima-iframe-open .popup-registration__mobile-fullscreen,
+      body[style*="overflow: hidden"] .popup-registration__mobile-fullscreen,
+      body[style*="overflow:hidden"] .popup-registration__mobile-fullscreen {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        /* Force independent scrolling context */
+        contain: layout style paint;
+        isolation: isolate;
+        will-change: scroll-position;
       }
       
       ${
@@ -4570,6 +4639,9 @@ const RTL_LANGUAGES = ["ar"];
       
       .popup-registration__mobile-fullscreen[dir="rtl"] {
         direction: rtl;
+        /* Ensure RTL doesn't affect scrolling */
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
       }
       `
           : ""
@@ -4692,7 +4764,7 @@ const RTL_LANGUAGES = ["ar"];
         }
 
         // CRITICAL FOR MOBILE: Force restore scroll properties
-        // Remove all possible scroll-blocking styles
+        // Remove all possible scroll-blocking styles (ONLY on parent window elements)
         document.body.style.overflow = originalBodyOverflow || "auto";
         document.body.style.overflowY = "auto";
         document.body.style.overflowX = "hidden";
@@ -4715,7 +4787,7 @@ const RTL_LANGUAGES = ["ar"];
         document.documentElement.style.left = "";
         document.documentElement.style.transform = "";
 
-        // Remove any popup-related classes that might prevent scrolling
+        // Remove any popup-related classes that might prevent scrolling (ONLY on parent window)
         const scrollBlockingClasses = [
           "oqtima-iframe-open",
           "oqtima-mobile-open",
@@ -4733,11 +4805,11 @@ const RTL_LANGUAGES = ["ar"];
           document.documentElement.classList.remove(className);
         });
 
-        // MOBILE-SPECIFIC: Force enable touch scrolling
+        // MOBILE-SPECIFIC: Force enable touch scrolling (ONLY on parent window)
         document.body.style.touchAction = "auto";
         document.documentElement.style.touchAction = "auto";
 
-        // Force re-enable scroll on mobile Safari
+        // Force re-enable scroll on mobile Safari (ONLY on parent window)
         if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
           document.body.style.webkitOverflowScrolling = "touch";
           document.body.style.webkitTransform = "translateZ(0)";
