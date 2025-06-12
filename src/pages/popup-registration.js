@@ -569,11 +569,17 @@ const PopupRegistrationPage = ({ location, data }) => {
           "en";
       }
 
-      const registrationParams = {
-        referral_type: null,
-        referral_value: null,
-        langParam: effectiveLangParam,
-      };
+      // Extract registration parameters
+      const registrationParams = {};
+      if (searchParams.get("referral_type")) {
+        registrationParams.referral_type = parseInt(
+          searchParams.get("referral_type"),
+          10
+        );
+      }
+      if (searchParams.get("referral_value")) {
+        registrationParams.referral_value = searchParams.get("referral_value");
+      }
 
       // CRITICAL: Check oqtima_lang_locked parameter if exists
       if (searchParams.get("oqtima_lang_locked")) {

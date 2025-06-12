@@ -1503,7 +1503,11 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     // Try to send message to parent window that close button was pressed
     try {
       if (window.parent && window.parent !== window) {
+        // Send multiple message formats to ensure compatibility with different versions
+        // Format 1: Simple string message (legacy support)
         window.parent.postMessage("close_popup", "*");
+
+        // Format 2: Standard OQTIMA close message
         window.parent.postMessage(
           {
             type: "OQTIMA_CLOSE_POPUP",
@@ -1512,14 +1516,61 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
           },
           "*"
         );
+
+        // Format 3: Alternative close message format
+        window.parent.postMessage(
+          {
+            type: "CLOSE_POPUP",
+            source: "user_action",
+            timestamp: Date.now(),
+          },
+          "*"
+        );
+
+        // Format 4: Direct close command
+        window.parent.postMessage(
+          {
+            action: "close",
+            type: "popup_close",
+            timestamp: Date.now(),
+          },
+          "*"
+        );
+
+        // Fallback: Try to access parent's close function directly (same-origin only)
+        try {
+          if (
+            window.parent.__OQTIMA_CLOSE_POPUP &&
+            typeof window.parent.__OQTIMA_CLOSE_POPUP === "function"
+          ) {
+            window.parent.__OQTIMA_CLOSE_POPUP();
+          }
+        } catch (crossOriginError) {
+          // Expected for cross-origin iframes, ignore
+        }
       }
     } catch (err) {
       console.error("Error sending close message to parent:", err);
     }
 
+    // Local close handling
     if (typeof onClose === "function") {
       onClose();
     }
+
+    // Additional fallback: try to close via history if nothing else works
+    setTimeout(() => {
+      try {
+        if (window.parent !== window) {
+          // Still in iframe, try alternative methods
+          if (window.history.length > 1) {
+            window.history.back();
+          }
+        }
+      } catch (e) {
+        // Ignore errors
+      }
+    }, 1000);
   };
 
   const popupContent = (

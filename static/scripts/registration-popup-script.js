@@ -36,6 +36,9 @@
 
 "use strict";
 
+// Declare urlParams at the top to avoid reference errors later
+const urlParams = new URLSearchParams(window.location.search);
+
 // Define RTL languages constants
 const RTL_LANGUAGES = ["ar"];
 
@@ -1679,6 +1682,10 @@ const RTL_LANGUAGES = ["ar"];
         }
 
         // Store whether this is Brazilian Portuguese
+        const isBrazilianPortuguese =
+          params.language === "br" ||
+          params.language === "pt-br" ||
+          params.language === "pt_br";
         if (isBrazilianPortuguese) {
           sessionStorage.setItem("oqtima_is_brazilian_portuguese", "true");
         }
@@ -1759,9 +1766,9 @@ const RTL_LANGUAGES = ["ar"];
         referralType === 12 || // IB Referral Link
         referralType === 14; // Campaign Link
 
-      // Only set referral_value if we have a valid referral type
+      // Set referral_value if available, regardless of referral_type
+      // This allows more flexibility while maintaining specific logic for IB/Campaign
       if (
-        isValidReferralType &&
         params.referral_value !== undefined &&
         params.referral_value !== null &&
         params.referral_value !== ""
@@ -1769,17 +1776,30 @@ const RTL_LANGUAGES = ["ar"];
         referralValue = params.referral_value;
         // console.log("[OQtima] Using referral_value:", referralValue);
       } else {
-        // For normal registration or missing referral_value, explicitly set to null
-        referralValue = null;
-        // console.log(
-        //   "[OQtima] Not using referral_value for this registration type"
-        // );
+        // Only clear referral_value for specific referral types if not provided
+        if (isValidReferralType) {
+          referralValue = null;
+          // console.log(
+          //   "[OQtima] Specific referral type but no referral_value provided"
+          // );
+        }
       }
     } else {
-      // For scenarios without referral_type, explicitly set both parameters to null
-      referralType = null;
-      referralValue = null;
-      // console.log("[OQtima] No referral parameters used for this registration");
+      // Even without referral_type, check if we have a referral_value to pass through
+      if (
+        params.referral_value !== undefined &&
+        params.referral_value !== null &&
+        params.referral_value !== ""
+      ) {
+        referralType = null; // Keep referral_type as null
+        referralValue = params.referral_value;
+        // console.log("[OQtima] Using referral_value without referral_type:", referralValue);
+      } else {
+        // For scenarios without either parameter, explicitly set both to null
+        referralType = null;
+        referralValue = null;
+        // console.log("[OQtima] No referral parameters used for this registration");
+      }
     }
 
     // Determine if mobile based on screen width
@@ -2922,21 +2942,78 @@ const RTL_LANGUAGES = ["ar"];
         document.documentElement.classList.remove("oqtima-mobile-popup-open");
         document.body.classList.remove("oqtima-mobile-popup-open");
 
+        // ENHANCED SCROLL RESTORATION - especially critical for mobile
+        // Remove all scroll-blocking classes first
+        const scrollBlockingClasses = [
+          "popup-open",
+          "modal-open",
+          "no-scroll",
+          "scroll-disabled",
+          "overflow-hidden",
+        ];
+
+        scrollBlockingClasses.forEach((className) => {
+          document.body.classList.remove(className);
+          document.documentElement.classList.remove(className);
+        });
+
         // CRITICAL FIX: Explicitly reset all scroll-affecting properties
         // We need to first remove the fixed position that prevents scrolling
         document.body.style.position = "";
         document.body.style.width = "";
+        document.body.style.height = "";
         document.body.style.top = "";
-        document.body.style.overflow = originalBodyOverflow || "";
-        document.documentElement.style.overflow = originalHtmlOverflow || "";
+        document.body.style.left = "";
+        document.body.style.transform = "";
 
-        // IMPORTANT: Restore scroll position AFTER removing fixed positioning
-        if (originalScrollPos && typeof originalScrollPos === "object") {
-          window.scrollTo(originalScrollPos.x || 0, originalScrollPos.y || 0);
-        } else if (typeof originalScrollPos === "number") {
-          window.scrollTo(0, originalScrollPos);
+        // Force restore scroll properties for mobile
+        document.body.style.overflow = originalBodyOverflow || "auto";
+        document.body.style.overflowY = "auto";
+        document.body.style.overflowX = "hidden";
+        document.body.style.webkitOverflowScrolling = "touch";
+        document.body.style.touchAction = "auto";
+
+        document.documentElement.style.overflow =
+          originalHtmlOverflow || "auto";
+        document.documentElement.style.overflowY = "auto";
+        document.documentElement.style.overflowX = "hidden";
+        document.documentElement.style.position = "";
+        document.documentElement.style.width = "";
+        document.documentElement.style.height = "";
+        document.documentElement.style.top = "";
+        document.documentElement.style.left = "";
+        document.documentElement.style.transform = "";
+        document.documentElement.style.touchAction = "auto";
+
+        // Mobile Safari specific fixes
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+          document.body.style.webkitTransform = "translateZ(0)";
         }
 
+        // IMPORTANT: Restore scroll position AFTER removing fixed positioning
+        const targetScrollPos = originalScrollPos;
+
+        // Multiple scroll restoration attempts for mobile reliability
+        if (targetScrollPos && typeof targetScrollPos === "object") {
+          window.scrollTo(targetScrollPos.x || 0, targetScrollPos.y || 0);
+
+          // Additional mobile restoration attempts
+          setTimeout(() => {
+            window.scrollTo(targetScrollPos.x || 0, targetScrollPos.y || 0);
+          }, 50);
+        } else if (typeof targetScrollPos === "number") {
+          window.scrollTo(0, targetScrollPos);
+
+          // Additional mobile restoration attempts
+          setTimeout(() => {
+            window.scrollTo(0, targetScrollPos);
+          }, 50);
+        } else {
+          // Default to top of page
+          window.scrollTo(0, 0);
+        }
+
+        // Restore original styles after scroll restoration
         if (originalBodyStyle) {
           document.body.setAttribute("style", originalBodyStyle);
         } else {
@@ -2948,9 +3025,6 @@ const RTL_LANGUAGES = ["ar"];
         } else {
           document.documentElement.removeAttribute("style");
         }
-
-        // Log cleanup success
-        // console.log("[OQtima] Successfully restored original document state");
       } catch (error) {
         console.error("[OQtima] Error closing registration popup:", error);
 
@@ -2988,206 +3062,49 @@ const RTL_LANGUAGES = ["ar"];
     // Set up message handler for iframe communication
     window.__OQTIMA_MESSAGE_HANDLER = function (event) {
       try {
-        // Handle referral parameter requests from the iframe
+        // Handle registration success and close the popup first
         if (
-          event.data &&
-          typeof event.data === "object" &&
-          event.data.type === "REQUEST_REFERRAL_PARAMS"
+          typeof event.data === "string" &&
+          event.data.startsWith("redirect:")
         ) {
-          // console.log(
-          //   "[OQtima] Received request for referral parameters from iframe"
-          // );
-
-          // Collect referral parameters from all possible sources
-          const referralData = {
-            referral_type: null,
-            referral_value: null,
-            language: null,
-          };
-
-          // 1. Check global variables
-          if (window.__OQTIMA_REFERRAL_TYPE__ !== undefined) {
-            referralData.referral_type = window.__OQTIMA_REFERRAL_TYPE__;
-          }
-
-          if (window.__OQTIMA_REFERRAL_VALUE__ !== undefined) {
-            referralData.referral_value = window.__OQTIMA_REFERRAL_VALUE__;
-          }
-
-          if (window.__OQTIMA_TAB_LANGUAGE__ !== undefined) {
-            referralData.language = window.__OQTIMA_TAB_LANGUAGE__;
-          }
-
-          // 2. Check session storage
-          try {
-            const storageType = sessionStorage.getItem("oqtima_referral_type");
-            const storageValue = sessionStorage.getItem(
-              "oqtima_referral_value"
-            );
-            const storageLanguage = sessionStorage.getItem(
-              "oqtima_tab_language"
-            );
-
-            if (storageType && referralData.referral_type === null) {
-              referralData.referral_type = storageType;
+          const redirectUrl = event.data.substring(9);
+          if (redirectUrl) {
+            window.__OQTIMA_REGISTRATION_REDIRECT_URL = redirectUrl;
+            // Close popup first, then redirect
+            if (window.__OQTIMA_CLOSE_POPUP) {
+              window.__OQTIMA_CLOSE_POPUP();
             }
-
-            if (storageValue && referralData.referral_value === null) {
-              referralData.referral_value = storageValue;
-            }
-
-            if (storageLanguage && referralData.language === null) {
-              referralData.language = storageLanguage;
-            }
-          } catch (e) {
-            console.warn("[OQtima] Error accessing sessionStorage:", e);
-          }
-
-          // 3. Check URL parameters
-          const urlParams = new URLSearchParams(window.location.search);
-          const urlType =
-            urlParams.get("referral_type") ||
-            urlParams.get("referralType") ||
-            urlParams.get("referral-type");
-          const urlValue =
-            urlParams.get("referral_value") ||
-            urlParams.get("referralValue") ||
-            urlParams.get("referral-value");
-          const urlLanguage =
-            urlParams.get("language") ||
-            urlParams.get("lang") ||
-            urlParams.get("locale") ||
-            urlParams.get("data-lang");
-
-          if (urlType && referralData.referral_type === null) {
-            referralData.referral_type = urlType;
-          }
-
-          if (urlValue && referralData.referral_value === null) {
-            referralData.referral_value = urlValue;
-          }
-
-          if (urlLanguage && referralData.language === null) {
-            referralData.language = urlLanguage;
-          }
-
-          // 4. Check the trigger element data attributes
-          if (window.__OQTIMA_TRIGGER_ELEMENT__) {
-            const referralTypeAttr =
-              window.__OQTIMA_TRIGGER_ELEMENT__.getAttribute(
-                "data-referral-type"
-              );
-            const referralValueAttr =
-              window.__OQTIMA_TRIGGER_ELEMENT__.getAttribute(
-                "data-referral-value"
-              );
-            const languageAttr =
-              window.__OQTIMA_TRIGGER_ELEMENT__.getAttribute("data-lang");
-
-            if (referralTypeAttr && referralData.referral_type === null) {
-              referralData.referral_type = referralTypeAttr;
-            }
-
-            if (referralValueAttr && referralData.referral_value === null) {
-              referralData.referral_value = referralValueAttr;
-            }
-
-            if (languageAttr && referralData.language === null) {
-              referralData.language = languageAttr;
-            }
-          }
-
-          // Send the collected data back to the iframe
-          if (
-            referralData.referral_type !== null ||
-            referralData.referral_value !== null ||
-            referralData.language !== null
-          ) {
-            // console.log("[OQtima] Sending parameters to iframe:", referralData);
-
-            try {
-              // Create a complete message with all necessary data
-              const messageData = {
-                type: "REGISTRATION_PARAMS",
-                data: {
-                  // Language parameters - high priority
-                  language: referralData.language,
-                  "data-lang": referralData.language,
-                  lang: referralData.language,
-                  data_lang: referralData.language,
-                  tab_language: referralData.language,
-                  oqtima_tab_language: referralData.language,
-                  i18nextLng: referralData.language,
-
-                  // Referral parameters
-                  referral_type: referralData.referral_type,
-                  referralType: referralData.referral_type,
-                  "referral-type": referralData.referral_type,
-                  referral_value: referralData.referral_value,
-                  referralValue: referralData.referral_value,
-                  "referral-value": referralData.referral_value,
-
-                  // Cross-domain storage instructions
-                  storeInSessionStorage: true,
-                  storageKeys: [
-                    {
-                      key: "oqtima_referral_type",
-                      value: referralData.referral_type,
-                    },
-                    {
-                      key: "oqtima_referral_value",
-                      value: referralData.referral_value,
-                    },
-                    {
-                      key: "oqtima_tab_language",
-                      value: referralData.language,
-                    },
-                    { key: "i18nextLng", value: referralData.language },
-                    { key: "lang", value: referralData.language },
-                    { key: "language", value: referralData.language },
-                  ],
-                },
-                timestamp: Date.now(),
-              };
-
-              // Using postMessage to send the data - this is the ONLY safe way to communicate across origins
-              event.source.postMessage(messageData, "*");
-
-              // console.log(
-              //   "[OQtima] Parameters sent to iframe via safe postMessage"
-              // );
-
-              // DO NOT attempt to access properties or methods of cross-origin windows directly
-              // as this will cause security errors. We use only postMessage for cross-origin communication.
-            } catch (e) {
-              console.error(
-                "[OQtima] Error sending referral data to iframe:",
-                e
-              );
-            }
-          } else {
-            // console.log("[OQtima] No parameters found to send to iframe");
+            setTimeout(function () {
+              window.location.href = redirectUrl;
+            }, 100);
           }
 
           return; // Skip the rest of the handler
         }
 
         // Handle close popup message - ACCEPT FROM ANY ORIGIN FOR MAXIMUM COMPATIBILITY
-        if (
-          event.data &&
-          typeof event.data === "object" &&
-          event.data.type === "OQTIMA_CLOSE_POPUP"
-        ) {
-          // console.log(
-          //   "[OQtima] Close popup request received from iframe, source:",
-          //   event.data.source || "unknown"
-          // );
+        // Support multiple message formats for better compatibility
+        const shouldClosePopup =
+          // Format 1: Standard OQTIMA close message
+          (event.data &&
+            typeof event.data === "object" &&
+            event.data.type === "OQTIMA_CLOSE_POPUP") ||
+          // Format 2: Alternative close message
+          (event.data &&
+            typeof event.data === "object" &&
+            event.data.type === "CLOSE_POPUP") ||
+          // Format 3: Direct close action
+          (event.data &&
+            typeof event.data === "object" &&
+            event.data.action === "close") ||
+          // Format 4: Simple string message
+          event.data === "close_popup";
 
-          // Close popup immediately
+        if (shouldClosePopup) {
+          // Close popup immediately - with resilient fallback logic
           if (window.__OQTIMA_CLOSE_POPUP) {
             try {
               window.__OQTIMA_CLOSE_POPUP();
-              // console.log("[OQtima] Popup closed successfully");
 
               // Notify the source that we've closed the popup
               if (
@@ -3204,18 +3121,72 @@ const RTL_LANGUAGES = ["ar"];
                     "*"
                   );
                 } catch (err) {
-                  console.warn(
-                    "[OQtima] Error notifying source about popup close:",
-                    err
-                  );
+                  // Error notifying source about popup close
                 }
               }
             } catch (err) {
-              console.error("[OQtima] Error closing popup:", err);
+              // Error closing popup - try alternative cleanup
+              try {
+                // Try to remove modal elements manually as fallback
+                const modalContainer = document.querySelector(
+                  ".popup-registration"
+                );
+                if (modalContainer && modalContainer.parentNode) {
+                  modalContainer.parentNode.removeChild(modalContainer);
+                }
+
+                // Restore scroll and body styles
+                document.body.style.overflow = "";
+                document.documentElement.style.overflow = "";
+                document.body.style.position = "";
+                document.body.style.width = "";
+                document.body.style.top = "";
+
+                // Remove any popup-related classes
+                document.body.classList.remove(
+                  "oqtima-iframe-open",
+                  "oqtima-mobile-open",
+                  "popup-open"
+                );
+                document.documentElement.classList.remove(
+                  "oqtima-mobile-open",
+                  "oqtima-mobile-popup-open"
+                );
+              } catch (cleanupErr) {
+                // Even cleanup failed, but we tried
+              }
             }
             return; // Skip the rest after closing
           } else {
-            console.warn("[OQtima] Close function not found");
+            // Close function not found - try manual cleanup
+            try {
+              const modalContainer = document.querySelector(
+                ".popup-registration"
+              );
+              if (modalContainer && modalContainer.parentNode) {
+                modalContainer.parentNode.removeChild(modalContainer);
+              }
+
+              // Restore scroll and body styles
+              document.body.style.overflow = "";
+              document.documentElement.style.overflow = "";
+              document.body.style.position = "";
+              document.body.style.width = "";
+              document.body.style.top = "";
+
+              // Remove any popup-related classes
+              document.body.classList.remove(
+                "oqtima-iframe-open",
+                "oqtima-mobile-open",
+                "popup-open"
+              );
+              document.documentElement.classList.remove(
+                "oqtima-mobile-open",
+                "oqtima-mobile-popup-open"
+              );
+            } catch (manualCleanupErr) {
+              // Manual cleanup also failed
+            }
           }
         }
 
@@ -3237,18 +3208,10 @@ const RTL_LANGUAGES = ["ar"];
         ) {
           // Handle registration success message
           if (event.data.type === "OQTIMA_REGISTRATION_SUCCESS") {
-            // console.log("[OQtima] Registration success message received");
-
             // Handle optional redirect
             if (event.data.redirectUrl) {
               window.__OQTIMA_REGISTRATION_REDIRECT_URL =
                 event.data.redirectUrl;
-              // console.log(
-              //   "[OQtima] Will redirect to:",
-              //   event.data.redirectUrl,
-              //   "with timeout:",
-              //   event.data.redirectTimeout || 0
-              // );
 
               // Close popup and redirect
               if (window.__OQTIMA_CLOSE_POPUP) {
@@ -3272,13 +3235,6 @@ const RTL_LANGUAGES = ["ar"];
             const timeout = event.data.timeout || 0;
 
             if (redirectUrl && typeof redirectUrl === "string") {
-              // console.log(
-              //   "[OQtima] Redirect request received. URL:",
-              //   redirectUrl,
-              //   "Timeout:",
-              //   timeout
-              // );
-
               // Close popup and redirect
               if (window.__OQTIMA_CLOSE_POPUP) {
                 window.__OQTIMA_CLOSE_POPUP();
@@ -3300,19 +3256,8 @@ const RTL_LANGUAGES = ["ar"];
 
               // Validate the URL before attempting to open it
               if (!url || typeof url !== "string") {
-                console.error(
-                  "[OQtima] Invalid URL in link open request:",
-                  url
-                );
                 return;
               }
-
-              // console.log(`[OQtima] Processing link open request:`, {
-              //   url,
-              //   isPolicyLink,
-              //   policyType,
-              //   timestamp,
-              // });
 
               // Determine if this is a policy link that should be allowed
               // Always allow policy and legal links regardless of domain
@@ -3323,7 +3268,6 @@ const RTL_LANGUAGES = ["ar"];
                 );
 
               if (isPolicyOrLegalLink) {
-                // console.log("[OQtima] Opening policy link in new tab:", url);
                 let linkOpened = false;
 
                 // Try window.open directly - don't create a button if it fails
@@ -4094,75 +4038,88 @@ const RTL_LANGUAGES = ["ar"];
     if (
       normalizedReferralValue != null &&
       normalizedReferralValue !== "" &&
-      normalizedReferralValue !== undefined &&
-      // CRITICAL: Only add referral_value if we have a valid referral_type
-      normalizedReferralType != null &&
-      normalizedReferralType !== "" &&
-      normalizedReferralType !== undefined
+      normalizedReferralValue !== undefined
     ) {
-      // Add in multiple formats for maximum compatibility
-      const referralValueParams = [
-        "referral_value", // Primary format (underscore)
-        "referralValue", // camelCase variant
-        "referral-value", // hyphenated variant
-      ];
+      // Check if we have a valid referral_type to determine if this is a specific referral scenario
+      const hasValidReferralType =
+        normalizedReferralType != null &&
+        normalizedReferralType !== "" &&
+        normalizedReferralType !== undefined;
 
-      referralValueParams.forEach((param) => {
-        params.set(param, normalizedReferralValue);
-      });
+      // For specific referral types (12 = IB, 14 = Campaign), always add referral_value
+      const isSpecificReferralType =
+        hasValidReferralType &&
+        (normalizedReferralType === 12 || normalizedReferralType === 14);
 
-      // Store in global variable and sessionStorage for redundancy
-      try {
-        window.__OQTIMA_REFERRAL_VALUE__ = normalizedReferralValue;
-        sessionStorage.setItem(
-          "oqtima_referral_value",
-          normalizedReferralValue
-        );
+      // Add referral_value if:
+      // 1. We have a specific referral type (IB or Campaign), OR
+      // 2. We have a referral_value even without a specific referral_type (for flexibility)
+      if (isSpecificReferralType || !hasValidReferralType) {
+        // Add in multiple formats for maximum compatibility
+        const referralValueParams = [
+          "referral_value", // Primary format (underscore)
+          "referralValue", // camelCase variant
+          "referral-value", // hyphenated variant
+        ];
 
-        // Set cross-domain cookies with various domain options
-        const setCrossDomainCookies = () => {
-          // Extract domain info for cookie setting
-          let domain;
-          try {
-            // Get the target domain from the baseUrl
-            const urlObj = new URL(baseUrl);
-            domain = urlObj.hostname;
+        referralValueParams.forEach((param) => {
+          params.set(param, normalizedReferralValue);
+        });
 
-            // Set the cookie with specific domain
-            document.cookie = `oqtima_referral_value=${normalizedReferralValue}; path=/; max-age=3600; SameSite=None; Secure`;
+        // Store in global variable and sessionStorage for redundancy
+        try {
+          window.__OQTIMA_REFERRAL_VALUE__ = normalizedReferralValue;
+          sessionStorage.setItem(
+            "oqtima_referral_value",
+            normalizedReferralValue
+          );
 
-            // Try with domain-specific cookies (multiple variations for compatibility)
-            document.cookie = `oqtima_referral_value=${normalizedReferralValue}; path=/; domain=${domain}; max-age=3600; SameSite=None; Secure`;
+          // Set cross-domain cookies with various domain options
+          const setCrossDomainCookies = () => {
+            // Extract domain info for cookie setting
+            let domain;
+            try {
+              // Get the target domain from the baseUrl
+              const urlObj = new URL(baseUrl);
+              domain = urlObj.hostname;
 
-            // Also try with a leading dot for subdomain compatibility
-            if (domain.indexOf(".") !== -1) {
-              const rootDomain = domain.substring(domain.indexOf("."));
-              document.cookie = `oqtima_referral_value=${normalizedReferralValue}; path=/; domain=${rootDomain}; max-age=3600; SameSite=None; Secure`;
+              // Set the cookie with specific domain
+              document.cookie = `oqtima_referral_value=${normalizedReferralValue}; path=/; max-age=3600; SameSite=None; Secure`;
+
+              // Try with domain-specific cookies (multiple variations for compatibility)
+              document.cookie = `oqtima_referral_value=${normalizedReferralValue}; path=/; domain=${domain}; max-age=3600; SameSite=None; Secure`;
+
+              // Also try with a leading dot for subdomain compatibility
+              if (domain.indexOf(".") !== -1) {
+                const rootDomain = domain.substring(domain.indexOf("."));
+                document.cookie = `oqtima_referral_value=${normalizedReferralValue}; path=/; domain=${rootDomain}; max-age=3600; SameSite=None; Secure`;
+              }
+
+              // console.log(
+              //   `[OQtima] Set cross-domain cookies for referral_value on domain: ${domain}`
+              // );
+            } catch (e) {
+              console.warn(
+                "[OQtima] Could not set cross-domain cookies for referral_value:",
+                e
+              );
+              // Fallback to simple cookie without domain
+              document.cookie = `oqtima_referral_value=${normalizedReferralValue}; path=/; max-age=3600`;
             }
+          };
 
-            // console.log(
-            //   `[OQtima] Set cross-domain cookies for referral_value on domain: ${domain}`
-            // );
-          } catch (e) {
-            console.warn(
-              "[OQtima] Could not set cross-domain cookies for referral_value:",
-              e
-            );
-            // Fallback to simple cookie without domain
-            document.cookie = `oqtima_referral_value=${normalizedReferralValue}; path=/; max-age=3600`;
-          }
-        };
+          // Execute the cookie setting function
+          setCrossDomainCookies();
+        } catch (e) {
+          console.warn("[OQtima] Could not store referral value:", e);
+        }
 
-        // Execute the cookie setting function
-        setCrossDomainCookies();
-      } catch (e) {
-        console.warn("[OQtima] Could not store referral value:", e);
+        // console.log(
+        //   "[OQtima] Added referral_value to URL params:",
+        //   normalizedReferralValue,
+        //   hasValidReferralType ? `with referral_type: ${normalizedReferralType}` : "without referral_type"
+        // );
       }
-
-      // console.log(
-      //   "[OQtima] Added referral_value to URL params:",
-      //   normalizedReferralValue
-      // );
     } else {
       // For normal registration or when no referral_type exists, explicitly clear any existing referral_value values
       try {
@@ -4543,13 +4500,25 @@ const RTL_LANGUAGES = ["ar"];
       params.set("_isolated", "1");
 
       // Set referral parameters if provided
-      if (referralType !== null && referralType !== undefined) {
-        params.set("referral_type", referralType);
-        params.set("referralType", referralType);
+      if (
+        referralType !== null &&
+        referralType !== undefined &&
+        referralType !== "" &&
+        !isNaN(parseInt(referralType, 10))
+      ) {
+        const referralTypeInt = parseInt(referralType, 10);
+        params.set("referral_type", referralTypeInt.toString());
+        params.set("referralType", referralTypeInt.toString());
       }
-      if (referralValue !== null && referralValue !== undefined) {
-        params.set("referral_value", referralValue);
-        params.set("referralValue", referralValue);
+      if (
+        referralValue !== null &&
+        referralValue !== undefined &&
+        referralValue !== "" &&
+        !isNaN(parseInt(referralValue, 10))
+      ) {
+        const referralValueInt = parseInt(referralValue, 10);
+        params.set("referral_value", referralValueInt.toString());
+        params.set("referralValue", referralValueInt.toString());
       }
 
       // Apply enhanced search parameters
@@ -4697,6 +4666,7 @@ const RTL_LANGUAGES = ["ar"];
         sessionStorage.removeItem(POPUP_LANG_KEY);
         sessionStorage.removeItem(POPUP_ISOLATED_FLAG);
 
+        // Remove modal elements
         if (modalContainer && modalContainer.parentNode) {
           modalContainer.parentNode.removeChild(modalContainer);
         }
@@ -4704,35 +4674,150 @@ const RTL_LANGUAGES = ["ar"];
           styleEl.parentNode.removeChild(styleEl);
         }
 
-        // Restore original styles
+        // ENHANCED MOBILE SCROLL RESTORATION
+        // First restore original classes and styles
         document.body.className = originalBodyClasses || "";
         document.documentElement.className = originalHtmlClasses || "";
+
         if (originalBodyStyle) {
           document.body.setAttribute("style", originalBodyStyle);
         } else {
           document.body.removeAttribute("style");
         }
+
         if (originalHtmlStyle) {
           document.documentElement.setAttribute("style", originalHtmlStyle);
         } else {
           document.documentElement.removeAttribute("style");
         }
-        document.body.style.overflow = originalBodyOverflow || "";
-        document.documentElement.style.overflow = originalHtmlOverflow || "";
-        window.scrollTo(0, originalScrollPos || 0);
+
+        // CRITICAL FOR MOBILE: Force restore scroll properties
+        // Remove all possible scroll-blocking styles
+        document.body.style.overflow = originalBodyOverflow || "auto";
+        document.body.style.overflowY = "auto";
+        document.body.style.overflowX = "hidden";
+        document.body.style.position = "";
+        document.body.style.width = "";
+        document.body.style.height = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.transform = "";
+        document.body.style.webkitOverflowScrolling = "touch";
+
+        document.documentElement.style.overflow =
+          originalHtmlOverflow || "auto";
+        document.documentElement.style.overflowY = "auto";
+        document.documentElement.style.overflowX = "hidden";
+        document.documentElement.style.position = "";
+        document.documentElement.style.width = "";
+        document.documentElement.style.height = "";
+        document.documentElement.style.top = "";
+        document.documentElement.style.left = "";
+        document.documentElement.style.transform = "";
+
+        // Remove any popup-related classes that might prevent scrolling
+        const scrollBlockingClasses = [
+          "oqtima-iframe-open",
+          "oqtima-mobile-open",
+          "oqtima-mobile-modal-open",
+          "oqtima-mobile-popup-open",
+          "popup-open",
+          "modal-open",
+          "no-scroll",
+          "scroll-disabled",
+          "overflow-hidden",
+        ];
+
+        scrollBlockingClasses.forEach((className) => {
+          document.body.classList.remove(className);
+          document.documentElement.classList.remove(className);
+        });
+
+        // MOBILE-SPECIFIC: Force enable touch scrolling
+        document.body.style.touchAction = "auto";
+        document.documentElement.style.touchAction = "auto";
+
+        // Force re-enable scroll on mobile Safari
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+          document.body.style.webkitOverflowScrolling = "touch";
+          document.body.style.webkitTransform = "translateZ(0)";
+        }
+
+        // Restore scroll position with multiple attempts for mobile reliability
+        const targetScrollPos = originalScrollPos || 0;
+
+        // Immediate scroll restoration
+        window.scrollTo(0, targetScrollPos);
+
+        // Delayed scroll restoration for mobile browsers
+        setTimeout(() => {
+          window.scrollTo(0, targetScrollPos);
+
+          // Force a reflow to ensure styles are applied
+          const forceReflow = document.body.offsetHeight;
+
+          // Final scroll attempt
+          requestAnimationFrame(() => {
+            window.scrollTo(0, targetScrollPos);
+          });
+        }, 50);
+
+        // Additional mobile scroll fix - use scrollIntoView as fallback
+        setTimeout(() => {
+          try {
+            if (targetScrollPos > 0) {
+              window.scrollTo({
+                top: targetScrollPos,
+                left: 0,
+                behavior: "auto",
+              });
+            } else {
+              // Scroll to top of page
+              document.body.scrollTop = 0;
+              document.documentElement.scrollTop = 0;
+            }
+          } catch (scrollError) {
+            // Final fallback - manual scroll
+            document.body.scrollTop = targetScrollPos;
+            document.documentElement.scrollTop = targetScrollPos;
+          }
+        }, 100);
       } catch (e) {
         console.error("[Mobile] Error in cleanup:", e);
+
+        // Emergency mobile scroll restoration if cleanup fails
+        try {
+          document.body.style.overflow = "auto";
+          document.body.style.overflowY = "auto";
+          document.body.style.position = "";
+          document.body.style.width = "";
+          document.body.style.height = "";
+          document.body.style.webkitOverflowScrolling = "touch";
+          document.documentElement.style.overflow = "auto";
+          document.documentElement.style.overflowY = "auto";
+
+          // Remove common scroll-blocking classes
+          document.body.classList.remove(
+            "oqtima-mobile-open",
+            "popup-open",
+            "modal-open"
+          );
+          document.documentElement.classList.remove(
+            "oqtima-mobile-open",
+            "popup-open",
+            "modal-open"
+          );
+
+          window.scrollTo(0, 0);
+        } catch (emergencyError) {
+          // Last resort logging
+          console.error(
+            "[Mobile] Emergency scroll restoration also failed:",
+            emergencyError
+          );
+        }
       }
     }
-
-    // Set up keyboard event to close on Escape key
-    const keyDownHandler = function (e) {
-      if (e.key === "Escape" || e.keyCode === 27) {
-        cleanupPopup();
-        document.removeEventListener("keydown", keyDownHandler);
-      }
-    };
-    document.addEventListener("keydown", keyDownHandler);
 
     // ENHANCED: Send parameters to iframe with strong language isolation
     const sendParamsToIframe = () => {
@@ -4760,12 +4845,6 @@ const RTL_LANGUAGES = ["ar"];
             mobile: "true",
             device: "mobile",
 
-            // Referral parameters
-            referral_type: referralType,
-            referralType: referralType,
-            referral_value: referralValue,
-            referralValue: referralValue,
-
             // Store in session storage with popup-specific keys
             storeInSessionStorage: true,
             storageKeys: [
@@ -4781,6 +4860,28 @@ const RTL_LANGUAGES = ["ar"];
           isolated: true,
           finalLanguage: finalLanguage,
         };
+
+        // FIXED: Add referral parameters only if they are valid integers
+        if (
+          referralType !== null &&
+          referralType !== undefined &&
+          referralType !== "" &&
+          !isNaN(parseInt(referralType, 10))
+        ) {
+          const referralTypeInt = parseInt(referralType, 10);
+          messageData.data.referral_type = referralTypeInt;
+          messageData.data.referralType = referralTypeInt;
+        }
+        if (
+          referralValue !== null &&
+          referralValue !== undefined &&
+          referralValue !== "" &&
+          !isNaN(parseInt(referralValue, 10))
+        ) {
+          const referralValueInt = parseInt(referralValue, 10);
+          messageData.data.referral_value = referralValueInt;
+          messageData.data.referralValue = referralValueInt;
+        }
 
         // Send message to iframe
         iframe.contentWindow.postMessage(messageData, "*");
@@ -4804,11 +4905,22 @@ const RTL_LANGUAGES = ["ar"];
     const messageHandler = function (event) {
       try {
         if (event.data && typeof event.data === "object") {
-          // Handle close popup message
-          if (event.data.type === "OQTIMA_CLOSE_POPUP") {
-            cleanupPopup();
-            window.removeEventListener("message", messageHandler);
-            document.removeEventListener("keydown", keyDownHandler);
+          // Handle close popup message - support multiple formats
+          const shouldClosePopup =
+            event.data.type === "OQTIMA_CLOSE_POPUP" ||
+            event.data.type === "CLOSE_POPUP" ||
+            event.data.action === "close";
+
+          if (shouldClosePopup) {
+            // Use the global close function for consistency
+            if (window.__OQTIMA_CLOSE_POPUP) {
+              window.__OQTIMA_CLOSE_POPUP();
+            } else {
+              cleanupPopup();
+              window.removeEventListener("message", messageHandler);
+              document.removeEventListener("keydown", keyDownHandler);
+            }
+            return; // Exit after handling close
           }
 
           // Handle iframe ready message - send params again if needed
@@ -4821,15 +4933,24 @@ const RTL_LANGUAGES = ["ar"];
             event.data.type === "LANGUAGE_CHANGED" &&
             event.data.language !== finalLanguage
           ) {
-            console.warn(
-              `[Popup Protection] Iframe tried to change language from ${finalLanguage} to ${event.data.language}, reverting`
-            );
             // Send the correct language back
             sendParamsToIframe();
           }
         }
+
+        // Also handle simple string messages
+        if (event.data === "close_popup") {
+          if (window.__OQTIMA_CLOSE_POPUP) {
+            window.__OQTIMA_CLOSE_POPUP();
+          } else {
+            cleanupPopup();
+            window.removeEventListener("message", messageHandler);
+            document.removeEventListener("keydown", keyDownHandler);
+          }
+          return;
+        }
       } catch (e) {
-        console.error("[Mobile] Error handling message:", e);
+        // Error handling message - continue execution
       }
     };
 
@@ -4838,9 +4959,14 @@ const RTL_LANGUAGES = ["ar"];
 
     // Auto-cleanup after 30 minutes for safety
     setTimeout(() => {
-      cleanupPopup();
-      window.removeEventListener("message", messageHandler);
-      document.removeEventListener("keydown", keyDownHandler);
+      // Use the global close function for consistency
+      if (window.__OQTIMA_CLOSE_POPUP) {
+        window.__OQTIMA_CLOSE_POPUP();
+      } else {
+        cleanupPopup();
+        window.removeEventListener("message", messageHandler);
+        document.removeEventListener("keydown", keyDownHandler);
+      }
     }, 30 * 60 * 1000);
 
     // CRITICAL: Override ALL parent window language references
@@ -4885,27 +5011,41 @@ const RTL_LANGUAGES = ["ar"];
   // Initialize when DOM is ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
-      // Ensure the container exists before initializing
+      // Check for both types of registration elements
       const containers = document.querySelectorAll("[data-oqtima-register]");
-      if (containers.length > 0) {
-        // Add loading state to all buttons
-        addLoadingStateToButtons(containers);
+      const triggers = document.querySelectorAll("[data-oqtima-trigger]");
+
+      if (containers.length > 0 || triggers.length > 0) {
+        // Add loading state to legacy buttons if they exist
+        if (containers.length > 0) {
+          addLoadingStateToButtons(containers);
+        }
         // Initialize registration process
         initOqtimaRegistration();
       } else {
-        console.warn("Registration container not found");
+        // Only warn if no registration elements are found at all
+        console.warn(
+          "No registration elements found (neither [data-oqtima-register] nor [data-oqtima-trigger])"
+        );
       }
     });
   } else {
-    // Check if container exists before initializing
+    // Check for both types of registration elements
     const containers = document.querySelectorAll("[data-oqtima-register]");
-    if (containers.length > 0) {
-      // Add loading state to all buttons
-      addLoadingStateToButtons(containers);
+    const triggers = document.querySelectorAll("[data-oqtima-trigger]");
+
+    if (containers.length > 0 || triggers.length > 0) {
+      // Add loading state to legacy buttons if they exist
+      if (containers.length > 0) {
+        addLoadingStateToButtons(containers);
+      }
       // Initialize registration process
       initOqtimaRegistration();
     } else {
-      console.warn("Registration container not found");
+      // Only warn if no registration elements are found at all
+      console.warn(
+        "No registration elements found (neither [data-oqtima-register] nor [data-oqtima-trigger])"
+      );
     }
   }
 
@@ -5344,38 +5484,102 @@ const RTL_LANGUAGES = ["ar"];
 
   // Create global emergency restore function that can be called from console
   window.__OQTIMA_EMERGENCY_RESTORE_SCROLL = function () {
-    // console.log("[OQtima] Emergency scroll restoration initiated");
     try {
-      // Reset all scroll-affecting properties
+      // ENHANCED EMERGENCY SCROLL RESTORATION FOR MOBILE
+      // Reset all scroll-affecting properties comprehensively
       document.body.style.position = "";
       document.body.style.width = "";
+      document.body.style.height = "";
       document.body.style.top = "";
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
+      document.body.style.left = "";
+      document.body.style.transform = "";
+      document.body.style.webkitTransform = "";
 
-      // Remove any popup-related classes
-      document.body.classList.remove("oqtima-iframe-open");
-      document.body.classList.remove("oqtima-mobile-open");
-      document.body.classList.remove("popup-open");
-      document.documentElement.classList.remove("oqtima-mobile-open");
-      document.body.classList.remove("oqtima-mobile-modal-open");
-      document.documentElement.classList.remove("oqtima-mobile-popup-open");
-      document.body.classList.remove("oqtima-mobile-popup-open");
+      // Force restore scroll properties
+      document.body.style.overflow = "auto";
+      document.body.style.overflowY = "auto";
+      document.body.style.overflowX = "hidden";
+      document.body.style.webkitOverflowScrolling = "touch";
+      document.body.style.touchAction = "auto";
+
+      // Reset document element styles
+      document.documentElement.style.overflow = "auto";
+      document.documentElement.style.overflowY = "auto";
+      document.documentElement.style.overflowX = "hidden";
+      document.documentElement.style.position = "";
+      document.documentElement.style.width = "";
+      document.documentElement.style.height = "";
+      document.documentElement.style.top = "";
+      document.documentElement.style.left = "";
+      document.documentElement.style.transform = "";
+      document.documentElement.style.touchAction = "auto";
+
+      // Remove any popup-related classes that might block scrolling
+      const scrollBlockingClasses = [
+        "oqtima-iframe-open",
+        "oqtima-mobile-open",
+        "oqtima-mobile-modal-open",
+        "oqtima-mobile-popup-open",
+        "popup-open",
+        "modal-open",
+        "no-scroll",
+        "scroll-disabled",
+        "overflow-hidden",
+      ];
+
+      scrollBlockingClasses.forEach((className) => {
+        document.body.classList.remove(className);
+        document.documentElement.classList.remove(className);
+      });
+
+      // Mobile Safari specific fixes
+      if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        document.body.style.webkitTransform = "translateZ(0)";
+        document.body.style.webkitBackfaceVisibility = "hidden";
+      }
 
       // Try to remove any modal containers that might be left
-      const modalContainer = document.querySelector(".popup-registration");
-      if (modalContainer && modalContainer.parentNode) {
-        modalContainer.parentNode.removeChild(modalContainer);
-      }
+      const modalSelectors = [
+        ".popup-registration",
+        ".oqtima-loading-overlay",
+        ".oqtima-modal",
+        "[data-popup-container]",
+      ];
 
-      const loadingOverlay = document.querySelector(".oqtima-loading-overlay");
-      if (loadingOverlay && loadingOverlay.parentNode) {
-        loadingOverlay.parentNode.removeChild(loadingOverlay);
-      }
+      modalSelectors.forEach((selector) => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach((element) => {
+          if (element && element.parentNode) {
+            element.parentNode.removeChild(element);
+          }
+        });
+      });
 
-      // console.log("[OQtima] Emergency scroll restoration completed");
+      // Force scroll to top and trigger reflow
+      window.scrollTo(0, 0);
+
+      // Force reflow to ensure styles are applied
+      const forceReflow = document.body.offsetHeight;
+
+      // Multiple scroll restoration attempts for mobile reliability
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }, 50);
+
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
     } catch (e) {
-      // console.error("[OQtima] Error in emergency scroll restoration:", e);
+      // Absolute last resort - basic scroll restoration
+      try {
+        document.body.style.overflow = "auto";
+        document.documentElement.style.overflow = "auto";
+        window.scrollTo(0, 0);
+      } catch (finalError) {
+        // Even the emergency failed
+      }
     }
   };
 

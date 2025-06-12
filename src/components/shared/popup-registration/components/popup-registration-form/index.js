@@ -2370,18 +2370,24 @@ const PopupRegistrationForm = ({ params }) => {
       };
 
       // Only include referral parameters if they exist and this is a specific referral type
-      if (finalReferralType !== null) {
-        registrationData.referral_type = finalReferralType;
+      if (finalReferralType !== null && finalReferralType !== undefined) {
+        // FIXED: Ensure referral_type is always a valid integer
+        const referralTypeInt = parseInt(finalReferralType, 10);
+        if (!isNaN(referralTypeInt)) {
+          registrationData.referral_type = referralTypeInt;
 
-        if (isSpecificReferralType) {
-          // console.log("Including referral parameters in API request:", {
-          //   referral_type: finalReferralType,
-          //   referral_value: finalReferralValue || null,
-          // });
+          if (isSpecificReferralType) {
+            // console.log("Including referral parameters in API request:", {
+            //   referral_type: referralTypeInt,
+            //   referral_value: finalReferralValue || null,
+            // });
+          } else {
+            // console.log(
+            //   "Normal Registration with referral_type but no referral_value"
+            // );
+          }
         } else {
-          // console.log(
-          //   "Normal Registration with referral_type but no referral_value"
-          // );
+          // console.log("Invalid referral_type value, skipping:", finalReferralType);
         }
       } else {
         // console.log(
