@@ -1,4 +1,4 @@
-﻿﻿import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
+﻿import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import { Formik } from "formik";
 import cn from "classnames";
 import { PopupRegistrationSchema } from "../../../../../validations/popup-registration";
@@ -343,13 +343,6 @@ const PopupRegistrationForm = ({ params }) => {
           }
         }
 
-        // console.log(
-        //   "Detected languages - specificLanguage:",
-        //   specificLanguage,
-        //   "dataLang:",
-        //   dataLang
-        // );
-
         // Store in sessionStorage for this tab only
         if (specificLanguage) {
           try {
@@ -367,24 +360,6 @@ const PopupRegistrationForm = ({ params }) => {
           dataLang &&
           dataLang.toLowerCase() === "ar"
         ) {
-          // console.log(
-          //   "CRITICAL FIX: Detected conflict between language='en' and data-lang='ar'"
-          // );
-          // console.log("Forcing English language and LTR mode");
-
-          // Fix document attributes
-          // document.documentElement.setAttribute("dir", "ltr");
-          // document.body.setAttribute("dir", "ltr");
-          // document.documentElement.setAttribute("lang", "en");
-
-          // Remove RTL classes
-          // document.documentElement.classList.remove(
-          //   "rtl-active",
-          //   "rtl",
-          //   "is-rtl"
-          // );
-          // document.body.classList.remove("rtl-active", "rtl", "is-rtl");
-
           // Fix global flags
           window.__FORCE_RTL__ = false;
           window.__ORIGINAL_RTL__ = false;
@@ -420,21 +395,6 @@ const PopupRegistrationForm = ({ params }) => {
             document.documentElement.getAttribute("lang") === "ar" ||
             document.documentElement.classList.contains("rtl-active")
           ) {
-            // console.log("CORRECTING INCORRECT RTL SETTINGS");
-
-            // Fix document attributes
-            // document.documentElement.setAttribute("dir", "ltr");
-            // document.body.setAttribute("dir", "ltr");
-            // document.documentElement.setAttribute("lang", specificLanguage);
-
-            // Remove RTL classes
-            // document.documentElement.classList.remove(
-            //   "rtl-active",
-            //   "rtl",
-            //   "is-rtl"
-            // );
-            // document.body.classList.remove("rtl-active", "rtl", "is-rtl");
-
             // Fix global flags
             if (window.__FORCE_RTL__) window.__FORCE_RTL__ = false;
             if (window.__ORIGINAL_RTL__) window.__ORIGINAL_RTL__ = false;
@@ -490,10 +450,6 @@ const PopupRegistrationForm = ({ params }) => {
             params.includes("referral_type") ||
             params.includes("referral_value")
           ) {
-            // console.log(
-            //   "Found referral params in string, attempting alternate parsing"
-            // );
-
             // Try to extract referral parameters using regex
             const referralTypeMatch = params.match(
               /referral_type["|']?\s*:\s*(?:"|')?([^"',}]*)(?:"|')?/i
@@ -504,18 +460,10 @@ const PopupRegistrationForm = ({ params }) => {
 
             if (referralTypeMatch && referralTypeMatch[1]) {
               parsedParams.referral_type = referralTypeMatch[1].trim();
-              // console.log(
-              //   "Extracted referral_type:",
-              //   parsedParams.referral_type
-              // );
             }
 
             if (referralValueMatch && referralValueMatch[1]) {
               parsedParams.referral_value = referralValueMatch[1].trim();
-              // console.log(
-              //   "Extracted referral_value:",
-              //   parsedParams.referral_value
-              // );
             }
           }
 
@@ -643,18 +591,10 @@ const PopupRegistrationForm = ({ params }) => {
           parsedParams.referral_type = !isNaN(urlReferralType)
             ? Number(urlReferralType)
             : urlReferralType;
-          // console.log(
-          //   "Using referral_type from URL params:",
-          //   parsedParams.referral_type
-          // );
         }
 
         if (urlReferralValue) {
           parsedParams.referral_value = urlReferralValue;
-          // console.log(
-          //   "Using referral_value from URL params:",
-          //   parsedParams.referral_value
-          // );
         }
 
         // NEW: If URL parameters are empty, try to extract language from the iframe's src attribute
@@ -750,13 +690,8 @@ const PopupRegistrationForm = ({ params }) => {
                     "rtl",
                     "is-rtl"
                   );
-                  // document.documentElement.setAttribute("dir", "ltr");
-                  document.documentElement.removeAttribute("data-rtl");
 
-                  // document.body.classList.remove("rtl-active", "rtl", "is-rtl");
-                  // document.body.setAttribute("dir", "ltr");
-                  // document.body.removeAttribute("data-rtl");
-                  // document.body.style.direction = "ltr";
+                  document.documentElement.removeAttribute("data-rtl");
 
                   // Force UI update by triggering a reflow
                   const reflow = document.body.offsetHeight;
@@ -768,10 +703,6 @@ const PopupRegistrationForm = ({ params }) => {
               }
             }
 
-            // console.log(
-            //   "Language from URL path successfully set to:",
-            //   urlLanguage
-            // );
             return urlLanguage;
           }
         }
@@ -791,30 +722,20 @@ const PopupRegistrationForm = ({ params }) => {
       // 2. Then check sessionStorage
       const sessionLanguage = sessionStorage.getItem("oqtima_tab_language");
       if (sessionLanguage) {
-        // console.log("Using language from sessionStorage:", sessionLanguage);
         return sessionLanguage;
       }
 
       // 3. Check global variables
       if (window.__OQTIMA_TAB_LANGUAGE__) {
-        // console.log(
-        //   "Using language from global variable:",
-        //   window.__OQTIMA_TAB_LANGUAGE__
-        // );
         return window.__OQTIMA_TAB_LANGUAGE__;
       }
 
       // 4. Check passed parameters
       if (safeParams.langParam) {
-        // console.log(
-        //   "Using language from component props:",
-        //   safeParams.langParam
-        // );
         return safeParams.langParam;
       }
 
       // 5. Fallback to default
-      // console.log("No language detected, using default: en");
       return "en";
     };
 
@@ -829,13 +750,6 @@ const PopupRegistrationForm = ({ params }) => {
           ? sanitizeLanguageCode(detectedLanguage)
           : detectedLanguage;
 
-      // If the language was sanitized, log it
-      if (cleanedLanguage !== detectedLanguage) {
-        // console.log(
-        //   `PopupRegistrationForm: Sanitized language from "${detectedLanguage}" to "${cleanedLanguage}"`
-        // );
-      }
-
       document.documentElement.setAttribute("lang", cleanedLanguage);
       sessionStorage.setItem("oqtima_tab_language", cleanedLanguage);
       window.__OQTIMA_TAB_LANGUAGE__ = cleanedLanguage;
@@ -846,8 +760,6 @@ const PopupRegistrationForm = ({ params }) => {
 
       // Special handling for Arabic language
       if (cleanedLanguage.toLowerCase() === "ar") {
-        // console.log("Arabic language detected, setting RTL mode");
-
         // Set RTL attributes
         document.documentElement.setAttribute("dir", "rtl");
         document.documentElement.classList.add("rtl-active");
@@ -857,8 +769,6 @@ const PopupRegistrationForm = ({ params }) => {
       }
       // If language is not Arabic, ensure RTL attributes are removed
       else if (cleanedLanguage.toLowerCase() !== "ar") {
-        // console.log("Non-Arabic language detected, cleaning RTL attributes");
-
         try {
           // Try multiple ways to access the cleanRTLAttributes function
           if (window.cleanRTLAttributes) {
@@ -872,22 +782,8 @@ const PopupRegistrationForm = ({ params }) => {
               "rtl",
               "is-rtl"
             );
-            // document.documentElement.setAttribute("dir", "ltr");
+
             document.documentElement.removeAttribute("data-rtl");
-
-            // document.body.classList.remove("rtl-active", "rtl", "is-rtl");
-            // document.body.setAttribute("dir", "ltr");
-            // document.body.removeAttribute("data-rtl");
-            // document.body.style.direction = "ltr";
-
-            // Remove RTL from HTML tag
-            // const html = document.getElementsByTagName("html")[0];
-            // if (html) {
-            //   html.classList.remove("rtl-active", "rtl", "is-rtl");
-            //   html.setAttribute("dir", "ltr");
-            //   html.removeAttribute("data-rtl");
-            //   // html.style.direction = "ltr";
-            // }
           }
         } catch (e) {
           console.error("Error cleaning RTL attributes:", e);
@@ -900,15 +796,11 @@ const PopupRegistrationForm = ({ params }) => {
         window.__FORCE_RTL__ = false;
         window.__ORIGINAL_RTL__ = false;
       }
-
-      // console.log("Language set throughout application:", cleanedLanguage);
     }
   }, [safeParams]);
 
   // Update state values when params change
   useEffect(() => {
-    // console.log("safeParams updated:", safeParams);
-
     // Handle referral_type - could be number or string
     if (
       safeParams.referral_type !== undefined &&
@@ -919,7 +811,6 @@ const PopupRegistrationForm = ({ params }) => {
         ? Number(safeParams.referral_type)
         : safeParams.referral_type;
 
-      // console.log("Setting referral_type state to:", typeValue);
       setReferralType(typeValue);
 
       // Also store in session storage for persistence
@@ -937,10 +828,6 @@ const PopupRegistrationForm = ({ params }) => {
       safeParams.referral_value !== undefined &&
       safeParams.referral_value !== null
     ) {
-      // console.log(
-      //   "Setting referral_value state to:",
-      //   safeParams.referral_value
-      // );
       setReferralValue(safeParams.referral_value);
 
       // Also store in session storage for persistence
@@ -966,11 +853,6 @@ const PopupRegistrationForm = ({ params }) => {
       // This ensures our language priority logic works correctly
       setLanguageFromUrl(safeParams.langParam);
     }
-
-    // Debug log for referral parameters
-    // console.log("Current referral state values:");
-    // console.log("- referral_type:", referral_type);
-    // console.log("- referral_value:", referral_value);
   }, [safeParams]);
 
   // Listen for messages from parent window with higher priority
@@ -1030,26 +912,19 @@ const PopupRegistrationForm = ({ params }) => {
           urlParams.get("referralValue") ||
           urlParams.get("referral-value");
 
-        // console.log("URL referral_type:", urlReferralType);
-        // console.log("URL referral_value:", urlReferralValue);
-
         // Immediately set found referral parameters to state and sessionStorage
         if (urlReferralType) {
           // Convert to number if it's numeric
           const numericType = !isNaN(urlReferralType)
             ? Number(urlReferralType)
             : urlReferralType;
-          // console.log(
-          //   "Setting referral_type state from URL parameter:",
-          //   numericType
-          // );
+
           setReferralType(numericType);
 
           // Also persistently store in sessionStorage
           try {
             sessionStorage.setItem("oqtima_referral_type", numericType);
             window.__OQTIMA_REFERRAL_TYPE__ = numericType;
-            // console.log("Stored referral_type in sessionStorage:", numericType);
           } catch (storageErr) {
             // console.error(
             //   "Failed to store referral_type in sessionStorage:",
@@ -1059,20 +934,12 @@ const PopupRegistrationForm = ({ params }) => {
         }
 
         if (urlReferralValue) {
-          // console.log(
-          //   "Setting referral_value state from URL parameter:",
-          //   urlReferralValue
-          // );
           setReferralValue(urlReferralValue);
 
           // Also persistently store in sessionStorage
           try {
             sessionStorage.setItem("oqtima_referral_value", urlReferralValue);
             window.__OQTIMA_REFERRAL_VALUE__ = urlReferralValue;
-            // console.log(
-            //   "Stored referral_value in sessionStorage:",
-            //   urlReferralValue
-            // );
           } catch (storageErr) {
             // console.error(
             //   "Failed to store referral_value in sessionStorage:",
@@ -1087,11 +954,6 @@ const PopupRegistrationForm = ({ params }) => {
             "oqtima_referral_type"
           );
           if (storedReferralType) {
-            // console.log(
-            //   "Found referral_type in sessionStorage:",
-            //   storedReferralType
-            // );
-
             // Convert to number if it's numeric
             const numericType = !isNaN(storedReferralType)
               ? Number(storedReferralType)
@@ -1105,10 +967,6 @@ const PopupRegistrationForm = ({ params }) => {
             "oqtima_referral_value"
           );
           if (storedReferralValue) {
-            // console.log(
-            //   "Found referral_value in sessionStorage:",
-            //   storedReferralValue
-            // );
             setReferralValue(storedReferralValue);
           }
         }
@@ -1120,11 +978,6 @@ const PopupRegistrationForm = ({ params }) => {
           typeof window !== "undefined"
         ) {
           if (window.__OQTIMA_REFERRAL_TYPE__ !== undefined) {
-            // console.log(
-            //   "Found referral_type in window globals:",
-            //   window.__OQTIMA_REFERRAL_TYPE__
-            // );
-
             // Convert to number if it's numeric
             const numericType = !isNaN(window.__OQTIMA_REFERRAL_TYPE__)
               ? Number(window.__OQTIMA_REFERRAL_TYPE__)
@@ -1147,10 +1000,6 @@ const PopupRegistrationForm = ({ params }) => {
           typeof window !== "undefined"
         ) {
           if (window.__OQTIMA_REFERRAL_VALUE__ !== undefined) {
-            // console.log(
-            //   "Found referral_value in window globals:",
-            //   window.__OQTIMA_REFERRAL_VALUE__
-            // );
             setReferralValue(window.__OQTIMA_REFERRAL_VALUE__);
 
             // Also update sessionStorage for consistency
@@ -1183,7 +1032,6 @@ const PopupRegistrationForm = ({ params }) => {
         const dataLang = urlParams.get("data-lang");
         if (dataLang) {
           detectedLanguage = dataLang;
-          // console.log("Detected language from data-lang param:", dataLang);
         }
 
         // NEW: If URL parameters don't contain language, try to extract from pathname
@@ -1194,7 +1042,6 @@ const PopupRegistrationForm = ({ params }) => {
             // Check if first path segment looks like a language code
             if (possibleLang && possibleLang.length <= 7) {
               detectedLanguage = possibleLang;
-              // console.log("Detected language from URL path:", possibleLang);
             }
           }
         }
@@ -1206,7 +1053,6 @@ const PopupRegistrationForm = ({ params }) => {
           );
           if (hashMatch && hashMatch[3]) {
             detectedLanguage = hashMatch[3];
-            // console.log("Detected language from URL hash:", hashMatch[3]);
           }
         }
 
@@ -1218,10 +1064,6 @@ const PopupRegistrationForm = ({ params }) => {
 
           // Special handling for Arabic
           if (isRTLLanguage(cleanLang)) {
-            // console.log(
-            //   "Arabic language detected from URL parameter, enabling RTL"
-            // );
-
             // Set RTL flags in session storage and globals
             try {
               sessionStorage.setItem("oqtima_tab_rtl", "true");
@@ -1234,26 +1076,6 @@ const PopupRegistrationForm = ({ params }) => {
           }
 
           setLanguageFromUrl(cleanLang);
-        }
-
-        // Log current referral parameter state
-        // console.log("Current referral parameter state after URL extraction:");
-        // console.log("- referral_type:", referral_type);
-        // console.log("- referral_value:", referral_value);
-
-        // Log sessionStorage state for verification
-        try {
-          // console.log("SessionStorage state for referral parameters:");
-          // console.log(
-          //   "- oqtima_referral_type:",
-          //   sessionStorage.getItem("oqtima_referral_type")
-          // );
-          // console.log(
-          //   "- oqtima_referral_value:",
-          //   sessionStorage.getItem("oqtima_referral_value")
-          // );
-        } catch (e) {
-          // console.error("Error reading sessionStorage:", e);
         }
       } catch (err) {
         // console.error("Error extracting parameters:", err);
@@ -1286,8 +1108,6 @@ const PopupRegistrationForm = ({ params }) => {
   const sanitizeLanguageCode = (code) => {
     // If code contains "?", it's likely malformed or contains query parameters
     if (code && code.includes("?")) {
-      // console.log("Sanitizing language code with query parameters:", code);
-
       // Check if code itself is a query parameter (e.g., "?language=ar")
       if (code.startsWith("?")) {
         // Try to extract the language part
@@ -1301,21 +1121,15 @@ const PopupRegistrationForm = ({ params }) => {
       // If the code has format like "ar?param=value"
       const parts = code.split("?");
       if (parts.length > 1 && parts[0].length <= 5) {
-        // console.log("Extracted language from before query string:", parts[0]);
         return parts[0];
       }
 
       // Try again with more permissive regex to find language value
       const fullMatch = code.match(/(?:^|[?&])(language|lang|locale)=([^&]+)/i);
       if (fullMatch && fullMatch[2]) {
-        // console.log("Extracted language with permissive regex:", fullMatch[2]);
         return fullMatch[2];
       }
 
-      // Default to English if we can't extract
-      // console.log(
-      //   "Could not extract language from query string, defaulting to 'en'"
-      // );
       return "en";
     }
 
@@ -1398,22 +1212,10 @@ const PopupRegistrationForm = ({ params }) => {
     } catch (e) {
       // console.warn("Error parsing params:", e);
     }
-
-    // Log initial params for debugging
-    // console.log("Registration form detected language parameters:", {
-    //   langParam,
-    //   dataLang,
-    //   urlLanguage,
-    //   browserLanguage,
-    //   nativeLanguage,
-    // });
-
     // Create final specific language variable with proper prioritization
     const specificLanguage = langParam || urlLanguage || dataLang;
 
     if (specificLanguage) {
-      // console.log(`Using specific language: ${specificLanguage}`);
-
       // ADDED: Clean RTL attributes for non-Arabic languages
       // Sanitize the specific language code first
       const sanitizedLang = sanitizeLanguageCode(specificLanguage);
@@ -1423,9 +1225,6 @@ const PopupRegistrationForm = ({ params }) => {
       const isArabic = isRTLLanguage(sanitizedLang);
 
       if (!isArabic) {
-        // console.log(
-        //   `Non-Arabic language detected (${sanitizedLang}), cleaning RTL attributes`
-        // );
         cleanRTLAttributes();
       } else {
         // console.log(
@@ -1479,8 +1278,6 @@ const PopupRegistrationForm = ({ params }) => {
 
       // Just update the form's RTL state based on language
       if (isRTLLanguage(cleanLang)) {
-        // console.log("Form detected Arabic language, ensuring form RTL mode");
-
         // Add mobile-specific styling for RTL in the registration form
         if (!document.getElementById("rtl-form-mobile-styles")) {
           const mobileStyleEl = document.createElement("style");
@@ -1572,8 +1369,6 @@ const PopupRegistrationForm = ({ params }) => {
   }, []);
 
   // Debugging logs for effective language
-  // console.log("effectiveLanguage", effectiveLanguage);
-  // console.log("portalLanguageCode", portalLanguageCode);
 
   // Initialize the portalLanguageCode variable
   let portalLanguageCode;
@@ -1591,13 +1386,10 @@ const PopupRegistrationForm = ({ params }) => {
     // All Brazilian Portuguese variations should map to "pt" for API calls
     portalLanguageCode = "pt";
   } else {
-    // console.log("effectiveLanguage", effectiveLanguage);
     // For other languages, use the standard mapping
     portalLanguageCode =
       PORTAL_LANGUAGES_MAP[effectiveLanguage] || effectiveLanguage || "en";
   }
-
-  // console.log("portalLanguageCode", portalLanguageCode);
 
   // Double-check if we're in a Brazilian Portuguese URL path but didn't catch it earlier
   if (typeof window !== "undefined" && window.location.pathname) {
@@ -1631,8 +1423,6 @@ const PopupRegistrationForm = ({ params }) => {
       return;
     }
 
-    // console.log(`Attempting to open policy link: ${url}`);
-
     // Anti multi-click implementation
     const target = e.currentTarget;
     if (target.getAttribute("data-processing") === "true") {
@@ -1659,17 +1449,10 @@ const PopupRegistrationForm = ({ params }) => {
       // Check if the window opened successfully
       if (policyWindow && !policyWindow.closed) {
         // Success
-        // console.log(`Successfully opened policy link: ${url}`);
         setTimeout(() => {
           target.removeAttribute("data-processing");
         }, 1000);
       } else {
-        // Window.open was blocked
-        // console.warn(`window.open was blocked for ${url}`);
-
-        // Log the blocked attempt
-        // console.log(`Policy link was blocked by the browser: ${url}`);
-
         // Reset processing state after delay
         setTimeout(() => {
           target.removeAttribute("data-processing");
@@ -1781,9 +1564,6 @@ const PopupRegistrationForm = ({ params }) => {
       // If no code or no mapping for the code, use the message
       setErrorMessage(actualMessage);
     }
-
-    // Log final error message being set
-    // console.log("Final error message:", errorMessage);
   };
 
   // Function to extract referral parameters from URL parameters, parent iframe attributes, or window.name transport
@@ -1864,11 +1644,6 @@ const PopupRegistrationForm = ({ params }) => {
                     } catch (e) {}
                   }
                 } else {
-                  // For Normal Registration, clear referral parameters
-                  // console.log(
-                  //   "Normal Registration - not using referral parameters from parent iframe"
-                  // );
-
                   // Clear our local params
                   referralParams.type = null;
                   referralParams.value = null;
@@ -1985,9 +1760,6 @@ const PopupRegistrationForm = ({ params }) => {
               if (window.__OQTIMA_REFERRAL_VALUE__ !== undefined) {
                 delete window.__OQTIMA_REFERRAL_VALUE__;
               }
-              // console.log(
-              //   "Cleared referral_value from sessionStorage for Normal Registration"
-              // );
             } catch (e) {
               // console.warn("Error clearing referral_value:", e);
             }
@@ -2006,10 +1778,6 @@ const PopupRegistrationForm = ({ params }) => {
 
         // For Normal Registration, explicitly set referral parameters to null and clear storage
         if (!isSpecificReferralType) {
-          // console.log(
-          //   "Normal Registration detected - clearing referral parameters"
-          // );
-
           // Clear our local params
           referralParams.type = null;
           referralParams.value = null;
@@ -2034,10 +1802,6 @@ const PopupRegistrationForm = ({ params }) => {
                 "oqtima_referral_type=; path=/; max-age=0; SameSite=None; Secure";
               document.cookie =
                 "oqtima_referral_value=; path=/; max-age=0; SameSite=None; Secure";
-
-              // console.log(
-              //   "Successfully cleared all referral parameters for Normal Registration"
-              // );
             } catch (e) {
               // console.warn("Error clearing referral parameters:", e);
             }
@@ -2079,12 +1843,6 @@ const PopupRegistrationForm = ({ params }) => {
           }
         }
 
-        // Log what we found
-        if (sources.length > 0) {
-          // console.log("Found referral parameters from sources:", sources);
-          // console.log("Referral parameters:", referralParams);
-        }
-
         return referralParams;
       } catch (e) {
         // console.error("Error extracting referral parameters:", e);
@@ -2120,11 +1878,6 @@ const PopupRegistrationForm = ({ params }) => {
                 try {
                   sessionStorage.setItem("oqtima_referral_type", parsedType);
                   window.__OQTIMA_REFERRAL_TYPE__ = parsedType;
-
-                  // console.log(
-                  //   "Received valid referral_type from parent window:",
-                  //   parsedType
-                  // );
                 } catch (e) {}
 
                 // Only set referral_value if we have a valid referral_type
@@ -2136,18 +1889,9 @@ const PopupRegistrationForm = ({ params }) => {
                       data.referral_value
                     );
                     window.__OQTIMA_REFERRAL_VALUE__ = data.referral_value;
-
-                    // console.log(
-                    //   "Received valid referral_value from parent window:",
-                    //   data.referral_value
-                    // );
                   } catch (e) {}
                 }
               } else {
-                // For Normal Registration, clear referral parameters
-                // console.log(
-                //   "Normal Registration - clearing referral parameters from parent message"
-                // );
                 setReferralType(null);
                 setReferralValue(null);
 
@@ -2213,7 +1957,6 @@ const PopupRegistrationForm = ({ params }) => {
 
     // Create a local copy of portalLanguageCode that we can modify
     let submissionLanguage = portalLanguageCode;
-    // console.log("submissionLanguage", submissionLanguage);
 
     // Check if we're in a Brazilian Portuguese URL path
     const urlPath =
@@ -2232,6 +1975,8 @@ const PopupRegistrationForm = ({ params }) => {
 
       if (typeof window !== "undefined") {
         const urlParams = new URLSearchParams(window.location.search);
+
+        // Check all possible parameter formats
         const urlReferralType =
           urlParams.get("referral_type") ||
           urlParams.get("referralType") ||
@@ -2244,36 +1989,20 @@ const PopupRegistrationForm = ({ params }) => {
 
         if (urlReferralType) {
           finalReferralType = urlReferralType;
-          // console.log(
-          //   "Using referral_type from URL parameters:",
-          //   finalReferralType
-          // );
         }
 
         if (urlReferralValue) {
           finalReferralValue = urlReferralValue;
-          // console.log(
-          //   "Using referral_value from URL parameters:",
-          //   finalReferralValue
-          // );
         }
       }
 
       // 2. Check state variables if URL parameters weren't found
       if (finalReferralType === null && referral_type !== null) {
         finalReferralType = referral_type;
-        // console.log(
-        //   "Using referral_type from component state:",
-        //   finalReferralType
-        // );
       }
 
       if (finalReferralValue === null && referral_value !== null) {
         finalReferralValue = referral_value;
-        // console.log(
-        //   "Using referral_value from component state:",
-        //   finalReferralValue
-        // );
       }
 
       // 3. Check props parameters if still not found
@@ -2282,7 +2011,6 @@ const PopupRegistrationForm = ({ params }) => {
         safeParams.referral_type !== undefined
       ) {
         finalReferralType = safeParams.referral_type;
-        // console.log("Using referral_type from props:", finalReferralType);
       }
 
       if (
@@ -2290,29 +2018,28 @@ const PopupRegistrationForm = ({ params }) => {
         safeParams.referral_value !== undefined
       ) {
         finalReferralValue = safeParams.referral_value;
-        // console.log("Using referral_value from props:", finalReferralValue);
       }
 
       // 4. Check sessionStorage as a fallback
       if (finalReferralType === null && typeof window !== "undefined") {
-        const storageType = sessionStorage.getItem("oqtima_referral_type");
-        if (storageType) {
-          finalReferralType = storageType;
-          // console.log(
-          //   "Using referral_type from sessionStorage:",
-          //   finalReferralType
-          // );
+        try {
+          const storageType = sessionStorage.getItem("oqtima_referral_type");
+          if (storageType) {
+            finalReferralType = storageType;
+          }
+        } catch (e) {
+          // Ignore sessionStorage errors
         }
       }
 
       if (finalReferralValue === null && typeof window !== "undefined") {
-        const storageValue = sessionStorage.getItem("oqtima_referral_value");
-        if (storageValue) {
-          finalReferralValue = storageValue;
-          // console.log(
-          //   "Using referral_value from sessionStorage:",
-          //   finalReferralValue
-          // );
+        try {
+          const storageValue = sessionStorage.getItem("oqtima_referral_value");
+          if (storageValue) {
+            finalReferralValue = storageValue;
+          }
+        } catch (e) {
+          // Ignore sessionStorage errors
         }
       }
 
@@ -2323,10 +2050,6 @@ const PopupRegistrationForm = ({ params }) => {
         window.__OQTIMA_REFERRAL_TYPE__ !== undefined
       ) {
         finalReferralType = window.__OQTIMA_REFERRAL_TYPE__;
-        // console.log(
-        //   "Using referral_type from global variable:",
-        //   finalReferralType
-        // );
       }
 
       if (
@@ -2335,10 +2058,29 @@ const PopupRegistrationForm = ({ params }) => {
         window.__OQTIMA_REFERRAL_VALUE__ !== undefined
       ) {
         finalReferralValue = window.__OQTIMA_REFERRAL_VALUE__;
-        // console.log(
-        //   "Using referral_value from global variable:",
-        //   finalReferralValue
-        // );
+      }
+
+      // 6. Check parent window message data if available
+      if (finalReferralType === null && window.parent) {
+        try {
+          const parentData = window.parent.__OQTIMA_REFERRAL_TYPE__;
+          if (parentData !== undefined) {
+            finalReferralType = parentData;
+          }
+        } catch (e) {
+          // Ignore cross-origin errors
+        }
+      }
+
+      if (finalReferralValue === null && window.parent) {
+        try {
+          const parentData = window.parent.__OQTIMA_REFERRAL_VALUE__;
+          if (parentData !== undefined) {
+            finalReferralValue = parentData;
+          }
+        } catch (e) {
+          // Ignore cross-origin errors
+        }
       }
 
       // 7. Normalize referral type to number if it's numeric
@@ -2354,7 +2096,6 @@ const PopupRegistrationForm = ({ params }) => {
       // If not a specific referral type, clear the referral value
       if (!isSpecificReferralType) {
         finalReferralValue = null;
-        // console.log("Not a specific referral type - clearing referral_value");
       }
 
       // Build the registration data
@@ -2371,22 +2112,11 @@ const PopupRegistrationForm = ({ params }) => {
 
       // Only include referral parameters if they exist and this is a specific referral type
       if (finalReferralType !== null) {
-        registrationData.referral_type = finalReferralType;
-
-        if (isSpecificReferralType) {
-          // console.log("Including referral parameters in API request:", {
-          //   referral_type: finalReferralType,
-          //   referral_value: finalReferralValue || null,
-          // });
-        } else {
-          // console.log(
-          //   "Normal Registration with referral_type but no referral_value"
-          // );
+        // FIXED: Ensure referral_type is always a valid integer
+        const referralTypeInt = parseInt(finalReferralType, 10);
+        if (!isNaN(referralTypeInt)) {
+          registrationData.referral_type = referralTypeInt;
         }
-      } else {
-        // console.log(
-        //   "Normal Registration - Not including referral parameters in API request"
-        // );
       }
 
       // Only include referral_value if we have a specific referral type
@@ -2399,7 +2129,7 @@ const PopupRegistrationForm = ({ params }) => {
         `${API_URL}crm-register`,
         registrationData
       );
-      // console.log("response", response.data);
+
       if (response.data.code && response.data.code !== 200) {
         handleApiResponse(false, response.data.message, response.data.code);
       } else {
@@ -2546,11 +2276,6 @@ const PopupRegistrationForm = ({ params }) => {
           typeof event.data === "object" &&
           event.data.type === "REGISTRATION_PARAMS"
         ) {
-          // console.log(
-          //   "Received registration parameters from parent:",
-          //   event.data
-          // );
-
           const params = event.data.data || {};
           let shouldUpdateState = false;
           let newReferralType = referral_type;
@@ -2575,10 +2300,6 @@ const PopupRegistrationForm = ({ params }) => {
                 "oqtima_referral_type",
                 newReferralType.toString()
               );
-              // console.log(
-              //   "Stored referral_type in sessionStorage:",
-              //   newReferralType
-              // );
             } catch (e) {
               console.error(
                 "Failed to store referral_type in sessionStorage:",
@@ -2601,10 +2322,6 @@ const PopupRegistrationForm = ({ params }) => {
                 "oqtima_referral_value",
                 newReferralValue.toString()
               );
-              // console.log(
-              //   "Stored referral_value in sessionStorage:",
-              //   newReferralValue
-              // );
             } catch (e) {
               console.error(
                 "Failed to store referral_value in sessionStorage:",
@@ -2615,10 +2332,6 @@ const PopupRegistrationForm = ({ params }) => {
 
           // Update state if needed
           if (shouldUpdateState) {
-            // console.log("Updating state with new referral parameters:", {
-            //   referral_type: newReferralType,
-            //   referral_value: newReferralValue,
-            // });
             setReferralType(newReferralType);
             setReferralValue(newReferralValue);
           }
