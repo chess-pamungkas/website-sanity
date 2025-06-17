@@ -300,6 +300,7 @@ const PopupRegistrationForm = ({ params }) => {
   const codeOptionsRef = useRef(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSentSuccessful, setIsSentSuccessful] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const API_URL = process.env.GATSBY_OQTIMA_API_URL;
   const { executeRecaptcha } = useGoogleReCaptcha();
   const { clientConfig } = useContext(ClientResolverContext);
@@ -1953,6 +1954,7 @@ const PopupRegistrationForm = ({ params }) => {
 
   // Update the handleRegistrationtForm function to ensure referral parameters are included
   const handleRegistrationtForm = async (values) => {
+    setIsLoading(true);
     const token = await executeRecaptcha("popup_registration");
 
     // Create a local copy of portalLanguageCode that we can modify
@@ -2132,6 +2134,7 @@ const PopupRegistrationForm = ({ params }) => {
 
       if (response.data.code && response.data.code !== 200) {
         handleApiResponse(false, response.data.message, response.data.code);
+        setIsLoading(false);
       } else {
         handleApiResponse(true);
 
@@ -2226,6 +2229,7 @@ const PopupRegistrationForm = ({ params }) => {
       const errorCode = error.response?.data?.code;
       sendLog({ message: error.message, type: error.name, code: errorCode });
       handleApiResponse(false, errorMessage, errorCode);
+      setIsLoading(false);
     }
   };
 
@@ -2351,6 +2355,41 @@ const PopupRegistrationForm = ({ params }) => {
   return (
     <RTLAwareForm isRTLMode={isRTLMode} language={effectiveLanguage}>
       <div className="popup-registration__form-container">
+        {isLoading && (
+          <div id="loadingScreen" role="progressbar" aria-busy="true">
+            <svg
+              className="logo"
+              version="1.1"
+              xmlns="http://www.w3.org/1999/xlink"
+              viewBox="350 26 100 204"
+              fill="#ff4400"
+              stroke="#ff4400"
+            >
+              <path
+                stroke-dasharray="1200 1200"
+                d="M402.2,179c0.6-1.1,1.3-2.2,1.9-3.4c0.2-0.4,0.4-0.8,0.6-1.2c0.4-0.9,0.9-1.7,1.3-2.6c0.7-1.3,1.3-2.7,1.9-4.1
+                c0.6-1.3,1.1-2.6,1.6-4c0-0.1,0.1-0.2,0.1-0.3c0.5-1.3,1-2.7,1.4-4c0-0.1,0.1-0.2,0.1-0.3c3.2-9.8,4.7-20,4.7-30.7
+                c0-1.5,0-3-0.1-4.6c2.1-36.8,32.6-66,70-66c38.7,0,70.1,31.4,70.1,70.1c0,12.9-3.5,24.9-9.6,35.3h0l23.6,21.8
+                c11.1-16.3,17.6-35.9,17.6-57.1c0-56.2-45.5-101.7-101.7-101.7c-22.9,0-43.9,7.5-60.9,20.3c0,0,0,0,0,0c0,0-11.5,7.6-21.2,21.4
+                c-11.7,16-18.8,35.4-19.6,56.6c0,0-0.1,0-0.1,0c0,1,0.1,2,0.1,3c0,0.2,0,0.3,0,0.5c0,0.3,0,0.6,0,0.9c-0.1,9.7-1.9,18.8-5.4,27.3
+                c-3.6,8.6-8.6,16.2-14.9,22.7c-6.3,6.5-13.7,11.6-22,15.3c-8.4,3.7-17.5,5.6-27.4,5.6s-19-1.9-27.4-5.6
+                c-8.4-3.7-15.8-8.9-22.3-15.4c-6.5-6.6-11.5-14.1-15-22.7c-3.5-8.6-5.3-17.8-5.3-27.9c0-9.7,1.7-18.9,5.2-27.6
+                c3.5-8.7,8.3-16.4,14.6-22.9c6.3-6.6,13.7-11.8,22.3-15.6c8.6-3.8,17.8-5.7,27.6-5.7c9.7,0,18.8,1.9,27.4,5.6
+                c8.6,3.7,16,8.9,22.3,15.6c5.5,5.8,9.9,12.3,13.4,19.5c1.2-4.2,2.6-8.2,4.3-12.3c3.1-7.3,6.9-14.1,11.3-20.5
+                c-2.2-2.7-4.5-5.3-7-7.7c-9.5-9.4-20.3-16.8-32.6-22.2c-12.3-5.3-25.3-8-39.1-8c-14.1,0-27.3,2.7-39.5,8
+                c-12.2,5.3-23,12.7-32.3,22.2c-9.4,9.5-16.7,20.3-21.9,32.6c-5.2,12.3-7.8,25.3-7.8,39.1c0,14.5,2.6,27.8,7.8,40
+                c5.2,12.2,12.5,22.9,21.9,32.2c9.4,9.3,20.1,16.5,32.3,21.6c12.2,5.1,25.4,7.7,39.5,7.7c13.9,0,27.1-2.6,39.4-7.8
+                c12.3-5.2,23.1-12.5,32.5-21.7c6.4-6.3,11.8-13.3,16.3-21C402.2,179.1,402.2,179.1,402.2,179z"
+              />
+              <path
+                id="oqtima"
+                stroke-dasharray="1200 1200"
+                d="M485.8,130.6v42.5v7.1v18c-27.5,0-51.3-15.9-62.8-38.9c-1.3,4.4-2.8,8.8-4.6,13c-3.1,7.2-6.9,13.9-11.3,20.2
+                c18.7,22.7,47,37.3,78.7,37.3c11.1,0,21.7-1.8,31.7-5.1l0.1,0v0v-20.1l25.2,25.2h42.8C583.2,229.7,485.8,130.6,485.8,130.6z"
+              />
+            </svg>
+          </div>
+        )}
         <Formik
           key={`${isRTLMode ? "rtl" : "ltr"}-${effectiveLanguage}-form`}
           initialValues={{
