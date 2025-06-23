@@ -1192,7 +1192,7 @@
   "accounts-type_account-type1-spreads-from-title": "Spreads a partir de",
   "accounts-type_account-type1-spreads-from-value": "{{ account-type1-spreads-from }} pips",
   "accounts-type_account-type1-commissions-title": "Comissões",
-  "accounts-type_account-type1-commissions-value": "$ {{ account-type1-commissions }} por lote negociado",
+  "accounts-type_account-type1-commissions-value": "$ {{ account-type1-commissions }} por lado negociado",
   "accounts-type_account-type1-min-deposit-title": "Depósito min.",
 
   "accounts-type_account-type1-min-deposit-value-fsa": "${{ account-type1-min-deposit-fsa }}",
