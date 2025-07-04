@@ -288,10 +288,6 @@ export const DataSpreadTable2 = () => {
       col2: t("spreads_account-data-table2-col2-3"),
     },
     {
-      col1: "CHF",
-      col2: t("spreads_account-data-table2-col2-4"),
-    },
-    {
       col1: "SGD",
       col2: t("spreads_account-data-table2-col2-5"),
     },
@@ -302,10 +298,6 @@ export const DataSpreadTable2 = () => {
     {
       col1: "CAD",
       col2: t("spreads_account-data-table2-col2-7"),
-    },
-    {
-      col1: "ZAR",
-      col2: t("spreads_account-data-table2-col2-8"),
     },
   ];
   return DATA_SPREADS_TABLE_2_FSA;
