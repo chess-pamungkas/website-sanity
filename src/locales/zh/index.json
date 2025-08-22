@@ -244,7 +244,8 @@
 
   "footer-funding-1": "*如果在东欧时间早上11点之前提出请求",
   "footer-funding-2": "*我们不会收取任何费用,但您可能会根据您使用的方法而产生银行收取的费用。",
-  "footer-company-name-text": "© 2024 OQtima Group | 保留所有權利。",
+  "footer-company-name-text": "OQtima Group",
+  "footer-all-rights-reserved": "保留所有權利。",
   "button-sign-in": "登录",
   "button-get-started": "开始",
   "button-trade-now": "现在交易",
