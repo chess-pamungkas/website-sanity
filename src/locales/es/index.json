@@ -242,7 +242,8 @@
 
   "footer-funding-1": "* Si la solicitud se realiza antes de las 11:00am (hora de Europa del Este)",
   "footer-funding-2": "* No cobramos ninguna comisión, pero es possible que tu banco aplique comisiones en función del método que utilices.",
-  "footer-company-name-text": "© 2024 OQtima Group | Todos los derechos reservados.",
+  "footer-company-name-text": "OQtima Group",
+  "footer-all-rights-reserved": "Todos los derechos reservados.",
   "button-sign-in": "Iniciar sesión",
   "button-get-started": "Registrarse",
   "button-trade-now": "Opera ahora",

@@ -26,6 +26,9 @@ export const FOOTER_FOR_FUNDING = {
   p2: "footer-funding-2",
 };
 
+// Function to get current year
+const getCurrentYear = () => new Date().getFullYear();
+
 export const getFooterCopyright = () => {
   const { t } = useTranslationWithVariables();
 
@@ -55,5 +58,10 @@ export const getFooterCopyright = () => {
 
 export const getFooterCompanyName = () => {
   const { t } = useTranslationWithVariables();
-  return <p>{t(FOOTER_COMPANY.p1)}</p>;
+  const currentYear = getCurrentYear();
+  return (
+    <p>
+      © {currentYear} {t(FOOTER_COMPANY.p1)} | {t("footer-all-rights-reserved")}
+    </p>
+  );
 };
