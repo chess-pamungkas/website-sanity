@@ -54,7 +54,7 @@ export const MT5_DOWNLOAD_LINKS = {
   getWebTraderLink: () => MT5_WEB_TRADER_LINK,
   getMacLink: () =>
     "https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/MetaTrader5.pkg.zip",
-  getHuaweiLink: () => "https://appgallery.huawei.com/#/app/C102015329",
+  // getHuaweiLink: () => "https://appgallery.huawei.com/#/app/C102015329",
 };
 
 export const getMT4DownloadLink = () => {
@@ -404,9 +404,9 @@ export const mt5DownloadTabs = () => {
           <a href={MT5_DOWNLOAD_LINKS.getIOSLink()}>
             {t("mt5_mt-promotion-download-ios")}
           </a>
-          <a href={MT5_DOWNLOAD_LINKS.getHuaweiLink()}>
+          {/* <a href={MT5_DOWNLOAD_LINKS.getHuaweiLink()}>
             {t("mt5_mt-promotion-download-huawei")}
-          </a>
+          </a> */}
         </>
       ),
     },

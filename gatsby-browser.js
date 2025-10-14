@@ -19,18 +19,33 @@ export const wrapPageElement = ({ element }) => {
 
   return element;
 };
+
+// Service Worker management
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/sw.js")
-      .then((registration) => {
-        console.log(
-          "Service Worker registered with scope:",
-          registration.scope
-        );
-      })
-      .catch((registrationError) => {
-        console.log("Service Worker registration failed:", registrationError);
+  if (process.env.NODE_ENV === "development") {
+    // In development, unregister any existing service workers
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => {
+          registration.unregister();
+          console.log("Service Worker unregistered for development");
+        });
       });
-  });
+    });
+  } else {
+    // In production, register the service worker
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((registration) => {
+          console.log(
+            "Service Worker registered with scope:",
+            registration.scope
+          );
+        })
+        .catch((registrationError) => {
+          console.log("Service Worker registration failed:", registrationError);
+        });
+    });
+  }
 }
