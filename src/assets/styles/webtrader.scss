@@ -10,30 +10,6 @@ body.webtrader-page {
     // Ensure proper touch scrolling
     -webkit-overflow-scrolling: touch;
 
-    // Remove any container constraints that might cause centering
-    .container {
-      max-width: none !important;
-      width: 100vw !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-
-    // Fix footer issues
-    footer {
-      width: 100vw !important;
-      max-width: none !important;
-      margin: 0 !important;
-      padding: 0 !important;
-
-      // Ensure footer content doesn't get centered
-      .container {
-        max-width: none !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-    }
-
     // Fix any layout containers that might cause centering
     main {
       width: 100vw !important;
