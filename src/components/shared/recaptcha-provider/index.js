@@ -5,7 +5,7 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
   useEffect(() => {
     // Load reCAPTCHA script manually
     const script = document.createElement("script");
-    script.src = `https://www.google.com/recaptcha/api.js?render=${process.env.GOOGLE_CAPTCHA_SITE_KEY}`;
+    script.src = `https://www.google.com/recaptcha/api.js?render=${process.env.GATSBY_GOOGLE_CAPTCHA_SITE_KEY}`;
     script.async = true;
     script.defer = true;
     script.id = "google-recaptcha-v3";
@@ -56,7 +56,7 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
   return (
     <>
       <GoogleReCaptchaProvider
-        reCaptchaKey={process.env.GOOGLE_CAPTCHA_SITE_KEY}
+        reCaptchaKey={process.env.GATSBY_GOOGLE_CAPTCHA_SITE_KEY}
         scriptProps={{
           async: true,
           defer: true,

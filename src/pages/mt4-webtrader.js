@@ -13,7 +13,14 @@ const MT4WebTraderPage = () => {
   useEffect(() => {
     setIsSearchBarAttached(false);
 
-    return () => setIsSearchBarAttached(true);
+    // Add webtrader class to body for mobile styling
+    document.body.classList.add("webtrader-page");
+
+    return () => {
+      setIsSearchBarAttached(true);
+      // Remove webtrader class when leaving page
+      document.body.classList.remove("webtrader-page");
+    };
   }, []);
 
   return (
