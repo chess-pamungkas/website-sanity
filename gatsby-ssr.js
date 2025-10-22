@@ -49,6 +49,140 @@ export const onRenderBody = ({
       src={process.env.GATSBY_CONVRS_LIVECHAT}
     />,
     <script
+      key="livechat-debug"
+      dangerouslySetInnerHTML={{
+        __html: `
+          // Debug livechat loading
+          (function() {
+            const checkLivechat = setInterval(function() {
+              const livechatScript = document.getElementById('convrs-webchat');
+              const livechatElements = document.querySelectorAll('[id*="convrs"], [class*="convrs"]');
+              
+              if (livechatScript) {
+                console.log('✅ Livechat script element found');
+              }
+              
+              if (livechatElements.length > 0) {
+                console.log('✅ Livechat elements found:', livechatElements.length);
+                clearInterval(checkLivechat);
+              }
+            }, 2000);
+            
+            // Stop checking after 30 seconds
+            setTimeout(function() {
+              clearInterval(checkLivechat);
+            }, 30000);
+          })();
+        `,
+      }}
+    />,
+    <script
+      key="livechat-management"
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            // Manage livechat z-index and behavior to prevent conflicts with burger menu
+            function manageLivechatZIndex() {
+              try {
+                const livechatElements = document.querySelectorAll('[id*="convrs"], [class*="convrs"]');
+                
+                if (livechatElements.length === 0) {
+                  return; // No livechat elements yet, skip management
+                }
+                
+                livechatElements.forEach(el => {
+                  if (el && el.style) {
+                    // Check if livechat is hidden by burger menu
+                    const isBurgerMenuHidden = el.getAttribute('data-burger-menu-hidden') === 'true';
+                    if (isBurgerMenuHidden) {
+                      // Don't modify if burger menu has hidden it
+                      return;
+                    }
+                    
+                    // Check if burger menu is open
+                    const burgerMenuCheckbox = document.getElementById('bmt');
+                    const isBurgerMenuOpen = burgerMenuCheckbox && burgerMenuCheckbox.checked;
+                    
+                    if (isBurgerMenuOpen) {
+                      // Hide livechat when burger menu is open
+                      el.style.setProperty('display', 'none', 'important');
+                      el.style.setProperty('visibility', 'hidden', 'important');
+                      el.style.setProperty('pointer-events', 'none', 'important');
+                      return;
+                    }
+                    
+                    // Check if we're on a webtrader page
+                    const currentPath = window.location.pathname;
+                    const isWebtraderPage = currentPath.includes('webtrader');
+                    
+                    if (isWebtraderPage) {
+                      // Hide livechat on webtrader pages
+                      el.style.setProperty('display', 'none', 'important');
+                      el.style.setProperty('visibility', 'hidden', 'important');
+                      el.style.setProperty('pointer-events', 'none', 'important');
+                      return;
+                    }
+                    
+                    // For normal pages, ensure livechat is visible and properly z-indexed
+                    // Only set z-index, don't touch display/visibility to let livechat show naturally
+                    el.style.setProperty('z-index', '21', 'important');
+                  }
+                });
+              } catch (error) {
+                // Silent fail to avoid console spam
+              }
+            }
+            
+            // Monitor for dynamically added livechat elements
+            let observer;
+            try {
+              observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                  if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach(function(node) {
+                      if (node.nodeType === 1 && (node.id && node.id.includes('convrs') || 
+                          (node.className && typeof node.className === 'string' && node.className.includes('convrs')))) {
+                        console.log('🔵 Livechat element detected, managing...');
+                        setTimeout(manageLivechatZIndex, 100);
+                      }
+                    });
+                  }
+                });
+              });
+              
+              // Start observing
+              if (document.body) {
+                observer.observe(document.body, {
+                  childList: true,
+                  subtree: true
+                });
+              }
+            } catch (error) {
+              // Silent fail
+            }
+            
+            // Run management on burger menu state change
+            document.addEventListener('click', function(e) {
+              const burgerTrigger = e.target.closest('.burger-menu__trigger');
+              if (burgerTrigger) {
+                setTimeout(manageLivechatZIndex, 100);
+              }
+            });
+            
+            // Run immediately after a delay to let livechat load
+            setTimeout(manageLivechatZIndex, 2000);
+            
+            // Run on DOM ready
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(manageLivechatZIndex, 2000);
+              });
+            }
+          })();
+        `,
+      }}
+    />,
+    <script
       key="mt-widget"
       type="text/javascript"
       src="https://metatraderweb.app/trade/widget.js"

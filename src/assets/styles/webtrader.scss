@@ -5,35 +5,76 @@
 body.webtrader-page {
   @include mobile {
     // Prevent body from interfering with horizontal scroll
-    overflow-x: hidden;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
 
     // Ensure proper touch scrolling
     -webkit-overflow-scrolling: touch;
 
     // Fix any layout containers that might cause centering
     main {
-      width: 100vw !important;
-      max-width: none !important;
+      width: 100% !important;
+      max-width: 100% !important;
       margin: 0 !important;
       padding: 0 !important;
+      overflow-x: hidden !important;
 
       .container {
-        max-width: none !important;
+        max-width: 100% !important;
         width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
+        overflow-x: hidden !important;
       }
     }
 
     // Ensure webtrader takes full width
-    .mt4-webtrader,
-    .mt5-webtrader {
+    .mt4-webtrader {
       width: 100vw !important;
       max-width: none !important;
       margin: 0 !important;
       left: 0 !important;
       right: 0 !important;
       transform: none !important;
+      overflow-x: auto !important;
+    }
+
+    // MT5 webtrader - force responsive approach
+    .mt5-webtrader {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      left: auto !important;
+      right: auto !important;
+      transform: none !important;
+      overflow-x: hidden !important;
+
+      // Ensure content is below header
+      margin-top: 80px !important;
+      padding-top: 20px !important;
+
+      iframe {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        transform: scale(1) !important;
+        transform-origin: top left !important;
+        height: calc(100vh - 160px) !important; // Account for header height
+      }
+    }
+
+    // Additional fixes for horizontal scrolling
+    .scroll-container {
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+
+    // Ensure all parent containers allow horizontal scroll
+    .main-container,
+    .page-container,
+    .content-wrapper {
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
     }
   }
 }
@@ -142,9 +183,17 @@ body.webtrader-page {
 
       // Force the MT4 interface to be wider than viewport
       min-width: 800px;
+      width: 800px !important;
 
       // Ensure horizontal scrolling works
       white-space: nowrap;
+
+      // Force the iframe content to be scrollable
+      iframe {
+        min-width: 800px !important;
+        width: 800px !important;
+        height: 100% !important;
+      }
 
       // Add scrollbar styling
       &::-webkit-scrollbar {
@@ -173,29 +222,18 @@ body.webtrader-page {
   @extend .webtrader-container;
 
   @include mobile {
-    // Remove centering and make it full width
-    width: 100vw;
-    max-width: none;
-    margin: 0;
-    padding: 0;
+    // Force responsive layout for all MT5 content
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
 
-    // Position relative to parent
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-
-    // Add padding for mobile spacing
-    padding-top: 10px;
+    // Add proper padding to avoid header overlap
+    padding-top: 80px !important; // Ensure content is below header
     padding-bottom: 20px;
-
-    // Ensure horizontal scrolling works
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-
-    // Make container wider to accommodate MT5 interface
-    min-width: 100vw;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   iframe {
@@ -205,15 +243,78 @@ body.webtrader-page {
     display: block;
 
     @include mobile {
-      // Ensure proper mobile rendering with horizontal scroll
-      -webkit-overflow-scrolling: touch;
-      overflow: visible;
-      min-width: 100vw;
-      width: 100vw;
+      // Force iframe to be responsive
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
 
       // Remove any padding that might cause centering
-      padding: 0;
-      margin: 0;
+      padding: 0 !important;
+      margin: 0 !important;
+
+      // Force iframe content to be responsive
+      transform: scale(1) !important;
+      transform-origin: top left !important;
+
+      // Additional responsive fixes
+      box-sizing: border-box !important;
+      object-fit: contain !important;
+    }
+  }
+
+  // Additional mobile-specific fixes for MT5
+  @include mobile {
+    // Force container to be exactly viewport width
+    position: relative !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    // Ensure no horizontal overflow
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    // Add proper spacing to avoid header overlap
+    margin-top: 80px !important; // Additional margin to push content below header
+
+    // Force iframe to fit container
+    iframe {
+      position: relative !important; // Changed from absolute to relative
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: calc(
+        100vh - 160px
+      ) !important; // Adjusted height to account for header
+      max-width: 100% !important;
+      min-width: 100% !important;
+
+      // Force iframe content to be responsive
+      transform: scale(1) !important;
+      transform-origin: top left !important;
+
+      // Additional responsive properties
+      box-sizing: border-box !important;
+      object-fit: contain !important;
+
+      // Force iframe content to fit
+      zoom: 1 !important;
+      -webkit-transform: scale(1) !important;
+      -moz-transform: scale(1) !important;
+      -ms-transform: scale(1) !important;
+    }
+
+    // Additional CSS to inject into iframe content
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 1;
     }
   }
 }

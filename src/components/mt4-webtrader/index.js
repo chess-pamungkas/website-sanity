@@ -6,58 +6,27 @@ import {
 import { useWindowSize } from "../../helpers/hooks/use-window-size";
 import { MT_LANGUAGES_MAP } from "../../helpers/lang-options.config";
 import LanguageContext from "../../context/language-context";
-import {
-  isMobileDevice,
-  waitForMetaTraderScript,
-  addMobileViewportListeners,
-  removeMobileViewportListeners,
-  getWebtraderHeight,
-} from "../../helpers/mobile-utils";
 
 const Mt4WebTraderLink = () => {
-  const { isDesktop, isMobile } = useWindowSize();
+  const { isDesktop } = useWindowSize();
   const { selectedLanguage } = useContext(LanguageContext);
   const isIFrameAdded = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [viewportHeight, setViewportHeight] = useState("100vh");
   const containerRef = useRef(null);
 
-  // Handle viewport changes for mobile devices
-  const handleViewportChange = () => {
-    if (isMobileDevice()) {
-      const headerHeight = isDesktop ? "100vh" : HEADER_SMALL_HEIGHT;
-      const newHeight = getWebtraderHeight(headerHeight);
-      setViewportHeight(newHeight);
-    }
-  };
-
-  useEffect(() => {
-    // Set initial viewport height
-    handleViewportChange();
-
-    // Add mobile viewport listeners
-    addMobileViewportListeners(handleViewportChange);
-
-    return () => {
-      removeMobileViewportListeners(handleViewportChange);
-    };
-  }, [isDesktop]);
+  // Simple mobile detection without external utilities
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   useEffect(() => {
     if (isIFrameAdded.current) return;
 
-    const initializeWebTrader = async () => {
+    const initializeWebTrader = () => {
       try {
-        // Wait for MetaTrader script to be available
-        const scriptAvailable = await waitForMetaTraderScript(15000);
-
-        if (!scriptAvailable) {
-          console.error(
-            "MetaTraderWebTerminal script not available after timeout"
-          );
-          setHasError(true);
-          setIsLoading(false);
+        // Simple script availability check
+        if (typeof window.MetaTraderWebTerminal !== "function") {
+          console.warn("MetaTraderWebTerminal not available, retrying...");
+          setTimeout(initializeWebTrader, 1000);
           return;
         }
 
@@ -114,7 +83,7 @@ const Mt4WebTraderLink = () => {
       <div className="mt4-webtrader webtrader-error" ref={containerRef}>
         <div className="error-icon">⚠️</div>
         <div className="error-message">
-          {isMobileDevice()
+          {isMobile
             ? "Unable to load MT4 WebTrader on this device. Please try using a desktop or tablet browser."
             : "Unable to load MT4 WebTrader. Please check your internet connection and try again."}
         </div>
@@ -131,9 +100,9 @@ const Mt4WebTraderLink = () => {
       ref={containerRef}
       style={{
         paddingTop: isDesktop
-          ? HEADER_BIG_HEIGHT + 0
+          ? HEADER_BIG_HEIGHT + 20
           : HEADER_SMALL_HEIGHT + 10,
-        height: viewportHeight,
+        height: isMobile ? "calc(100vh - 75px)" : "calc(100vh - 223px)",
       }}
     >
       {isLoading && (
