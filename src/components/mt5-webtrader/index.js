@@ -12,6 +12,7 @@ const WebTraderLink = () => {
   const { selectedLanguage } = useContext(LanguageContext);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [interfaceType, setInterfaceType] = useState("login"); // Default to login
   const containerRef = useRef(null);
 
   // Simple mobile detection without external utilities
@@ -25,8 +26,90 @@ const WebTraderLink = () => {
     }
   }, [isDesktop]);
 
+  // Detect interface type based on iframe content
+  useEffect(() => {
+    const iframe = containerRef.current?.querySelector("iframe");
+    if (iframe) {
+      const checkInterfaceType = () => {
+        try {
+          // Try to access iframe content to detect interface type
+          const iframeDoc =
+            iframe.contentDocument || iframe.contentWindow?.document;
+          if (iframeDoc) {
+            // Look for trading interface elements
+            const hasTradingElements = iframeDoc.querySelector(
+              ".terminal, .chart, .market-watch, .trading-panel, .terminal-container"
+            );
+            if (hasTradingElements) {
+              setInterfaceType("trading");
+            } else {
+              setInterfaceType("login");
+            }
+          }
+        } catch (error) {
+          // Cross-origin restrictions, use URL-based detection
+          const iframeSrc = iframe.src;
+          if (
+            iframeSrc &&
+            (iframeSrc.includes("terminal") || iframeSrc.includes("trading"))
+          ) {
+            setInterfaceType("trading");
+          } else {
+            setInterfaceType("login");
+          }
+        }
+      };
+
+      // Check immediately and after load
+      checkInterfaceType();
+      iframe.addEventListener("load", checkInterfaceType);
+
+      // Fallback: assume trading interface after 5 seconds
+      const fallbackTimer = setTimeout(() => {
+        if (interfaceType === "login") {
+          setInterfaceType("trading");
+        }
+      }, 5000);
+
+      return () => {
+        iframe.removeEventListener("load", checkInterfaceType);
+        clearTimeout(fallbackTimer);
+      };
+    }
+  }, [isLoading, interfaceType]);
+
   const handleIframeLoad = () => {
     setIsLoading(false);
+
+    // Try to inject responsive CSS into iframe
+    try {
+      const iframe = containerRef.current?.querySelector("iframe");
+      if (iframe && iframe.contentDocument) {
+        const iframeDoc = iframe.contentDocument;
+        const style = iframeDoc.createElement("style");
+        style.textContent = `
+          * {
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+          }
+          body {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          .container, .main, .content {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+          }
+        `;
+        iframeDoc.head.appendChild(style);
+      }
+    } catch (error) {
+      // Cross-origin restrictions, ignore
+    }
   };
 
   const handleIframeError = () => {
@@ -64,11 +147,14 @@ const WebTraderLink = () => {
     <div
       className="mt5-webtrader"
       ref={containerRef}
+      data-interface={interfaceType}
       style={{
         paddingTop: isDesktop
           ? HEADER_BIG_HEIGHT + 20
+          : isMobile
+          ? HEADER_SMALL_HEIGHT + 30 // More padding for mobile
           : HEADER_SMALL_HEIGHT + 10,
-        height: isMobile ? "calc(100vh - 75px)" : "calc(100vh - 223px)",
+        height: isMobile ? "calc(100vh - 95px)" : "calc(100vh - 223px)", // Adjusted height for mobile
       }}
     >
       {isLoading && (
