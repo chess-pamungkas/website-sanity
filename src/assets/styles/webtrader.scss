@@ -1,65 +1,20 @@
 @import "vars";
 @import "mixins";
 
-// Global webtrader page styles
-body.webtrader-page {
-  @include mobile {
-    // Prevent body from interfering with horizontal scroll
-    overflow-x: hidden;
-
-    // Ensure proper touch scrolling
-    -webkit-overflow-scrolling: touch;
-
-    // Fix any layout containers that might cause centering
-    main {
-      width: 100vw !important;
-      max-width: none !important;
-      margin: 0 !important;
-      padding: 0 !important;
-
-      .container {
-        max-width: none !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-    }
-
-    // Ensure webtrader takes full width
-    .mt4-webtrader,
-    .mt5-webtrader {
-      width: 100vw !important;
-      max-width: none !important;
-      margin: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      transform: none !important;
-    }
-  }
-}
-
-// Webtrader container styles
+// Simplified webtrader styles to avoid conflicts with burger menu
 .webtrader-container {
   width: 100%;
   position: relative;
 
-  // Mobile-specific styles
+  // Mobile-specific styles - minimal and non-intrusive
   @include mobile {
-    height: calc(100vh - var(--header-height, 65px));
+    height: calc(100vh - 75px);
     min-height: 500px;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
 
-    // Ensure smooth horizontal scrolling
-    scroll-behavior: smooth;
-
-    // Force full width and remove any centering
-    width: 100vw !important;
-    max-width: none !important;
-    margin: 0 !important;
-
-    // Add scrollbar styling for better UX
+    // Simple scrollbar styling
     &::-webkit-scrollbar {
       height: 8px;
     }
@@ -81,13 +36,13 @@ body.webtrader-page {
 
   // Tablet styles
   @include tablet {
-    height: calc(100vh - var(--header-height, 65px));
+    height: calc(100vh - 65px);
     min-height: 600px;
   }
 
   // Desktop styles
   @include desktop-lg {
-    height: calc(100vh - var(--header-height, 203px));
+    height: calc(100vh - 223px);
     min-height: 700px;
   }
 }
@@ -97,29 +52,9 @@ body.webtrader-page {
   @extend .webtrader-container;
 
   @include mobile {
-    // Remove centering and make it full width
-    width: 100vw;
-    max-width: none;
-    margin: 0;
-    padding: 0;
-
-    // Position relative to parent
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-
-    // Add padding for mobile spacing
+    // Simple mobile styling without complex positioning
     padding-top: 10px;
     padding-bottom: 20px;
-
-    // Ensure horizontal scrolling works
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-
-    // Make container wider to accommodate MT4 interface
-    min-width: 100vw;
   }
 
   #webterminal {
@@ -129,41 +64,10 @@ body.webtrader-page {
     display: block;
 
     @include mobile {
-      // Ensure proper mobile rendering with horizontal scroll
+      // Ensure proper mobile rendering
       -webkit-overflow-scrolling: touch;
       overflow-x: auto;
       overflow-y: hidden;
-      min-width: 100vw;
-      width: 100vw;
-
-      // Remove any padding that might cause centering
-      padding: 0;
-      margin: 0;
-
-      // Force the MT4 interface to be wider than viewport
-      min-width: 800px;
-
-      // Ensure horizontal scrolling works
-      white-space: nowrap;
-
-      // Add scrollbar styling
-      &::-webkit-scrollbar {
-        height: 8px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 4px;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 4px;
-
-        &:hover {
-          background: #555;
-        }
-      }
     }
   }
 }
@@ -173,29 +77,9 @@ body.webtrader-page {
   @extend .webtrader-container;
 
   @include mobile {
-    // Remove centering and make it full width
-    width: 100vw;
-    max-width: none;
-    margin: 0;
-    padding: 0;
-
-    // Position relative to parent
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-
-    // Add padding for mobile spacing
+    // Simple mobile styling without complex positioning
     padding-top: 10px;
     padding-bottom: 20px;
-
-    // Ensure horizontal scrolling works
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-
-    // Make container wider to accommodate MT5 interface
-    min-width: 100vw;
   }
 
   iframe {
@@ -205,15 +89,10 @@ body.webtrader-page {
     display: block;
 
     @include mobile {
-      // Ensure proper mobile rendering with horizontal scroll
+      // Ensure proper mobile rendering
       -webkit-overflow-scrolling: touch;
-      overflow: visible;
-      min-width: 100vw;
-      width: 100vw;
-
-      // Remove any padding that might cause centering
-      padding: 0;
-      margin: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
     }
   }
 }

@@ -6,41 +6,16 @@ import {
 import { useWindowSize } from "../../helpers/hooks/use-window-size";
 import LanguageContext from "../../context/language-context";
 import { getWebTraderUrl } from "./webtrader-url";
-import {
-  isMobileDevice,
-  addMobileViewportListeners,
-  removeMobileViewportListeners,
-  getWebtraderHeight,
-} from "../../helpers/mobile-utils";
 
 const WebTraderLink = () => {
-  const { isDesktop, isMobile } = useWindowSize();
+  const { isDesktop } = useWindowSize();
   const { selectedLanguage } = useContext(LanguageContext);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [viewportHeight, setViewportHeight] = useState("100vh");
   const containerRef = useRef(null);
 
-  // Handle viewport changes for mobile devices
-  const handleViewportChange = () => {
-    if (isMobileDevice()) {
-      const headerHeight = isDesktop ? HEADER_BIG_HEIGHT : HEADER_SMALL_HEIGHT;
-      const newHeight = getWebtraderHeight(headerHeight);
-      setViewportHeight(newHeight);
-    }
-  };
-
-  useEffect(() => {
-    // Set initial viewport height
-    handleViewportChange();
-
-    // Add mobile viewport listeners
-    addMobileViewportListeners(handleViewportChange);
-
-    return () => {
-      removeMobileViewportListeners(handleViewportChange);
-    };
-  }, [isDesktop]);
+  // Simple mobile detection without external utilities
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   useEffect(() => {
     // Set CSS custom property for header height
@@ -74,7 +49,7 @@ const WebTraderLink = () => {
       <div className="mt5-webtrader webtrader-error" ref={containerRef}>
         <div className="error-icon">⚠️</div>
         <div className="error-message">
-          {isMobileDevice()
+          {isMobile
             ? "Unable to load MT5 WebTrader on this device. Please try using a desktop or tablet browser."
             : "Unable to load MT5 WebTrader. Please check your internet connection and try again."}
         </div>
@@ -93,7 +68,7 @@ const WebTraderLink = () => {
         paddingTop: isDesktop
           ? HEADER_BIG_HEIGHT + 20
           : HEADER_SMALL_HEIGHT + 10,
-        height: viewportHeight,
+        height: isMobile ? "calc(100vh - 75px)" : "calc(100vh - 223px)",
       }}
     >
       {isLoading && (
