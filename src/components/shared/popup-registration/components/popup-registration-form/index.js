@@ -1392,12 +1392,45 @@ const PopupRegistrationForm = ({ params }) => {
       PORTAL_LANGUAGES_MAP[effectiveLanguage] || effectiveLanguage || "en";
   }
 
+  // Debug logging to help identify language issues
+  if (typeof window !== "undefined") {
+    console.log("Language Debug:", {
+      effectiveLanguage,
+      effectiveLangLower,
+      portalLanguageCode,
+      mappedValue: PORTAL_LANGUAGES_MAP[effectiveLanguage],
+    });
+  }
+
   // Double-check if we're in a Brazilian Portuguese URL path but didn't catch it earlier
   if (typeof window !== "undefined" && window.location.pathname) {
     const pathParts = window.location.pathname.split("/").filter(Boolean);
     if (pathParts.length > 0 && pathParts[0].toLowerCase() === "br") {
       portalLanguageCode = "pt";
     }
+  }
+
+  // Final validation: ensure portalLanguageCode is one of the supported API values
+  const supportedLanguages = [
+    "en",
+    "es",
+    "ja",
+    "fr",
+    "it",
+    "ms",
+    "pt",
+    "zh-Hans",
+    "ar",
+    "vi",
+    "zh-Hant",
+    "th",
+    "id",
+  ];
+  if (!supportedLanguages.includes(portalLanguageCode)) {
+    console.warn(
+      `Invalid language code detected: ${portalLanguageCode}, falling back to 'en'`
+    );
+    portalLanguageCode = "en";
   }
 
   // Get translation function outside the effect to avoid the error
@@ -2112,6 +2145,15 @@ const PopupRegistrationForm = ({ params }) => {
         cookie: policyLinks.cookiePolicy,
       };
 
+      // Debug logging for registration data
+      console.log("Registration Data:", {
+        language: submissionLanguage,
+        valuesLanguage: values.language,
+        portalLanguageCode,
+        effectiveLanguage,
+        registrationData,
+      });
+
       // Only include referral parameters if they exist and this is a specific referral type
       if (finalReferralType !== null) {
         // FIXED: Ensure referral_type is always a valid integer
@@ -2405,6 +2447,7 @@ const PopupRegistrationForm = ({ params }) => {
                 )?.code || ""
               : "",
             mobile: "",
+            language: portalLanguageCode || "en",
             is_subscribe: 1,
             agreement: 0,
           }}
