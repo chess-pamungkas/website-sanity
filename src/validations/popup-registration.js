@@ -19,6 +19,26 @@ export const PopupRegistrationSchema = object().shape({
     .matches(/^\d+$/, "popup-registration-phoneNumber-numbers-only")
     .min(7, "popup-registration-phoneNumber-invalid")
     .required("popup-registration-phoneNumber-required"),
+  language: string()
+    .oneOf(
+      [
+        "en",
+        "es",
+        "ja",
+        "fr",
+        "it",
+        "ms",
+        "pt",
+        "zh-Hans",
+        "ar",
+        "vi",
+        "zh-Hant",
+        "th",
+        "id",
+      ],
+      "Language must be one of the supported values"
+    )
+    .required("Language is required"),
   agreement: boolean()
     .oneOf([true], "popup-registration-agreement-required")
     .required("popup-registration-agreement-required"),
