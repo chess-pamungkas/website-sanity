@@ -2478,7 +2478,12 @@ const PopupRegistrationForm = ({ params }) => {
                 if (matchingCountry) {
                   setSelectedCountry(matchingCountry.name);
                   setSelectedCountryCode(matchingCountry.code);
-                  setFieldValue("country", matchingCountry.name, true);
+                  // Set country.value (not country.name) for API submission
+                  setFieldValue(
+                    "country",
+                    matchingCountry.value || matchingCountry.name,
+                    true
+                  );
                   setFieldValue("country_code", matchingCountry.code, true);
                 }
               }
@@ -2493,7 +2498,12 @@ const PopupRegistrationForm = ({ params }) => {
                 setSelectedCountryCode(matchingCountry.code);
                 setFieldValue("country_code", matchingCountry.code, true);
               }
-              setFieldValue("country", countryName, true);
+              // Set country.value (not country.name) for API submission
+              setFieldValue(
+                "country",
+                matchingCountry?.value || countryName,
+                true
+              );
               setIsCountryOpen(false);
               setSearchCountry("");
             };
