@@ -64,7 +64,7 @@ const countries = [
   },
   { name: "Chad", value: "Chad", code: "+235" },
   { name: "Chile", value: "Chile", code: "+56" },
-  { name: "China Mainland", value: "China Mainland", code: "+86" },
+  { name: "China Mainland", value: "China", code: "+86" },
   { name: "Christmas Island", value: "Christmas Island", code: "+672" },
   { name: "Cocos Islands", value: "Cocos [Keeling] Islands", code: "+672" },
   { name: "Colombia", value: "Colombia", code: "+57" },
