@@ -184,6 +184,7 @@ export const onRenderBody = ({
           // Debug livechat loading (silent - no console logs)
           (function() {
             const checkLivechat = setInterval(function() {
+              const livechatScript = document.getElementById('convrs-webchat');
               const livechatElements = document.querySelectorAll('[id*="convrs"], [class*="convrs"]');
               
               if (livechatElements.length > 0) {
@@ -286,7 +287,6 @@ export const onRenderBody = ({
                     mutation.addedNodes.forEach(function(node) {
                       if (node.nodeType === 1 && (node.id && node.id.includes('convrs') || 
                           (node.className && typeof node.className === 'string' && node.className.includes('convrs')))) {
-                        console.log('🔵 Livechat element detected, managing...');
                         setTimeout(manageLivechatZIndex, 100);
                         
                         // Also apply LTR styling immediately for new elements
