@@ -50,6 +50,46 @@ if ("serviceWorker" in navigator) {
   }
 }
 
-export const onClientEntry = () => {};
+// Global error handler to suppress expected errors from ad blockers and browser extensions
+export const onClientEntry = () => {
+  if (typeof window !== "undefined") {
+    // Suppress ERR_BLOCKED_BY_CLIENT errors (typically from ad blockers)
+    const originalError = window.console.error;
+    window.console.error = function (...args) {
+      // Filter out ERR_BLOCKED_BY_CLIENT errors
+      const errorMessage = args.join(" ");
+      if (
+        errorMessage.includes("ERR_BLOCKED_BY_CLIENT") ||
+        errorMessage.includes("net::ERR_BLOCKED_BY_CLIENT") ||
+        errorMessage.includes("cloudflareinsights") ||
+        errorMessage.includes("beacon.min.js")
+      ) {
+        // Silently ignore these expected errors
+        return;
+      }
+      // Log other errors normally
+      originalError.apply(console, args);
+    };
+
+    // Also handle resource loading errors
+    window.addEventListener(
+      "error",
+      (event) => {
+        if (
+          event.message &&
+          (event.message.includes("ERR_BLOCKED_BY_CLIENT") ||
+            event.message.includes("cloudflareinsights") ||
+            event.message.includes("beacon.min.js") ||
+            event.message.includes("bat.bing.com") ||
+            event.message.includes("bat.js"))
+        ) {
+          event.preventDefault(); // Prevent error from showing in console
+          return false;
+        }
+      },
+      true
+    ); // Use capture phase to catch all errors
+  }
+};
 
 export const onRouteUpdate = () => {};
