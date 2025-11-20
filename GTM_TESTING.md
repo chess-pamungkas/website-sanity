@@ -14,7 +14,7 @@ GATSBY_ENABLE_GTM_DEV=true  # Set to "true" to enable, "false" to disable
 
 ### Production/Staging Environment
 
-GTM is **automatically enabled** in production/staging environments (Vercel, etc.) as long as `GATSBY_GOOGLE_TAG_MANAGER` environment variable is set.
+GTM is **automatically enabled** in production/staging environments as long as `GATSBY_GOOGLE_TAG_MANAGER` environment variable is set.
 
 **Note:** Helper functions (`window.testGTMWithCampaignCode`, etc.) are only available in development mode. For production testing, use URL parameters directly.
 
@@ -42,25 +42,25 @@ This will show:
 
 Visit your site with UTM parameters in the URL:
 
-**Test dengan UTM parameters saja:**
+**Test with UTM parameters only:**
 
 ```
 http://localhost:8000/?utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign
 ```
 
-**Test dengan campaign_code saja:**
+**Test with campaign_code only:**
 
 ```
 http://localhost:8000/?campaign_code=test123
 ```
 
-**Test dengan kombinasi campaign_code + UTM parameters:**
+**Test with combination of campaign_code + UTM parameters:**
 
 ```
 http://localhost:8000/?campaign_code=test123&utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign
 ```
 
-**Test dengan kombinasi di path dengan language:**
+**Test with combination in path with language:**
 
 ```
 http://localhost:8000/zh/?campaign_code=test123&utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign
@@ -76,10 +76,10 @@ The parameters will be:
 
 Open browser console and run:
 
-**Test dengan kombinasi campaign_code + UTM:**
+**Test with combination of campaign_code + UTM:**
 
 ```javascript
-// Test dengan kombinasi campaign_code dan UTM parameters
+// Test with combination of campaign_code and UTM parameters
 window.testGTMWithCampaignCode({
   campaign_code: "test_campaign_123",
   utm_source: "google",
@@ -87,11 +87,11 @@ window.testGTMWithCampaignCode({
   utm_campaign: "summer_sale",
 });
 
-// Check hasilnya
+// Check the result
 window.getDataLayer();
 ```
 
-**Test dengan campaign_code saja:**
+**Test with campaign_code only:**
 
 ```javascript
 window.testGTMWithCampaignCode({
@@ -99,7 +99,7 @@ window.testGTMWithCampaignCode({
 });
 ```
 
-**Test dengan UTM saja:**
+**Test with UTM only:**
 
 ```javascript
 window.testGTMWithCampaignCode({
@@ -109,10 +109,10 @@ window.testGTMWithCampaignCode({
 });
 ```
 
-**Simulate URL visit dengan parameters:**
+**Simulate URL visit with parameters:**
 
 ```javascript
-// Simulate visit dengan kombinasi parameters
+// Simulate visit with combination of parameters
 window.simulateURLWithParams({
   campaign_code: "test123",
   utm_source: "test_source",
@@ -182,8 +182,8 @@ The following functions are available in `src/helpers/services/gtm-service.js` a
 - `testGTMDataLayer(testData)` - Manually push test data to dataLayer
 - `getDataLayer()` - Get current dataLayer contents
 - `checkGTMStatus()` - Check if GTM is loaded and ready
-- `testGTMWithCampaignCode(params)` - **Test dengan kombinasi campaign_code + UTM parameters**
-- `simulateURLWithParams(params)` - Simulate URL visit dengan parameters
+- `testGTMWithCampaignCode(params)` - **Test with combination of campaign_code + UTM parameters**
+- `simulateURLWithParams(params)` - Simulate URL visit with parameters
 
 ## Testing Scenarios
 
@@ -220,10 +220,10 @@ The following functions are available in `src/helpers/services/gtm-service.js` a
 // - r_code removed from localStorage if exists
 ```
 
-### Scenario 4: Test dengan Browser Console
+### Scenario 4: Test with Browser Console
 
 ```javascript
-// Test kombinasi
+// Test combination
 window.testGTMWithCampaignCode({
   campaign_code: "IB08801328J",
   utm_source: "facebook",
@@ -231,12 +231,12 @@ window.testGTMWithCampaignCode({
   utm_campaign: "winter_promo",
 });
 
-// Verify di dataLayer
+// Verify in dataLayer
 window.dataLayer.filter(
   (item) => item.campaign_code || item.utm_source || item.utm_campaign
 );
 
-// Verify di localStorage
+// Verify in localStorage
 console.log({
   campaign_code: localStorage.getItem("campaign_code"),
   utm_source: localStorage.getItem("utm_source"),
@@ -267,41 +267,41 @@ console.log({
 2. Check browser console for errors
 3. Verify GTM is loaded: `window.checkGTMStatus()`
 
-## Testing GTM di Production/Staging (Vercel)
+## Testing GTM in Production/Staging
 
-### Testing di https://dev-new-website-com.vercel.app/
+### Testing in Production/Staging Environment
 
-#### Method 1: Test dengan URL Parameters
+#### Method 1: Test with URL Parameters
 
-Buka browser dan kunjungi URL dengan parameters:
+Open browser and visit URL with parameters:
 
-**Test dengan kombinasi campaign_code + UTM:**
-
-```
-https://dev-new-website-com.vercel.app/?campaign_code=test123&utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign
-```
-
-**Test dengan campaign_code saja:**
+**Test with combination of campaign_code + UTM:**
 
 ```
-https://dev-new-website-com.vercel.app/?campaign_code=IB08801328J
+https://your-production-url.com/?campaign_code=test123&utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign
 ```
 
-**Test dengan UTM parameters saja:**
+**Test with campaign_code only:**
 
 ```
-https://dev-new-website-com.vercel.app/?utm_source=google&utm_medium=cpc&utm_campaign=summer_sale
+https://your-production-url.com/?campaign_code=IB08801328J
 ```
 
-**Test dengan kombinasi di path dengan language:**
+**Test with UTM parameters only:**
 
 ```
-https://dev-new-website-com.vercel.app/zh/?campaign_code=test123&utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign
+https://your-production-url.com/?utm_source=google&utm_medium=cpc&utm_campaign=summer_sale
 ```
 
-#### Method 2: Verify di Browser Console
+**Test with combination in path with language:**
 
-Setelah membuka URL dengan parameters, buka browser console (F12) dan jalankan:
+```
+https://your-production-url.com/zh/?campaign_code=test123&utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign
+```
+
+#### Method 2: Verify in Browser Console
+
+After opening URL with parameters, open browser console (F12) and run:
 
 ```javascript
 // Check GTM Status
@@ -319,7 +319,7 @@ console.log("LocalStorage:", {
   utm_campaign: localStorage.getItem("utm_campaign"),
 });
 
-// Check dataLayer untuk UTM/Campaign parameters
+// Check dataLayer for UTM/Campaign parameters
 const paramsInDataLayer = window.dataLayer.filter(
   (item) =>
     item.campaign_code ||
@@ -333,29 +333,29 @@ console.log("Parameters in dataLayer:", paramsInDataLayer);
 console.log("Current URL:", window.location.href);
 ```
 
-#### Method 3: Test dengan GTM Preview Mode
+#### Method 3: Test with GTM Preview Mode
 
-1. Buka [Google Tag Manager](https://tagmanager.google.com/)
-2. Pilih container **GTM-TFM34GFQ**
-3. Klik tombol **"Preview"**
-4. Masukkan production URL dengan parameters:
+1. Open [Google Tag Manager](https://tagmanager.google.com/)
+2. Select container **GTM-TFM34GFQ**
+3. Click **"Preview"** button
+4. Enter production URL with parameters:
    ```
-   https://dev-new-website-com.vercel.app/?campaign_code=test123&utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign
+   https://your-production-url.com/?campaign_code=test123&utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign
    ```
-5. Klik **"Connect"**
-6. Di GTM Preview panel, Anda akan melihat:
+5. Click **"Connect"**
+6. In GTM Preview panel, you will see:
    - Container loaded
    - Page view events
-   - UTM parameters di dataLayer
-   - Campaign code di dataLayer
-   - Route change events (saat navigasi)
+   - UTM parameters in dataLayer
+   - Campaign code in dataLayer
+   - Route change events (when navigating)
 
-#### Method 4: Manual Push ke dataLayer (Production)
+#### Method 4: Manual Push to dataLayer (Production)
 
-Jika helper functions tidak tersedia di production, Anda bisa manual push:
+If helper functions are not available in production, you can manually push:
 
 ```javascript
-// Manual push parameters ke dataLayer
+// Manually push parameters to dataLayer
 window.dataLayer = window.dataLayer || [];
 window.dataLayer.push({
   campaign_code: "test123",
@@ -370,40 +370,40 @@ console.log("dataLayer:", window.dataLayer);
 
 #### Method 5: Check Network Requests
 
-1. Buka Chrome DevTools → **Network** tab
-2. Filter dengan **"gtm"** atau **"collect"**
-3. Kunjungi URL dengan parameters
-4. Anda akan melihat requests ke:
+1. Open Chrome DevTools → **Network** tab
+2. Filter with **"gtm"** or **"collect"**
+3. Visit URL with parameters
+4. You will see requests to:
    - `https://www.googletagmanager.com/gtm.js?id=GTM-TFM34GFQ`
-   - `https://www.google-analytics.com/collect` (jika GA configured di GTM)
+   - `https://www.google-analytics.com/collect` (if GA configured in GTM)
 
-### Expected Behavior di Production
+### Expected Behavior in Production
 
-1. ✅ **Parameters disimpan ke localStorage** - Check di Application → Local Storage
-2. ✅ **Parameters di-push ke dataLayer** - Check di Console: `window.dataLayer`
-3. ✅ **URL dibersihkan** - Parameters dihapus dari URL setelah disimpan
-4. ✅ **GTM container loaded** - Check di Network tab atau Console
-5. ✅ **Events terkirim ke GTM** - Verify di GTM Preview Mode atau Network tab
+1. ✅ **Parameters saved to localStorage** - Check in Application → Local Storage
+2. ✅ **Parameters pushed to dataLayer** - Check in Console: `window.dataLayer`
+3. ✅ **URL cleaned** - Parameters removed from URL after saving
+4. ✅ **GTM container loaded** - Check in Network tab or Console
+5. ✅ **Events sent to GTM** - Verify in GTM Preview Mode or Network tab
 
 ### Troubleshooting Production Testing
 
-**GTM tidak load:**
+**GTM not loading:**
 
-- Check Network tab untuk error
-- Verify `GATSBY_GOOGLE_TAG_MANAGER` environment variable di Vercel
-- Check browser console untuk error messages
+- Check Network tab for errors
+- Verify `GATSBY_GOOGLE_TAG_MANAGER` environment variable in production environment
+- Check browser console for error messages
 
-**Parameters tidak muncul di dataLayer:**
+**Parameters not appearing in dataLayer:**
 
-- Check localStorage apakah parameters tersimpan
-- Refresh page setelah menambahkan parameters ke URL
-- Check console untuk log "UTM parameters pushed to dataLayer"
+- Check localStorage if parameters are saved
+- Refresh page after adding parameters to URL
+- Check console for log "UTM parameters pushed to dataLayer"
 
-**URL tidak dibersihkan:**
+**URL not cleaned:**
 
-- Check console untuk log "Cleaning URL"
-- Verify fungsi `getCampaignParamsAndSetToStorage` dipanggil
-- Check apakah ada error di console
+- Check console for log "Cleaning URL"
+- Verify function `getCampaignParamsAndSetToStorage` is called
+- Check if there are any errors in console
 
 ## Testing Checklist
 
@@ -420,10 +420,10 @@ console.log("dataLayer:", window.dataLayer);
 
 ### Production/Staging
 
-- [ ] GTM container loads di production URL
-- [ ] UTM parameters dari URL disimpan ke localStorage
-- [ ] UTM parameters di-push ke dataLayer
-- [ ] URL dibersihkan setelah parameters disimpan
-- [ ] GTM Preview mode bekerja dengan production URL
-- [ ] Campaign code + UTM kombinasi bekerja dengan baik
-- [ ] Network requests ke GTM terkirim dengan benar
+- [ ] GTM container loads in production URL
+- [ ] UTM parameters from URL are saved to localStorage
+- [ ] UTM parameters are pushed to dataLayer
+- [ ] URL is cleaned after parameters are saved
+- [ ] GTM Preview mode works with production URL
+- [ ] Campaign code + UTM combination works correctly
+- [ ] Network requests to GTM are sent correctly

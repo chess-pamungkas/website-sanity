@@ -99,11 +99,6 @@ const RTL_LANGUAGES = ["ar"];
       return "https://dev.oqt-ima.com/";
     }
 
-    // For new website vercel development environment
-    if (hostname === "dev-new-website.com.vercel.app") {
-      return "https://dev-new-website.com.vercel.app/";
-    }
-
     // For staging environment
     if (hostname === "test.oqt-ima.com") {
       return "https://test.oqt-ima.com/";
@@ -152,10 +147,6 @@ const RTL_LANGUAGES = ["ar"];
         }
 
         if (scriptOrigin.includes("dev.oqt-ima.com")) {
-          return "https://dev-back.oqt-ima.com/";
-        }
-
-        if (scriptOrigin.includes("vercel.app")) {
           return "https://dev-back.oqt-ima.com/";
         }
 
@@ -227,10 +218,6 @@ const RTL_LANGUAGES = ["ar"];
       return "https://dev-back.oqt-ima.com/";
     }
 
-    if (hostname === "dev-new-website.com.vercel.app") {
-      return "https://dev-back.oqt-ima.com/";
-    }
-
     if (hostname === "test.oqt-ima.com") {
       return "https://back.oqt-ima.com/";
     }
@@ -282,10 +269,6 @@ const RTL_LANGUAGES = ["ar"];
           return "development";
         }
 
-        if (scriptOrigin.includes("vercel.app")) {
-          return "development";
-        }
-
         if (scriptOrigin.includes("test.oqt-ima.com")) {
           return "staging";
         }
@@ -318,10 +301,6 @@ const RTL_LANGUAGES = ["ar"];
 
     // For development environment
     if (hostname === "dev.oqt-ima.com") {
-      return "development";
-    }
-
-    if (hostname === "dev-new-website.com.vercel.app") {
       return "development";
     }
 
