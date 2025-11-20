@@ -24,9 +24,6 @@ const FOOTER_COMPANY = { p1: "footer-company-name-text" };
 // Function to get current year
 const getCurrentYear = () => new Date().getFullYear();
 
-// Function to get current year
-const getCurrentYear = () => new Date().getFullYear();
-
 export const getFooterCopyright = () => {
   const { t } = useTranslationWithVariables();
 

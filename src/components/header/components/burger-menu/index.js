@@ -80,55 +80,13 @@ const BurgerMenu = ({ className }) => {
     setIsPopupOpen(false); // Close the popup
   };
 
-  // Toggle livechat visibility when burger menu opens/closes
-  const toggleLivechat = (isMenuOpen) => {
-    try {
-      const livechatElements = document.querySelectorAll(
-        '[id*="convrs"], [class*="convrs"]'
-      );
-      livechatElements.forEach((el) => {
-        if (el && el.style) {
-          if (isMenuOpen) {
-            // Hide livechat when burger menu is open
-            el.style.setProperty("display", "none", "important");
-            el.style.setProperty("visibility", "hidden", "important");
-            el.style.setProperty("pointer-events", "none", "important");
-            el.setAttribute("data-burger-menu-hidden", "true");
-          } else {
-            // Show livechat when burger menu is closed
-            el.style.removeProperty("display");
-            el.style.removeProperty("visibility");
-            el.style.removeProperty("pointer-events");
-            el.removeAttribute("data-burger-menu-hidden");
-          }
-        }
-      });
-    } catch (error) {
-      console.warn("Error toggling livechat:", error);
-    }
-  };
-
   const onTriggerChange = () => {
-    const newNavbarState = !isNavbarOpen;
+    typeof window !== "undefined" && isNavbarOpen
+      ? document.body.classList.remove("overflow-hidden")
+      : document.body.classList.add("overflow-hidden");
 
-    if (typeof window !== "undefined") {
-      if (newNavbarState) {
-        document.body.classList.add("overflow-hidden");
-      } else {
-        document.body.classList.remove("overflow-hidden");
-      }
-    }
-
-    // Toggle livechat visibility
-    toggleLivechat(newNavbarState);
-
-    setIsNavbarOpen(newNavbarState);
+    setIsNavbarOpen(!isNavbarOpen);
   };
-
-  // Effect to handle livechat when burger menu state changes
-  useEffect(() => {
-    toggleLivechat(isNavbarOpen);
-  }, [isNavbarOpen]);
 
   const onSelect = (title) => setSelectedNavItem(title);
 
