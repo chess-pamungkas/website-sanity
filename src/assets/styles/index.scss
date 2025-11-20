@@ -4,14 +4,18 @@
 @import "typography";
 
 @import "button-link";
+@import "reusable-buttons";
 @import "main-promotion";
-@import "promotion";
 @import "trading-tools";
-@import "trade-with-promotion";
-@import "performance";
 @import "faq";
-@import "top-market";
 @import "top-market-layout";
+@import "metals-spreads";
+@import "forex-spreads";
+@import "indices-spreads";
+@import "faq-section";
+@import "crypto-spreads";
+@import "cookie-policy-table";
+@import "energies-spreads";
 @import "header";
 @import "footer";
 @import "navbar-item";
@@ -21,7 +25,9 @@
 @import "search-bar";
 @import "dropdown-item";
 @import "dropdown";
+@import "trading-symbols";
 @import "trading-ticker";
+@import "features";
 @import "tabs";
 @import "table";
 @import "popup";
@@ -30,11 +36,6 @@
 @import "cookies-popup";
 @import "gdpr-popup";
 @import "notification-stripe";
-@import "promotion-markets";
-@import "top-market-promotion";
-@import "video-banner";
-@import "split-text-promotion";
-@import "company-advantages";
 @import "energies";
 @import "all-markets";
 @import "market-item";
@@ -42,34 +43,65 @@
 @import "legal";
 @import "documents";
 @import "system-info";
-@import "meta-trader";
 @import "mt4";
 @import "mt5";
-@import "ctrader-and-trading-view";
-@import "copy-trading";
+
 @import "mt-promotion";
 @import "withdrawal";
-@import "professional-qualification";
-@import "text-banner";
 @import "spreads-and-fees";
 @import "help-center";
 @import "partners";
 @import "accounts-type";
 @import "contact-us";
 @import "form";
-@import "education";
-@import "playlist";
-@import "career";
-@import "job-openings";
 @import "trading-tools-page";
-@import "marketing-static-images";
 @import "privacy-policy";
-@import "marketing-circle";
-@import "loader";
 @import "vps";
+@import "keep-your-vps";
+@import "get-complimentary-vps";
 @import "swap-free";
+@import "swap-free-freedom";
 @import "popup-registration";
 @import "webtrader";
+@import "navbar-dropdown-highlight";
+@import "testimonials-content";
+@import "security-content";
+@import "testimonials-security-content";
+@import "account-comparison";
+@import "account-types-account-comparison";
+@import "cost-calculator";
+@import "technology-infrastructure";
+@import "market-sentiment";
+@import "featured-ideas";
+@import "trading-calendar";
+@import "tab-trading-tools";
+@import "trust";
+@import "features-content-section";
+@import "guide";
+@import "our-community";
+@import "breadcrumbs-tab";
+@import "crypto";
+@import "indices";
+@import "forex";
+@import "metals";
+@import "shares";
+@import "etf";
+@import "hero";
+@import "features-products";
+@import "funding-withdrawals";
+@import "fastin-fastout-section";
+@import "payment-systems-section";
+@import "mt-advantage-list";
+@import "company";
+@import "faq-hero";
+@import "faq-search-bar";
+@import "trust-pilot";
+@import "how-to-trade-swap-free";
+@import "cost-swap-rate";
+@import "commission";
+@import "our-spreads";
+@import "client-portal-assistance";
+@import "simplify-your-setup";
 
 // rtl should import last
 @import "rtl";
@@ -80,11 +112,23 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: #f7f5f3;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   font-family: $font;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 
   &.overflow-hidden {
     overflow: hidden;
@@ -94,16 +138,62 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    width: 100%;
 
     & main {
       flex-grow: 1;
-      // overflow-x: hidden; checking if solved the problem
+      width: 100%;
     }
   }
 }
 
+body.homepage-bg-1 {
+  background: url("../images/bg/oqtima-bg-1.svg") no-repeat center top;
+  background-size: cover;
+  background-color: #f7f5f3;
+}
+
+body.homepage-bg-2 {
+  background: url("../images/bg/oqtima-bg-2.svg") no-repeat center top;
+  background-size: cover;
+  background-color: #f7f5f3;
+}
+
 .scroll-container {
-  max-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+
+  @include mobile {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  @include tablet {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  @include desktop-lg {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  @include desktop-xl {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  @include desktop-2k {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  @include desktop-5k {
+    max-width: 100%;
+    padding: 0;
+  }
 }
 
 .highlighted {

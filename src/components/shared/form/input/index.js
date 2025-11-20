@@ -14,11 +14,7 @@ const Input = ({
   ...props
 }) => {
   return (
-    <div
-      className={cn("input-wrapper", {
-        "input-wrapper--half-width": isHalfWidth,
-      })}
-    >
+    <div className={cn("input-wrapper")}>
       {title && <span className="input-title">{title}</span>}
       <input
         className="input"

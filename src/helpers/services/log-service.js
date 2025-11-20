@@ -9,8 +9,13 @@ const getEnv = () => {
 };
 
 export const sendLog = (errorData) => {
-  const userAgent = isBrowser() ? navigator.userAgent : undefined;
-  const source = isBrowser() ? window.location.href : undefined;
+  // Only send logs in browser, not during SSR
+  if (!isBrowser() || !API_URL) {
+    return;
+  }
+
+  const userAgent = navigator.userAgent;
+  const source = window.location.href;
   const data = {
     env: getEnv(),
     content: [{ ...errorData, userAgent, source }],

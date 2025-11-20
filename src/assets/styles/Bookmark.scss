@@ -2,121 +2,126 @@
 @import "mixins";
 
 .bookmark {
-   position: fixed;
-   right: -5px;
-   bottom: 250px;
-   z-index: 8;
-   padding: 10px;
+  position: fixed;
+  right: -5px;
+  bottom: 250px;
+  z-index: 8;
+  padding: 10px;
 
-   transition:
-      background-color 0.3s,
-      width 0.3s;
+  transition: background-color 0.3s, width 0.3s;
 
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 
-   .button-link {
-      cursor: pointer;
-      border: none;
-      outline: none;
-      background: transparent;
-      padding: 0;
-      text-decoration: none;
-      color: map-get($colors, "white");
-      background: map-get($colors, "red");
-      display: block;
-      text-align: center;
-      text-transform: uppercase;
-      font-weight: 900;
-      font-size: 12px;
-      border-radius: 31px;
+  .button-link {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 0;
+    text-decoration: none;
+    color: map-get($colors, "white");
+    background: map-get($colors, "red");
+    display: block;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 900;
+    font-size: 12px;
+    border-radius: 31px;
 
-      line-height: 31px;
-      width: 190px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: all ease-in 0.4s;
-      min-width: -webkit-fit-content;
-      min-width: -moz-fit-content;
-      min-width: fit-content;
-      padding-left: 20px;
-      padding-right: 20px;
-   }
-   &-button-link {
-      color: map-get($colors, "white"); // As the text color should always be white for button links in this context
+    line-height: 31px;
+    width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all ease-in 0.4s;
+    min-width: -webkit-fit-content;
+    min-width: -moz-fit-content;
+    min-width: fit-content;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  &-button-link {
+    color: map-get(
+      $colors,
+      "white"
+    ); // As the text color should always be white for button links in this context
 
-      &.button-link--disabled {
-         // ... styles for the disabled state of this specific button link ...
-      }
-   }
+    &.button-link--disabled {
+      // ... styles for the disabled state of this specific button link ...
+    }
+  }
 
-   &.closed {
-      background-color: rgba(204, 204, 204, 0.4);
-      border-radius: 31%;
-      width: 0px;
-      height: 30px;
+  &.closed {
+    background-color: rgba(204, 204, 204, 0.4);
+    border-radius: 31%;
+    width: 0px;
+    height: 30px;
+    display: none;
 
-      &.text {
-         pointer-events: none;
-         opacity: 1; // Override to ensure .text has full opacity
-      }
-   }
-
-   .text {
+    &.text {
       pointer-events: none;
-      width: 16px; /* Adjust as needed */
-      height: 16px; /* Adjust as needed */
-      justify-content: center;
-      align-items: center;
-      color: map-get($colors, "red");
-   }
-   .shaking {
-      animation: shake 0.5s ease-in-out infinite;
-   }
+      opacity: 1; // Override to ensure .text has full opacity
+    }
+  }
 
-   @keyframes shake {
-      0%,
-      100% {
-         transform: translateX(0);
-      }
-      25%,
-      75% {
-         transform: translateX(-2px); /* Adjust the amount of translation */
-      }
-      50% {
-         transform: translateX(2px); /* Adjust the amount of translation */
-      }
-   }
-   &.expanded {
-      // background-color: red;
-      color: map-get($colors, "white"); // Ensuring the text color inside the expanded bookmark is white.
-      width: 120px;
-      border-radius: 20px;
-   }
+  .text {
+    pointer-events: none;
+    width: 16px; /* Adjust as needed */
+    height: 16px; /* Adjust as needed */
+    justify-content: center;
+    align-items: center;
+    color: map-get($colors, "red");
+  }
+  .shaking {
+    animation: shake 0.5s ease-in-out infinite;
+  }
 
-   &.hidden {
-      display: none;
-   }
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25%,
+    75% {
+      transform: translateX(-2px); /* Adjust the amount of translation */
+    }
+    50% {
+      transform: translateX(2px); /* Adjust the amount of translation */
+    }
+  }
+  &.expanded {
+    // background-color: red;
+    color: map-get(
+      $colors,
+      "white"
+    ); // Ensuring the text color inside the expanded bookmark is white.
+    width: 120px;
+    border-radius: 20px;
+  }
 
-   @media (min-width: 769px) {
-      display: none;
-   }
-   @keyframes blink {
-      0% {
-         opacity: 0.2;
-      }
-      50% {
-         opacity: 1;
-      }
-      100% {
-         opacity: 0.2;
-      }
-   }
+  &.hidden {
+    display: none;
+  }
 
-   .blinking {
-      animation: blink 1s infinite;
-   }
+  @media (min-width: 769px) {
+    display: none;
+  }
+  @keyframes blink {
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.2;
+    }
+  }
+
+  .blinking {
+    animation: blink 1s infinite;
+  }
 }

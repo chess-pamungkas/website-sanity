@@ -4,18 +4,18 @@ import cn from "classnames";
 import PropTypes from "prop-types";
 import { modifyInternalLinkForLP } from "../../../helpers/services/modify-internal-links";
 
-const InternalLink = ({ children, className, to, onClick }) => {
+const InternalLink = ({ children, className, to, onClick, ...rest }) => {
   to = modifyInternalLinkForLP(to);
 
   if (String(to).startsWith("http")) {
     return (
-      <a href={to} className={cn(className)} onClick={onClick}>
+      <a href={to} className={cn(className)} onClick={onClick} {...rest}>
         {children}
       </a>
     );
   } else {
     return (
-      <Link to={to} className={cn(className)} onClick={onClick}>
+      <Link to={to} className={cn(className)} onClick={onClick} {...rest}>
         {children}
       </Link>
     );

@@ -1,38 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import cn from "classnames";
+import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
-import TableComponent from "../../shared/table";
+import { useWindowSize } from "../../../helpers/hooks/use-window-size";
+import WithdrawalTableComponent from "../../shared/table/withdrawal-table";
 import {
-  getColumnDeposit,
-  getColumnWithdrawal,
-  getDataDeposit,
-  getDataWithdrawal,
-  WithdrawalDisclaimer,
-  DepositDisclaimer,
+  getWithdrawalDataForFigma,
+  getWithdrawalColumnsForFigma,
+  getDepositDataForFigma,
+  getDepositColumnsForFigma,
 } from "../../../helpers/withdrawal.config";
-import TopMarketPromotion from "../../top-market-promotion";
-import promotion from "../../../assets/images/withdrawal/promotion.svg";
-import HighlightedLocalizationText from "../../shared/highlighted-localization-text";
 import TopMarketLayout from "../../top-market-layout";
 import Tabs from "../../shared/tabs";
-import icon from "../../../assets/images/icon--white.svg";
 import {
   ShowRegistrationPopup,
   PAYMENT_SYSTEMS_FSA,
 } from "../../../helpers/constants";
 import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
-import { setLangParam } from "../../../helpers/services/language-service";
+import ContainerWrapper from "../../../components/shared/container-wrapper";
+import Hero from "../../shared/hero";
+import FastInFastOutContent from "./fastin-fastout";
+import FundingWithdrawalsHeader from "./funding-withdrawals-header";
+import PaymentSystemsContent from "./payment-systems";
+import OurCommunityContent from "../../../components/shared/our-community";
+import {
+  ButtonPrimaryStandard,
+  ButtonSecondaryStandard,
+  ButtonContainer,
+} from "../../shared/reusable-buttons";
+import LanguageContext from "../../../context/language-context";
+import { PORTAL_LANGUAGES_MAP } from "../../../helpers/lang-options.config";
+import { topLevelDomain } from "../../../helpers/entity-resolver";
 
-const FundingPageContent = () => {
+const FundingPageContent = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
+  const { isMobile } = useWindowSize();
   const isRTL = useRtlDirection();
   const [isDepositTab, setIsDepositTab] = useState(true);
-  const langParam = setLangParam(); // Get the language parameter
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
-
-  const handleShowRegistrationPopup = () => {
-    setIsPopupOpen(true); // Open the popup
-  };
+  const { selectedLanguage } = useContext(LanguageContext);
 
   const handleClosePopup = () => {
     setIsPopupOpen(false); // Close the popup
@@ -44,11 +50,15 @@ const FundingPageContent = () => {
       title: t("withdrawal_tabs_title1"),
       onClick: () => setIsDepositTab(true),
       content: (
-        <TableComponent
-          data={getDataDeposit()}
-          columns={getColumnDeposit()}
-          className="withdrawal-table"
-        />
+        <div className="table-container-wrapper">
+          <WithdrawalTableComponent
+            data={getDepositDataForFigma()}
+            columns={getDepositColumnsForFigma()}
+            className="withdrawal-table"
+            isMobile={isMobile}
+            isDeposit={true}
+          />
+        </div>
       ),
     },
     {
@@ -56,102 +66,117 @@ const FundingPageContent = () => {
       title: t("withdrawal_tabs_title2"),
       onClick: () => setIsDepositTab(false),
       content: (
-        <TableComponent
-          data={getDataWithdrawal()}
-          columns={getColumnWithdrawal()}
-          className={cn("withdrawal-table", "withdrawal-table--wide")}
-        />
+        <div className="table-container-wrapper">
+          <WithdrawalTableComponent
+            data={getWithdrawalDataForFigma()}
+            columns={getWithdrawalColumnsForFigma()}
+            className={cn("withdrawal-table", "withdrawal-table--wide")}
+            isMobile={isMobile}
+            isDeposit={false}
+          />
+        </div>
       ),
     },
   ];
 
+  const GetDepositLink = () => {
+    const languageCode = PORTAL_LANGUAGES_MAP[selectedLanguage.id];
+    return `https://portal.oqtima.${topLevelDomain}/funds/deposit?language=${languageCode}`;
+  };
+
+  const GetWithdrawalLink = () => {
+    const languageCode = PORTAL_LANGUAGES_MAP[selectedLanguage.id];
+    return `https://portal.oqtima.${topLevelDomain}/funds/withdrawal?language=${languageCode}`;
+  };
+
   return (
     <>
-      <TopMarketPromotion
-        className={cn("withdrawal-page-promotion", {
-          "split-bg--rtl": isRTL,
-          "withdrawal-page-promotion--rtl": isRTL,
-        })}
-        image={promotion}
-        note={
-          <HighlightedLocalizationText
-            localizationText={t("withdrawal_top-market-promo-note-fsa")}
-            wordsToHighlight={t("withdrawal_top-market-promo-note-accent-fsa")}
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-white"
-          />
-        }
-      >
-        <HighlightedLocalizationText
-          localizationText="withdrawal_top-market-promo-text"
-          wordsToHighlight="withdrawal_top-market-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
-        />
-      </TopMarketPromotion>
-      <TopMarketPromotion
-        className={cn("black-promotion", {
-          "funding-black-promotion--rtl": isRTL,
-        })}
-      >
-        <span className="display-block">
-          <HighlightedLocalizationText
-            localizationText="withdrawal_top-market-promo-text2-1"
-            wordsToHighlight="withdrawal_top-market-promo-text-accent2-1"
-            primaryClassName="highlighted-in-white"
-            accentClassName="highlighted-in-red"
-          />
-        </span>
-        <span className="display-block">
-          <HighlightedLocalizationText
-            localizationText="withdrawal_top-market-promo-text2-2-fsa"
-            wordsToHighlight="withdrawal_top-market-promo-text-accent2-2"
-            primaryClassName="highlighted-in-white"
-            accentClassName="highlighted-in-red"
-          />
-        </span>
-        <span className="display-block">
-          <HighlightedLocalizationText
-            localizationText="withdrawal_top-market-promo-text2-3-fsa"
-            wordsToHighlight="withdrawal_top-market-promo-text-accent2-3"
-            primaryClassName="highlighted-in-white"
-            accentClassName="highlighted-in-red"
-          />
-        </span>
-      </TopMarketPromotion>
-      <TopMarketLayout className="top-market-layout--withdrawal">
-        <Tabs tabList={tabs} images={PAYMENT_SYSTEMS_FSA} />
-      </TopMarketLayout>
-      <section className={cn("notes-block")}>
-        {isDepositTab ? DepositDisclaimer() : WithdrawalDisclaimer()}
-      </section>
-      <TopMarketPromotion
-        className={cn("bottom-promotion", {
-          "bottom-promotion--rtl": isRTL,
-        })}
-        image={icon}
-        btnClassName="button-link--red"
-        btnTitle={t("withdrawal_top-market-promo-btn3")}
-        btnOnClick={handleShowRegistrationPopup}
-      >
-        <HighlightedLocalizationText
-          localizationText="withdrawal_top-market-promo-text3"
-          wordsToHighlight="withdrawal_top-market-promo-text-accent3"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
-        />
-      </TopMarketPromotion>
+      <Hero
+        className={className}
+        isShowHero={isShowHero}
+        heroType="funding-withdrawals"
+        showWarning={false}
+        showHandImage={false}
+        showHeroImage={false}
+        desktopBackground="url(../../assets/images/bg/hero/funding-withdrawals/funding-withdrawals-desktop.svg)"
+        mobileBackground="url(../../assets/images/bg/hero/funding-withdrawals/funding-withdrawals-mobile.svg)"
+      />
 
-      {/* Render the popup */}
-      {isPopupOpen && (
-        <ShowRegistrationPopup
-          isOpen={isPopupOpen}
-          onClose={handleClosePopup}
-          langParam={langParam} // Pass langParam if needed
-        />
-      )}
+      <div className="funding-page">
+        <ContainerWrapper>
+          <FastInFastOutContent />
+          <FundingWithdrawalsHeader />
+          <TopMarketLayout className="top-market-layout--withdrawal">
+            <Tabs tabList={tabs} />
+          </TopMarketLayout>
+          <ButtonContainer>
+            <ButtonPrimaryStandard
+              text={isDepositTab ? t("deposit_button") : t("withdrawal_button")}
+              onClick={() => {
+                const link = isDepositTab
+                  ? GetDepositLink()
+                  : GetWithdrawalLink();
+                window.open(link, "_blank");
+              }}
+            />
+            <ButtonSecondaryStandard
+              text={t("try_demo_account_button")}
+              onClick={() => {
+                setIsPopupOpen(true);
+              }}
+            />
+          </ButtonContainer>
+
+          <PaymentSystemsContent isDepositTab={isDepositTab} />
+        </ContainerWrapper>
+
+        {isMobile ? (
+          <OurCommunityContent
+            customBadgeMessage={t(
+              "funding-withdrawals_our_community_badge_message"
+            )}
+            customTitle={t("funding-withdrawals_our_community_title")}
+            customSubtitle={t("funding-withdrawals_our_community_subtitle")}
+            customPrimaryButton={t(
+              "funding-withdrawals_our_community_primary_button"
+            )}
+            customSecondaryButton={t(
+              "funding-withdrawals_our_community_secondary_button"
+            )}
+          />
+        ) : (
+          <ContainerWrapper>
+            <OurCommunityContent
+              customBadgeMessage={t(
+                "funding-withdrawals_our_community_badge_message"
+              )}
+              customTitle={t("funding-withdrawals_our_community_title")}
+              customSubtitle={t("funding-withdrawals_our_community_subtitle")}
+              customPrimaryButton={t(
+                "funding-withdrawals_our_community_primary_button"
+              )}
+              customSecondaryButton={t(
+                "funding-withdrawals_our_community_secondary_button"
+              )}
+            />
+          </ContainerWrapper>
+        )}
+
+        {/* Render the popup */}
+        {isPopupOpen && (
+          <ShowRegistrationPopup
+            isOpen={isPopupOpen}
+            onClose={handleClosePopup}
+          />
+        )}
+      </div>
     </>
   );
+};
+
+FundingPageContent.propTypes = {
+  className: PropTypes.string,
+  isShowHero: PropTypes.bool,
 };
 
 export default FundingPageContent;

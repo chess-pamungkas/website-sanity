@@ -17,19 +17,19 @@
 
 .input-title {
   margin: 0 0 15px;
-  color: map-get($colors, "black-secondary");
-  font-weight: map-get($font-weight, "black");
-  font-size: 14px;
-  line-height: 18px;
+  color: map-get($colors, "black");
+  font-weight: map-get($font-weight, "light");
+  font-size: 16px;
+  line-height: 26px;
 
   @include tablet {
     font-size: 16px;
-    line-height: 20px;
+    line-height: 26px;
   }
-  @include desktop-lg {
-    font-size: 18px;
-    line-height: 22px;
-  }
+  // @include desktop-lg {
+  //   font-size: 18px;
+  //   line-height: 22px;
+  // }
 }
 
 .input {

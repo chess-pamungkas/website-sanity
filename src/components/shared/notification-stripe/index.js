@@ -109,46 +109,54 @@ const NotificationsContainer = ({ className, setSectionOptions }) => {
   ]);
 
   useEffect(() => {
-    // Safe livechat handling with proper error checking
-    const handleLivechatElements = () => {
-      try {
-        // Handle livechat positioning for risk warning notification
-        if (isRiskWarningNotification && isBrowser()) {
-          let bottom;
-          switch (true) {
-            case isMobile:
-              bottom = "135px";
-              break;
-            case isMD:
-              bottom = "110px";
-              break;
-            default:
-              bottom = "10px";
-          }
+    if (isMobile) {
+      let livechatindex = document.getElementById(
+        "convrs-chat-channel-container"
+      );
 
-          const livechat = document.getElementById(
-            "convrs-chat-channel-container"
-          );
-          if (livechat && livechat.style) {
-            livechat.style.bottom = bottom;
-            // Ensure z-index is set properly
-            livechat.style.setProperty("z-index", "21");
+      if (isBrowser()) {
+        let livechatisMobile = document.getElementById(
+          "convrs-chat-channel-container"
+        );
+
+        const path = window.location.pathname;
+        const pageMt5 = path.endsWith("/mt5-webtrader/");
+        const pageMt4 = path.endsWith("/mt4-webtrader/");
+        if (pageMt5 && livechatisMobile) {
+          livechatisMobile.style.display = "none";
+          if (isRiskWarningNotification) {
+            setIsHidden(true);
           }
         }
-      } catch (error) {
-        console.warn("Error handling livechat elements:", error);
+        if (pageMt4 && livechatisMobile) {
+          livechatisMobile.style.display = "none";
+        }
       }
-    };
 
-    // Run immediately and on DOM changes
-    handleLivechatElements();
+      if (livechatindex) {
+        livechatindex.style.setProperty("z-index", "21");
+      }
+    }
+    if (isRiskWarningNotification) {
+      let bottom;
 
-    // Also run after a delay to catch dynamically loaded elements
-    const timeoutId = setTimeout(handleLivechatElements, 1500);
+      switch (true) {
+        case isMobile:
+          bottom = "135px";
+          break;
+        case isMD:
+          bottom = "110px";
+          break;
+        default:
+          bottom = "10px";
+      }
 
-    return () => {
-      clearTimeout(timeoutId);
-    };
+      let livechat = document.getElementById("convrs-chat-channel-container");
+
+      if (livechat) {
+        livechat.style.bottom = bottom;
+      }
+    }
   }, [isRiskWarningNotification, isMobile, isMD]);
 
   return (

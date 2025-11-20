@@ -1,0 +1,461 @@
+@import "vars";
+@import "mixins";
+
+.cost-swap-rate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 75px 0 0 0;
+  gap: 20px;
+
+  @include mobile {
+    padding: 65px 0 0 0;
+    gap: 20px;
+  }
+
+  // Header Section
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1166px;
+    gap: 10px;
+
+    @include mobile {
+      max-width: 355px;
+      gap: 12px;
+    }
+  }
+
+  // Badge
+  &__badge {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 4px 4px 4px 4px;
+      background: rgba(255, 68, 0, 0.15);
+      border: 1px solid rgba(255, 68, 0, 0.15);
+      border-radius: 16px;
+      width: fit-content;
+      height: 26px;
+      margin: 0 auto;
+
+      img {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+
+      .badge-label {
+        font-family: "Sofia Pro", Arial, sans-serif;
+        font-style: normal;
+        font-weight: map-get($font-weight, "medium");
+        font-size: 12px;
+        line-height: 20px;
+        color: #000000;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  // Title
+  &__title {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    letter-spacing: -0.02em;
+    text-align: center;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+  }
+
+  // Subtitle
+  &__subtitle {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "light");
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: 0.2px;
+    opacity: 0.7;
+    color: #000000;
+    text-align: center;
+    margin: 0;
+    width: 666px;
+
+    @include mobile {
+      font-weight: map-get($font-weight, "regular");
+      width: 100%;
+    }
+  }
+
+  // Main Card
+  &__card {
+    box-sizing: border-box;
+    position: relative;
+    width: 100%;
+    max-width: 1240px;
+    height: 220px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: transparent;
+    // border: 1px solid rgba(255, 68, 0, 0.25);
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+
+    @include mobile {
+      max-width: 100%;
+      width: 100%;
+      height: 310px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      align-self: stretch;
+    }
+
+    @include tablet {
+      height: 310px;
+    }
+
+    @include desktop-lg {
+      height: 220px;
+    }
+  }
+
+  // Card Content
+  &__card-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px;
+    gap: 16px;
+    width: 1240px;
+    height: 220px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    overflow: hidden;
+
+    @include mobile {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 10px;
+      gap: 4px;
+      width: 100%;
+      height: 310px;
+    }
+
+    @include tablet {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 10px;
+      gap: 4px;
+      width: 100%;
+      height: 310px;
+    }
+
+    @include desktop-lg {
+      flex-direction: row;
+      width: 100%;
+      flex-direction: row;
+      align-items: center;
+      padding: 20px;
+      gap: 16px;
+      width: 100%;
+      height: 220px;
+      box-sizing: border-box;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    @include desktop-xl {
+      flex-direction: row;
+      width: 100%;
+      flex-direction: row;
+      align-items: center;
+      padding: 20px;
+      gap: 16px;
+      width: 1240px;
+      height: 220px;
+      box-sizing: border-box;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+  }
+
+  // Card Content Background
+  &__card-content-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    border-radius: 12px;
+    overflow: visible;
+
+    .desktop-bg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      @include mobile {
+        display: none;
+      }
+    }
+
+    .mobile-bg {
+      display: none;
+      // width: 100%;
+      // height: 100%;
+      object-fit: cover;
+
+      @include mobile {
+        display: block;
+      }
+    }
+  }
+
+  // Left Section
+  &__card-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px;
+    gap: 6px;
+    width: 454px;
+    height: 180px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    position: relative;
+    z-index: 2;
+
+    @include mobile {
+      width: 100%;
+      height: 176px;
+      padding: 12px 10px;
+      gap: 0;
+      margin-top: 10px;
+    }
+
+    @include tablet {
+      width: 100%;
+      height: 180px;
+    }
+
+    @include desktop-lg {
+      width: 454px;
+      height: 180px;
+    }
+
+    @include desktop-xl {
+      width: 454px;
+      height: 180px;
+    }
+  }
+
+  // Card Left Background
+  &__card-left-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .desktop-bg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      @include mobile {
+        display: none;
+      }
+    }
+
+    .mobile-bg {
+      display: none;
+      // width: 100%;
+      // height: 100%;
+      object-fit: cover;
+
+      @include mobile {
+        display: block;
+      }
+    }
+  }
+
+  // Icon
+  &__icon {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+
+    @include mobile {
+      width: 48px;
+      height: 48px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  // Card Text
+  &__card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+
+    @include mobile {
+      gap: 6px;
+    }
+  }
+
+  // Card Title
+  &__card-title {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0;
+
+    @include mobile {
+      width: 100%;
+    }
+
+    @include tablet {
+      font-size: 22px;
+    }
+  }
+
+  // Card Description
+  &__card-description {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "light");
+    font-size: 16px;
+    line-height: 140%;
+    letter-spacing: 0.2px;
+    color: map-get($colors, "black");
+    margin: 0;
+    width: 100%;
+    opacity: 0.7;
+
+    @include mobile {
+      line-height: 140%;
+      width: 100%;
+      font-size: 14px;
+    }
+
+    @include tablet {
+      font-size: 16px;
+    }
+  }
+
+  // Right Section - Formula
+  &__card-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      justify-content: flex-start;
+    }
+
+    @include tablet {
+      font-size: 16px;
+    }
+  }
+
+  // Formula
+  &__formula {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 30px;
+    line-height: 120%;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+    width: auto;
+
+    @include mobile {
+      text-align: left;
+      font-size: 16px;
+      font-weight: map-get($font-weight, "regular");
+      width: 100%;
+    }
+
+    @include tablet {
+      font-size: 22px;
+    }
+
+    @include desktop-lg {
+      font-size: 30px;
+    }
+  }
+}

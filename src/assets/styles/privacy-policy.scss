@@ -2,23 +2,23 @@
 @import "mixins";
 
 .privacy-policy {
-  padding-top: 61px;
-  padding-bottom: 145px;
+  padding-top: 100px;
+  padding-bottom: 25px;
   @include content-alignment(0);
 
   @include tablet {
-    padding-top: 104px;
-    padding-bottom: 200px;
+    padding-top: 100px;
+    padding-bottom: 50px;
   }
 
   @include desktop-lg {
-    padding-top: 154px;
-    padding-bottom: 103px;
+    padding-top: 100px;
+    padding-bottom: 50px;
   }
 
   @include desktop-xl {
-    padding-top: 195px;
-    padding-bottom: 145px;
+    padding-top: 100px;
+    padding-bottom: 50px;
   }
 
   &__wrapper {

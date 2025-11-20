@@ -1,4 +1,3 @@
-import { navigate } from "gatsby";
 import { isBrowser } from "./is-browser";
 import { CAMPAIGN_PARAMS } from "./marketing-service";
 
@@ -15,16 +14,55 @@ export const getIBParamsAndSetToStorage = () => {
     const urlParams = getParamsFromUrl();
     const r_code = urlParams.get(IB_PARAMS.r_code);
 
-    // Check if the URL parameter starts with `?${IB_PARAMS.r_code}=`
-    if (window.location.search.startsWith(`?${IB_PARAMS.r_code}=`)) {
-      if (r_code) {
-        localStorage.setItem(IB_PARAMS.r_code, r_code);
-        localStorage.removeItem(CAMPAIGN_PARAMS.campaign_code);
-      }
-    }
+    // Check if r_code parameter exists in URL (regardless of position)
+    if (r_code) {
+      // Save to localStorage first
+      localStorage.setItem(IB_PARAMS.r_code, r_code);
+      localStorage.removeItem(CAMPAIGN_PARAMS.campaign_code);
 
-    const { pathname } = window.location;
-    navigate(pathname);
+      // Remove r_code parameter from URL immediately and forcefully
+      const cleanUrlFromParams = () => {
+        const currentUrl = new URL(window.location.href);
+
+        if (currentUrl.searchParams.has(IB_PARAMS.r_code)) {
+          // Remove r_code parameter
+          currentUrl.searchParams.delete(IB_PARAMS.r_code);
+
+          // Build clean URL - preserve pathname, other params, and hash
+          let cleanUrl = currentUrl.pathname;
+
+          // Add remaining query parameters if any
+          const remainingParams = currentUrl.searchParams.toString();
+          if (remainingParams) {
+            cleanUrl += `?${remainingParams}`;
+          }
+
+          // Add hash if exists
+          if (currentUrl.hash) {
+            cleanUrl += currentUrl.hash;
+          }
+
+          // Update URL immediately
+          window.history.replaceState(null, "", cleanUrl);
+
+          return true; // URL was cleaned
+        }
+        return false; // No r_code found
+      };
+
+      // Clean URL immediately
+      cleanUrlFromParams();
+
+      // Also clean after a short delay to catch any late URL manipulations
+      setTimeout(() => {
+        cleanUrlFromParams();
+      }, 10);
+
+      // And clean again after a longer delay to be absolutely sure
+      setTimeout(() => {
+        cleanUrlFromParams();
+      }, 100);
+    }
   }
 };
 

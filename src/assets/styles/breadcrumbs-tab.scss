@@ -1,0 +1,255 @@
+@import "vars";
+@import "mixins";
+
+.breadcrumbs-tab {
+  margin: 0 auto;
+  @include mobile {
+    // display: none;
+    max-width: 100%;
+    padding-left: $padding-sm;
+    padding-right: $padding-sm;
+    padding-top: 100px;
+    padding-bottom: 30px;
+  }
+
+  @include tablet {
+    max-width: 720px;
+    padding-top: 100px;
+    padding-bottom: 30px;
+  }
+
+  @include desktop-lg {
+    max-width: 980px;
+    padding: 40px 0;
+    margin-top: 75px; /* Reduced spacing for better visual balance */
+  }
+
+  @include desktop-xl {
+    max-width: 1280px;
+    margin-top: 75px; /* Reduced spacing for better visual balance */
+  }
+
+  @include desktop-2k {
+    max-width: 1440px;
+    margin-top: 75px; /* Reduced spacing for better visual balance */
+  }
+
+  @include desktop-5k {
+    max-width: 1920px;
+    margin-top: 75px; /* Reduced spacing for better visual balance */
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    @include mobile {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 0;
+    }
+
+    @include tablet {
+      padding: 0;
+    }
+
+    @include desktop-lg {
+      padding: 0;
+    }
+
+    @include desktop-xl {
+      padding: 0;
+    }
+
+    @include desktop-2k {
+      padding: 0;
+    }
+
+    @include desktop-5k {
+      padding: 0;
+    }
+  }
+
+  &__breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 20px;
+
+    @include mobile {
+      margin: 0;
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+
+  &__home-link {
+    color: map-get($colors, "red");
+    text-decoration: underline;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: map-get($font-weight, "semibold");
+    transition: color 0.3s ease;
+
+    @include mobile {
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+
+  &__separator {
+    color: #000000;
+    font-weight: map-get($font-weight, "regular");
+  }
+
+  &__current-page {
+    color: map-get($colors, "red");
+    text-decoration: underline;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: map-get($font-weight, "bold");
+    transition: color 0.3s ease;
+
+    @include mobile {
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+    @include mobile {
+      display: none;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    @include tablet {
+      display: none;
+      gap: 16px;
+    }
+
+    @include desktop-lg {
+      display: flex;
+    }
+  }
+
+  &__tab {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 20px;
+    gap: 10px;
+    width: 84px;
+    height: 34px;
+    background: #ffffff;
+    border-radius: 8px;
+    color: #000000;
+    text-decoration: none;
+    font-family: "Sofia Pro", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+    /* leading-trim and text-edge are draft CSS properties */
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    @include mobile {
+      padding: 10px 16px;
+      font-size: 12px;
+      line-height: 20px;
+      width: auto;
+      min-width: 70px;
+      height: 32px;
+      flex: 0 0 auto;
+    }
+
+    @include tablet {
+      padding: 11px 18px;
+      font-size: 13px;
+      line-height: 22px;
+      width: auto;
+      min-width: 80px;
+      height: 33px;
+    }
+
+    &.breadcrumbs-tab__tab--active {
+      color: #fff;
+      border-color: #ff4400;
+      background: #ff4400;
+      box-shadow: 0 2px 6px rgba(255, 68, 0, 0.2);
+
+      span {
+        color: #fff !important;
+      }
+
+      &:hover {
+        border-color: #ff4400;
+        background: #ff4400;
+        color: #fff !important;
+      }
+    }
+
+    &:hover {
+      color: map-get($colors, "black");
+      background: rgba(255, 68, 0, 0.15);
+      border: 1px solid rgba(255, 68, 0, 0.15);
+      box-shadow: none;
+      transition: background 0.2s, border 0.2s, color 0.2s;
+
+      span {
+        color: map-get($colors, "black") !important;
+      }
+    }
+
+    /* Text styling inside tab */
+    span {
+      font-weight: map-get($font-weight, "medium");
+      font-size: 14px;
+      line-height: 24px;
+      color: map-get($colors, "black");
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+      text-align: center;
+      transition: color 0.3s ease;
+
+      @include mobile {
+        width: auto;
+        height: auto;
+        font-size: 12px;
+        line-height: 20px;
+      }
+
+      @include tablet {
+        width: auto;
+        height: auto;
+        font-size: 13px;
+        line-height: 22px;
+      }
+    }
+
+    /* Active tab text styling */
+    &.breadcrumbs-tab__tab--active span {
+      color: #fff !important;
+    }
+  }
+}

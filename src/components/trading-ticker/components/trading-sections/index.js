@@ -3,7 +3,7 @@ import cn from "classnames";
 import PropTypes from "prop-types";
 import TradingSectionTitle from "../trading-section-title";
 import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
-import Dropdown from "../../../shared/dropdown";
+import TradingSectionsMobileDropdown from "../trading-sections-mobile-dropdown";
 
 const TradingSections = ({
   className,
@@ -15,7 +15,7 @@ const TradingSections = ({
   const { isTablet, isMobile } = useWindowSize();
 
   return (
-    <div className={cn("trading-sections-wrapper", className)}>
+    <div className={cn("trading-sections-wrapper container", className)}>
       {title ? (
         <div className="trading-sections">
           <h4 className="trading-sections__header">{title}</h4>
@@ -23,21 +23,10 @@ const TradingSections = ({
       ) : (
         <div className="trading-sections">
           {isMobile ? (
-            <Dropdown
-              selectedItem={selectedSection}
-              items={tradingSection.map((item) => {
-                return {
-                  title: item.title,
-                  value: item.id,
-                };
-              })}
-              setSelectedItem={(item) => {
-                setSelectedSection({
-                  title: item.title,
-                  id: item.value,
-                });
-              }}
-              isDropdownShown
+            <TradingSectionsMobileDropdown
+              selectedSection={selectedSection}
+              setSelectedSection={setSelectedSection}
+              tradingSection={tradingSection}
             />
           ) : (
             tradingSection.map((section) => (

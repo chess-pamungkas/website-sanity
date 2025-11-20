@@ -3,124 +3,593 @@
 
 .system-info {
   position: relative;
+  overflow: visible;
+  color: map-get($colors, "white");
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 128px 20px 99px;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding-top: 80px;
+  z-index: 2;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-bottom: 150px;
+  box-sizing: border-box;
+  align-items: center;
+
+  @include mobile {
+    height: 953px;
+    border-radius: 20px;
+    padding-top: 73px;
+    margin-top: 0;
+    margin-bottom: 125px;
+    overflow: visible;
+  }
 
   @include tablet {
-    padding: 90px 0 67px;
-    background: url("../../assets/images/system-info/bg-md.svg") no-repeat
-      bottom;
+    height: 555px;
+    border-radius: 24px;
+    padding-top: 70px;
+    padding-bottom: 0;
   }
 
   @include desktop-lg {
-    padding: 200px 0 60px;
-    background: url("../../assets/images/system-info/bg-lg.svg") no-repeat
-      bottom;
+    height: 920px;
+    border-radius: 24px;
+    padding-top: 83px;
+    padding-bottom: 0;
   }
 
   @include desktop-xl {
-    padding: 200px 0 85px;
-    background: url("../../assets/images/system-info/bg-xl.svg") no-repeat
-      bottom;
+    height: 920px;
+    padding-top: 83px;
   }
 
-  &__img-container {
-    margin-bottom: 60px;
+  @include desktop-2k {
+    height: 920px;
+    padding-top: 83px;
+  }
+
+  @include desktop-5k {
+    height: 920px;
+    padding-top: 83px;
+  }
+
+  &__hero-container {
+    width: 100%;
+    height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    border-radius: 24px;
+    background: #000000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+
+    @include mobile {
+      width: 393px;
+      max-width: 393px;
+      height: 953px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 73px;
+      margin: 0 auto;
+      border-radius: 20px;
+    }
+
+    @include tablet {
+      width: 768px;
+      max-width: 768px;
+      height: 555px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 73px;
+      margin: 0 auto;
+      border-radius: 24px;
+    }
 
     @include desktop-lg {
-      margin-bottom: 25px;
+      width: calc(100vw - 20px);
+      max-width: 1200px;
+      height: 920px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
+      border-radius: 24px;
     }
 
     @include desktop-xl {
+      width: calc(100vw - 120px);
+      max-width: 1400px;
+      height: 920px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
+    }
+
+    @include desktop-2k {
+      width: calc(100vw - 160px);
+      max-width: 1600px;
+      height: 920px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
+    }
+
+    @include desktop-5k {
+      width: calc(100vw - 200px);
+      max-width: 2000px;
+      height: 920px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
+    }
+  }
+
+  &__hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    border-radius: 24px;
+    z-index: 1;
+    overflow: hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    @include mobile {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      border-radius: 20px;
+      background: url("../images/bg/404/bg-404-mobile.svg") no-repeat center
+        center;
+      background-size: cover;
+      overflow: hidden;
+      border-radius: 20px;
+      background-color: transparent;
+    }
+
+    @include tablet {
+      background: url("../images/bg/404/bg-404-desktop.svg") no-repeat center
+        center;
+      background-size: cover;
+      background-color: transparent;
+    }
+
+    @include desktop-lg {
+      background: url("../images/bg/404/bg-404-desktop.svg") no-repeat center
+        center;
+      background-size: cover;
+      background-color: transparent;
+    }
+
+    @include desktop-xl {
+      background: url("../images/bg/404/bg-404-desktop.svg") no-repeat center
+        center;
+      background-size: cover;
+      background-color: transparent;
+    }
+
+    @include desktop-2k {
+      background: url("../images/bg/404/bg-404-desktop.svg") no-repeat center
+        center;
+      background-size: cover;
+      background-color: transparent;
+    }
+
+    @include desktop-5k {
+      background: url("../images/bg/404/bg-404-desktop.svg") no-repeat center
+        center;
+      background-size: cover;
+      background-color: transparent;
+    }
+  }
+
+  &__content-container {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 100%;
+    flex: 1;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 100px;
+
+    @include mobile {
+      padding-top: 250px;
+    }
+
+    @include tablet {
+      padding-top: 100px;
+      gap: 16px;
+    }
+
+    @include desktop-lg {
+      max-width: 980px;
+      gap: 16px;
+      padding-top: 150px;
+    }
+
+    @include desktop-xl {
+      max-width: 1280px;
+      padding-top: 150px;
+    }
+
+    @include desktop-2k {
+      max-width: 1440px;
+      padding-top: 150px;
+    }
+
+    @include desktop-5k {
+      max-width: 1920px;
+      padding-top: 100px;
+    }
+  }
+
+  &__badge-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #0f0f0f;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    padding: 4px 10px;
+    width: fit-content;
+    box-sizing: border-box;
+    height: 28px;
+    margin-bottom: 400px;
+
+    @include mobile {
+      max-width: fit-content;
+      margin-bottom: 30px;
+    }
+
+    @include tablet {
+      margin-bottom: 35px;
+    }
+
+    @include desktop-lg {
+      margin-bottom: 50px;
+    }
+  }
+
+  &__badge {
+    background: rgba(39, 39, 39, 1);
+    border-radius: 16px;
+    padding: 2px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__badge-text {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: map-get($font-weight, "medium");
+    line-height: 20px;
+  }
+
+  &__badge-content {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    max-width: fit-content;
+  }
+
+  &__badge-message {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: map-get($font-weight, "medium");
+    line-height: 20px;
+
+    @include mobile {
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+
+  &__badge-arrow {
+    flex-shrink: 0;
+    align-items: center;
+    margin-top: 5px;
+    margin-left: 5px;
+    z-index: 1;
+    position: relative;
+  }
+
+  &__number-container {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+
+    @include mobile {
       margin-bottom: 30px;
     }
   }
 
-  &__img {
-    max-width: 300px;
+  &__number-image {
+    width: 593px;
+    height: 295px;
+    object-fit: contain;
+    filter: blur(4px);
+    opacity: 0.95;
 
     @include tablet {
-      max-width: 415px;
+      width: 400px;
+      height: 200px;
+      filter: blur(3px);
+    }
+
+    @include mobile {
+      width: 273px;
+      height: 136px;
+      filter: blur(1.84px);
+    }
+  }
+
+  &__404-text-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+
+    @include mobile {
+      margin-bottom: 0;
+    }
+
+    @include tablet {
+      margin-bottom: 35px;
+    }
+  }
+
+  &__404-text {
+    max-width: 100%;
+    height: auto;
+    display: block;
+
+    &--desktop {
+      display: block;
+
+      @include mobile {
+        display: none;
+      }
+
+      @include tablet {
+        display: none;
+      }
+
+      @include desktop-lg {
+        display: block;
+      }
+    }
+
+    &--mobile {
+      display: none;
+
+      @include mobile {
+        display: block;
+      }
+
+      @include tablet {
+        display: block;
+      }
+
+      @include desktop-lg {
+        display: none;
+      }
+    }
+  }
+
+  &__subheading {
+    position: absolute;
+    width: 587px;
+    height: 58px;
+    left: calc(50% - 587px / 2 + 0.5px);
+    top: 600px;
+    font-family: "Sofia Pro", sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 160%;
+    text-align: center;
+    letter-spacing: 0.2px;
+    color: #ffffff;
+    opacity: 0.7;
+    margin: 0;
+
+    @include mobile {
+      width: 285px;
+      height: 72px;
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 24px;
+      left: auto;
+      top: 530px;
+      margin: 0 auto;
+    }
+
+    @include tablet {
+      top: 350px;
+      width: 500px;
+      left: calc(50% - 500px / 2);
     }
 
     @include desktop-lg {
-      max-width: 280px;
+      top: 600px;
+    }
+  }
+
+  &__button-container {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    top: 700px;
+    left: 0;
+    right: 0;
+    z-index: 5;
+
+    @include mobile {
+      top: 630px;
+      margin: 20px auto 40px auto;
     }
 
-    @include desktop-xl {
+    @include tablet {
+      top: 450px;
+    }
+
+    @include desktop-lg {
+      top: 700px;
+    }
+  }
+
+  &__button-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    max-width: 349px; // Match market-item-advantages-list button width
+
+    @include mobile {
+      width: 100%;
       max-width: 100%;
     }
   }
 
-  &__title,
-  &__subtitle {
-    font-weight: map-get($font-weight, "black");
-    margin-bottom: 43px;
+  &__return-btn {
+    // Match market-item-advantages-list__learn-more-btn styling
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 14px 24px !important;
+    gap: 10px !important;
+    width: 100% !important;
+    height: 51px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+    color: map-get(
+      $colors,
+      "black"
+    ) !important; // White text for dark background
+    font-family: "Sofia Pro" !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+    line-height: 23px !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    flex: none !important;
+    order: 3 !important;
+    align-self: stretch !important;
+    flex-grow: 0 !important;
+    z-index: 3 !important;
+    cursor: pointer !important;
+    outline: none !important;
 
-    @include tablet {
-      margin-bottom: 2px;
+    @include mobile {
+      width: 100% !important;
+      height: 48px !important;
+      font-size: 20px !important;
+      line-height: 22px !important;
+      padding: 12px 20px !important;
     }
 
-    @include desktop-lg {
-      margin-bottom: 28px;
+    .button-text {
+      width: auto !important;
+      height: 23px !important;
+      font-family: "Sofia Pro" !important;
+      font-style: normal !important;
+      font-weight: map-get($font-weight, "semibold") !important;
+      font-size: 20px !important;
+      color: map-get(
+        $colors,
+        "black"
+      ) !important; // White text for dark background
+      flex: none !important;
+      order: 0 !important;
+      flex-grow: 0 !important;
+      transition: color 0.3s !important;
+
+      @include mobile {
+        width: auto !important;
+        height: auto !important;
+        font-size: 20px !important;
+        line-height: 22px !important;
+      }
     }
 
-    @include desktop-xl {
-      margin-bottom: 30px;
+    .button-arrow {
+      display: none !important;
+      width: 9.33px !important;
+      height: 9.33px !important;
+      flex: none !important;
+      order: 1 !important;
+      flex-grow: 0 !important;
+      transition: all 0.3s !important;
+    }
+
+    &:hover,
+    &:focus {
+      background: #ff4400 !important;
+      color: map-get($colors, "black") !important;
+
+      .button-text {
+        color: map-get($colors, "black") !important;
+      }
+
+      .button-arrow {
+        display: flex !important;
+        width: 24px !important;
+        color: map-get($colors, "black") !important;
+      }
+    }
+
+    &:active {
+      transform: translateY(0) !important;
     }
   }
 
-  &__title {
-    color: map-get($colors, "red");
-
-    font-size: 34px;
-    line-height: 42px;
-
-    @include tablet {
-      font-size: 60px;
-      line-height: 75px;
+  // RTL Support
+  &--rtl {
+    .system-info__badge-content {
+      flex-direction: row-reverse;
     }
 
-    @include desktop-lg {
-      font-size: 40px;
-      line-height: 50px;
+    .system-info__go-back-btn {
+      &::after {
+        content: "←";
+      }
     }
-
-    @include desktop-xl {
-      font-size: 60px;
-      line-height: 75px;
-    }
-  }
-
-  &__subtitle {
-    text-align: center;
-    font-size: 20px;
-    line-height: 25px;
-
-    @include tablet {
-      margin-bottom: 28px;
-      font-size: 36px;
-      line-height: 45px;
-      max-width: 534px;
-    }
-
-    @include desktop-lg {
-      font-size: 30px;
-      line-height: 37px;
-      max-width: 490px;
-    }
-
-    @include desktop-xl {
-      font-size: 36px;
-      line-height: 45px;
-      max-width: 996px;
-    }
-  }
-
-  &__go-back-btn {
-    border: 2px solid map-get($colors, "red");
-    border-radius: $border-radius-default;
   }
 }

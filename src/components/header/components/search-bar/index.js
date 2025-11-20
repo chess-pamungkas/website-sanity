@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useRef,
-  useState,
-  useEffect,
-} from "react";
+import React, { useCallback, useContext, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import cn from "classnames";
 import { navigate } from "gatsby";

@@ -4,12 +4,13 @@ import { useTranslationWithVariables } from "../helpers/hooks/use-translation-wi
 import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import Mt5PageContent from "../components/pages-content/mt5-page-content";
+import PageBackground from "../components/shared/page-background";
 
 const MT5Page = () => {
   const { t } = useTranslationWithVariables();
 
   return (
-    <>
+    <PageBackground backgroundType="homepage-bg-1">
       <Seo
         fsaTitle={t("page-mt5-title")}
         fsaDescription={t("page-mt5-description")}
@@ -17,7 +18,7 @@ const MT5Page = () => {
         cysecDescription={t("page-mt5-description")}
       />
       <Mt5PageContent />
-    </>
+    </PageBackground>
   );
 };
 

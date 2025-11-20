@@ -1,0 +1,1155 @@
+@import "vars";
+@import "mixins";
+
+.cost-calculator-content {
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 64px 0 80px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: stretch;
+  gap: 48px;
+
+  @include tablet {
+    flex-direction: column;
+    padding: 16px 0 0;
+    gap: 48px;
+    position: relative;
+    z-index: 1;
+    clear: both;
+    overflow: visible;
+    margin-bottom: 0;
+  }
+
+  @include desktop-lg {
+    flex-direction: row;
+    padding: 50px 0;
+    gap: 12px;
+  }
+
+  @include desktop-xl {
+    padding: 64px 0 80px 0;
+    gap: 12px;
+  }
+
+  @include desktop-2k {
+    padding: 64px 0 80px 0;
+    gap: 160px;
+  }
+
+  @include desktop-5k {
+    padding: 64px 0 80px 0;
+    gap: 630px;
+  }
+
+  &__left {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    width: 30%;
+    max-height: 341px;
+    // gap: 40px;
+    padding: 16px 0;
+
+    @include mobile {
+      width: 100%;
+    }
+
+    @include tablet {
+      width: 100%;
+    }
+
+    @include desktop-lg {
+      min-width: 450px;
+    }
+
+    @include desktop-xl {
+      width: 30%;
+      min-width: 450px;
+      max-width: 500px !important;
+    }
+  }
+
+  &__badge-row {
+    display: flex;
+    align-items: center;
+    width: 70%;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+
+  &__badge {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 10px;
+    width: fit-content;
+    height: 26px;
+    background: linear-gradient(
+        0deg,
+        rgba(255, 68, 0, 0.15),
+        rgba(255, 68, 0, 0.15)
+      ),
+      #fff;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    mix-blend-mode: normal;
+    font-style: normal;
+    font-weight: map-get($font-weight, "medium");
+    font-size: 14px;
+    line-height: 20px;
+    color: map-get($colors, "black");
+    > img {
+      width: 14px;
+      height: 14px;
+      margin-right: 8px;
+    }
+
+    @include mobile {
+      font-size: 12px;
+    }
+  }
+
+  &__title {
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: #000;
+    padding-bottom: 16px;
+
+    @include desktop-lg {
+      font-size: 42px;
+    }
+
+    @include desktop-xl {
+      font-size: 52px;
+    }
+
+    span {
+      color: inherit;
+      background: inherit;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  &__subtitle {
+    width: fit-content;
+    height: 56px;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 28px;
+    color: #000;
+    opacity: 0.7;
+
+    @include desktop-lg {
+      font-size: 16px;
+    }
+
+    @include desktop-xl {
+      font-size: 18px;
+    }
+  }
+
+  &__button-group {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  &__right {
+    flex: 2 1 0;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: flex-start;
+    min-width: 0;
+    max-width: 100%;
+
+    @include mobile {
+      margin-top: 14px;
+    }
+
+    @include desktop-lg {
+      // max-width: 560px;
+    }
+
+    @include desktop-xl {
+      width: 48%;
+    }
+  }
+
+  /**
+   * Cost Calculator Card - Desktop & Mobile Figma Spec
+   */
+  &__card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 24px 20px;
+    gap: 0;
+    width: 335px;
+    height: auto;
+    background: radial-gradient(
+        80.3% 78.89% at 50.15% 110.7%,
+        rgba(255, 68, 0, 0.09) 0%,
+        rgba(255, 255, 255, 0.09) 100%
+      ),
+      #fff;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 12px;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+
+    @include tablet {
+      padding: 10px;
+    }
+
+    @include desktop-lg {
+      width: 195px !important;
+      padding: 8px;
+    }
+    @include desktop-xl {
+      width: 335px !important;
+      padding: 24px 20px;
+    }
+
+    > * {
+      margin: 0;
+    }
+
+    &-title {
+      font-style: normal;
+      font-weight: map-get($font-weight, "semibold");
+      font-size: 22px;
+      line-height: 28px;
+      letter-spacing: -0.02em;
+      background: linear-gradient(
+          102.31deg,
+          rgba(0, 0, 0, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #000000;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: #000;
+      text-align: left;
+      margin-bottom: 16px;
+
+      @include mobile {
+        margin-bottom: 40px;
+      }
+
+      @include desktop-lg {
+        font-size: 16px;
+      }
+
+      @include desktop-xl {
+        font-size: 22px;
+      }
+    }
+
+    &-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0;
+      gap: 28px;
+      margin: 0 auto;
+      width: 295px;
+      height: 226px;
+      flex: none;
+      order: 1;
+      align-self: stretch;
+      flex-grow: 0;
+    }
+
+    &-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0;
+      gap: 30px;
+      width: 295px;
+      height: 29px;
+      flex: none;
+      order: 0;
+      align-self: stretch;
+      flex-grow: 0;
+    }
+
+    &-label {
+      margin: 0 auto;
+      width: 123px;
+      height: 28px;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 28px;
+      letter-spacing: 0.2px;
+      color: #000;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+      text-align: left;
+    }
+
+    &-value-container {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      gap: 8.33px;
+      width: 75px;
+      height: 29px;
+      background: rgba(255, 68, 0, 0.05);
+      border: 0.833333px solid rgba(255, 68, 0, 0.5);
+      border-radius: 6.66667px;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+    }
+
+    &-value {
+      width: 55px;
+      height: 9px;
+      font-style: normal;
+      font-weight: 800;
+      font-size: 13.3333px;
+      line-height: 23px;
+      letter-spacing: 0.166667px;
+      color: #000;
+      text-align: center;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+
+    &-slider {
+      width: 295px;
+      height: 24px;
+      margin: 0 auto;
+      // Custom slider styling (override shared slider if needed)
+      .slider-track {
+        height: 6px;
+        background: rgba(255, 68, 0, 0.15);
+        border-radius: 3px;
+      }
+      .slider-thumb {
+        width: 24px;
+        height: 24px;
+        background: #fff;
+        border: 2px solid map-get($colors, "red");
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(255, 68, 0, 0.15);
+        transition: border 0.2s;
+        &:hover {
+          border: 2px solid map-get($colors, "red");
+        }
+      }
+    }
+  }
+
+  &__monthly-trades {
+    display: flex;
+    flex-direction: row;
+    width: 295px;
+    height: 40px;
+    background: #fff;
+    border: 2px solid #fff;
+    border-radius: 8px;
+    gap: 0;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+    order: 5;
+
+    @include desktop-lg {
+      width: 180px;
+    }
+
+    @include desktop-xl {
+      width: 295px;
+    }
+
+    .cost-calculator-content__trade-btn {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 14px 10px;
+      gap: 10px;
+      width: 98.33px;
+      height: 40px;
+      background: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 28px;
+      letter-spacing: 0.2px;
+      color: #000;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border 0.2s;
+      margin: 0;
+      box-shadow: none;
+      flex: 1;
+      order: 0;
+
+      &.active {
+        background: map-get($colors, "red");
+        color: #fff;
+        border-right: 0.5px solid rgba(0, 0, 0, 0.15);
+        border-radius: 8px;
+      }
+
+      &:last-child.active {
+        border-right: none;
+      }
+    }
+  }
+
+  &__slider-label {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+    width: 295px;
+    height: 29px;
+
+    /* Label text (first child, not wrapped) */
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 18px;
+    line-height: 14px;
+    letter-spacing: 0.2px;
+    color: #000;
+    order: 1;
+
+    @include mobile {
+      width: 100%;
+      height: 14px;
+      font-size: 12px;
+    }
+
+    @include desktop-lg {
+      width: 100%;
+      font-size: 14px;
+    }
+
+    @include desktop-xl {
+      width: 100%;
+      height: 14px;
+      font-size: 18px;
+    }
+
+    .cost-calculator-content__slider-value {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      gap: 8.33px;
+      width: fit-content;
+      height: 29px;
+      background: rgba(255, 68, 0, 0.05);
+      border: 0.833333px solid rgba(255, 68, 0, 0.5);
+      border-radius: 6.66667px;
+      font-style: normal;
+      font-weight: map-get($font-weight, "bold");
+      font-size: 13.3333px;
+      line-height: 14px;
+      text-align: center;
+      letter-spacing: 0.166667px;
+      color: #000;
+
+      @include desktop-lg {
+        font-size: 10px;
+      }
+
+      @include desktop-xl {
+        font-size: 13.3333px;
+      }
+    }
+  }
+
+  &__slider {
+    order: 2;
+    @include mobile {
+      width: 100%;
+    }
+  }
+
+  &__slider-label-2 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+    width: 295px;
+    height: 29px;
+
+    /* Label text (first child, not wrapped) */
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: 0.2px;
+    color: #000;
+    order: 4;
+
+    @include desktop-lg {
+      width: 225px;
+      font-size: 12px;
+    }
+
+    @include desktop-xl {
+      width: 295px;
+      font-size: 18px;
+    }
+  }
+
+  &__slider-component {
+    width: 295px;
+    height: 24px;
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    @include mobile {
+      width: 100%;
+    }
+
+    @include desktop-lg {
+      width: 180px;
+    }
+
+    @include desktop-xl {
+      width: 295px;
+    }
+  }
+
+  &__slider-track {
+    position: absolute;
+    top: 6px;
+    left: 0;
+    height: 12px;
+    border-radius: 4px;
+    background: #e4e7ec;
+    z-index: 1;
+
+    &:first-child {
+      background: map-get($colors, "red");
+      z-index: 2;
+    }
+  }
+
+  &__slider-thumb {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    box-shadow: 0 4px 16px 0 rgba(16, 24, 40, 0.18),
+      0 2px 8px 0 rgba(16, 24, 40, 0.1);
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    z-index: 2;
+    transform: translate(-6px, 0);
+
+    &:hover,
+    &:focus {
+      box-shadow: 0px 4px 16px 0px rgba(255, 68, 0, 0.15);
+    }
+  }
+
+  &__divider {
+    width: 295px;
+    height: 0px;
+    border: 1px solid #e3d8cc;
+    order: 3;
+
+    @include desktop-lg {
+      width: 180px;
+    }
+
+    @include desktop-xl {
+      width: 295px;
+    }
+  }
+
+  &__comparison-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+
+    // Mobile styles
+    @include mobile {
+      gap: 12px;
+      max-width: 100%;
+      padding: 0;
+      flex-direction: column;
+    }
+
+    // Tablet styles
+    @include tablet {
+      gap: 18px;
+      max-width: 53%;
+      padding: 0;
+    }
+
+    // Desktop styles
+    @include desktop-lg {
+      gap: 20px;
+      max-width: 58%;
+      padding: 0 !important;
+    }
+  }
+
+  &__comparison-row {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    margin-bottom: 0px;
+    position: relative;
+    z-index: 1;
+
+    // Mobile styles
+    @include mobile {
+      gap: 12px;
+      flex-direction: row !important;
+      align-items: stretch;
+    }
+
+    @include tablet {
+      gap: 10px;
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    // Desktop styles
+    @include desktop-lg {
+      gap: 12px;
+      flex-direction: row;
+      align-items: stretch;
+    }
+  }
+
+  &__comparison-card {
+    flex: 1 1 0;
+    background: #fff;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+
+    @include tablet {
+      padding: 20px 7px;
+      gap: 40px;
+      min-height: 200px;
+    }
+
+    // Desktop styles
+    @include desktop-lg {
+      width: 100px;
+      padding: 8px;
+      gap: 40px;
+      min-height: 200px;
+    }
+
+    @include desktop-xl {
+      padding: 20px 14px;
+      gap: 28px;
+      min-height: 231px !important;
+    }
+
+    // Tablet styles
+    // @include tablet {
+    //   padding: 22px;
+    //   gap: 34px;
+    //   min-height: 180px;
+    // }
+
+    // // Mobile styles
+    // @include mobile {
+    //   width: 50% !important;
+    //   flex: 1 1 0 !important;
+    //   padding: 20px !important;
+    //   gap: 24px;
+    //   max-height: 200px !important;
+    //   min-width: 0;
+    //   max-width: 100% !important;
+    // }
+
+    // // Small mobile styles
+    // @media (max-width: 480px) {
+    //   padding: 16px !important;
+    //   gap: 20px;
+    //   min-height: 160px;
+    // }
+
+    // // Extra small mobile styles
+    // @media (max-width: 360px) {
+    //   padding: 12px !important;
+    //   gap: 16px;
+    //   min-height: 140px;
+    // }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 68, 0, 0.1);
+    }
+
+    &--oqtima {
+      background: linear-gradient(
+          78.79deg,
+          rgba(255, 255, 255, 0.19) -20.69%,
+          rgba(255, 68, 0, 0.19) 110.08%
+        ),
+        #ffffff;
+      border: 1px solid rgba(255, 68, 0, 0.15);
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(255, 68, 0, 0.15);
+      }
+    }
+  }
+
+  &__comparison-badge {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 10px;
+    gap: 5px;
+    margin: 0;
+    width: fit-content;
+    height: 26px;
+    background: linear-gradient(0deg, #f7f5f3, #f7f5f3), #ffffff;
+    mix-blend-mode: normal;
+    border: 1px solid rgba(124, 124, 124, 0.15);
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #000;
+    transition: all 0.3s ease;
+
+    // Mobile styles
+    @include mobile {
+      padding: 4.5px 7.5px;
+      width: fit-content;
+      min-width: 105.01px;
+      height: 19.5px;
+      font-size: 10.5px;
+      line-height: 16px;
+      gap: 4px;
+
+      img {
+        width: 10.5px;
+        height: 10.5px;
+      }
+    }
+
+    // Tablet styles
+    @include tablet {
+      padding: 6px 10px;
+      width: fit-content;
+      height: 27px;
+      font-size: 11px;
+      line-height: 21px;
+      gap: 5.5px;
+
+      img {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    // Desktop styles
+    @include desktop-lg {
+      padding: 8px;
+      width: fit-content;
+      height: 28px;
+      font-size: 8px;
+      line-height: 22px;
+      gap: 6px;
+
+      img {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    @include desktop-xl {
+      padding: 10px;
+      width: fit-content;
+      font-size: 14px;
+    }
+
+    &--oqtima {
+      background: linear-gradient(
+          0deg,
+          rgba(255, 68, 0, 0.15),
+          rgba(255, 68, 0, 0.15)
+        ),
+        #ffffff;
+      mix-blend-mode: normal;
+      border: 1px solid rgba(255, 68, 0, 0.15);
+    }
+  }
+
+  &__comparison-value {
+    width: fit-content;
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 62px;
+    letter-spacing: -0.02em;
+    color: #4b4b4b;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    transition: all 0.3s ease;
+
+    // Mobile styles
+    @include mobile {
+      width: fit-content;
+      font-size: 40px;
+      line-height: 1.1;
+    }
+
+    // Tablet styles
+    @include tablet {
+      width: fit-content;
+      font-size: 45px;
+      line-height: 1.1;
+    }
+
+    // Desktop styles
+    @include desktop-lg {
+      width: fit-content;
+      font-size: 42px;
+      line-height: 1.1;
+    }
+
+    @include desktop-xl {
+      width: fit-content;
+      font-size: 62px;
+      line-height: 1.2;
+    }
+
+    span {
+      display: block;
+      margin-top: 8px;
+      font-size: 24px;
+      font-weight: map-get($font-weight, "semibold");
+      color: #3a1200;
+      opacity: 0.7;
+      letter-spacing: 0;
+      text-align: center;
+      transition: all 0.3s ease;
+
+      // Mobile styles
+      @include mobile {
+        font-size: 20px !important;
+        margin-top: 6px;
+      }
+
+      // Tablet styles
+      @include tablet {
+        font-size: 20px;
+        margin-top: 9px;
+      }
+
+      // Desktop styles
+      @include desktop-lg {
+        font-size: 20px;
+        margin-top: 10px;
+      }
+    }
+
+    &--industry {
+      color: #4b4b4b;
+
+      span {
+        display: block;
+        color: inherit;
+        opacity: 1;
+        letter-spacing: 0;
+        line-height: 20px;
+        text-align: center;
+      }
+    }
+
+    &--oqtima {
+      background: linear-gradient(
+          80.01deg,
+          rgba(0, 0, 0, 0) -18.01%,
+          rgba(255, 68, 0, 0.45) 62.09%
+        ),
+        #000000;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+
+      span {
+        display: block;
+        color: inherit;
+        opacity: 1;
+        letter-spacing: 0;
+        text-align: center;
+        background: none;
+        -webkit-background-clip: unset;
+        -webkit-text-fill-color: unset;
+        background-clip: unset;
+      }
+    }
+  }
+
+  &__comparison-label {
+    font-size: 16px;
+    color: #3a1200;
+    opacity: 0.7;
+    font-weight: 400;
+  }
+
+  &__savings-info {
+    box-sizing: border-box;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 25px;
+    width: 100%;
+    height: 96px;
+    background: linear-gradient(
+        78.79deg,
+        rgba(255, 255, 255, 0.19) -20.69%,
+        rgba(255, 68, 0, 0.19) 110.08%
+      ),
+      #ffffff;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 12px;
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: 0.2px;
+    color: #000;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+
+    // Mobile styles
+    @include mobile {
+      padding: 6px 20px !important;
+      gap: 15px;
+      height: auto;
+      min-height: 80px;
+      font-size: 16px;
+      line-height: 24px;
+    }
+
+    // Tablet styles
+    @include tablet {
+      padding: 16px;
+      gap: 28px;
+      height: 103px;
+      font-size: 14px;
+      line-height: 30px;
+    }
+
+    // Desktop styles
+    @include desktop-lg {
+      padding: 16px;
+      gap: 30px;
+      height: 110px;
+      font-size: 15px;
+      line-height: 24px;
+    }
+
+    // Desktop styles
+    @include desktop-xl {
+      padding: 16px;
+      gap: 25px;
+      height: 96px;
+      font-size: 15px;
+      line-height: 28px;
+    }
+
+    span {
+      color: #000;
+      font-weight: map-get($font-weight, "semibold");
+      transition: all 0.3s ease;
+    }
+  }
+
+  @include mobile {
+    flex-direction: column;
+    padding: 16px 0 150px 0;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+    clear: both;
+    overflow: visible;
+    margin-bottom: 0;
+
+    &__left,
+    &__right {
+      min-width: 0;
+      padding: 0;
+    }
+
+    &__right {
+      flex-direction: column;
+      gap: 16px;
+      max-height: 341px;
+    }
+
+    &__card {
+      width: 100% !important;
+      min-width: 0;
+      max-width: 100%;
+      height: auto;
+      padding: 20px 8px;
+      gap: 0;
+
+      &-section,
+      &-row,
+      &-label,
+      &-value-container,
+      &-slider {
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+      }
+    }
+
+    &__monthly-trades {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      margin-top: 8px;
+
+      .cost-calculator-content__trade-btn {
+        width: auto;
+        min-width: 0;
+        flex: 1;
+        font-size: 11px;
+        padding: 8px 4px;
+      }
+    }
+
+    &__slider-label,
+    &__slider,
+    &__divider,
+    &__slider-label-2 {
+      margin-bottom: 24px;
+    }
+
+    &__comparison-row {
+      flex-direction: row !important;
+      gap: 12px;
+    }
+
+    &__comparison-card {
+      width: 50% !important;
+      flex: 1 1 0 !important;
+      padding: 10px !important;
+      box-sizing: border-box;
+      max-height: 200px !important;
+      min-width: 0;
+      max-width: 100% !important;
+    }
+
+    &__savings-info {
+      padding: 6px 20px !important;
+      font-size: 16px;
+      margin: 0 !important;
+    }
+
+    &__title {
+      font-size: 32px;
+      line-height: 40px;
+    }
+
+    &__subtitle {
+      font-size: 16px;
+      max-width: 100%;
+      margin-bottom: 20px;
+    }
+  }
+
+  .navbar-dropdown-highlight__button {
+    @include desktop-lg {
+      font-size: 12px;
+    }
+
+    @include desktop-xl {
+      font-size: 18px;
+    }
+
+    &--primary {
+      @include desktop-lg {
+        width: 120px;
+        height: 40px;
+        padding: 0;
+      }
+
+      @include desktop-xl {
+        width: 167px;
+        height: 51px;
+        padding: 0 24px;
+      }
+    }
+  }
+}

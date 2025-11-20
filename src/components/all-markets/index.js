@@ -1,43 +1,66 @@
-import React from "react";
-import cn from "classnames";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
-import image from "../../assets/images/all-markets/markets-image.svg";
 import { useTranslationWithVariables } from "../../helpers/hooks/use-translation-with-vars";
+import { ShowRegistrationPopup } from "../../helpers/constants";
 import { useRtlDirection } from "../../helpers/hooks/use-rtl-direction";
-import { DIR_LTR, DIR_RTL } from "../../helpers/constants";
+import { useWindowSize } from "../../helpers/hooks/use-window-size";
+import LanguageContext from "../../context/language-context";
+import Hero from "../shared/hero";
+import BreadcrumbsTab from "../shared/breadcrumbs-tab";
+import OurCommunityContent from "../shared/our-community";
+import ContainerWrapper from "../shared/container-wrapper";
+import MarketItemsList from "./components/market-items-list";
 
-const AllMarkets = ({ className }) => {
+const AllMarkets = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
-  const isRTL = useRtlDirection();
+  const { isMobile } = useWindowSize();
+  const { selectedLanguage } = useContext(LanguageContext);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  };
 
   return (
-    <section
-      className={cn("all-markets", className, {
-        "all-markets--rtl": isRTL,
-      })}
-      dir={isRTL ? DIR_RTL : DIR_LTR}
-    >
-      <div className="all-markets__wrapper">
-        <div className="all-markets__block">
-          <h2 className="all-markets__title">
-            {t("all-markets_all-markets-title")}
-          </h2>
-          <div className="all-markets__text">
-            {t("all-markets_all-markets-text")}
-          </div>
-        </div>
-        <div className={cn("all-markets__block", "all-markets__block--flexed")}>
-          <img src={image} alt="" className="all-markets__img" />
-        </div>
-      </div>
-    </section>
+    <>
+      <Hero
+        className={className}
+        isShowHero={isShowHero}
+        heroType="all-markets"
+        showWarning={false}
+        showHandImage={false}
+        showHeroImage={false}
+        desktopBackground="url(../images/bg/hero/all-markets-desktop.svg)"
+        mobileBackground="url(../images/bg/hero/all-markets-mobile.svg)"
+      />
+
+      <BreadcrumbsTab
+        currentPage={t("all-markets_badge-text")}
+        activeTab="all-markets"
+      />
+
+      <MarketItemsList />
+
+      {isMobile ? (
+        <OurCommunityContent />
+      ) : (
+        <ContainerWrapper>
+          <OurCommunityContent />
+        </ContainerWrapper>
+      )}
+
+      {isPopupOpen && (
+        <ShowRegistrationPopup
+          isOpen={isPopupOpen}
+          onClose={handleClosePopup}
+          langParam={selectedLanguage.id}
+        />
+      )}
+    </>
   );
-};
-AllMarkets.propTypes = {
-  className: PropTypes.string,
 };
 
 AllMarkets.propTypes = {
   className: PropTypes.string,
+  isShowHero: PropTypes.bool,
 };
 export default AllMarkets;

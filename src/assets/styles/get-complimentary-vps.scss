@@ -1,0 +1,878 @@
+@import "vars";
+@import "mixins";
+
+.get-complimentary-vps {
+  position: relative;
+  width: 100%;
+  min-height: 555px;
+  background: transparent;
+  border-radius: 24px;
+  overflow: hidden;
+  margin: 48px 0 55px 0;
+
+  @include mobile {
+    margin: 130px 0 0 0;
+    min-height: auto;
+    height: auto;
+    padding-bottom: 20px;
+  }
+
+  @include tablet {
+    margin: 150px 0 0 0;
+  }
+
+  .get-complimentary-vps-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__image {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      object-fit: fill;
+      display: block;
+      opacity: 1;
+
+      @include mobile {
+        object-fit: cover;
+        object-position: center;
+      }
+    }
+  }
+
+  // Content container
+  > *:not(.get-complimentary-vps-bg) {
+    position: relative;
+    z-index: 4;
+  }
+
+  .get-complimentary-vps-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    gap: 16px;
+    text-align: center;
+
+    @include mobile {
+      padding: 20px 0;
+      gap: 12px;
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 10px;
+      background: linear-gradient(
+          0deg,
+          rgba(255, 68, 0, 0.15),
+          rgba(255, 68, 0, 0.15)
+        ),
+        #ffffff;
+      border: 1px solid rgba(255, 68, 0, 0.15);
+      border-radius: 16px;
+      width: fit-content;
+
+      img {
+        width: 14px;
+        height: 14px;
+      }
+
+      .badge-label {
+        font-family: "Sofia Pro", Arial, sans-serif;
+        font-weight: map-get($font-weight, "medium");
+        font-size: 14px;
+        line-height: 20px;
+        color: #000;
+      }
+    }
+
+    .get-complimentary-vps-title {
+      width: 100%;
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-weight: map-get($font-weight, "semibold");
+      font-size: 52px;
+      text-align: center;
+      letter-spacing: -0.02em;
+      background: linear-gradient(
+          102.31deg,
+          rgba(0, 0, 0, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #000000;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      flex: none;
+      order: 0;
+      align-self: stretch;
+      flex-grow: 0;
+      margin: 0;
+
+      @include mobile {
+        width: 100%;
+        max-width: 100%;
+        font-size: 36px;
+        line-height: 1.2;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+      }
+    }
+
+    .get-complimentary-vps-subtitle {
+      font-weight: map-get($font-weight, "light");
+      font-size: 18px;
+      line-height: 28px;
+      color: #000;
+      margin: 0;
+      max-width: 100%;
+      opacity: 0.7;
+      order: 2;
+
+      @include mobile {
+        max-width: 100%;
+      }
+    }
+  }
+
+  .get-complimentary-vps-cards {
+    display: flex;
+    gap: 27px;
+    padding: 42px 203px 0;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
+
+    @include mobile {
+      flex-direction: column;
+      padding: 24px 0 18px;
+      gap: 24px;
+    }
+
+    @include tablet {
+      flex-direction: column;
+      padding: 24px 18px 18px;
+      gap: 24px;
+      align-items: center;
+    }
+
+    @include desktop-lg {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      padding: 42px 0 0 0 !important;
+      justify-content: center;
+      align-items: stretch;
+      margin: 0 auto;
+    }
+
+    @include desktop-xl {
+      gap: 27px;
+      padding: 42px 203px 0;
+      max-width: 1280px;
+    }
+
+    .get-complimentary-vps-card {
+      flex: 1;
+      min-height: 357px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 24px 28px;
+      gap: 32px;
+      isolation: isolate;
+      width: 610px;
+      height: 357px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 12px;
+      flex: none;
+      order: 0;
+      flex-grow: 1;
+      position: relative;
+      overflow: visible;
+      text-align: left;
+
+      @include mobile {
+        width: 100%;
+        padding: 24px;
+        gap: 16px;
+        min-height: 645.11px;
+        height: 645.11px;
+      }
+
+      @include tablet {
+        flex-direction: row;
+        width: 100%;
+        padding: 24px;
+        gap: 16px;
+        min-height: 350px;
+        height: 350px;
+      }
+
+      @include desktop-lg {
+        width: 100% !important;
+        max-width: 49% !important;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 24px 20px !important;
+        min-height: 357px;
+        height: 357px;
+      }
+
+      @include desktop-xl {
+        width: 510px !important;
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      &.minimum-deposit-card {
+        background-image: url("../../assets/images/bg/vps/bg-card-minimum-$3000-deposit-desktop.svg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        flex-direction: column;
+
+        @include mobile {
+          background-image: url("../../assets/images/bg/vps/bg-card-minimum-$3000-deposit-mobile.svg");
+        }
+
+        @include tablet {
+          flex-direction: column;
+        }
+
+        @include desktop-lg {
+          flex-direction: column;
+          background-position: 85% 100%;
+        }
+
+        @include desktop-xl {
+          background-position: center;
+        }
+      }
+
+      &.minimum-trading-card {
+        background-image: url("../../assets/images/bg/vps/bg-card-minimum-trading-volume-desktop.svg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        @include mobile {
+          background-image: url("../../assets/images/bg/vps/bg-card-minimum-trading-volume-mobile.svg");
+        }
+
+        // Desktop layout: side-by-side content and image
+        @include desktop-lg {
+          flex-direction: row;
+          align-items: flex-start;
+          gap: 20px;
+        }
+
+        @include desktop-xl {
+          flex-direction: row;
+          align-items: flex-start;
+          gap: 24px;
+        }
+      }
+
+      .card-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        order: 1;
+        flex-grow: 0;
+        z-index: 1;
+        position: relative;
+
+        @include mobile {
+          width: 72px;
+          height: 72px;
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+
+      .card-title {
+        width: 238px;
+        font-family: "Sofia Pro", Arial, sans-serif;
+        font-weight: map-get($font-weight, "bold");
+        font-size: 24px;
+        letter-spacing: -0.02em;
+        background: linear-gradient(
+            102.31deg,
+            rgba(0, 0, 0, 0) 9.12%,
+            rgba(255, 68, 0, 0.45) 71.6%
+          ),
+          #000000;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        flex: none;
+        order: 1;
+        align-self: stretch;
+        flex-grow: 0;
+        margin: 0;
+        z-index: 2;
+        position: relative;
+
+        @include mobile {
+          font-size: 18px;
+          width: 100%;
+          height: auto;
+        }
+
+        @include tablet {
+          width: 238px;
+          font-size: 24px;
+        }
+
+        @include desktop-lg {
+          width: 200px;
+          font-size: 20px;
+        }
+
+        @include desktop-xl {
+          width: 238px;
+          font-size: 24px;
+        }
+      }
+
+      .card-description {
+        width: 238px;
+        font-family: "Sofia Pro", Arial, sans-serif;
+        font-weight: map-get($font-weight, "regular");
+        font-size: 16px;
+        line-height: 24px;
+        letter-spacing: 0.2px;
+        color: #000;
+        opacity: 0.7;
+        margin: 0;
+        flex: none;
+        order: 3;
+        flex-grow: 0;
+        z-index: 3;
+        position: relative;
+
+        @include mobile {
+          font-size: 14px;
+          line-height: 20px;
+          width: 100%;
+          height: auto;
+        }
+
+        @include tablet {
+          font-size: 16px;
+          line-height: 24px;
+          width: 275px;
+          height: auto;
+        }
+
+        @include desktop-lg {
+          width: 200px;
+          font-size: 14px;
+        }
+
+        @include desktop-xl {
+          width: 238px;
+          font-size: 16px;
+        }
+      }
+
+      // Content wrapper for text elements
+      .card-content-wrapper {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 32px;
+
+        @include mobile {
+          gap: 16px;
+        }
+
+        @include desktop-lg {
+          flex: 1;
+          gap: 16px;
+        }
+
+        @include desktop-xl {
+          flex: 1;
+          gap: 20px;
+        }
+      }
+
+      // VPS Image Container
+      .vps-image-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 20px 0;
+        flex: none;
+        order: 4;
+        flex-grow: 0;
+        z-index: 2;
+        position: relative;
+        margin-top: 16px; // Add some space after description
+
+        @include mobile {
+          padding: 20px 16px 60px 16px;
+          margin-top: 0;
+          min-height: 250px;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          position: relative;
+        }
+
+        @include tablet {
+          margin-top: 16px;
+          width: 50%;
+        }
+
+        // Desktop specific positioning - positioned to the right
+        @include desktop-lg {
+          margin-top: 30px;
+          margin-right: 10px;
+          padding: 0;
+          width: auto;
+          flex: none;
+          order: 2;
+          align-self: flex-start;
+        }
+
+        @include desktop-xl {
+          margin-top: 30px;
+          margin-right: 10px;
+          padding: 0;
+          width: auto;
+          flex: none;
+          order: 2;
+          align-self: flex-start;
+        }
+
+        .vps-image {
+          max-width: 100%;
+          height: auto;
+          object-fit: contain;
+          display: block;
+
+          @include mobile {
+            max-width: 100%;
+            height: auto;
+          }
+
+          // Desktop specific sizing
+          @include desktop-lg {
+            max-width: 180px;
+            height: auto;
+          }
+
+          @include desktop-xl {
+            max-width: 200px;
+            height: auto;
+          }
+        }
+
+        // Hand Icon
+        .vps-hand-icon {
+          position: absolute;
+          z-index: 15;
+          pointer-events: none;
+
+          &.desktop-only {
+            display: none;
+
+            @include desktop-lg {
+              display: block;
+              width: auto;
+              height: 150px;
+              right: -30px;
+              top: 155px;
+            }
+
+            @include desktop-xl {
+              display: block;
+              width: auto;
+              height: 150px;
+              right: -30px;
+              top: 165px;
+            }
+          }
+
+          &.mobile-only {
+            display: block;
+            width: auto;
+            height: 80px;
+            right: -20px;
+            top: 175px;
+
+            @include small-mobile {
+              display: block;
+              top: 150px;
+            }
+
+            @include tablet {
+              display: block;
+              top: 210px;
+            }
+
+            @include desktop-lg {
+              display: none;
+            }
+          }
+        }
+
+        // Start Trading Button
+        .vps-start-trading-btn {
+          position: absolute;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          padding: 10px 12px;
+          width: 167px;
+          height: 38px;
+          left: 17px;
+          top: 150px;
+          background: rgba(255, 68, 0, 0.49);
+          border: 1px solid rgba(255, 68, 0, 0.5);
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          z-index: 10;
+
+          @include mobile {
+            position: absolute;
+            width: calc(100% - 32px);
+            max-width: 235px;
+            height: 44px;
+            left: 50%;
+            top: 68%;
+            transform: translateX(-50%) translateY(-50%);
+            background: rgba(255, 68, 0, 0.3);
+            border: 1px solid rgba(255, 68, 0, 0.5);
+            border-radius: 8px;
+            padding: 13.5px 16px;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+
+            &:hover {
+              background: rgba(255, 68, 0, 0.5);
+              border-color: rgba(255, 68, 0, 0.7);
+              transform: translateX(-50%) translateY(-50%) scale(1.02);
+            }
+
+            &:active {
+              transform: translateX(-50%) translateY(-50%) scale(0.98);
+            }
+          }
+
+          // Extra small mobile devices
+          @include small-mobile {
+            width: calc(100% - 24px);
+            max-width: 170px;
+            padding: 12px 14px;
+            height: 40px;
+            top: 58%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+
+            &:hover {
+              transform: translateX(-50%) translateY(-50%) scale(1.02);
+            }
+
+            &:active {
+              transform: translateX(-50%) translateY(-50%) scale(0.98);
+            }
+          }
+
+          // Small mobile devices
+          // @media (min-width: 361px) and (max-width: 480px) {
+          //   width: calc(100% - 32px);
+          //   max-width: 300px;
+          //   top: 60%;
+          //   left: 50%;
+          //   transform: translateX(-50%) translateY(-50%);
+
+          //   &:hover {
+          //     transform: translateX(-50%) translateY(-50%) scale(1.02);
+          //   }
+
+          //   &:active {
+          //     transform: translateX(-50%) translateY(-50%) scale(0.98);
+          //   }
+          // }
+
+          @include tablet {
+            width: 208px;
+            height: 44px;
+            left: 55px;
+            top: 200px;
+            background: rgba(255, 68, 0, 0.3);
+          }
+
+          @include desktop-lg {
+            left: 6px;
+            top: 130px;
+            width: 167px;
+          }
+
+          @include desktop-xl {
+            left: 17px;
+            top: 150px;
+          }
+
+          .btn-text {
+            font-family: "Sofia Pro", Arial, sans-serif;
+            font-style: normal;
+            font-weight: map-get($font-weight, "medium");
+            font-size: 15px;
+            line-height: 100%;
+            color: #000000;
+            white-space: nowrap;
+            flex: none;
+            order: 0;
+
+            @include mobile {
+              font-size: 14px;
+              font-weight: map-get($font-weight, "regular");
+              line-height: 120%;
+            }
+          }
+
+          .btn-arrow {
+            display: none;
+            width: 8.59px;
+            height: 8.59px;
+            flex: none;
+            order: 1;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateX(-10px);
+            color: #ff4400;
+            margin-left: 8px;
+            align-items: center;
+            justify-content: center;
+
+            @include mobile {
+              display: none;
+            }
+
+            svg {
+              width: 100%;
+              height: 100%;
+            }
+          }
+
+          &:hover {
+            background: rgba(255, 68, 0, 0.7);
+            border: 1px solid rgba(255, 68, 0, 0.8);
+            // transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 68, 0, 0.3);
+
+            @include mobile {
+              background: rgba(255, 68, 0, 0.5);
+              border: 1px solid rgba(255, 68, 0, 0.7);
+            }
+
+            .btn-arrow {
+              display: flex;
+              opacity: 1;
+              transform: translateX(0);
+              color: #ffffff;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+
+          &:active {
+            // transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(255, 68, 0, 0.2);
+          }
+        }
+      }
+
+      // Deposit Status Card
+      .deposit-status-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background: rgba(255, 68, 0, 0.1);
+        border: 1px solid rgba(255, 68, 0, 0.2);
+        border-radius: 12px;
+        gap: 12px;
+        margin-top: auto;
+        width: 100%;
+
+        .status-icon {
+          width: 48px;
+          height: 48px;
+          background: #ff4400;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .dollar-icon {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+          }
+        }
+
+        .status-label {
+          font-family: "Sofia Pro", Arial, sans-serif;
+          font-size: 14px;
+          color: #ffffff;
+          opacity: 0.8;
+        }
+
+        .status-amount {
+          font-family: "Sofia Pro", Arial, sans-serif;
+          font-size: 32px;
+          font-weight: bold;
+          color: #ffffff;
+        }
+
+        .status-completed {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #4ade80;
+          font-size: 14px;
+          font-weight: 500;
+
+          .checkmark {
+            width: 16px;
+            height: 16px;
+            background: #4ade80;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+          }
+        }
+
+        .status-button {
+          width: 100%;
+          margin-top: 8px;
+        }
+      }
+
+      // Trading Order Card
+      .trading-order-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background: rgba(255, 68, 0, 0.1);
+        border: 1px solid rgba(255, 68, 0, 0.2);
+        border-radius: 12px;
+        gap: 12px;
+        margin-top: auto;
+        width: 100%;
+        position: relative;
+
+        .order-logo {
+          width: 48px;
+          height: 48px;
+          background: #ff4400;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .logo-icon {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+          }
+        }
+
+        .order-label {
+          font-family: "Sofia Pro", Arial, sans-serif;
+          font-size: 14px;
+          color: #ffffff;
+          opacity: 0.8;
+        }
+
+        .order-input {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          background: rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(255, 68, 0, 0.3);
+          border-radius: 8px;
+          padding: 8px 16px;
+
+          .input-button {
+            width: 32px;
+            height: 32px;
+            background: #ff4400;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+              background: #e63e00;
+            }
+          }
+
+          .input-value {
+            font-family: "Sofia Pro", Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            color: #ffffff;
+            min-width: 60px;
+            text-align: center;
+          }
+        }
+
+        .order-button {
+          width: 100%;
+          margin-top: 8px;
+        }
+
+        .order-hand {
+          position: absolute;
+          right: -20px;
+          bottom: 20px;
+          font-size: 24px;
+          opacity: 0.8;
+
+          @include mobile {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}

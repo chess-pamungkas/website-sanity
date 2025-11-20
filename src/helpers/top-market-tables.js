@@ -317,6 +317,9 @@ export const DATA_FOREX_MINOR = [
 
 export const DATA_FOREX_EXOTIC = [];
 
+// Combined forex data for spreads display
+export const DATA_FOREX = [...DATA_FOREX_MAJOR, ...DATA_FOREX_MINOR];
+
 export const DATA_CRYPTO = [
   {
     col1: "DOGEUSD",

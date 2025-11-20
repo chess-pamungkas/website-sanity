@@ -4,18 +4,19 @@ import { useTranslationWithVariables } from "../helpers/hooks/use-translation-wi
 import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import MetalsContent from "../components/pages-content/metals-page-content";
+import PageBackground from "../components/shared/page-background";
 
 const MetalsPage = () => {
   const { t } = useTranslationWithVariables();
 
   return (
-    <>
+    <PageBackground backgroundType="homepage-bg-1">
       <Seo
         title={t("page-metals-title")}
         description={t("page-metals-description")}
       />
       <MetalsContent />
-    </>
+    </PageBackground>
   );
 };
 

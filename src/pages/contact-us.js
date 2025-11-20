@@ -1,40 +1,50 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { graphql } from "gatsby";
 import { useTranslationWithVariables } from "../helpers/hooks/use-translation-with-vars";
 import Seo from "../components/shared/seo";
-import TopMarket from "../components/top-market";
-import HighlightedLocalizationText from "../components/shared/highlighted-localization-text";
-import image from "../assets/images/about-pages/contact-us.svg";
 import ContactUs from "../components/contact-us";
-import ReCaptchaProvider from "../components/shared/recaptcha-provider";
+import Hero from "../components/shared/hero";
+import PageBackground from "../components/shared/page-background";
+import ContainerWrapper from "../components/shared/container-wrapper";
+import OurCommunityContent from "../components/shared/our-community";
+import { useWindowSize } from "../helpers/hooks/use-window-size";
 
-const ContactUsPage = () => {
+const ContactUsPage = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
+  const { isMobile } = useWindowSize();
 
   return (
-    <ReCaptchaProvider showBadge={true}>
+    <PageBackground backgroundType="homepage-bg-1">
       <Seo title={t("page-contact-title")} />
-      <TopMarket
-        title={
-          <HighlightedLocalizationText
-            localizationText="contact-us_top-market-title"
-            wordsToHighlight="contact-us_top-market-title-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-white"
-          />
-        }
-        image={image}
-      >
-        <HighlightedLocalizationText
-          localizationText="contact-us_top-market-promo-text"
-          wordsToHighlight="contact-us-top-market-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
-        />
-      </TopMarket>
-      <ContactUs />
-    </ReCaptchaProvider>
+      <Hero
+        className={className}
+        isShowHero={isShowHero}
+        heroType="contact-us"
+        showWarning={false}
+        showHandImage={false}
+        showHeroImage={false}
+        desktopBackground="url(../../assets/images/bg/hero/contact-us/contact-us-desktop.svg)"
+        mobileBackground="url(../../assets/images/bg/hero/contact-us/contact-us-mobile.svg)"
+      />
+      <ContainerWrapper>
+        <ContactUs />
+      </ContainerWrapper>
+
+      {isMobile ? (
+        <OurCommunityContent />
+      ) : (
+        <ContainerWrapper>
+          <OurCommunityContent />
+        </ContainerWrapper>
+      )}
+    </PageBackground>
   );
+};
+
+ContactUsPage.propTypes = {
+  className: PropTypes.string,
+  isShowHero: PropTypes.bool,
 };
 
 export default ContactUsPage;

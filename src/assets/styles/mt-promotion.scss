@@ -5,76 +5,170 @@
   scroll-snap-align: start;
   position: relative;
   display: flex;
-  align-items: center;
-  padding-top: 126px;
-  padding-bottom: 55px;
-  background: map-get($colors, "white");
-  @include content-alignment(0);
+  align-items: flex-start;
+  padding-top: 200px;
+  margin-bottom: 100px;
+  background: transparent;
+  // @include content-alignment(0);
+
+  @include mobile {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    padding-top: 150px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 !important;
+    margin-bottom: 20px !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
 
   @include tablet {
-    padding-top: 75px;
-    padding-bottom: 75px;
-    background: url("../../assets/images/bg/top-market-page/left/bottom-md.svg")
-      no-repeat bottom;
+    padding-top: 125px;
+    margin-bottom: 5%;
   }
 
   @include desktop-lg {
-    padding-top: 50px;
-    padding-bottom: 69px;
-    background: url("../../assets/images/bg/top-market-page/left/bottom-lg.svg")
-      no-repeat bottom;
+    padding-top: 150px;
+    margin-bottom: 75px;
   }
 
   @include desktop-xl {
-    padding-top: 70px;
-    padding-bottom: 58px;
-    background: url("../../assets/images/bg/top-market-page/left/bottom-xl.svg")
-      no-repeat bottom;
+    padding-top: 200px;
+    margin-bottom: 100px;
   }
 
   &__wrapper {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     flex-direction: column;
     width: 100%;
     height: 100%;
 
+    @include mobile {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: visible !important;
+      box-sizing: border-box !important;
+      position: relative !important;
+      left: 0 !important;
+      right: 0 !important;
+    }
+
+    @include tablet {
+      flex-direction: column;
+      align-items: center;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: visible !important;
+      box-sizing: border-box !important;
+      position: relative !important;
+      left: 0 !important;
+      right: 0 !important;
+    }
+
     @include desktop-lg {
       flex-direction: row;
+      align-items: flex-start;
     }
   }
 
   &__block {
     width: 100%;
 
-    @include desktop-xl {
-      width: 50%;
+    @include mobile {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      margin-bottom: 30px !important;
+      flex: 1 1 100% !important;
+      overflow: visible !important;
+      box-sizing: border-box !important;
+      position: relative !important;
+      left: 0 !important;
+      right: 0 !important;
     }
 
+    // @include desktop-xl {
+    //   width: 70%;
+    // }
+
     &--flexed {
+      width: 46.3%;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: flex-start;
+      justify-content: flex-start;
+
+      @include mobile {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        flex: 1 1 100% !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+      }
     }
   }
 
   &__img {
-    width: auto;
+    width: 100%;
+    height: 100%;
     max-width: 100%;
-    height: 503px;
-    margin-bottom: 57px;
+    align-self: flex-start;
+    justify-self: flex-start;
+    // margin-bottom: 57px;
+
+    @include mobile {
+      width: 100% !important;
+      height: auto !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      flex: 1 1 100% !important;
+      object-fit: contain !important;
+      display: block !important;
+      margin: 0 auto !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
+      overflow: visible !important;
+      position: relative !important;
+      left: 0 !important;
+      right: 0 !important;
+      transform: none !important;
+      scale: 1 !important;
+      zoom: 1 !important;
+    }
 
     @include tablet {
-      height: 677px;
-      margin-bottom: 40px;
+      // width: 405px;
+      // height: 587.21px;
+      align-self: flex-start;
+      justify-self: flex-start;
+      // margin-bottom: 40px;
     }
 
     @include desktop-lg {
-      margin-bottom: 0;
+      align-self: flex-start;
+      justify-self: flex-start;
     }
 
     @include desktop-xl {
-      height: 907px;
+      align-self: flex-start;
+      justify-self: flex-start;
     }
   }
 

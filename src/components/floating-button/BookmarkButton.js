@@ -3,7 +3,6 @@ import "../../assets/styles/Bookmark.scss";
 import ButtonPopup from "../shared/button-popup";
 import { ShowRegistrationPopup } from "../../helpers/constants";
 import { useTranslationWithVariables } from "../../helpers/hooks/use-translation-with-vars";
-import ChevronIcon from "../../assets/images/icons/chevron.svg";
 import { setLangParam } from "../../helpers/services/language-service";
 
 function Bookmark() {
@@ -15,7 +14,6 @@ function Bookmark() {
   const [hasBeenClosed, setHasBeenClosed] = useState(false);
 
   const bookmarkRef = useRef(null);
-  const buttonRef = useRef(null);
   const { t } = useTranslationWithVariables();
 
   const langParam = setLangParam(); // Get the language parameter

@@ -4,8 +4,6 @@
 .container {
   width: 100%;
   margin: 0 auto;
-  // padding-left: $padding-sm;
-  // padding-right: $padding-sm;
 
   @include small-mobile {
     max-width: 100%;
@@ -19,32 +17,22 @@
 
   @include tablet {
     max-width: 720px;
-    // padding-left: $padding-md;
-    // padding-right: $padding-md;
   }
 
   @include desktop-lg {
-    max-width: 970px;
-    // padding-left: $padding-lg;
-    // padding-right: $padding-lg;
+    max-width: 980px;
   }
 
   @include desktop-xl {
-    max-width: 1680px;
-    // padding-left: $padding-xl;
-    // padding-right: $padding-xl;
+    max-width: 1280px;
   }
 
   @include desktop-2k {
-    max-width: 2400px;
-    // padding-left: $padding-xl * 1.5;
-    // padding-right: $padding-xl * 1.5;
+    max-width: 1440px;
   }
 
   @include desktop-5k {
-    max-width: 3840px;
-    // padding-left: $padding-xl * 2;
-    // padding-right: $padding-xl * 2;
+    max-width: 1920px;
   }
 
   &--no-padding {

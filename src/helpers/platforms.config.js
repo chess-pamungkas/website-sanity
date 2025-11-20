@@ -1,6 +1,6 @@
 import React from "react";
-import metaTrader4 from "../assets/images/icons/tools/metaTrader4.svg";
-import metaTrader5 from "../assets/images/icons/tools/metaTrader5.svg";
+// import metaTrader4 from "../assets/images/icons/tools/metaTrader4.svg";
+// import metaTrader5 from "../assets/images/icons/tools/metaTrader5.svg";
 import {
   MT4_PAGE_LINK,
   MT5_PAGE_LINK,
@@ -96,12 +96,6 @@ const FSA_MT5_ADVANTAGES = [
   { key: "adv6", text: "mt5_market-items-list_adv6-fsa" },
   { key: "adv7", text: "mt5_market-items-list_adv7-fsa" },
   { key: "adv8", text: "mt5_market-items-list_adv8-fsa" },
-  { key: "adv9", text: "mt5_market-items-list_adv9-fsa" },
-  { key: "adv10", text: "mt5_market-items-list_adv10-fsa" },
-  { key: "adv11-mt5", text: "mt5_market-items-list_adv11-fsa" },
-  { key: "adv12", text: "mt5_market-items-list_adv12-fsa" },
-  { key: "adv13", text: "mt5_market-items-list_adv13-fsa" },
-  { key: "adv14", text: "mt5_market-items-list_adv14-fsa" },
 ];
 
 const FSA_MT4_ADVANTAGES = [
@@ -113,11 +107,6 @@ const FSA_MT4_ADVANTAGES = [
   { key: "adv6", text: "mt4_market-items-list_adv6-fsa" },
   { key: "adv7", text: "mt4_market-items-list_adv7-fsa" },
   { key: "adv8", text: "mt4_market-items-list_adv8-fsa" },
-  { key: "adv9", text: "mt4_market-items-list_adv9-fsa" },
-  { key: "adv10", text: "mt4_market-items-list_adv10-fsa" },
-  { key: "adv11-fsa-mt5", text: "mt4_market-items-list_adv11-fsa" },
-  { key: "adv12", text: "mt4_market-items-list_adv12-fsa" },
-  { key: "adv11", text: "mt4_market-items-list_adv13-fsa" },
 ];
 
 export const getMT4Advantages = () => FSA_MT4_ADVANTAGES;
@@ -458,4 +447,53 @@ export const getAnimationStyle = () => {
     default:
       return { height: 358 };
   }
+};
+
+// Platform Selection Configuration
+export const PLATFORM_SELECTION_CONFIG = () => {
+  const { t } = useTranslationWithVariables();
+
+  return {
+    tabs: [
+      { id: "mobile", label: t("platform-selection_mobile-tablet") },
+      { id: "desktop", label: t("platform-selection_desktop") },
+      { id: "webtrader", label: t("platform-selection_webtrader") },
+    ],
+    mobilePlatforms: [
+      {
+        id: "android",
+        name: t("platform-selection_mt4-android"),
+        color: "#4CAF50",
+      },
+      {
+        id: "ios",
+        name: t("platform-selection_mt4-ios"),
+        color: "#000000",
+      },
+      {
+        id: "huawei",
+        name: t("platform-selection_mt4-huawei"),
+        color: "#000000",
+      },
+    ],
+    desktopPlatforms: [
+      {
+        id: "windows",
+        name: t("platform-selection_mt4-windows"),
+        color: "#0078D4",
+      },
+      {
+        id: "mac",
+        name: t("platform-selection_mt4-mac"),
+        color: "#000000",
+      },
+    ],
+    webtraderPlatforms: [
+      {
+        id: "browser",
+        name: t("platform-selection_mt4-webtrader"),
+        color: "#FF4400",
+      },
+    ],
+  };
 };

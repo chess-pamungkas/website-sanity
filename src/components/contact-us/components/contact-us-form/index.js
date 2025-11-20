@@ -23,30 +23,41 @@ const ContactUsForm = () => {
     }, 3000);
   };
 
-  const handleContactForm = async (values) => {
-    const token = await executeRecaptcha("contact_us");
-    axios
-      .post(`${API_URL}mail`, {
+  const handleContactForm = async (values, setSubmitting) => {
+    try {
+      const token = await executeRecaptcha("contact_us");
+      await axios.post(`${API_URL}mail`, {
         ...values,
         entity: currentEntity,
         token,
-      })
-      .then(() => {
-        handleApiResponse(true);
-      })
-      .catch((error) => {
-        sendLog({ message: error.message, type: error.name });
-        handleApiResponse(false);
       });
+      handleApiResponse(true);
+    } catch (error) {
+      sendLog({ message: error.message, type: error.name });
+      handleApiResponse(false);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <Formik
-      initialValues={{ fullName: "", email: "", subject: "", message: "" }}
+      initialValues={{
+        fullName: "",
+        email: "",
+        subject: "",
+        message: "",
+      }}
       validationSchema={ContactUsSchema}
-      onSubmit={(values, { resetForm }) => {
-        handleContactForm(values);
-        resetForm();
+      onSubmit={(values, { resetForm, setSubmitting, validateForm }) => {
+        validateForm().then((errors) => {
+          if (Object.keys(errors).length === 0) {
+            handleContactForm(values, setSubmitting);
+            resetForm();
+          } else {
+            setSubmitting(false);
+          }
+        });
       }}
       enableReinitialize
     >
@@ -57,6 +68,7 @@ const ContactUsForm = () => {
         handleChange,
         handleBlur,
         handleSubmit,
+        isSubmitting,
       }) => (
         <form onSubmit={handleSubmit} className="contact-us-form">
           <Input
@@ -102,20 +114,22 @@ const ContactUsForm = () => {
             errorMessage={errors.message}
             placeholder={t("contact-us_form_placeholder")}
           />
+
           <button
             type="submit"
+            disabled={isSubmitting}
             className={cn(
               "button-link",
               "button-link--with-red-border",
               "contact-us-form__btn",
               {
-                "button-link--disabled":
-                  Object.values(errors).length > 0 ||
-                  Object.values(touched).length === 0,
+                "button-link--disabled": isSubmitting,
               }
             )}
           >
-            {t("contact-us_form_btn")}
+            {isSubmitting
+              ? t("contact-us_form_btn_submitting") || "Submitting..."
+              : t("contact-us_form_btn")}
           </button>
 
           {isSentSuccessful !== null && (

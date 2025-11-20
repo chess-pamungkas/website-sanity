@@ -1,0 +1,15 @@
+<svg width="1440" height="807" viewBox="0 0 1440 807" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 24C0 10.7452 10.7452 0 24 0H1416C1429.25 0 1440 10.7452 1440 24V783C1440 796.255 1429.25 807 1416 807H24C10.7451 807 0 796.255 0 783V24Z" fill="black"/>
+<path d="M0 24C0 10.7452 10.7452 0 24 0H1416C1429.25 0 1440 10.7452 1440 24V783C1440 796.255 1429.25 807 1416 807H24C10.7451 807 0 796.255 0 783V24Z" fill="url(#paint0_linear_2098_11307)" fill-opacity="0.33"/>
+<path d="M0 24C0 10.7452 10.7452 0 24 0H1416C1429.25 0 1440 10.7452 1440 24V783C1440 796.255 1429.25 807 1416 807H24C10.7451 807 0 796.255 0 783V24Z" fill="url(#paint1_radial_2098_11307)" fill-opacity="0.77"/>
+<defs>
+<linearGradient id="paint0_linear_2098_11307" x1="720" y1="0" x2="720" y2="807" gradientUnits="userSpaceOnUse">
+<stop stop-opacity="0"/>
+<stop offset="1" stop-color="#FF4400"/>
+</linearGradient>
+<radialGradient id="paint1_radial_2098_11307" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(720 840.316) rotate(90) scale(174.397 563.129)">
+<stop stop-color="#FF7700"/>
+<stop offset="1" stop-opacity="0"/>
+</radialGradient>
+</defs>
+</svg>

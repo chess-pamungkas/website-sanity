@@ -1,12 +1,24 @@
 import React, { cloneElement, createElement } from "react";
 import Layout from "./src/components/shared/layout";
 
+// Critical font assets (importing ensures hashed URLs are available at build time)
+import SofiaProRegularWoff2 from "./src/assets/fonts/SofiaProRegular.woff2";
+import SofiaProMediumWoff2 from "./src/assets/fonts/SofiaProMedium.woff2";
+import SofiaProBoldWoff2 from "./src/assets/fonts/SofiaProBold.woff2";
+import SofiaProBlackWoff2 from "./src/assets/fonts/SofiaProBlack.woff2";
+import RobotoMediumTtf from "./src/assets/fonts/Roboto-Medium.ttf";
+// Critical LCP images (globe image is the LCP element)
+// Using static folder path for WebP (more reliable in Gatsby)
+const GlobeImage = "/images/globe.webp";
+const HandImage = "/images/hand.webp";
+
 export const onRenderBody = ({
   setPostBodyComponents,
   setHeadComponents,
   setPreBodyComponents,
+  pathname,
 }) => {
-  setPreBodyComponents([
+  const preBodyComponents = [
     // // Default content for Google bot fast mode (Hidden for users)
     <section
       key="default-nojs-content"
@@ -40,11 +52,128 @@ export const onRenderBody = ({
         </div>
       </div>
     </section>,
-  ]);
+    ,
+    <script
+      key="clean-bis-attributes"
+      dangerouslySetInnerHTML={{
+        __html: `(function(){try{var nodes=document.querySelectorAll('[bis_skin_checked]');for(var i=0;i<nodes.length;i++){nodes[i].removeAttribute('bis_skin_checked');}}catch(e){}})();`,
+      }}
+    />,
+  ];
+
+  // CRITICAL: Script to ensure LCP image is visible IMMEDIATELY, even before React hydration
+  // This runs as early as possible to reduce element render delay to near zero
+  if (pathname === "/" || (pathname && pathname.match(/^\/[a-z]{2}\/?$/))) {
+    preBodyComponents.push(
+      <script
+        key="lcp-image-optimizer"
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              // CRITICAL: Ensure LCP image is visible IMMEDIATELY
+              // This function runs multiple times to catch image as soon as it appears in DOM
+              function ensureLCPImageVisible() {
+                // Find image container and element
+                var heroImg = document.querySelector('.main-promotion__hero-img');
+                var heroImgElement = document.querySelector('.main-promotion__hero-img-element');
+                
+                // Force container visibility immediately
+                if (heroImg) {
+                  heroImg.style.setProperty('display', 'block', 'important');
+                  heroImg.style.setProperty('visibility', 'visible', 'important');
+                  heroImg.style.setProperty('opacity', '0.62', 'important');
+                  heroImg.style.setProperty('position', 'absolute', 'important');
+                  heroImg.style.setProperty('bottom', '0', 'important');
+                  heroImg.style.setProperty('right', '-50px', 'important');
+                  heroImg.style.setProperty('width', '734px', 'important');
+                  heroImg.style.setProperty('height', '734px', 'important');
+                  heroImg.style.setProperty('z-index', '1', 'important');
+                }
+                
+                // Force image element visibility immediately
+                if (heroImgElement) {
+                  heroImgElement.style.setProperty('display', 'block', 'important');
+                  heroImgElement.style.setProperty('visibility', 'visible', 'important');
+                  heroImgElement.style.setProperty('width', '100%', 'important');
+                  heroImgElement.style.setProperty('height', '100%', 'important');
+                  heroImgElement.style.setProperty('object-fit', 'contain', 'important');
+                  heroImgElement.style.setProperty('object-position', 'bottom center', 'important');
+                }
+              }
+              
+              // Run IMMEDIATELY (synchronous execution)
+              ensureLCPImageVisible();
+              
+              // Run on DOM ready
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', ensureLCPImageVisible, { once: true });
+              } else {
+                ensureLCPImageVisible();
+              }
+              
+              // Run multiple times to catch image as soon as React renders it
+              // Use requestAnimationFrame for immediate execution
+              if (window.requestAnimationFrame) {
+                requestAnimationFrame(ensureLCPImageVisible);
+                requestAnimationFrame(function() {
+                  requestAnimationFrame(ensureLCPImageVisible);
+                });
+              }
+              
+              // Also use setTimeout as fallback
+              setTimeout(ensureLCPImageVisible, 0);
+              setTimeout(ensureLCPImageVisible, 10);
+              setTimeout(ensureLCPImageVisible, 50);
+              setTimeout(ensureLCPImageVisible, 100);
+              
+              // Monitor DOM for image appearance (MutationObserver)
+              if (window.MutationObserver) {
+                var observer = new MutationObserver(function(mutations) {
+                  var found = false;
+                  mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes.length > 0) {
+                      mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) {
+                          var img = node.querySelector && node.querySelector('.main-promotion__hero-img-element');
+                          if (img || (node.classList && node.classList.contains('main-promotion__hero-img-element'))) {
+                            found = true;
+                          }
+                        }
+                      });
+                    }
+                  });
+                  if (found) {
+                    ensureLCPImageVisible();
+                  }
+                });
+                
+                if (document.body) {
+                  observer.observe(document.body, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['style', 'class']
+                  });
+                  
+                  // Stop observing after 3 seconds (image should be visible by then)
+                  setTimeout(function() {
+                    observer.disconnect();
+                  }, 3000);
+                }
+              }
+            })();
+          `,
+        }}
+      />
+    );
+  }
+
+  setPreBodyComponents(preBodyComponents);
   setPostBodyComponents([
     <script
       key="live-chat"
       defer
+      async
       id="convrs-webchat"
       src={process.env.GATSBY_CONVRS_LIVECHAT}
     />,
@@ -52,18 +181,13 @@ export const onRenderBody = ({
       key="livechat-debug"
       dangerouslySetInnerHTML={{
         __html: `
-          // Debug livechat loading
+          // Debug livechat loading (silent - no console logs)
           (function() {
             const checkLivechat = setInterval(function() {
               const livechatScript = document.getElementById('convrs-webchat');
               const livechatElements = document.querySelectorAll('[id*="convrs"], [class*="convrs"]');
               
-              if (livechatScript) {
-                console.log('✅ Livechat script element found');
-              }
-              
               if (livechatElements.length > 0) {
-                console.log('✅ Livechat elements found:', livechatElements.length);
                 clearInterval(checkLivechat);
               }
             }, 2000);
@@ -126,6 +250,27 @@ export const onRenderBody = ({
                     // For normal pages, ensure livechat is visible and properly z-indexed
                     // Only set z-index, don't touch display/visibility to let livechat show naturally
                     el.style.setProperty('z-index', '21', 'important');
+                    
+                    // Force LTR direction for live chat widget in RTL pages
+                    const isRTL = document.documentElement.getAttribute('dir') === 'rtl' || 
+                                 document.body.getAttribute('dir') === 'rtl' ||
+                                 document.documentElement.dir === 'rtl';
+                    if (isRTL) {
+                      el.style.setProperty('direction', 'ltr', 'important');
+                      el.setAttribute('dir', 'ltr');
+                      
+                      // Apply LTR to all child elements
+                      const allChildren = el.querySelectorAll('*');
+                      allChildren.forEach(child => {
+                        if (child.style) {
+                          child.style.setProperty('direction', 'ltr', 'important');
+                          child.style.setProperty('text-align', 'left', 'important');
+                        }
+                        if (child.setAttribute) {
+                          child.setAttribute('dir', 'ltr');
+                        }
+                      });
+                    }
                   }
                 });
               } catch (error) {
@@ -142,8 +287,18 @@ export const onRenderBody = ({
                     mutation.addedNodes.forEach(function(node) {
                       if (node.nodeType === 1 && (node.id && node.id.includes('convrs') || 
                           (node.className && typeof node.className === 'string' && node.className.includes('convrs')))) {
-                        console.log('🔵 Livechat element detected, managing...');
                         setTimeout(manageLivechatZIndex, 100);
+                        
+                        // Also apply LTR styling immediately for new elements
+                        const isRTL = document.documentElement.getAttribute('dir') === 'rtl' || 
+                                     document.body.getAttribute('dir') === 'rtl' ||
+                                     document.documentElement.dir === 'rtl';
+                        if (isRTL && node.style) {
+                          node.style.setProperty('direction', 'ltr', 'important');
+                          if (node.setAttribute) {
+                            node.setAttribute('dir', 'ltr');
+                          }
+                        }
                       }
                     });
                   }
@@ -185,10 +340,86 @@ export const onRenderBody = ({
     <script
       key="mt-widget"
       type="text/javascript"
+      defer
+      async
       src="https://metatraderweb.app/trade/widget.js"
     />,
   ]);
+
+  /*
+   * NOTE: Preconnect hints are now added in onPreRenderHTML to ensure they're
+   * at the very beginning of <head> for optimal performance.
+   *
+   * Third-party resource limitations (cannot be fixed directly):
+   *
+   * 1. Cache lifetimes for third-party resources:
+   *    - Trustpilot widgets (widget.trustpilot.com) - Cache headers controlled by Trustpilot
+   *    - MetaTrader widget (metatraderweb.app) - Cache headers controlled by MetaTrader
+   *    - Conv.rs livechat (webchat.conv.rs) - Cache headers controlled by Conv.rs
+   *    These resources are served by third-party servers, so we cannot set cache headers.
+   *    Preconnect hints are added in onPreRenderHTML to reduce connection latency.
+   *
+   * 2. Font display for Google Fonts:
+   *    - Google Fonts loaded by third-party scripts (e.g., Trustpilot) don't have font-display
+   *    - We cannot add font-display to fonts loaded by third-party scripts
+   *    - Our own fonts (Sofia Pro, Roboto) already have font-display: swap in typography.scss
+   *    - Preconnect hints are added in onPreRenderHTML to help with font loading performance
+   *    - To fully resolve this, contact TrustPilot to request font-display support
+   *
+   * 3. Image delivery optimization:
+   *    - Account Comparison Background SVG (3.6 MB) - Optimized with lazy loading and low priority
+   *      TODO: Optimize SVG file by removing embedded bitmap images and using SVG paths
+   *    - Conv.rs avatar image (53 KiB) - Third-party image, cannot optimize directly
+   *      Contact Conv.rs to request image optimization (WebP/AVIF format, responsive sizing)
+   *
+   * To improve these metrics, contact the third-party providers:
+   * - Trustpilot: Request better cache headers and font-display support for Google Fonts
+   * - MetaTrader: Request better cache headers
+   * - Conv.rs: Request better cache headers (currently Cache TTL: None) and image optimization
+   */
+
   setHeadComponents([
+    // Preload critical fonts used above the fold
+    <link
+      key="preload-font-sofia-regular"
+      rel="preload"
+      href={SofiaProRegularWoff2}
+      as="font"
+      type="font/woff2"
+      crossOrigin="anonymous"
+    />,
+    <link
+      key="preload-font-sofia-medium"
+      rel="preload"
+      href={SofiaProMediumWoff2}
+      as="font"
+      type="font/woff2"
+      crossOrigin="anonymous"
+    />,
+    <link
+      key="preload-font-sofia-bold"
+      rel="preload"
+      href={SofiaProBoldWoff2}
+      as="font"
+      type="font/woff2"
+      crossOrigin="anonymous"
+    />,
+    <link
+      key="preload-font-sofia-black"
+      rel="preload"
+      href={SofiaProBlackWoff2}
+      as="font"
+      type="font/woff2"
+      crossOrigin="anonymous"
+    />,
+    <link
+      key="preload-font-roboto-medium"
+      rel="preload"
+      href={RobotoMediumTtf}
+      as="font"
+      type="font/ttf"
+      crossOrigin="anonymous"
+    />,
     // Default title and description for Google bot fast mode
     <title key="default-title">
       Forex & CFD Trading on Stocks, Indices, Oil, Gold by OQtima™
@@ -223,6 +454,220 @@ export const onRenderBody = ({
     />,
     <meta key="tw-img" name="twitter:image" content="/preview.jpeg" />,
   ]);
+};
+
+// Preload LCP images early in HTML head for optimal performance
+// This ensures images are discoverable in initial document (required by PageSpeed Insights)
+// Globe image is the LCP element, so it must be preloaded first in initial HTML
+export const onPreRenderHTML = ({
+  getHeadComponents,
+  replaceHeadComponents,
+  pathname,
+}) => {
+  const headComponents = getHeadComponents();
+  const earlyHints = [];
+
+  // Preconnect hints - MUST be at the very beginning of head for optimal performance
+  // These establish connections early to reduce critical path latency
+  const apiUrl = process.env.GATSBY_OQTIMA_API_URL;
+  const preconnectLinks = [];
+
+  // CRITICAL: Preconnect to API backend (dev-back.oqt-ima.com) - 600ms LCP savings (highest priority!)
+  // Always add this preconnect regardless of environment variable to ensure it's always present
+  const apiOrigins = new Set();
+
+  // Add from environment variable if available
+  if (apiUrl) {
+    try {
+      apiOrigins.add(new URL(apiUrl).origin);
+    } catch (e) {
+      // Invalid URL, ignore
+    }
+  }
+
+  // Also add common API origins to ensure preconnect is always present
+  // This ensures preconnect works even if env var is missing
+  apiOrigins.add("https://dev-back.oqt-ima.com");
+  apiOrigins.add("https://back.oqt-ima.com");
+  apiOrigins.add("https://back.oqtima.com");
+
+  // Add preconnect for all API origins
+  apiOrigins.forEach((origin) => {
+    preconnectLinks.push(
+      <link
+        key={`preconnect-api-${origin}`}
+        rel="preconnect"
+        href={origin}
+        crossOrigin="anonymous"
+      />,
+      <link
+        key={`dns-prefetch-api-${origin}`}
+        rel="dns-prefetch"
+        href={origin}
+      />
+    );
+  });
+
+  // Preconnect to Trustpilot widget - 190ms LCP savings (highest priority)
+  preconnectLinks.push(
+    <link
+      key="preconnect-trustpilot"
+      rel="preconnect"
+      href="https://widget.trustpilot.com"
+      crossOrigin="anonymous"
+    />,
+    <link
+      key="dns-prefetch-trustpilot"
+      rel="dns-prefetch"
+      href="https://widget.trustpilot.com"
+    />
+  );
+
+  // Preconnect to Google (www.google.com) - 80ms LCP savings (for reCAPTCHA)
+  preconnectLinks.push(
+    <link
+      key="preconnect-google"
+      rel="preconnect"
+      href="https://www.google.com"
+      crossOrigin="anonymous"
+    />,
+    <link
+      key="dns-prefetch-google"
+      rel="dns-prefetch"
+      href="https://www.google.com"
+    />
+  );
+
+  // Preconnect to Google reCAPTCHA API
+  preconnectLinks.push(
+    <link
+      key="preconnect-google-recaptcha"
+      rel="preconnect"
+      href="https://www.gstatic.com"
+      crossOrigin="anonymous"
+    />,
+    <link
+      key="dns-prefetch-google-recaptcha"
+      rel="dns-prefetch"
+      href="https://www.gstatic.com"
+    />
+  );
+
+  // Preconnect to MetaTrader widget (for /trade/widget.js)
+  preconnectLinks.push(
+    <link
+      key="preconnect-metatrader"
+      rel="preconnect"
+      href="https://metatraderweb.app"
+      crossOrigin="anonymous"
+    />,
+    <link
+      key="dns-prefetch-metatrader"
+      rel="dns-prefetch"
+      href="https://metatraderweb.app"
+    />
+  );
+
+  // Preconnect to Google Fonts (used by third-party widgets)
+  preconnectLinks.push(
+    <link
+      key="preconnect-google-fonts"
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossOrigin="anonymous"
+    />,
+    <link
+      key="dns-prefetch-google-fonts"
+      rel="dns-prefetch"
+      href="https://fonts.gstatic.com"
+    />
+  );
+
+  // Preconnect to Conv.rs livechat (webchat.conv.rs and conv.rs)
+  // CRITICAL: These resources have Cache TTL: None, so preconnect is essential
+  preconnectLinks.push(
+    <link
+      key="preconnect-convrs-webchat"
+      rel="preconnect"
+      href="https://webchat.conv.rs"
+      crossOrigin="anonymous"
+    />,
+    <link
+      key="dns-prefetch-convrs-webchat"
+      rel="dns-prefetch"
+      href="https://webchat.conv.rs"
+    />,
+    <link
+      key="preconnect-convrs"
+      rel="preconnect"
+      href="https://conv.rs"
+      crossOrigin="anonymous"
+    />,
+    <link key="dns-prefetch-convrs" rel="dns-prefetch" href="https://conv.rs" />
+  );
+
+  // CRITICAL: Preconnect links MUST be added for ALL pages, not just homepage
+  // These reduce critical path latency significantly (600ms + 90ms savings)
+  earlyHints.push(...preconnectLinks);
+
+  // Preload LCP images for homepage/main promotion pages
+  // These must be in initial HTML, not added later by React/Helmet
+  if (pathname === "/" || pathname.match(/^\/[a-z]{2}\/?$/)) {
+    // Globe image is the LCP element - must be preloaded first
+    earlyHints.push(
+      <link
+        key="preload-globe-image"
+        rel="preload"
+        as="image"
+        href={GlobeImage}
+        fetchpriority="high"
+      />
+    );
+    // Hand image is also important for hero section
+    earlyHints.push(
+      <link
+        key="preload-hand-image"
+        rel="preload"
+        as="image"
+        href={HandImage}
+        fetchpriority="high"
+      />
+    );
+    // Add critical CSS inline to ensure LCP image container is visible immediately
+    earlyHints.push(
+      <style
+        key="lcp-critical-css"
+        dangerouslySetInnerHTML={{
+          __html: `
+            /* Critical CSS for LCP image - ensures immediate visibility */
+            .main-promotion__hero-img {
+              position: absolute !important;
+              bottom: 0 !important;
+              right: -50px !important;
+              width: 734px !important;
+              height: 734px !important;
+              opacity: 0.62 !important;
+              z-index: 1 !important;
+              display: block !important;
+              visibility: visible !important;
+            }
+            .main-promotion__hero-img-element {
+              width: 100% !important;
+              height: 100% !important;
+              object-fit: contain !important;
+              object-position: bottom center !important;
+              display: block !important;
+            }
+          `,
+        }}
+      />
+    );
+  }
+
+  // CRITICAL: Always replace head components with preconnect links at the beginning
+  // Preconnect links MUST be at the very start of <head> to be effective
+  // This ensures they're discovered early and connections are established before resources are requested
+  replaceHeadComponents([...earlyHints, ...headComponents]);
 };
 
 export const wrapPageElement = ({ element }) => {

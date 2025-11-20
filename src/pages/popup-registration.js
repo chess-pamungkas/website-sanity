@@ -5,9 +5,11 @@ import { useTranslation } from "react-i18next";
 import { graphql } from "gatsby";
 import LanguageContext from "../context/language-context";
 import ClientResolverContext from "../context/client-resolver-context";
+import { useRtlDirection } from "../helpers/hooks/use-rtl-direction";
 
 // Import the styles directly
 import "../assets/styles/popup-registration.scss";
+import popupRegistrationBg from "../assets/images/bg/popup-registration/bg-popup-registration.svg";
 import "../assets/styles/rtl.scss";
 
 const RTL_LANGUAGES = ["ar"];
@@ -106,9 +108,9 @@ const manuallySetLanguage = async (lang, i18nInstance) => {
       return false;
     }
 
-    // Special handling for RTL languages
-    const RTL_LANGUAGES = ["ar"];
-    const isRTL = RTL_LANGUAGES.includes(lang);
+    // Use hook for RTL detection
+    // Note: This function is called outside React context, so we use manual check
+    const isRTL = lang === "ar";
 
     // Apply RTL styling if needed
     if (isRTL) {
@@ -301,6 +303,92 @@ const PopupRegistrationPage = ({ location, data }) => {
   const [error, setError] = useState(null);
   const [isPopupMode, setIsPopupMode] = useState(false);
   const [isRTL, setIsRTL] = useState(false);
+  const [forceDesktopSidebar, setForceDesktopSidebar] = useState(false);
+
+  useEffect(() => {
+    const logSidebarState = (phase) => {
+      try {
+        const sidebarEl = document.querySelector(
+          ".popup-registration__sidebar"
+        );
+        if (!sidebarEl) {
+          console.warn(
+            `[PopupRegistration][SidebarTrace] Sidebar element not found (${phase}).`
+          );
+          try {
+            window.parent?.postMessage(
+              {
+                type: "OQTIMA_SIDEBAR_TRACE",
+                phase,
+                status: "missing",
+              },
+              "*"
+            );
+          } catch {}
+          return;
+        }
+
+        const computed = window.getComputedStyle(sidebarEl);
+        const details = {
+          phase,
+          offsetWidth: sidebarEl.offsetWidth,
+          offsetHeight: sidebarEl.offsetHeight,
+          clientWidth: sidebarEl.clientWidth,
+          clientHeight: sidebarEl.clientHeight,
+          computedDisplay: computed.display,
+          computedVisibility: computed.visibility,
+          computedOpacity: computed.opacity,
+          computedBackgroundImage: computed.backgroundImage,
+          computedBackgroundColor: computed.backgroundColor,
+          classList: Array.from(sidebarEl.classList || []),
+          dataAttributes: { ...sidebarEl.dataset },
+        };
+        console.log(
+          "[PopupRegistration][SidebarTrace] Sidebar diagnostics",
+          details
+        );
+        try {
+          window.parent?.postMessage(
+            {
+              type: "OQTIMA_SIDEBAR_TRACE",
+              phase,
+              status: "ok",
+              details,
+            },
+            "*"
+          );
+        } catch {}
+      } catch (error) {
+        console.warn(
+          "[PopupRegistration][SidebarTrace] Failed to inspect sidebar:",
+          error
+        );
+        try {
+          window.parent?.postMessage(
+            {
+              type: "OQTIMA_SIDEBAR_TRACE",
+              phase,
+              status: "error",
+              error: error?.message || String(error),
+            },
+            "*"
+          );
+        } catch {}
+      }
+    };
+
+    const timers = [
+      setTimeout(() => logSidebarState("post-100ms"), 100),
+      setTimeout(() => logSidebarState("post-500ms"), 500),
+      setTimeout(() => logSidebarState("post-1500ms"), 1500),
+    ];
+
+    logSidebarState("initial");
+
+    return () => {
+      timers.forEach(clearTimeout);
+    };
+  }, []);
 
   // Prevent language routing redirects for popup
   useEffect(() => {
@@ -325,40 +413,9 @@ const PopupRegistrationPage = ({ location, data }) => {
         "[Popup Registration] Running in isolated mode - language switching disabled"
       );
 
-      // CRITICAL FIX: Completely override localStorage for popup isolation
-      const originalLocalStorage = window.localStorage;
+      // CRITICAL FIX: Use sessionStorage for popup isolation instead of overriding localStorage
+      // localStorage is read-only in modern browsers, so we use sessionStorage instead
       const popupSpecificStorage = {};
-
-      // Create isolated localStorage that doesn't affect parent
-      window.localStorage = {
-        getItem: function (key) {
-          // For language-related keys, use popup-specific storage
-          if (key === "i18nextLng" || key === "gatsby-i18next-language") {
-            return popupSpecificStorage[key] || null;
-          }
-          return originalLocalStorage.getItem(key);
-        },
-        setItem: function (key, value) {
-          // For language-related keys, use popup-specific storage
-          if (key === "i18nextLng" || key === "gatsby-i18next-language") {
-            popupSpecificStorage[key] = value;
-            return;
-          }
-          return originalLocalStorage.setItem(key, value);
-        },
-        removeItem: function (key) {
-          if (key === "i18nextLng" || key === "gatsby-i18next-language") {
-            delete popupSpecificStorage[key];
-            return;
-          }
-          return originalLocalStorage.removeItem(key);
-        },
-        clear: originalLocalStorage.clear.bind(originalLocalStorage),
-        key: originalLocalStorage.key.bind(originalLocalStorage),
-        get length() {
-          return originalLocalStorage.length;
-        },
-      };
 
       // Set the popup language immediately in isolated storage
       const popupLanguage =
@@ -368,16 +425,18 @@ const PopupRegistrationPage = ({ location, data }) => {
         urlParams.get("data-lang") ||
         "en";
 
-      // Set in popup-specific storage
-      popupSpecificStorage["i18nextLng"] = popupLanguage;
-      popupSpecificStorage["gatsby-i18next-language"] = popupLanguage;
-
-      // Store in sessionStorage for this popup session
+      // Store in sessionStorage for this popup session (this is isolated per tab)
       sessionStorage.setItem("popup_isolated_language", popupLanguage);
+      sessionStorage.setItem("popup_i18nextLng", popupLanguage);
+      sessionStorage.setItem("popup_gatsby-i18next-language", popupLanguage);
 
       // CRITICAL: Override parent language completely
       sessionStorage.setItem("oqtima_parent_lang", popupLanguage);
       sessionStorage.setItem("oqtima_parent_dir", "ltr"); // Default, will be set by popup if RTL
+
+      // Store in popup-specific in-memory storage for quick access
+      popupSpecificStorage["i18nextLng"] = popupLanguage;
+      popupSpecificStorage["gatsby-i18next-language"] = popupLanguage;
 
       console.log(
         `[Popup Registration] Isolated popup language set to: ${popupLanguage}`
@@ -385,11 +444,6 @@ const PopupRegistrationPage = ({ location, data }) => {
       console.log(
         `[Popup Registration] Parent language overridden to: ${popupLanguage}`
       );
-
-      // Cleanup on page unload
-      window.addEventListener("beforeunload", () => {
-        window.localStorage = originalLocalStorage;
-      });
     }
 
     const handleMessage = (event) => {
@@ -513,6 +567,9 @@ const PopupRegistrationPage = ({ location, data }) => {
               window.__OQTIMA_REFERRAL_TYPE__ = messageData.referral_type;
             if (messageData.referral_value)
               window.__OQTIMA_REFERRAL_VALUE__ = messageData.referral_value;
+            if (typeof messageData.forceSidebar !== "undefined") {
+              setForceDesktopSidebar(Boolean(messageData.forceSidebar));
+            }
 
             // Send confirmation back to parent
             window.parent.postMessage(
@@ -581,6 +638,13 @@ const PopupRegistrationPage = ({ location, data }) => {
         registrationParams.referral_value = searchParams.get("referral_value");
       }
 
+      const forceSidebarParam = searchParams.get("force_sidebar");
+      if (forceSidebarParam === "true") {
+        setForceDesktopSidebar(true);
+      } else if (forceSidebarParam === "false") {
+        setForceDesktopSidebar(false);
+      }
+
       // CRITICAL: Check oqtima_lang_locked parameter if exists
       if (searchParams.get("oqtima_lang_locked")) {
         const lockedLang = searchParams.get("oqtima_lang_locked");
@@ -608,7 +672,7 @@ const PopupRegistrationPage = ({ location, data }) => {
       }
 
       // Detect RTL languages
-      const isRtlLanguage = RTL_LANGUAGES.includes(effectiveLangParam);
+      const isRtlLanguage = effectiveLangParam === "ar";
       setIsRTL(isRtlLanguage);
 
       // Store params in state
@@ -888,34 +952,100 @@ const PopupRegistrationPage = ({ location, data }) => {
             overflow-y: auto !important;
             padding: 0 !important;
             border: none !important;
+            display: flex !important;
+            gap: 20px !important;
           }
 
-          /* Fix for mobile styles */
-          @media screen and (max-width: 767px) {
-            .popup-registration__content {
-              width: 100% !important;
-              border-radius: 0 0 0.625rem 0.625rem !important;
-              padding: 1.875rem 1.25rem !important;
+          .popup-registration__container[data-force-sidebar="true"] .popup-registration__sidebar {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            width: 331px !important;
+            min-width: 331px !important;
+            flex-shrink: 0 !important;
+            background-image: url("${popupRegistrationBg}") !important;
+            background-repeat: no-repeat !important;
+            background-position: center center !important;
+            background-size: cover !important;
+          }
+
+          .popup-registration__container[data-force-sidebar="true"] .popup-registration__content {
+            width: 615px !important;
+            flex: 1 !important;
+          }
+          
+          /* Desktop: Ensure sidebar is visible */
+          @media screen and (min-width: 1024px) {
+            .popup-registration__container {
+              max-width: 966px !important;
+              min-width: 966px !important;
             }
             
             .popup-registration__sidebar {
-              width: 100% !important;
-              border-radius: 0.625rem 0.625rem 0 0 !important;
-              max-height: 21.875rem !important;
+              display: block !important;
+              visibility: visible !important;
+              opacity: 1 !important;
+              width: 331px !important;
+              min-width: 331px !important;
+              flex-shrink: 0 !important;
+              height: 100% !important;
+              background-image: url("${popupRegistrationBg}") !important;
+              background-repeat: no-repeat !important;
+              background-position: center center !important;
+              background-size: cover !important;
             }
             
+            .popup-registration__content {
+              width: 615px !important;
+              flex: 1 !important;
+            }
+          }
+          
+          /* Tablet: Content should be 100% width, no sidebar */
+          @media screen and (min-width: 768px) and (max-width: 1023px) {
             .popup-registration__container {
-              flex-direction: column !important;
-              border-radius: 0.625rem !important;
+              width: 100% !important;
+              max-width: 100% !important;
+            }
+            
+            .popup-registration__content {
+              width: 100% !important;
+              max-width: 100% !important;
+            }
+            
+            .popup-registration__sidebar {
+              display: block !important;
+              visibility: visible !important;
+            }
+          }
+
+          /* Fix for mobile styles - ensure content is 100% width */
+          @media screen and (max-width: 767px) {
+            .popup-registration__container {
+              width: 100% !important;
+              max-width: 100% !important;
+            }
+            
+            .popup-registration__content {
+              width: 100% !important;
+              max-width: 100% !important;
+              border-radius: 20px !important;
+              // padding: 20px !important;
+              min-height: 100vh !important;
+              height: 100vh !important;
+            }
+            
+            .popup-registration__sidebar {
+              display: none !important;
             }
           }
 
           /* Fix for tablet styles */
-          @media screen and (min-width: 768px) and (max-width: 1199px) {
-            .popup-registration__content {
-              padding: 2.5rem !important;
-            }
-          }
+          // @media screen and (min-width: 768px) and (max-width: 1199px) {
+          //   .popup-registration__content {
+          //     padding: 2.5rem !important;
+          //   }
+          // }
 
           /* Remove any padding from form elements */
           .popup-registration form,
@@ -958,6 +1088,7 @@ const PopupRegistrationPage = ({ location, data }) => {
           params={JSON.stringify({
             ...params,
             onRegistrationSuccess: handleRegistrationSuccess,
+            forceSidebar: forceDesktopSidebar,
           })}
         />
       </div>

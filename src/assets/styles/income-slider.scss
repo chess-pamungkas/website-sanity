@@ -1,0 +1,804 @@
+@import "vars";
+@import "mixins";
+
+.income-slider {
+  width: 100%;
+  padding: 150px 0 40px 0;
+
+  &__wrapper {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    @include mobile {
+      padding: 0;
+      gap: 24px;
+    }
+  }
+
+  &__badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: rgba(255, 68, 0, 0.1);
+    border-radius: 20px;
+    // margin-bottom: 16px;
+
+    &-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+
+    &-text {
+      font-weight: map-get($font-weight, "medium");
+      font-size: 14px;
+      line-height: 20px;
+      color: map-get($colors, "black");
+    }
+  }
+
+  &__title {
+    // Figma specifications
+    width: 800px;
+    height: auto;
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    line-height: 1.3;
+    text-align: center;
+    letter-spacing: -0.02em;
+
+    // Full title gradient effect as per Figma
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    // Auto layout properties
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0 auto;
+
+    padding-bottom: 30px;
+
+    @include mobile {
+      width: 100%;
+    }
+
+    @include tablet {
+      width: 100%;
+    }
+
+    @include desktop-lg {
+      width: 800px;
+    }
+
+    // Note: .highlight class now inherits parent gradient styling
+  }
+
+  &__description {
+    // Figma "Shared Features" container specifications
+    box-sizing: border-box;
+
+    // Auto layout
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 20px;
+    gap: 19.75px;
+
+    // Positioning and dimensions
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1280px;
+    height: 76px;
+
+    // Visual styling
+    background: #ffffff;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 20px;
+
+    // Typography for Features List content
+    font-weight: map-get($font-weight, "medium");
+    font-size: 16px;
+    line-height: 100%; // 16px
+    text-align: center;
+    letter-spacing: 0.2px;
+    color: #000000;
+
+    // Auto layout properties
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      min-height: 60px;
+      padding: 12px 16px;
+      font-size: 14px;
+      line-height: 120%;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 25px;
+      display: none;
+    }
+
+    @include tablet {
+      width: 100%;
+      font-weight: map-get($font-weight, "medium");
+      font-size: 16px;
+      padding: 14px;
+    }
+  }
+
+  // Main Container - Figma Horizontal Layout (1241x214px)
+  &__main-container {
+    // Figma Container specifications
+    width: 100%;
+    max-width: 1241px;
+    height: 214px;
+    margin: 0 auto;
+
+    // Gradient background from Figma
+    background: linear-gradient(
+      180deg,
+      rgba(255, 245, 241, 0.65) 0%,
+      rgba(255, 230, 221, 0.65) 69.23%,
+      rgba(255, 210, 193, 0.65) 100%
+    );
+
+    // Border and styling
+    border: 1px solid rgba(255, 68, 0, 0.25);
+    border-radius: 20px;
+
+    // Horizontal layout with 56px gap
+    display: flex;
+    flex-direction: row;
+    align-items: center; // Center items vertically
+    justify-content: center; // Center items horizontally
+    gap: 56px;
+    padding: 20px;
+
+    @include mobile {
+      // Mobile specific layout based on Figma JSON
+      flex-direction: column;
+      height: auto;
+      gap: 16px; // Reduced gap between sections
+      background: none; // Remove background on mobile
+      border: none; // Remove border on mobile
+      max-width: 100%; // Full width
+
+      // Create separate section for cards and progress bar
+      align-items: stretch;
+      justify-content: flex-start;
+    }
+
+    @include tablet {
+      max-width: 100%;
+      gap: 40px;
+      padding: 18px;
+    }
+
+    @include desktop-lg {
+      max-width: 1241px;
+      gap: 56px;
+    }
+  }
+
+  // Mobile cards container
+  &__stats-mobile {
+    display: none;
+
+    @include mobile {
+      display: flex;
+      flex-direction: row;
+      gap: 11px; // Figma spacing between cards
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 16px; // Space before progress bar
+      box-sizing: border-box;
+    }
+  }
+
+  &__stat-card {
+    // Figma card dimensions: 252.5x174px
+    width: 252.5px;
+    height: 174px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+
+    // Card layout
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    flex-grow: 1;
+
+    @include mobile {
+      // Figma mobile card dimensions: 171.08x117.89px
+      width: calc(50% - 5.5px); // Half width minus gap
+      height: 118px; // Figma mobile height
+      min-height: 118px;
+      border-radius: 11px; // Figma: cornerRadius: 10.84
+      padding: 0; // Remove padding, content handles it
+      flex-shrink: 0; // Prevent cards from shrinking
+      box-sizing: border-box; // Include border in width calculation
+      max-width: calc(50% - 5.5px); // Ensure cards don't exceed container
+    }
+
+    @include tablet {
+      width: calc(50% - 20px);
+      height: 160px;
+    }
+
+    @include desktop-xl {
+      width: 252.05px;
+      height: 174px;
+    }
+
+    &--clients {
+      // Left card with white background + radial gradient overlay
+      background: #ffffff;
+      position: relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+          circle at center,
+          rgba(255, 68, 0, 0.09) 0%,
+          rgba(255, 255, 255, 0.09) 100%
+        );
+        border-radius: 16px;
+        pointer-events: none;
+      }
+    }
+
+    &--income {
+      // Right card with linear gradient background
+      background: linear-gradient(
+        180deg,
+        rgba(255, 248, 245, 0.4) 0%,
+        rgba(255, 68, 0, 0.4) 100%
+      );
+    }
+
+    &--desktop {
+      @include mobile {
+        display: none; // Hide desktop cards on mobile
+      }
+    }
+  }
+
+  &__stat-content {
+    // Content wrapper for proper positioning
+    padding: 16px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    @include mobile {
+      padding: 8px;
+      gap: 12px;
+      min-width: 0; // Allow content to shrink
+    }
+  }
+
+  &__stat-value {
+    font-weight: map-get($font-weight, "bold");
+    font-size: 70px;
+    line-height: 100%;
+    letter-spacing: -0.02em;
+    margin: 0;
+
+    // Figma gradient specifications
+    background: linear-gradient(
+        102.31deg,
+        // Exact Figma angle
+        rgba(0, 0, 0, 0) 9.12%,
+        // Figma: 9.12%
+        rgba(255, 68, 0, 0.45) 71.6% // Figma: 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    // Auto layout properties
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    @include mobile {
+      width: auto;
+      height: auto;
+      font-size: 40px;
+      line-height: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+    }
+
+    @include tablet {
+      width: auto;
+      height: auto;
+      font-size: 40px;
+      line-height: 100%;
+    }
+
+    @include desktop-lg {
+      width: auto;
+      height: auto;
+      font-size: 42px;
+      line-height: 100%;
+    }
+
+    @include desktop-xl {
+      width: auto;
+      height: auto;
+      font-size: 70px;
+      line-height: 100%;
+    }
+
+    &--income {
+      // Figma income value specifications ($ 8800)
+      // width: 206px; // Figma: width: 206px (wider for income)
+      // height: 48px; // Figma: height: 48px (same)
+
+      font-style: normal; // Figma: font-style: normal
+      font-weight: map-get($font-weight, "bold"); // Figma: font-weight: 700
+      font-size: 70px; // Figma: font-size: 70px
+      // line-height: 120%; // Figma: line-height: 120% (84px)
+      letter-spacing: -0.02em; // Figma: letter-spacing: -0.05em (tighter)
+
+      // Figma layout properties
+      display: flex; // Figma: display: flex
+      align-items: center; // Figma: align-items: center
+
+      // Figma exact gradient (same as base, not enhanced)
+      background: linear-gradient(
+          102.31deg,
+          rgba(0, 0, 0, 0) 9.12%,
+          // Figma: exact same gradient
+          rgba(255, 68, 0, 0.45) 71.6% // Figma: same as base
+        ),
+        #000000; // Figma: black base (not orange)
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+
+      // Auto layout properties
+      flex: none; // Figma: flex: none
+      order: 0; // Figma: order: 0
+      flex-grow: 0; // Figma: flex-grow: 0
+
+      @include mobile {
+        width: auto;
+        height: auto;
+        font-size: 40px;
+        // line-height: 120%;
+        letter-spacing: -0.04em;
+      }
+
+      @include tablet {
+        width: auto;
+        height: auto;
+        font-size: 42px;
+        line-height: 120%;
+        letter-spacing: -0.045em;
+      }
+
+      @include desktop-lg {
+        width: auto;
+        height: auto;
+        font-size: 42px;
+        line-height: 120%;
+        letter-spacing: -0.02em;
+      }
+
+      @include desktop-xl {
+        width: auto;
+        height: auto;
+        font-size: 58px;
+        line-height: 120%;
+        letter-spacing: -0.02em;
+      }
+    }
+  }
+
+  &__stat-label {
+    font-weight: map-get($font-weight, "regular");
+    font-size: 16px;
+    line-height: 140%;
+    color: map-get($colors, "black");
+    opacity: 0.7;
+    margin: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+
+    @include mobile {
+      font-size: 10.84px;
+      line-height: 18px;
+      max-width: 100%;
+      white-space: normal;
+    }
+
+    @include tablet {
+      font-size: 14px;
+      line-height: 140%;
+    }
+
+    @include desktop-lg {
+      font-size: 16px;
+    }
+  }
+
+  // Progress Container - Center section of horizontal layout
+  &__progress-container {
+    // Figma Progress Bar dimensions: 584x47px + space for numbers
+    width: 584px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    // Center positioning within main container
+    flex-shrink: 0;
+
+    @include mobile {
+      // Figma mobile progress container: 347.46x27.96px
+      width: 100%;
+      height: auto;
+      padding: 0; // Remove padding
+      margin-top: 0; // No top margin
+      order: 2; // Place after cards
+    }
+
+    @include tablet {
+      width: 100%;
+      max-width: 200px;
+    }
+
+    @include desktop-lg {
+      width: 384px;
+      max-width: 384px;
+    }
+
+    @include desktop-xl {
+      width: 584px;
+      max-width: 584px;
+    }
+  }
+
+  &__progress-bar {
+    width: 100%;
+    height: 47px;
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    @include mobile {
+      // Figma mobile: height: 27.96px
+      height: 28px;
+    }
+  }
+
+  // Progress Track - Figma Gray Background
+  &__progress-track {
+    width: 100%;
+    height: 47px;
+    background: #d9d9d9; // Figma gray color
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+
+    @include mobile {
+      // Figma mobile: height: 28px, cornerRadius: 2.38px
+      height: 28px;
+      border-radius: 2px;
+    }
+  }
+
+  // Progress Fill - Figma Orange Gradient
+  &__progress-fill {
+    position: absolute;
+    left: 0.5px;
+    top: 0.5px;
+    height: calc(100% - 1px);
+    background: linear-gradient(
+      90deg,
+      rgba(255, 68, 0, 1) 0%,
+      rgba(255, 153, 0, 1) 100%
+    );
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    pointer-events: none;
+    max-width: calc(100% - 1px);
+
+    @include mobile {
+      // Mobile fill with rounded corners
+      border-radius: 2px;
+    }
+  }
+
+  // Hidden Input Range
+  &__progress-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
+
+    &::-webkit-slider-thumb {
+      appearance: none;
+      width: 26px;
+      height: 56px;
+      cursor: pointer;
+    }
+
+    &::-moz-range-thumb {
+      width: 26px;
+      height: 56px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+    }
+  }
+
+  // Progress Marks - Vertical lines aligned with numbers
+  &__progress-marks {
+    position: absolute;
+    top: 3.5px; // Figma: y: 3.5
+    left: 0; // Start from beginning of progress bar
+    right: 0; // End at end of progress bar
+    width: 100%; // Full width to match numbers below
+    height: 39.5px; // Figma: height: 39.5
+    pointer-events: none;
+    z-index: 2;
+    padding: 0 12px; // Match the padding of numbers below
+
+    @include mobile {
+      // Figma mobile marks: height: 23.5px
+      position: absolute;
+      top: 2px; // Figma: y: 2.082
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 24px; // Figma mobile mark height
+      padding: 0 12px; // Maintain alignment with numbers
+    }
+  }
+
+  &__progress-mark {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%); // Center the mark horizontally
+
+    // Position each mark based on percentage of slider range (same as numbers)
+    &:nth-child(1) {
+      left: 0%;
+    } // 10 -> 0% position
+    &:nth-child(2) {
+      left: 20%;
+    } // 100 -> 20% position
+    &:nth-child(3) {
+      left: 40%;
+    } // 200 -> 40% position
+    &:nth-child(4) {
+      left: 60%;
+    } // 300 -> 60% position
+    &:nth-child(5) {
+      left: 80%;
+    } // 400 -> 80% position
+    &:nth-child(6) {
+      left: 100%;
+    } // 500 -> 100% position
+  }
+
+  // Progress Numbers - Below the progress bar
+  &__progress-numbers {
+    position: relative;
+    display: flex;
+    width: 100%;
+    margin-top: 17.5px; // Space below progress bar for numbers
+    padding: 0 12px; // Align with marks
+
+    @include mobile {
+      margin-top: 12px;
+      padding: 0 8px;
+    }
+  }
+
+  // Legacy class names for compatibility
+  .partners-income__slider-mark-v-line {
+    width: 1px; // Figma Vector strokeWeight: 1
+    height: 39.5px; // Figma Vector height: 39.5
+    background: #000000; // Figma Vector stroke color: black
+    opacity: 0.12;
+
+    @include mobile {
+      // Figma mobile: strokeWeight: 0.595, height: 23.5px
+      width: 0.6px;
+      height: 24px;
+    }
+  }
+
+  .partners-income__slider-mark-number {
+    position: absolute;
+    font-family: "Sofia Pro";
+    font-weight: map-get($font-weight, "medium");
+    font-size: 12px;
+    line-height: 17px; // Figma text height: 17
+    color: #000000; // Figma text color: black
+    text-align: center;
+    transform: translateX(-50%); // Center the text horizontally
+    white-space: nowrap;
+
+    // Position each number based on percentage of slider range
+    &:nth-child(1) {
+      left: 0%;
+    } // 10 -> 0% position
+    &:nth-child(2) {
+      left: 20%;
+    } // 100 -> 20% position (90/450 * 100)
+    &:nth-child(3) {
+      left: 40%;
+    } // 200 -> 40% position (190/450 * 100)
+    &:nth-child(4) {
+      left: 60%;
+    } // 300 -> 60% position (290/450 * 100)
+    &:nth-child(5) {
+      left: 80%;
+    } // 400 -> 80% position (390/450 * 100)
+    &:nth-child(6) {
+      left: 100%;
+    } // 500 -> 100% position
+
+    @include mobile {
+      font-size: 11px;
+      line-height: 14px;
+    }
+  }
+
+  // Progress Thumb - Custom white handle with shadow from Figma
+  &__progress-thumb {
+    position: absolute;
+    top: -4.5px; // Figma positioning
+    width: 26px;
+    height: 56px;
+    pointer-events: none;
+    z-index: 4;
+    transform: translateX(-50%);
+    transition: left 0.3s ease;
+
+    @include mobile {
+      // Figma mobile thumb: 15.47x33.32px, y: -2.678
+      top: -3px;
+      width: 15px;
+      height: 33px;
+    }
+  }
+
+  &__progress-thumb-handle {
+    width: 26px;
+    height: 56px;
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    position: relative;
+
+    @include mobile {
+      // Figma mobile: cornerRadius: 2.38px
+      width: 15px;
+      height: 33px;
+      border-radius: 2px;
+      box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  &__progress-thumb-line {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 37.5px;
+    background: rgba(255, 68, 0, 0.7);
+
+    @include mobile {
+      // Figma mobile: strokeWeight: 1.19, height: 22.31px
+      top: 5px;
+      width: 1px;
+      height: 22px;
+      background: rgba(255, 68, 0, 0.7);
+    }
+  }
+
+  // RTL Support
+  &--rtl {
+    direction: rtl;
+
+    .income-slider__stats {
+      direction: ltr;
+    }
+
+    .income-slider__slider-marks {
+      direction: ltr;
+    }
+  }
+
+  // Mobile specific adjustments
+  @include mobile {
+    padding: 135px 0 0 0;
+
+    &__content {
+      max-width: 100%;
+    }
+
+    &__stat-card {
+      border-radius: 12px;
+    }
+
+    &__slider-container {
+      border-radius: 12px;
+    }
+  }
+
+  // Tablet adjustments
+  @include tablet {
+    &__stats {
+      gap: 24px;
+    }
+  }
+}
+
+// Animation keyframes
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Add animation to cards
+.income-slider__stat-card {
+  animation: slideIn 0.6s ease-out;
+}
+
+.income-slider__slider-container {
+  animation: slideIn 0.8s ease-out;
+}

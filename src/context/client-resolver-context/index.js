@@ -1,9 +1,9 @@
 import React, { createContext, useEffect, useState } from "react";
-import axios from "axios";
 import PropTypes from "prop-types";
 import handleClient from "./handle-client";
 import { currentEntity } from "../../helpers/entity-resolver";
 import { sendLog } from "../../helpers/services/log-service";
+import { isBrowser } from "../../helpers/services/is-browser";
 
 const API_URL = process.env.GATSBY_OQTIMA_API_URL;
 const ClientResolverContext = createContext({});
@@ -13,18 +13,36 @@ export const ClientResolverProvider = ({ children }) => {
   const [isPopupShown, setIsPopupShown] = useState(false);
 
   useEffect(() => {
-    if (currentEntity) {
-      axios
-        .get(`${API_URL}client-detection?entity=${currentEntity}`)
-        .then((response) => {
-          setClientConfig(response.data);
-          return response.data;
-        })
-        .then((clientConfig) => handleClient(clientConfig, setIsPopupShown))
-        .catch((error) =>
-          sendLog({ message: error.message, type: error.name })
-        );
+    // Only run in browser, not during SSR
+    if (!isBrowser() || !currentEntity || !API_URL) {
+      return;
     }
+
+    // Dynamically import axios only in browser to avoid SSR issues
+    import("axios")
+      .then((axiosModule) => {
+        const axios = axiosModule.default;
+        return axios.get(`${API_URL}client-detection?entity=${currentEntity}`);
+      })
+      .then((response) => {
+        setClientConfig(response.data);
+        return response.data;
+      })
+      .then((clientConfig) => handleClient(clientConfig, setIsPopupShown))
+      .catch((error) => {
+        // Only log errors in development, suppress 500 errors from dev server
+        if (
+          process.env.NODE_ENV === "development" &&
+          error.response?.status === 500
+        ) {
+          console.warn(
+            "Client detection API temporarily unavailable:",
+            error.message
+          );
+        } else {
+          sendLog({ message: error.message, type: error.name });
+        }
+      });
   }, [currentEntity]);
 
   return (

@@ -49,6 +49,12 @@ const RTL_LANGUAGES = ["ar"];
 
   // Base URL for backend API
   let backendApiUrl = "";
+  const logger = {
+    log: () => {},
+    warn: () => {},
+    error: () => {},
+    info: () => {},
+  };
 
   // API URL and Environment mapping based on hostname
   const getApiUrlFromHostname = () => {
@@ -66,7 +72,7 @@ const RTL_LANGUAGES = ["ar"];
         return baseUrl;
       }
     } catch (e) {
-      console.warn("[OQtima] Error determining API URL from script:", e);
+      logger.warn("[OQtima] Error determining API URL from script:", e);
     }
 
     // Fallback logic if script element cannot be found or URL parsing fails
@@ -81,6 +87,11 @@ const RTL_LANGUAGES = ["ar"];
     // For local development
     if (hostname === "localhost" || hostname === "127.0.0.1") {
       return "http://localhost:8000/";
+    }
+
+    // For local development
+    if (hostname === "landingpage.test/") {
+      return "http://landingpage.test/";
     }
 
     // For development environment
@@ -129,7 +140,8 @@ const RTL_LANGUAGES = ["ar"];
         // If script is served from the frontend, map to corresponding backend
         if (
           scriptOrigin.includes("localhost") ||
-          scriptOrigin.includes("127.0.0.1")
+          scriptOrigin.includes("127.0.0.1") ||
+          scriptOrigin.includes("landingpage.test")
         ) {
           return "http://localhost:3000/";
         }
@@ -162,17 +174,14 @@ const RTL_LANGUAGES = ["ar"];
             }
           }
         } catch (e) {
-          console.warn(
+          logger.warn(
             "[OQtima] Error constructing backend URL from script origin:",
             e
           );
         }
       }
     } catch (e) {
-      console.warn(
-        "[OQtima] Error determining backend API URL from script:",
-        e
-      );
+      logger.warn("[OQtima] Error determining backend API URL from script:", e);
     }
 
     // Fallback logic based on hostname if script detection fails
@@ -186,7 +195,11 @@ const RTL_LANGUAGES = ["ar"];
     }
 
     // For local development with standard ports
-    if (hostname === "localhost" || hostname === "127.0.0.1") {
+    if (
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "landingpage.test"
+    ) {
       // MODIFIED: Ensure proper handling of localhost with port 80 (standard HTTP port)
       // which is typically hidden in the URL but still needs the backend on port 3000
       if (port === "8000" || port === "80" || port === "") {
@@ -196,6 +209,7 @@ const RTL_LANGUAGES = ["ar"];
       else if (port) {
         return `http://localhost:${port}/`;
       }
+
       return "http://localhost:3000/";
     }
 
@@ -217,7 +231,7 @@ const RTL_LANGUAGES = ["ar"];
     }
 
     // Default fallback for unknown domains
-    console.warn(
+    logger.warn(
       "[OQtima] Could not determine backend API URL from hostname or script, using default"
     );
     return "https://dev-back.oqt-ima.com/";
@@ -245,7 +259,8 @@ const RTL_LANGUAGES = ["ar"];
         // Determine environment based on script source domain
         if (
           scriptOrigin.includes("localhost") ||
-          scriptOrigin.includes("127.0.0.1")
+          scriptOrigin.includes("127.0.0.1") ||
+          scriptOrigin.includes("landingpage.test")
         ) {
           return "development";
         }
@@ -263,7 +278,7 @@ const RTL_LANGUAGES = ["ar"];
         }
       }
     } catch (e) {
-      console.warn("[OQtima] Error determining environment from script:", e);
+      logger.warn("[OQtima] Error determining environment from script:", e);
     }
 
     // Fallback logic based on hostname if script detection fails
@@ -276,7 +291,11 @@ const RTL_LANGUAGES = ["ar"];
     }
 
     // For local development
-    if (hostname === "localhost" || hostname === "127.0.0.1") {
+    if (
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "landingpage.test"
+    ) {
       return "development";
     }
 
@@ -300,7 +319,7 @@ const RTL_LANGUAGES = ["ar"];
     }
 
     // For unknown domains, default to development
-    console.warn(
+    logger.warn(
       "[OQtima] Could not determine environment, defaulting to development"
     );
     return "development";
@@ -310,6 +329,32 @@ const RTL_LANGUAGES = ["ar"];
   const apiUrl = getApiUrlFromHostname();
   backendApiUrl = mapBackendApiUrl();
   const environment = getEnvironmentFromHostname();
+  const configureLogger = (env) => {
+    const shouldLog = (() => {
+      if (typeof window === "undefined") return false;
+      try {
+        return (
+          window.__OQTIMA_DEBUG__ === true ||
+          window.localStorage?.getItem("oqtima_debug") === "true" ||
+          window.sessionStorage?.getItem("oqtima_debug") === "true"
+        );
+      } catch (_e) {
+        return false;
+      }
+    })();
+
+    const bind = (method) =>
+      shouldLog && typeof console?.[method] === "function"
+        ? console[method].bind(window.console)
+        : () => {};
+
+    logger.log = bind("log");
+    logger.warn = bind("warn");
+    logger.error = bind("error");
+    logger.info = bind("info");
+  };
+
+  configureLogger(environment);
 
   // Track validation status
   let isValidated = false;
@@ -357,7 +402,7 @@ const RTL_LANGUAGES = ["ar"];
         }
       } catch (verifyError) {
         // Additional error handling for verification failures
-        console.error("[OQtima] Verification process error:", verifyError);
+        logger.error("[OQtima] Verification process error:", verifyError);
 
         // Removed auto-bypass for development environments
 
@@ -366,7 +411,7 @@ const RTL_LANGUAGES = ["ar"];
         );
       }
     } catch (error) {
-      console.error("[OQtima] Initialization error:", error.message);
+      logger.error("[OQtima] Initialization error:", error.message);
       showAuthError("Registration initialization error: " + error.message);
     }
   }
@@ -389,7 +434,7 @@ const RTL_LANGUAGES = ["ar"];
       });
 
       if (!currentScript) {
-        console.warn("[OQtima] Script tag not found");
+        logger.warn("[OQtima] Script tag not found");
         return { apiKey: null };
       }
 
@@ -398,7 +443,7 @@ const RTL_LANGUAGES = ["ar"];
 
       return { apiKey };
     } catch (error) {
-      console.error("[OQtima] Error retrieving API key:", error);
+      logger.error("[OQtima] Error retrieving API key:", error);
       return { apiKey: null };
     }
   }
@@ -433,7 +478,7 @@ const RTL_LANGUAGES = ["ar"];
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(
+        logger.error(
           `[OQtima] API key verification failed: ${response.status} ${errorText}`
         );
         return false;
@@ -448,7 +493,7 @@ const RTL_LANGUAGES = ["ar"];
         error.name === "TypeError" &&
         error.message.includes("Failed to fetch")
       ) {
-        console.error(
+        logger.error(
           "[OQtima] Network error verifying API key. This may indicate:",
           "\n1. The backend server is not running or unreachable",
           "\n2. CORS policy blocking the request",
@@ -459,7 +504,7 @@ const RTL_LANGUAGES = ["ar"];
         // Always return false to require proper verification
       }
 
-      console.error("[OQtima] Error verifying API key:", error);
+      logger.error("[OQtima] Error verifying API key:", error);
       return false;
     }
   }
@@ -468,7 +513,7 @@ const RTL_LANGUAGES = ["ar"];
    * Show authentication error message
    */
   function showAuthError(message) {
-    console.warn("[OQtima] Authentication error:", message);
+    logger.warn("[OQtima] Authentication error:", message);
 
     // Find all legacy registration button containers
     const containers = document.querySelectorAll("[data-oqtima-register]");
@@ -540,7 +585,7 @@ const RTL_LANGUAGES = ["ar"];
       "[data-oqtima-register]"
     );
     if (registrationContainers.length > 0) {
-      console.warn(
+      logger.warn(
         "[OQtima] Using legacy registration container approach." +
           "\nThis approach is deprecated. Please use data-oqtima-trigger attribute on buttons, links, or any clickable elements instead." +
           "\nExample: <a href='#' data-oqtima-trigger data-lang='en' data-referral-type='14' data-referral-value='YOUR_CAMPAIGN_ID'>Register Now</a>"
@@ -586,7 +631,7 @@ const RTL_LANGUAGES = ["ar"];
         }
       }
     } catch (e) {
-      console.warn("[OQtima] Error detecting page language:", e);
+      logger.warn("[OQtima] Error detecting page language:", e);
     }
 
     // Add event listeners to each trigger element
@@ -608,7 +653,7 @@ const RTL_LANGUAGES = ["ar"];
         if (!isNaN(parsedType)) {
           referralType = parsedType;
         } else {
-          console.warn(
+          logger.warn(
             "[OQtima] data-referral-type is not a valid integer:",
             referralType
           );
@@ -619,7 +664,7 @@ const RTL_LANGUAGES = ["ar"];
 
       // Check if lang attribute is set (it's required)
       if (!element.hasAttribute("data-lang")) {
-        console.warn(
+        logger.warn(
           `[OQtima] Missing required data-lang attribute on trigger element:`,
           element
         );
@@ -681,7 +726,7 @@ const RTL_LANGUAGES = ["ar"];
                 sessionStorage.removeItem("oqtima_referral_value");
               }
 
-              // console.log(
+              // logger.log(
               //   "[OQtima] Cleared referral parameters from sessionStorage for normal registration"
               // );
             }
@@ -699,7 +744,7 @@ const RTL_LANGUAGES = ["ar"];
               }
             }
           } catch (e) {
-            console.warn(
+            logger.warn(
               "[OQtima] Error storing parameters in sessionStorage:",
               e
             );
@@ -904,7 +949,7 @@ const RTL_LANGUAGES = ["ar"];
               registerKeywords.some((keyword) => buttonText.includes(keyword))
             ) {
               // This is likely a registration button
-              // console.log(
+              // logger.log(
               //   "[OQtima] Detected likely registration button:",
               //   buttonText
               // );
@@ -937,7 +982,7 @@ const RTL_LANGUAGES = ["ar"];
             ) ||
             registerClassKeywords.some((keyword) => elementId.includes(keyword))
           ) {
-            // console.log(
+            // logger.log(
             //   "[OQtima] Detected registration element via class/id:",
             //   {
             //     class: elementClasses,
@@ -950,7 +995,7 @@ const RTL_LANGUAGES = ["ar"];
           // Return null if this doesn't appear to be a registration element
           return null;
         } catch (e) {
-          console.error("[OQtima] Error extracting referral parameters:", e);
+          logger.error("[OQtima] Error extracting referral parameters:", e);
           return null;
         }
       };
@@ -968,7 +1013,7 @@ const RTL_LANGUAGES = ["ar"];
       event.preventDefault();
       event.stopPropagation();
 
-      // console.log("[OQtima] Detected registration link/button click:", {
+      // logger.log("[OQtima] Detected registration link/button click:", {
       //   element: targetElement,
       //   params: params,
       // });
@@ -1010,7 +1055,7 @@ const RTL_LANGUAGES = ["ar"];
             );
           }
         } catch (e) {
-          console.warn(
+          logger.warn(
             "[OQtima] Error storing parameters in sessionStorage:",
             e
           );
@@ -1025,7 +1070,7 @@ const RTL_LANGUAGES = ["ar"];
       openRegistrationPopup(popupParams);
     });
 
-    // console.log(
+    // logger.log(
     //   "[OQtima] Global click handler set up for registration links/buttons"
     // );
   }
@@ -1132,7 +1177,18 @@ const RTL_LANGUAGES = ["ar"];
           width: 100% !important;
           height: 100% !important;
           overflow: hidden !important;
-          touch-action: none !important;
+          touch-action: pan-y !important;
+        }
+        
+        /* Ensure policy links are clickable on mobile */
+        body.popup-open .popup-registration__consent .link,
+        body.popup-open a[href*="policy"],
+        body.popup-open a[href*="privacy"],
+        body.popup-open a[href*="cookie"],
+        body.popup-open a[href*="terms"] {
+          touch-action: manipulation !important;
+          pointer-events: auto !important;
+          cursor: pointer !important;
         }
 
         /* Fix dropdown positioning */
@@ -1275,7 +1331,7 @@ const RTL_LANGUAGES = ["ar"];
               // Local storage might be blocked
             }
           } catch (storageErr) {
-            console.warn(
+            logger.warn(
               "[OQtima] Error storing URL path language:",
               storageErr
             );
@@ -1283,7 +1339,7 @@ const RTL_LANGUAGES = ["ar"];
         }
       }
     } catch (e) {
-      console.warn("[OQtima] Error checking URL path for language:", e);
+      logger.warn("[OQtima] Error checking URL path for language:", e);
     }
 
     // CRITICAL: Always prioritize URL path language if it exists
@@ -1337,7 +1393,7 @@ const RTL_LANGUAGES = ["ar"];
         // window.__FORCE_RTL__ = params.isRTL;
         // window.__ORIGINAL_RTL__ = params.isRTL;
       } catch (e) {
-        console.warn("[OQtima] Error storing RTL state:", e);
+        logger.warn("[OQtima] Error storing RTL state:", e);
       }
     }
 
@@ -1422,10 +1478,7 @@ const RTL_LANGUAGES = ["ar"];
         }
       }
     } catch (e) {
-      console.warn(
-        "[OQtima] Error extracting referral parameters from URL:",
-        e
-      );
+      logger.warn("[OQtima] Error extracting referral parameters from URL:", e);
     }
 
     // CRITICAL FIX: Ensure referral_type is parsed as an integer when it should be numeric
@@ -1435,9 +1488,9 @@ const RTL_LANGUAGES = ["ar"];
       if (!isNaN(parsedType)) {
         // Only set as integer if it's a valid number
         params.referral_type = parsedType;
-        // console.log("[OQtima] Converted referral_type to integer:", parsedType);
+        // logger.log("[OQtima] Converted referral_type to integer:", parsedType);
       } else {
-        console.warn(
+        logger.warn(
           "[OQtima] referral_type is not a valid integer:",
           params.referral_type
         );
@@ -1474,13 +1527,18 @@ const RTL_LANGUAGES = ["ar"];
     const originalScrollPos = window.scrollY;
 
     // Prevent background scrolling for non-embedded popups
+    const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0;
+    const isExplicitMobileRequest =
+      params.forceMobile === true ||
+      params.isMobile === true ||
+      params.mobile === true;
+    const isMobileDetection =
+      typeof window !== "undefined" &&
+      (viewportWidth <= 767 ||
+        (isExplicitMobileRequest && viewportWidth < 1024));
+
     if (typeof window !== "undefined" && !params.embedded) {
       // Check if this will be a mobile popup
-      const isMobileDetection =
-        window.innerWidth <= 767 ||
-        params.forceMobile === true ||
-        params.isMobile === true ||
-        params.mobile === true;
 
       if (isMobileDetection) {
         // MOBILE SPECIFIC: Use different approach to prevent background scrolling
@@ -1577,7 +1635,7 @@ const RTL_LANGUAGES = ["ar"];
           sessionStorage.setItem("oqtima_is_brazilian_portuguese", "true");
         }
       } catch (e) {
-        console.warn("[OQtima] Could not set sessionStorage:", e);
+        logger.warn("[OQtima] Could not set sessionStorage:", e);
       }
 
       // Set flags that will be read by the iframe, but don't modify document
@@ -1662,12 +1720,7 @@ const RTL_LANGUAGES = ["ar"];
     }
 
     // Determine if mobile based on screen width
-    const isMobile =
-      typeof window !== "undefined" &&
-      (window.innerWidth <= 767 ||
-        params.forceMobile === true ||
-        params.isMobile === true ||
-        params.mobile === true);
+    const isMobile = isMobileDetection;
 
     // If mobile device, create mobile popup, otherwise create standard popup
     try {
@@ -1721,7 +1774,7 @@ const RTL_LANGUAGES = ["ar"];
         );
       }
     } catch (err) {
-      console.error("[OQtima] Error creating popup:", err);
+      logger.error("[OQtima] Error creating popup:", err);
       // Restore original body state in case of error
       document.body.className = originalBodyClasses;
       document.documentElement.className = originalHtmlClasses;
@@ -1759,8 +1812,10 @@ const RTL_LANGUAGES = ["ar"];
     countryName,
     countryCode
   ) {
-    // Detect mobile
+    // Detect mobile / tablet
     const isMobile = window.innerWidth <= 767;
+    const isTablet = window.innerWidth > 767 && window.innerWidth < 1024;
+    const shouldForceSidebar = !isMobile && !isTablet;
 
     // Add loading overlay first
     const loadingOverlay = document.createElement("div");
@@ -1771,7 +1826,7 @@ const RTL_LANGUAGES = ["ar"];
       left: 0 !important;
       right: 0 !important;
       bottom: 0 !important;
-      background: rgba(0, 0, 0, 0.7) !important;
+      background: transparent !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
@@ -1814,7 +1869,7 @@ const RTL_LANGUAGES = ["ar"];
           height: 100% !important;
           display: flex !important;
           flex-direction: column !important;
-          background: rgba(0, 0, 0, 0.7) !important;
+          background: transparent !important;
         }
 
         .popup-registration__wrapper {
@@ -1823,7 +1878,7 @@ const RTL_LANGUAGES = ["ar"];
           height: 100% !important;
           display: flex !important;
           flex-direction: column !important;
-          background: white !important;
+          background: transparent !important;
           position: relative !important;
         }
 
@@ -1869,13 +1924,13 @@ const RTL_LANGUAGES = ["ar"];
 
     modalContainer.style.cssText = modalStyles;
 
-    // Create wrapper
+    // Create wrapper (full screen, transparent, for centering)
     const wrapper = document.createElement("div");
     wrapper.className = "popup-registration__wrapper";
 
-    // Base styles for wrapper
+    // Base styles for wrapper - should be full screen and transparent
     let wrapperStyles = `
-      background: white !important;
+      background: transparent !important;
       transform: scale(0.98);
       transition: transform 0.3s ease-in-out;
     `;
@@ -1884,22 +1939,27 @@ const RTL_LANGUAGES = ["ar"];
     if (isMobile) {
       wrapperStyles += `
         flex: 1 !important;
-      width: 100% !important;
-      height: 100% !important;
-      display: flex !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
         flex-direction: column !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        overflow: hidden !important;
       `;
     } else {
-      // Detect if it's a tablet (>= 768px and < 1024px)
       const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
 
       wrapperStyles += `
-      width: 100% !important;
+        width: 100% !important;
         max-width: 1170px !important;
         height: 100% !important;
         max-height: ${isTablet ? "900px" : "800px"} !important;
         border-radius: 8px !important;
         overflow: hidden !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
       `;
     }
 
@@ -1922,24 +1982,30 @@ const RTL_LANGUAGES = ["ar"];
     // CRITICAL: Ensure cross-domain cookie access
     iframe.setAttribute("crossorigin", "anonymous");
 
-    // Base styles for iframe
+    // Base styles for iframe - must allow content inside to render properly
     let iframeStyles = `
       width: 100% !important;
+      min-width: 0 !important;
+      height: 100% !important;
+      min-height: 600px !important;
       border: none !important;
-      background: white !important;
+      background: transparent !important;
       opacity: 0;
       transition: opacity 0.3s ease-in-out;
+      display: block !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      flex: 1 1 auto !important;
     `;
 
-    // Add mobile-specific styles
+    // Add mobile-specific iframe styles
     if (isMobile) {
       iframeStyles += `
-        flex: 1 !important;
-      height: 100% !important;
-      `;
-    } else {
-      iframeStyles += `
-        height: 100% !important;
+        width: 100% !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
       `;
     }
 
@@ -1952,7 +2018,7 @@ const RTL_LANGUAGES = ["ar"];
     let isLoaded = false;
     const loadTimeout = setTimeout(() => {
       if (!isLoaded) {
-        console.warn("Iframe load timeout - forcing display");
+        logger.warn("Iframe load timeout - forcing display");
         showContent();
       }
     }, 10000);
@@ -2000,11 +2066,32 @@ const RTL_LANGUAGES = ["ar"];
             form {
                   padding-bottom: 50px;
                 }
+                /* Prevent iOS Safari auto-zoom on input focus */
+                input[type="text"],
+                input[type="email"],
+                input[type="tel"],
+                input[type="password"],
+                input[type="number"],
+                textarea,
+                select {
+                  font-size: 16px !important;
+                }
+                @supports (-webkit-touch-callout: none) {
+                  input[type="text"],
+                  input[type="email"],
+                  input[type="tel"],
+                  input[type="password"],
+                  input[type="number"],
+                  textarea,
+                  select {
+                    font-size: 16px !important;
+                  }
+                }
               `;
               iframeDoc.head.appendChild(mobileStyle);
             }
           } catch (e) {
-            console.warn("Could not apply iframe body styles:", e);
+            logger.warn("Could not apply iframe body styles:", e);
           }
         }
       }, 300);
@@ -2050,6 +2137,7 @@ const RTL_LANGUAGES = ["ar"];
             ip_address: ipAddress,
             country_name: countryName,
             country_code: countryCode,
+            forceSidebar: shouldForceSidebar,
 
             // Cross-domain storage instructions
             storeInSessionStorage: true,
@@ -2079,7 +2167,7 @@ const RTL_LANGUAGES = ["ar"];
           try {
             iframe.contentWindow.postMessage(messageData, "*");
           } catch (err) {
-            console.error("[OQtima] Error in retry 1:", err);
+            logger.error("[OQtima] Error in retry 1:", err);
           }
         }, 100);
 
@@ -2087,16 +2175,16 @@ const RTL_LANGUAGES = ["ar"];
           try {
             iframe.contentWindow.postMessage(messageData, "*");
           } catch (err) {
-            console.error("[OQtima] Error in retry 2:", err);
+            logger.error("[OQtima] Error in retry 2:", err);
           }
         }, 500);
 
         setTimeout(() => {
           try {
             iframe.contentWindow.postMessage(messageData, "*");
-            // console.log("[OQtima] Final retry sending message to iframe");
+            // logger.log("[OQtima] Final retry sending message to iframe");
           } catch (err) {
-            console.error("[OQtima] Error in final retry:", err);
+            logger.error("[OQtima] Error in final retry:", err);
           }
         }, 1500);
 
@@ -2122,7 +2210,7 @@ const RTL_LANGUAGES = ["ar"];
                     // Set up data receiver
                     window.addEventListener("message", function(event) {
                       if (event.data && event.data.type === "REGISTRATION_PARAMS") {
-                        // console.log("[OQtima][Iframe] Received parameters from parent");
+                        // logger.log("[OQtima][Iframe] Received parameters from parent");
                         
                         // Store data safely without accessing parent
                         const params = event.data.data;
@@ -2134,7 +2222,7 @@ const RTL_LANGUAGES = ["ar"];
                               try {
                                 sessionStorage.setItem(item.key, item.value);
                               } catch (e) {
-                                console.warn("[OQtima][Iframe] Failed to set storage item:", item.key);
+                                logger.warn("[OQtima][Iframe] Failed to set storage item:", item.key);
                               }
                             }
                           });
@@ -2162,25 +2250,25 @@ const RTL_LANGUAGES = ["ar"];
                   iframeDoc.head.appendChild(script);
                 }
               } else {
-                // console.log(
+                // logger.log(
                 //   "[OQtima] Iframe is cross-origin, using only postMessage communication"
                 // );
               }
             } catch (originError) {
               // If we can't check origins, iframe is most likely cross-origin
-              // console.log(
+              // logger.log(
               //   "[OQtima] Iframe appears to be cross-origin, using only postMessage"
               // );
             }
           }, 200);
         } catch (scriptError) {
-          console.warn(
+          logger.warn(
             "[OQtima] Could not inject script to iframe:",
             scriptError
           );
         }
       } catch (err) {
-        console.error("Error sending message to iframe:", err);
+        logger.error("Error sending message to iframe:", err);
       }
 
       // Added event listener for link click handling
@@ -2188,6 +2276,76 @@ const RTL_LANGUAGES = ["ar"];
 
       // Show content after a short delay to ensure smooth transition
       setTimeout(showContent, 500);
+
+      // Diagnostic: inspect sidebar rendering inside iframe
+      const canInspectIframe = (() => {
+        try {
+          const iframeWindow = iframe.contentWindow;
+          if (!iframeWindow) return false;
+          // Accessing location.href on a cross-origin frame will throw, so wrap in try/catch
+          const iframeOrigin = iframeWindow.location?.origin;
+          return (
+            Boolean(iframeOrigin) && iframeOrigin === window.location.origin
+          );
+        } catch {
+          return false;
+        }
+      })();
+
+      if (canInspectIframe) {
+        try {
+          const iframeDoc =
+            iframe.contentDocument || iframe.contentWindow?.document;
+          if (iframeDoc) {
+            const reportSidebarState = (phase) => {
+              try {
+                const sidebarEl = iframeDoc.querySelector(
+                  ".popup-registration__sidebar"
+                );
+                if (!sidebarEl) {
+                  logger.warn(
+                    `[OQtima][SidebarTrace] Sidebar element not found inside iframe during ${phase}.`
+                  );
+                  return;
+                }
+
+                const computed = iframe.contentWindow
+                  ? iframe.contentWindow.getComputedStyle(sidebarEl)
+                  : iframeDoc.defaultView?.getComputedStyle(sidebarEl);
+
+                logger.log("[OQtima][SidebarTrace] Sidebar diagnostics", {
+                  phase,
+                  offsetWidth: sidebarEl.offsetWidth,
+                  offsetHeight: sidebarEl.offsetHeight,
+                  clientWidth: sidebarEl.clientWidth,
+                  clientHeight: sidebarEl.clientHeight,
+                  computedDisplay: computed?.display,
+                  computedVisibility: computed?.visibility,
+                  computedOpacity: computed?.opacity,
+                  computedBackgroundImage: computed?.backgroundImage,
+                  computedBackgroundColor: computed?.backgroundColor,
+                  dataAttributes: sidebarEl.dataset,
+                  classList: Array.from(sidebarEl.classList || []),
+                });
+              } catch (sidebarError) {
+                logger.warn(
+                  "[OQtima][SidebarTrace] Error while reading sidebar state:",
+                  sidebarError
+                );
+              }
+            };
+
+            reportSidebarState("initial-load");
+            setTimeout(() => reportSidebarState("post-500ms"), 500);
+            setTimeout(() => reportSidebarState("post-1500ms"), 1500);
+          }
+        } catch (diagnosticError) {
+          logger.warn(
+            "[OQtima][SidebarTrace] Diagnostic inspection failed:",
+            diagnosticError
+          );
+        }
+      }
     });
 
     // Construct and set iframe URL
@@ -2197,42 +2355,27 @@ const RTL_LANGUAGES = ["ar"];
       referralValue,
       isMobile
     );
-    iframe.src = url;
-
-    // REDUNDANCY: Add referral parameters again to ensure they're in the URL
-    // This is a defensive measure in case they weren't properly added in constructIframeUrl
+    const urlParts = url.split("?");
+    const baseUrl = urlParts[0];
+    const existingParams = new URLSearchParams(urlParts[1] || "");
+    existingParams.set("force_sidebar", shouldForceSidebar ? "true" : "false");
     if (referralType !== null && referralType !== undefined && referralValue) {
-      // Start with the existing URL
-      let newUrl = url;
-      const urlParts = url.split("?");
-      const baseUrl = urlParts[0];
-      const existingParams = new URLSearchParams(urlParts[1] || "");
-
-      // Ensure the referral parameters are included with all possible naming variations
-      // Primary format with underscore (as expected by the API)
       existingParams.set("referral_type", referralType);
       existingParams.set("referral_value", referralValue);
-
-      // Add alternative formats for maximum compatibility
       existingParams.set("referralType", referralType);
       existingParams.set("referralValue", referralValue);
       existingParams.set("referral-type", referralType);
       existingParams.set("referral-value", referralValue);
-
-      // Reconstruct the URL with the updated parameters
-      newUrl = `${baseUrl}?${existingParams.toString()}`;
-
-      // Set the iframe source to the updated URL
-      iframe.src = newUrl;
-
-      // Debug log the updated URL (truncated if too long)
-      const logUrl =
-        newUrl.length > 150 ? newUrl.substring(0, 147) + "..." : newUrl;
     }
+    const newUrl = `${baseUrl}?${existingParams.toString()}`;
+    iframe.src = newUrl;
 
-    // Assemble the popup
+    // Assemble the popup: modalContainer > wrapper > container > iframe
     wrapper.appendChild(iframe);
     modalContainer.appendChild(wrapper);
+
+    // Add class to body to prevent scrolling and ensure overlay covers everything
+    document.body.classList.add("popup-registration-open");
 
     // Add the container to the document body
     document.body.appendChild(modalContainer);
@@ -2283,6 +2426,9 @@ const RTL_LANGUAGES = ["ar"];
     countryCode
   ) {
     // CRITICAL: Don't save the RTL state again, it's already saved in openRegistrationPopup
+    const isMobile = window.innerWidth <= 767;
+    const isTablet = window.innerWidth > 767 && window.innerWidth < 1024;
+    const shouldForceSidebar = !isMobile && !isTablet;
 
     // Create modal container with RTL support
     const modalContainer = document.createElement("div");
@@ -2295,15 +2441,25 @@ const RTL_LANGUAGES = ["ar"];
       position: fixed !important;
       top: 0 !important;
       left: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      min-width: 100vw !important;
+      min-height: 100vh !important;
+      max-width: 100vw !important;
+      max-height: 100vh !important;
       z-index: 2147483647 !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-        background-color: rgba(0, 0, 0, 0.7) !important;
+      background-color: rgba(0, 0, 0, 0.7) !important;
       overflow-y: auto !important;
-        direction: rtl !important;
+      overflow-x: hidden !important;
+      direction: rtl !important;
+      pointer-events: auto !important;
+      margin: 0 !important;
+      padding: 0 !important;
     `;
 
     // Add RTL styles to head but scope them to only affect the popup
@@ -2339,41 +2495,54 @@ const RTL_LANGUAGES = ["ar"];
     `;
     document.head.appendChild(rtlStyles);
 
-    // Detect if it's a tablet (>= 768px and < 1024px)
-    const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-
-    // Create wrapper element
+    // Create wrapper element (full screen, transparent, for centering)
     const wrapper = document.createElement("div");
     wrapper.className =
       "popup-registration__wrapper popup-registration__wrapper--rtl";
     wrapper.setAttribute("dir", "rtl");
     wrapper.style.cssText = `
-      width: 100% !important;
-      max-width: 1170px !important;
-      height: 100% !important;
-      max-height: ${isTablet ? "900px" : "800px"} !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 1000000 !important;
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      // overflow-y: auto !important;
+      background: transparent !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
       direction: rtl !important;
     `;
 
-    // Create container with RTL layout
+    // Create container with RTL layout (the white box)
     const container = document.createElement("div");
     container.className =
       "popup-registration__container popup-registration__container--rtl";
     container.setAttribute("dir", "rtl");
     container.style.cssText = `
+      position: relative !important;
+      z-index: 1000001 !important;
       display: flex !important;
       flex-direction: row-reverse !important;
-          border-radius: 10px !important;
+      border-radius: 32px !important;
       overflow: hidden !important;
       width: 100% !important;
-      max-height: 100% !important;
-      // height: 900px !important;
-          direction: rtl !important;
-        `;
+      max-height: ${isTablet ? "900px" : "850px"} !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      direction: rtl !important;
+      gap: 20px !important;
+      transform: scale(0.98);
+      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+      opacity: 0;
+      box-sizing: border-box !important;
+      padding: 0 !important;
+      margin: 20px auto !important;
+    `;
 
     // Create iframe container
     const iframeContainer = document.createElement("div");
@@ -2453,7 +2622,7 @@ const RTL_LANGUAGES = ["ar"];
           width: 100% !important;
           height: 100% !important;
           border: none !important;
-          background-color: #ffffff !important;
+          background-color: transparent !important;
           box-shadow: 0 0 40px rgba(0, 0, 0, 0.7) !important;
           transition: all 0.3s ease-in-out !important;
           display: block !important;
@@ -2475,7 +2644,12 @@ const RTL_LANGUAGES = ["ar"];
       referralValue,
       false
     );
-    iframe.src = url;
+    const rtlUrlParts = url.split("?");
+    const rtlBaseUrl = rtlUrlParts[0];
+    const rtlParams = new URLSearchParams(rtlUrlParts[1] || "");
+    rtlParams.set("force_sidebar", shouldForceSidebar ? "true" : "false");
+    const rtlFinalUrl = `${rtlBaseUrl}?${rtlParams.toString()}`;
+    iframe.src = rtlFinalUrl;
 
     // Add load event listener
     iframe.addEventListener("load", function () {
@@ -2486,6 +2660,8 @@ const RTL_LANGUAGES = ["ar"];
       if (spinnerStyles && spinnerStyles.parentNode) {
         spinnerStyles.parentNode.removeChild(spinnerStyles);
       }
+      container.style.opacity = "1";
+      container.style.transform = "scale(1)";
       iframe.style.opacity = "1";
 
       // Send message to iframe with parameters
@@ -2503,6 +2679,7 @@ const RTL_LANGUAGES = ["ar"];
             ip_address: ipAddress,
             country_name: countryName,
             country_code: countryCode,
+            forceSidebar: shouldForceSidebar,
           },
           timestamp: Date.now(),
         };
@@ -2515,7 +2692,7 @@ const RTL_LANGUAGES = ["ar"];
           try {
             iframe.contentWindow.postMessage(messageData, "*");
           } catch (err) {
-            console.error("Error in RTL retry 1:", err);
+            logger.error("Error in RTL retry 1:", err);
           }
         }, 100);
 
@@ -2523,20 +2700,20 @@ const RTL_LANGUAGES = ["ar"];
           try {
             iframe.contentWindow.postMessage(messageData, "*");
           } catch (err) {
-            console.error("Error in RTL retry 2:", err);
+            logger.error("Error in RTL retry 2:", err);
           }
         }, 500);
 
         setTimeout(() => {
           try {
             iframe.contentWindow.postMessage(messageData, "*");
-            // console.log("[OQtima] Final retry sending message to RTL iframe");
+            // logger.log("[OQtima] Final retry sending message to RTL iframe");
           } catch (err) {
-            console.error("Error in RTL final retry:", err);
+            logger.error("Error in RTL final retry:", err);
           }
         }, 1500);
       } catch (err) {
-        console.error("Error sending message to RTL iframe:", err);
+        logger.error("Error sending message to RTL iframe:", err);
       }
 
       try {
@@ -2568,12 +2745,24 @@ const RTL_LANGUAGES = ["ar"];
             }
             input, select, textarea {
               text-align: right !important;
+              font-size: 16px !important; /* Prevent iOS Safari auto-zoom */
+            }
+            @supports (-webkit-touch-callout: none) {
+              input[type="text"],
+              input[type="email"],
+              input[type="tel"],
+              input[type="password"],
+              input[type="number"],
+              textarea,
+              select {
+                font-size: 16px !important; /* Prevent iOS Safari auto-zoom */
+              }
             }
           `;
           iframeDoc.head.appendChild(style);
         }
       } catch (e) {
-        console.error("Error setting up RTL iframe:", e);
+        logger.error("Error setting up RTL iframe:", e);
       }
     });
 
@@ -2583,6 +2772,9 @@ const RTL_LANGUAGES = ["ar"];
     container.appendChild(iframeContainer);
     wrapper.appendChild(container);
     modalContainer.appendChild(wrapper);
+
+    // Add class to body to prevent scrolling and ensure overlay covers everything
+    document.body.classList.add("popup-registration-open");
 
     // Add the container to the document body
     document.body.appendChild(modalContainer);
@@ -2641,7 +2833,7 @@ const RTL_LANGUAGES = ["ar"];
       dataRtl: document.body.getAttribute("data-rtl"),
     };
 
-    // console.log("[OQtima] Saving original document RTL state before popup:", {
+    // logger.log("[OQtima] Saving original document RTL state before popup:", {
     //   originalDocDir,
     //   originalDocLang,
     //   originalBodyDir,
@@ -2664,7 +2856,7 @@ const RTL_LANGUAGES = ["ar"];
           delete window.__OQTIMA_POPUP_IFRAME_RTL__;
           delete window.__OQTIMA_POPUP_MODE__;
         } catch (e) {
-          console.warn("[OQtima] Error cleaning up popup flags:", e);
+          logger.warn("[OQtima] Error cleaning up popup flags:", e);
         }
 
         // Remove RTL attribute protection if it was applied
@@ -2683,6 +2875,9 @@ const RTL_LANGUAGES = ["ar"];
         if (modalContainer) {
           document.body.removeChild(modalContainer);
         }
+
+        // Remove class from body
+        document.body.classList.remove("popup-registration-open");
 
         // Remove styles
         if (styleEl) {
@@ -2798,18 +2993,18 @@ const RTL_LANGUAGES = ["ar"];
         }
 
         // Log cleanup success
-        // console.log("[OQtima] Successfully restored original document state");
+        // logger.log("[OQtima] Successfully restored original document state");
       } catch (error) {
-        console.error("[OQtima] Error closing registration popup:", error);
+        logger.error("[OQtima] Error closing registration popup:", error);
 
         // Try the emergency scroll restoration as a fallback
         try {
-          // console.log("[OQtima] Attempting emergency scroll restoration");
+          // logger.log("[OQtima] Attempting emergency scroll restoration");
           if (typeof window.__OQTIMA_EMERGENCY_RESTORE_SCROLL === "function") {
             window.__OQTIMA_EMERGENCY_RESTORE_SCROLL();
           }
         } catch (emergencyError) {
-          console.error(
+          logger.error(
             "[OQtima] Emergency scroll restoration also failed:",
             emergencyError
           );
@@ -2917,6 +3112,7 @@ const RTL_LANGUAGES = ["ar"];
                 document.body.style.top = "";
 
                 // Remove any popup-related classes
+                document.body.classList.remove("popup-registration-open");
                 document.body.classList.remove(
                   "oqtima-iframe-open",
                   "oqtima-mobile-open",
@@ -2949,6 +3145,7 @@ const RTL_LANGUAGES = ["ar"];
               document.body.style.top = "";
 
               // Remove any popup-related classes
+              document.body.classList.remove("popup-registration-open");
               document.body.classList.remove(
                 "oqtima-iframe-open",
                 "oqtima-mobile-open",
@@ -2980,6 +3177,17 @@ const RTL_LANGUAGES = ["ar"];
           typeof event.data === "object" &&
           !Array.isArray(event.data)
         ) {
+          if (event.data.type === "OQTIMA_SIDEBAR_TRACE") {
+            logger.log("[OQtima][SidebarTrace][iframe]", {
+              phase: event.data.phase,
+              status: event.data.status,
+              details: event.data.details || null,
+              error: event.data.error || null,
+              origin: event.origin,
+            });
+            return;
+          }
+
           // Handle registration success message
           if (event.data.type === "OQTIMA_REGISTRATION_SUCCESS") {
             // Handle optional redirect
@@ -3057,18 +3265,18 @@ const RTL_LANGUAGES = ["ar"];
                         linkOpened = true;
                         return true;
                       } catch (focusErr) {
-                        console.warn(
+                        logger.warn(
                           "[OQtima] Error focusing policy window:",
                           focusErr
                         );
                       }
                     } else {
-                      console.warn(
+                      logger.warn(
                         "[OQtima] window.open was blocked or returned null"
                       );
                     }
                   } catch (err) {
-                    console.warn("[OQtima] Error in window.open:", err);
+                    logger.warn("[OQtima] Error in window.open:", err);
                   }
                   return false;
                 };
@@ -3109,7 +3317,7 @@ const RTL_LANGUAGES = ["ar"];
                   }
                 }
               } else {
-                console.warn(
+                logger.warn(
                   "[OQtima] Non-policy link request was ignored for security reasons:",
                   url
                 );
@@ -3130,7 +3338,7 @@ const RTL_LANGUAGES = ["ar"];
                 }
               }
             } catch (e) {
-              console.error("[OQtima] Error handling link open request:", e);
+              logger.error("[OQtima] Error handling link open request:", e);
 
               // Try to notify the iframe even if we had an error
               try {
@@ -3147,7 +3355,7 @@ const RTL_LANGUAGES = ["ar"];
                   );
                 }
               } catch (notifyError) {
-                console.error(
+                logger.error(
                   "[OQtima] Failed to notify iframe of error:",
                   notifyError
                 );
@@ -3175,7 +3383,7 @@ const RTL_LANGUAGES = ["ar"];
           }
         }
       } catch (error) {
-        console.error("[OQtima] Error in message handler:", error);
+        logger.error("[OQtima] Error in message handler:", error);
       }
     };
 
@@ -3217,7 +3425,7 @@ const RTL_LANGUAGES = ["ar"];
         sessionStorage.setItem("i18nextLng", language);
         sessionStorage.setItem("lang", language);
       } catch (e) {
-        console.warn("[OQtima] Error reinforcing language:", e);
+        logger.warn("[OQtima] Error reinforcing language:", e);
       }
     }
 
@@ -3258,13 +3466,13 @@ const RTL_LANGUAGES = ["ar"];
                 sessionStorage.getItem("oqtima_tab_language") === "ar" &&
                 value === "false")
             ) {
-              console.warn(
+              logger.warn(
                 `[OQtima] Prevented changing ${key} from Arabic RTL setting`
               );
 
               // If something is trying to change language from ar, log it
               if (key === "oqtima_tab_language" && value !== "ar") {
-                console.warn(
+                logger.warn(
                   `[OQtima] Attempt to change language from ar to ${value} blocked`
                 );
 
@@ -3293,10 +3501,10 @@ const RTL_LANGUAGES = ["ar"];
             return originalSetItem.call(this, key, value);
           };
 
-          // console.log("[OQtima] Arabic RTL protection enabled");
+          // logger.log("[OQtima] Arabic RTL protection enabled");
         }
       } catch (e) {
-        console.warn("[OQtima] Failed to protect Arabic RTL settings:", e);
+        logger.warn("[OQtima] Failed to protect Arabic RTL settings:", e);
       }
     }
 
@@ -3330,7 +3538,7 @@ const RTL_LANGUAGES = ["ar"];
               value &&
               value.toLowerCase() !== currentLang.toLowerCase()
             ) {
-              console.warn(
+              logger.warn(
                 `[OQtima] Prevented changing ${key} from "${currentLang}" to ${value}`
               );
 
@@ -3345,7 +3553,7 @@ const RTL_LANGUAGES = ["ar"];
           return window.__ORIGINAL_SET_ITEM.call(this, key, value);
         };
       } catch (e) {
-        console.warn("[OQtima] Could not set up language protection:", e);
+        logger.warn("[OQtima] Could not set up language protection:", e);
       }
     }
 
@@ -3383,10 +3591,7 @@ const RTL_LANGUAGES = ["ar"];
           localStorage.setItem("i18nextLng", "br");
           localStorage.setItem("language", "br");
         } catch (lsError) {
-          console.warn(
-            "[OQtima] Local storage error for BR language:",
-            lsError
-          );
+          logger.warn("[OQtima] Local storage error for BR language:", lsError);
         }
 
         // Set in cookies
@@ -3394,7 +3599,7 @@ const RTL_LANGUAGES = ["ar"];
         document.cookie = "language=br;path=/;max-age=3600";
         document.cookie = "lang=br;path=/;max-age=3600";
       } catch (e) {
-        console.warn("[OQtima] Error setting BR language storage:", e);
+        logger.warn("[OQtima] Error setting BR language storage:", e);
       }
     } else {
       // For other languages, clean invalid characters
@@ -3447,7 +3652,7 @@ const RTL_LANGUAGES = ["ar"];
           saveOriginalRTLState();
         }
       } catch (e) {
-        console.warn("[OQtima] Could not store iframe RTL state:", e);
+        logger.warn("[OQtima] Could not store iframe RTL state:", e);
       }
     }
 
@@ -3477,7 +3682,7 @@ const RTL_LANGUAGES = ["ar"];
         baseUrl = apiUrl.replace(/\/+$/, ""); // Remove trailing slash
       }
     } catch (e) {
-      console.warn("[OQtima] Error determining base URL from script:", e);
+      logger.warn("[OQtima] Error determining base URL from script:", e);
       // Fallback to apiUrl which already has the same detection logic
       baseUrl = apiUrl.replace(/\/+$/, ""); // Remove trailing slash
     }
@@ -3501,7 +3706,7 @@ const RTL_LANGUAGES = ["ar"];
         window.__OQTIMA_COMPONENT_LANGUAGE = iframeLang;
         window.__OQTIMA_LOCKED_LANG = iframeLang;
       } catch (e) {
-        console.warn("[OQtima] Could not store language in sessionStorage:", e);
+        logger.warn("[OQtima] Could not store language in sessionStorage:", e);
       }
     }
 
@@ -3571,7 +3776,7 @@ const RTL_LANGUAGES = ["ar"];
             document.cookie = `oqtima_tab_language=${normalizedLanguage}; path=/; domain=${rootDomain}; max-age=3600; SameSite=None; Secure`;
           }
         } catch (e) {
-          console.warn(
+          logger.warn(
             "[OQtima] Could not set cross-domain cookies for language:",
             e
           );
@@ -3581,7 +3786,7 @@ const RTL_LANGUAGES = ["ar"];
       // Execute cookie setter
       setLanguageCookies();
     } catch (e) {
-      console.warn("[OQtima] Could not store language in sessionStorage:", e);
+      logger.warn("[OQtima] Could not store language in sessionStorage:", e);
     }
 
     // Add standard language parameters for maximum compatibility
@@ -3633,7 +3838,7 @@ const RTL_LANGUAGES = ["ar"];
           );
           window.__OQTIMA_REFERRAL_TYPE__ = normalizedReferralType;
         } catch (e) {
-          console.warn("[Mobile] Error storing referral_type:", e);
+          logger.warn("[Mobile] Error storing referral_type:", e);
         }
       }
 
@@ -3651,7 +3856,7 @@ const RTL_LANGUAGES = ["ar"];
           );
           window.__OQTIMA_REFERRAL_VALUE__ = normalizedReferralValue;
         } catch (e) {
-          console.warn("[Mobile] Error storing referral_value:", e);
+          logger.warn("[Mobile] Error storing referral_value:", e);
         }
       }
     }
@@ -3724,7 +3929,7 @@ const RTL_LANGUAGES = ["ar"];
               document.cookie = `oqtima_referral_value=${normalizedReferralValue}; path=/; domain=${rootDomain}; max-age=3600; SameSite=None; Secure`;
             }
           } catch (e) {
-            console.warn(
+            logger.warn(
               "[OQtima] Could not set cross-domain cookies for referral_value:",
               e
             );
@@ -3736,7 +3941,7 @@ const RTL_LANGUAGES = ["ar"];
         // Execute the cookie setting function
         setCrossDomainCookies();
       } catch (e) {
-        console.warn("[OQtima] Could not store referral value:", e);
+        logger.warn("[OQtima] Could not store referral value:", e);
       }
     } else {
       // For normal registration or when no referral_type exists, explicitly clear any existing referral_value values
@@ -3766,10 +3971,10 @@ const RTL_LANGUAGES = ["ar"];
             }
           }
         } catch (e) {
-          console.warn("[OQtima] Could not clear domain cookies:", e);
+          logger.warn("[OQtima] Could not clear domain cookies:", e);
         }
       } catch (e) {
-        console.warn("[OQtima] Could not clear referral value:", e);
+        logger.warn("[OQtima] Could not clear referral value:", e);
       }
     }
 
@@ -3869,7 +4074,7 @@ const RTL_LANGUAGES = ["ar"];
                             // Try to open directly
                             window.open(link.href, '_blank');
                           } catch(err) {
-                            // console.log('Both parent and direct open failed');
+                            // logger.log('Both parent and direct open failed');
                             
                             // Make the link more prominent as last resort
                             link.style.color = '#ff4400';
@@ -3912,7 +4117,7 @@ const RTL_LANGUAGES = ["ar"];
                         try {
                           window.open(link.href, '_blank');
                         } catch(err2) {
-                          // console.log('Link open failed completely');
+                          // logger.log('Link open failed completely');
                         }
                       }
                       
@@ -3948,7 +4153,7 @@ const RTL_LANGUAGES = ["ar"];
         document.head.appendChild(script);
       } catch (error) {
         // Error injecting script
-        console.warn("Failed to inject link handler script:", error);
+        logger.warn("Failed to inject link handler script:", error);
       }
     } catch (error) {
       // Error handling script injection
@@ -4053,15 +4258,25 @@ const RTL_LANGUAGES = ["ar"];
     const iframe = document.createElement("iframe");
     iframe.className = "popup-registration__mobile-fullscreen";
     iframe.style.position = "fixed";
-    iframe.style.bottom = "0";
+    iframe.style.top = "0";
     iframe.style.left = "0";
     iframe.style.width = "100%";
     iframe.style.height = "100%";
     iframe.style.border = "none";
-    iframe.style.backgroundColor = "#ffffff";
+    iframe.style.backgroundColor = "transparent";
     iframe.style.zIndex = "1000000";
     iframe.style.overflow = "hidden";
     iframe.style.transition = "all 0.3s ease-in-out";
+    iframe.style.display = "block";
+
+    // CRITICAL: Add attributes for cross-domain support
+    iframe.setAttribute("allow", "clipboard-write");
+    iframe.setAttribute("allowfullscreen", "true");
+    iframe.setAttribute("allowtransparency", "true");
+    iframe.setAttribute("scrolling", "yes");
+    iframe.setAttribute("importance", "high");
+    iframe.setAttribute("title", "Registration Form");
+    // Note: crossorigin and sandbox removed to allow cross-origin content to load properly
 
     // Set RTL and language attributes for iframe
     iframe.setAttribute("lang", finalLanguage);
@@ -4097,6 +4312,7 @@ const RTL_LANGUAGES = ["ar"];
       params.set("isMobile", "true");
       params.set("popup_isolated", "true");
       params.set("prevent_lang_switch", "true");
+      params.set("force_sidebar", "false");
 
       // Add cache busting to prevent cached English content
       params.set("_t", Date.now().toString());
@@ -4132,9 +4348,9 @@ const RTL_LANGUAGES = ["ar"];
       url.hash = `lang=${finalLanguage}&isolated=true`;
 
       iframeUrl = url.toString();
-      // console.log("[Mobile Fix] Enhanced iframe URL:", iframeUrl);
+      // logger.log("[Mobile Fix] Enhanced iframe URL:", iframeUrl);
     } catch (e) {
-      console.error("[Mobile Fix] Error enhancing iframe URL:", e);
+      logger.error("[Mobile Fix] Error enhancing iframe URL:", e);
       // Fallback to basic URL construction
       iframeUrl = constructIframeUrl(
         finalLanguage,
@@ -4147,8 +4363,65 @@ const RTL_LANGUAGES = ["ar"];
     // Set the iframe source
     iframe.src = iframeUrl;
 
+    // Add error handler for iframe
+    iframe.addEventListener("error", function (e) {
+      logger.error("[OQtima] Mobile iframe load error:", e);
+      iframe.style.backgroundColor = "transparent";
+    });
+
+    // Add load event to check if content loaded
+    iframe.addEventListener("load", function () {
+      logger.log("[OQtima] Mobile iframe loaded successfully");
+      // Ensure background is transparent
+      iframe.style.backgroundColor = "transparent";
+      iframe.style.background = "transparent";
+
+      // Ensure iframe is visible
+      iframe.style.opacity = "1";
+      iframe.style.visibility = "visible";
+      iframe.style.display = "block";
+
+      // Try to check if iframe content is accessible
+      try {
+        const iframeDoc =
+          iframe.contentDocument || iframe.contentWindow?.document;
+        if (iframeDoc) {
+          logger.log("[OQtima] Mobile iframe document accessible");
+
+          // Ensure content inside iframe is 100% width
+          const container = iframeDoc.querySelector(
+            ".popup-registration__container"
+          );
+          const content = iframeDoc.querySelector(
+            ".popup-registration__content"
+          );
+
+          if (container) {
+            container.style.width = "100%";
+            container.style.maxWidth = "100%";
+            container.style.gap = "0";
+          }
+
+          if (content) {
+            content.style.width = "100%";
+            content.style.maxWidth = "100%";
+          }
+        }
+      } catch (e) {
+        logger.warn(
+          "[OQtima] Cannot access mobile iframe document (cross-origin):",
+          e
+        );
+        // This is expected for cross-origin iframes - content should still load
+        // CSS in popup-registration.js should handle the styling
+      }
+    });
+
     // Add the iframe to the container
     modalContainer.appendChild(iframe);
+
+    // Add class to body to prevent scrolling and ensure overlay covers everything
+    document.body.classList.add("popup-registration-open");
 
     // Add the container to the document body
     document.body.appendChild(modalContainer);
@@ -4162,6 +4435,14 @@ const RTL_LANGUAGES = ["ar"];
       
       .popup-registration__mobile-fullscreen {
         -webkit-overflow-scrolling: touch;
+        background: transparent !important;
+        background-color: transparent !important;
+      }
+      
+      /* Ensure content inside iframe is 100% width on mobile/tablet */
+      .popup-registration__mobile-fullscreen {
+        width: 100% !important;
+        height: 100% !important;
       }
       
       ${
@@ -4199,7 +4480,7 @@ const RTL_LANGUAGES = ["ar"];
         ) {
           // If trying to set a different language than popup language, prevent it
           if (value !== finalLanguage) {
-            console.warn(
+            logger.warn(
               `[Popup Protection] Prevented parent window from changing ${key} from ${finalLanguage} to ${value}`
             );
             return originalSetItem.call(this, key, finalLanguage);
@@ -4217,7 +4498,7 @@ const RTL_LANGUAGES = ["ar"];
           },
           set: function (value) {
             if (window.__POPUP_ISOLATED && value !== finalLanguage) {
-              console.warn(
+              logger.warn(
                 `[Popup Protection] Prevented gatsby_i18next_language change from ${finalLanguage} to ${value}`
               );
               return;
@@ -4276,6 +4557,9 @@ const RTL_LANGUAGES = ["ar"];
         if (styleEl && styleEl.parentNode) {
           styleEl.parentNode.removeChild(styleEl);
         }
+
+        // Remove class from body
+        document.body.classList.remove("popup-registration-open");
 
         // MOBILE SPECIFIC FIX: Enhanced restoration for mobile scroll behavior
         // Restore original styles
@@ -4386,7 +4670,7 @@ const RTL_LANGUAGES = ["ar"];
           }
         }, 10);
       } catch (e) {
-        console.error("[Mobile] Error in cleanup:", e);
+        logger.error("[Mobile] Error in cleanup:", e);
 
         // Emergency mobile scroll fix in case of errors
         if (window.innerWidth <= 767) {
@@ -4419,7 +4703,7 @@ const RTL_LANGUAGES = ["ar"];
               delete window.__OQTIMA_MOBILE_ORIGINAL_WEBKIT_OVERFLOW;
             }, 100);
           } catch (emergencyError) {
-            console.error(
+            logger.error(
               "[Mobile] Emergency scroll fix failed:",
               emergencyError
             );
@@ -4440,6 +4724,7 @@ const RTL_LANGUAGES = ["ar"];
             isMobile: true,
             mobileView: true,
             mobileScroll: true,
+            forceSidebar: false,
             // CRITICAL: Ensure referral parameters are included in all formats
             referral_type: referralType,
             referralType: referralType,
@@ -4467,7 +4752,7 @@ const RTL_LANGUAGES = ["ar"];
             window.__OQTIMA_REFERRAL_VALUE__ = referralValue;
           }
         } catch (e) {
-          console.warn(
+          logger.warn(
             "[Mobile] Error storing parameters in sessionStorage:",
             e
           );
@@ -4478,7 +4763,7 @@ const RTL_LANGUAGES = ["ar"];
           try {
             iframe.contentWindow.postMessage(messageData, "*");
           } catch (e) {
-            console.warn("[Mobile] Error sending message to iframe:", e);
+            logger.warn("[Mobile] Error sending message to iframe:", e);
           }
         };
 
@@ -4494,7 +4779,7 @@ const RTL_LANGUAGES = ["ar"];
         // Final retry after 1 second
         setTimeout(sendMessage, 1000);
       } catch (err) {
-        console.error("[Mobile] Error in sendParamsToIframe:", err);
+        logger.error("[Mobile] Error in sendParamsToIframe:", err);
       }
     };
 
@@ -4602,7 +4887,7 @@ const RTL_LANGUAGES = ["ar"];
         }
       });
     } catch (e) {
-      console.warn("[Mobile Popup] Error setting language overrides:", e);
+      logger.warn("[Mobile Popup] Error setting language overrides:", e);
     }
   }
 
@@ -4622,7 +4907,7 @@ const RTL_LANGUAGES = ["ar"];
         initOqtimaRegistration();
       } else {
         // Only warn if no registration elements are found at all
-        console.warn(
+        logger.warn(
           "No registration elements found (neither [data-oqtima-register] nor [data-oqtima-trigger])"
         );
       }
@@ -4641,7 +4926,7 @@ const RTL_LANGUAGES = ["ar"];
       initOqtimaRegistration();
     } else {
       // Only warn if no registration elements are found at all
-      console.warn(
+      logger.warn(
         "No registration elements found (neither [data-oqtima-register] nor [data-oqtima-trigger])"
       );
     }
@@ -4652,7 +4937,7 @@ const RTL_LANGUAGES = ["ar"];
    */
   function addLoadingStateToButtons(containers) {
     // Create a default button text
-    const defaultButtonText = "GET STARTED";
+    const defaultButtonText = "Join Now";
 
     // Detect the most suitable language for the page
     let detectedLanguage = "en";
@@ -4682,7 +4967,7 @@ const RTL_LANGUAGES = ["ar"];
         detectedLanguage = navigator.language.split("-")[0].toLowerCase();
       }
     } catch (e) {
-      // console.warn("[OQtima] Error detecting language:", e);
+      // logger.warn("[OQtima] Error detecting language:", e);
     }
 
     // Skip loading state and immediately create the buttons
@@ -4702,7 +4987,7 @@ const RTL_LANGUAGES = ["ar"];
         if (!isNaN(parsedType)) {
           referralType = parsedType;
         } else {
-          // console.warn(
+          // logger.warn(
           //   "data-referral-type is not a valid integer:",
           //   referralType
           // );
@@ -4802,7 +5087,7 @@ const RTL_LANGUAGES = ["ar"];
                 }
               }
             } catch (e) {
-              console.warn("Error storing parameters in sessionStorage:", e);
+              logger.warn("Error storing parameters in sessionStorage:", e);
             }
           }
 
@@ -4844,7 +5129,7 @@ const RTL_LANGUAGES = ["ar"];
       documentRTLState.originalBodyClasses = document.body.className;
       documentRTLState.originalBodyRtl = document.body.getAttribute("data-rtl");
     } catch (e) {
-      console.error("[OQtima] Error saving RTL state:", e);
+      logger.error("[OQtima] Error saving RTL state:", e);
     }
   }
 
@@ -4887,9 +5172,9 @@ const RTL_LANGUAGES = ["ar"];
         );
       }
 
-      // console.log("[OQtima] Original RTL state restored");
+      // logger.log("[OQtima] Original RTL state restored");
     } catch (e) {
-      console.error("[OQtima] Error restoring RTL state:", e);
+      logger.error("[OQtima] Error restoring RTL state:", e);
     }
   }
 
@@ -4923,7 +5208,7 @@ const RTL_LANGUAGES = ["ar"];
     // Skip if not in RTL mode
     if (!isPageInRTLMode()) return;
 
-    // console.log("[OQtima] Adding RTL attribute protection");
+    // logger.log("[OQtima] Adding RTL attribute protection");
 
     // Keep a reference to the original methods
     const originalHtmlSetAttribute = Element.prototype.setAttribute;
@@ -5027,6 +5312,7 @@ const RTL_LANGUAGES = ["ar"];
       document.body.classList.remove("oqtima-iframe-open");
       document.body.classList.remove("oqtima-mobile-open");
       document.body.classList.remove("popup-open");
+      document.body.classList.remove("popup-registration-open");
       document.documentElement.classList.remove("oqtima-mobile-open");
       document.body.classList.remove("oqtima-mobile-modal-open");
       document.documentElement.classList.remove("oqtima-mobile-popup-open");
@@ -5038,12 +5324,15 @@ const RTL_LANGUAGES = ["ar"];
         modalContainer.parentNode.removeChild(modalContainer);
       }
 
+      // Remove class from body
+      document.body.classList.remove("popup-registration-open");
+
       const loadingOverlay = document.querySelector(".oqtima-loading-overlay");
       if (loadingOverlay && loadingOverlay.parentNode) {
         loadingOverlay.parentNode.removeChild(loadingOverlay);
       }
     } catch (e) {
-      // console.error("[OQtima] Error in emergency scroll restoration:", e);
+      // logger.error("[OQtima] Error in emergency scroll restoration:", e);
     }
   };
 
@@ -5133,7 +5422,7 @@ const RTL_LANGUAGES = ["ar"];
       // Set initialization flag
       window.__OQTIMA_INITIALIZED__ = true;
     } catch (error) {
-      // console.error("[OQtima] Error in init function:", error);
+      // logger.error("[OQtima] Error in init function:", error);
     }
   }
 
@@ -5183,7 +5472,7 @@ const RTL_LANGUAGES = ["ar"];
             );
           }
         } catch (e) {
-          // console.warn(
+          // logger.warn(
           //   "[OQtima] Error storing parameters in sessionStorage:",
           //   e
           // );

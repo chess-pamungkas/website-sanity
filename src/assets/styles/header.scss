@@ -1,47 +1,9 @@
 @import "vars";
 @import "mixins";
 
-.corner-panel {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 10px;
-
-  @include desktop-lg {
-    padding-top: 17px;
-  }
-
-  &__content {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-  }
-
-  &__link {
-    text-align: center;
-    font-weight: map-get($font-weight, "regular");
-    font-size: 14px;
-    line-height: 18px;
-    letter-spacing: 0.28px;
-    color: map-get($colors, "white");
-  }
-
-  &__item {
-    display: flex;
-    align-items: center;
-  }
-
-  &__separator {
-    text-align: center;
-    font-weight: map-get($font-weight, "regular");
-    font-size: 14px;
-    line-height: 18px;
-    letter-spacing: 0.28px;
-    color: map-get($colors, "white");
-    padding: 0px 8px;
-  }
-}
-
 .header {
+  min-height: 65px;
+
   &-wrapper {
     position: fixed;
     z-index: 1000;
@@ -53,51 +15,229 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: all 0.3s ease;
-    background-color: transparent;
-    height: 65px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    margin: 0 auto;
+    min-width: 0; // Allow flex items to shrink
 
-    // @include desktop-lg {
-    //   padding: 12px 0;
-    // }
+    @include mobile {
+      max-width: 100%;
+      padding-left: $padding-sm;
+      padding-right: $padding-sm;
+    }
+
+    @include tablet {
+      max-width: 720px;
+    }
+
+    @include desktop-lg {
+      max-width: 1004px;
+    }
+
+    @include desktop-xl {
+      max-width: 1280px;
+    }
+
+    @include desktop-2k {
+      max-width: 1440px;
+    }
+
+    @include desktop-5k {
+      max-width: 1920px;
+    }
   }
 
   &--small {
-    background: map-get($colors, "white") 0% 0% no-repeat padding-box;
-    height: $header-height-small;
+    background-color: rgba(247, 245, 243, 0.9); // #F7F5F3 at 90% opacity
+    height: 76px;
+    margin: 8px auto 0;
     transition: all 0.4s ease-in-out;
-    transform: translateY(-40px);
-    box-shadow: 0 6px 8px #00000029;
+    border: 1px solid rgba(19, 40, 75, 0.08); // #13284B at 8% opacity
+    border-radius: 20px;
+    backdrop-filter: blur(8.7px);
+    /* Figma: add subtle shadow for floating effect */
+    box-shadow: 0 8px 32px rgba(19, 40, 75, 0.08);
+    // padding: 35px 32px;
+    box-sizing: border-box;
 
-    // @include desktop-xl {
-    //   height: 140px;
-    // }
+    // Apply same responsive widths for small header mode
+    .header__left {
+      @include desktop-lg {
+        min-width: 120px; // More space for logo
+      }
+    }
+
+    .header__right {
+      justify-content: flex-end; // Align content to the right
+      margin-left: auto; // Push container to the right edge
+      max-width: 380px; // Prevent overflow
+      gap: 8px; // Reduced gap to save space
+
+      @include desktop-lg {
+        max-width: 400px; // More space for longer translations
+        gap: 10px;
+      }
+
+      @include desktop-xl {
+        max-width: 450px; // Even more space on larger screens
+        gap: 12px;
+      }
+
+      @include desktop-2k {
+        max-width: 500px; // Maximum space on largest screens
+      }
+    }
+
+    .header__navigation {
+      @include desktop-lg {
+        min-width: 400px; // Ensure minimum space for navigation
+      }
+
+      @include desktop-xl {
+        min-width: 500px; // More space for longer translations
+      }
+
+      @include desktop-2k {
+        min-width: 600px; // Maximum space on largest screens
+      }
+    }
+
+    @include mobile {
+      margin-top: 0 !important;
+      top: 0 !important;
+      height: 65px !important;
+      // padding-left: $padding-sm !important;
+      // padding-right: $padding-sm !important;
+      border: none;
+      .header__main-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        margin: 0 auto;
+      }
+      .header__left,
+      .header__center,
+      .header__right {
+        min-width: auto;
+        flex-basis: auto;
+      }
+      .header__center {
+        justify-content: center;
+        padding: 0;
+      }
+      .header__right {
+        gap: 10px;
+
+        // .burger-menu__trigger {
+        //   top: -12px !important;
+        // }
+      }
+    }
+    @include tablet {
+      margin-top: 0 !important;
+      top: 0 !important;
+      height: 65px !important;
+      // padding-left: $padding-md !important;
+      // padding-right: $padding-md !important;
+      border: none;
+      max-width: 100% !important;
+      .header__main-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        margin: 0 auto;
+      }
+      // .header__left,
+      // .header__center,
+      // .header__right {
+      //   min-width: auto;
+      //   flex-basis: auto;
+      // }
+      .header__center {
+        justify-content: center;
+        padding: 0;
+      }
+      .header__right {
+        gap: 10px;
+      }
+    }
+    @include desktop-lg {
+      max-width: calc(1004px + 44px) !important;
+      margin-top: 8px !important;
+      top: 8px !important;
+    }
+    @include desktop-xl {
+      max-width: calc(1280px + 60px) !important;
+      margin-top: 8px !important;
+      top: 8px !important;
+    }
+    @include desktop-2k {
+      max-width: calc(1440px + 60px) !important;
+      margin-top: 8px !important;
+      top: 8px !important;
+    }
+    @include desktop-5k {
+      max-width: calc(1920px + 60px) !important;
+      margin-top: 8px !important;
+      top: 8px !important;
+    }
   }
 
   &--big {
-    background: transparent linear-gradient(180deg, #ff4400 0%, #ff440000 100%)
-      0% 0% no-repeat padding-box;
-    height: $header-height;
+    background-color: map-get($colors, "white");
+    height: 76px;
     transition: all 0.4s ease-in-out;
-    box-shadow: unset;
+    box-shadow: none;
+    border: none;
+    // padding: 35px 32px;
+    box-sizing: border-box;
+    width: 100%;
+
+    // Ensure header--big maintains 100% width even when dropdown is open
+    &.header--dropdown-open {
+      width: 100%;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
   }
 
   width: 100%;
 
   background: map-get($colors, "white") 0% 0% no-repeat padding-box;
   height: $header-height-small-mobile;
-  box-shadow: 0 6px 8px #00000029;
+  // box-shadow: 0 6px 8px #00000029;
+  border-radius: 0;
+  transition: border-radius 0.2s;
+
+  &--dropdown-open {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    z-index: 1002;
+  }
 
   &__logo {
     height: 33px;
     width: auto;
     transition: all 0.3s ease;
+
+    @include mobile {
+      height: 26px;
+    }
   }
 
   &__center {
+    flex: 1 1 0;
     display: flex;
+    justify-content: center;
     align-items: center;
-    flex: 1;
+    min-width: 0;
 
     @include tablet {
       justify-content: center;
@@ -106,67 +246,136 @@
   }
 
   &__left {
+    flex: 0 0 auto; // Don't grow or shrink
+    min-width: 120px; // Increased from 120px
     display: flex;
     align-items: center;
-    padding: 10px 11px;
 
-    @include tablet {
-      min-width: 120px;
-      padding: 10px 0;
+    @include desktop-lg {
+      min-width: 120px; // More space for logo
     }
   }
 
   &__right {
+    flex: 0 1 auto; // Allow to shrink if needed
     display: flex;
     align-items: center;
-    min-width: 120px;
+    justify-content: flex-end; // Align content to the right
+    gap: 8px; // Reduced gap to save space
+    margin-left: auto; // Push container to the right edge
+    max-width: 380px; // Prevent overflow
 
-    @include tablet {
-      justify-content: flex-end;
+    @include desktop-lg {
+      max-width: 400px; // More space for longer translations
+      gap: 10px;
+    }
+
+    @include desktop-xl {
+      max-width: 450px; // Even more space on larger screens
+      gap: 12px;
+    }
+
+    @include desktop-2k {
+      max-width: 500px; // Maximum space on largest screens
     }
   }
 
   &__signin {
-    margin-left: 26px;
-    padding: 0 33px;
+    margin-left: 8px;
+    font-size: 14px;
+    font-weight: map-get($font-weight, "medium");
+    justify-content: center;
+    vertical-align: middle;
+    padding: 12px;
+    color: map-get($colors, "black");
+    background-color: rgba(255, 68, 0, 0.15);
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 8px;
+    width: fit-content !important;
+    min-width: 80px;
+    height: 38px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    @include desktop-lg {
+      margin-left: 6px;
+      font-size: 13px !important;
+      min-width: 85px;
+    }
+
+    @include desktop-xl {
+      margin-left: 15px !important;
+      font-size: 16px !important;
+      min-width: 90px;
+    }
 
     &--red {
       color: map-get($colors, "red");
+      background-color: rgba(255, 68, 0, 0.15);
+      border: 1px solid rgba(255, 68, 0, 0.15);
 
       &:hover,
       &:active,
       &:focus {
-        border: 2px solid map-get($colors, "red");
+        background-color: rgba(255, 68, 0, 0.25);
+        border: 1px solid rgba(255, 68, 0, 0.3);
       }
     }
 
     @include desktop-xl {
-      margin-left: 50px;
       padding: 0 38px;
     }
   }
 
   &__start {
-    margin-left: 10px;
-    padding: 0 16px;
-    background-color: map-get($colors, "white");
-    color: map-get($colors, "red");
-    text-transform: uppercase;
-    border: 2px solid map-get($colors, "white");
+    margin-left: 8px;
+    font-size: 14px;
+    font-weight: map-get($font-weight, "medium");
+    justify-content: center;
+    vertical-align: middle;
+    padding: 12px;
+    background-color: map-get($colors, "red");
+    color: map-get($colors, "white");
+    border-radius: 8px;
+    width: auto;
+    min-width: 90px;
+    height: 38px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
 
-    &--red {
-      border: 2px solid map-get($colors, "red");
+    @include desktop-lg {
+      margin-left: 6px;
+      font-size: 13px;
+      min-width: 95px;
     }
 
     @include desktop-xl {
-      padding: 0 36px;
+      margin-left: 10px;
+      font-size: 16px;
+      min-width: 100px;
     }
+
+    @include desktop-2k {
+      margin-left: 12px;
+      font-size: 16px;
+      min-width: 105px;
+    }
+
+    &--red {
+      background-color: map-get($colors, "red");
+      color: map-get($colors, "white");
+    }
+
+    // @include desktop-xl {
+    //   padding: 0 36px;
+    // }
 
     &:hover,
     &:active,
     &:focus {
       background: map-get($colors, "red");
       color: map-get($colors, "white");
+      // transform: translateY(-1px);
     }
   }
 
@@ -176,14 +385,51 @@
     @include desktop-lg {
       display: flex;
       align-self: stretch;
+      flex-wrap: nowrap;
+      gap: 0;
+      align-items: center;
+      justify-content: center;
+      flex: 1 1 auto; // Allow navigation to grow/shrink
+      min-width: 400px; // Ensure minimum space for navigation
+    }
+
+    @include desktop-xl {
+      min-width: 500px; // More space for longer translations
+    }
+
+    @include desktop-2k {
+      min-width: 600px; // Maximum space on largest screens
+    }
+
+    // Navigation text colors based on header state
+    .header--big & {
+      color: map-get($colors, "black");
+    }
+
+    .header--small & {
+      color: map-get($colors, "black");
     }
   }
 
   &__controls {
     display: none;
 
+    @include mobile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 50px;
+    }
+    @include tablet {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 50px;
+    }
     @include desktop-lg {
       display: flex;
+      gap: 0;
+      margin-right: 0;
     }
   }
 
@@ -217,4 +463,170 @@
       display: block;
     }
   }
+}
+
+.header-dropdown-card-wrapper {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 1001;
+}
+
+.header-dropdown-card-wrapper > .header,
+.header-dropdown-card-wrapper > .header-dropdown-card {
+  pointer-events: auto;
+}
+
+.header--dropdown-open {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.header-dropdown-card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  background: map-get($colors, "navbar-bg-grey");
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(19, 40, 75, 0.08);
+  border: 1px solid rgba(19, 40, 75, 0.08);
+  overflow: hidden;
+  transition: all 0.4s;
+  box-sizing: border-box;
+
+  // When opened from header--small, match its margin
+  &--from-small {
+    top: 8px; // Match header--small margin-top
+    width: 100%;
+
+    @include tablet {
+      max-width: 600px;
+    }
+
+    @include desktop-lg {
+      max-width: 1048px;
+    }
+
+    @include desktop-xl {
+      max-width: 1340px;
+    }
+
+    @include desktop-2k {
+      max-width: 1500px;
+    }
+
+    @include desktop-5k {
+      max-width: 1980px;
+    }
+  }
+
+  // When opened from header--big, stay at top: 0
+  &--from-big {
+    top: -1px;
+    margin-top: 0;
+    width: 100%;
+
+    @include tablet {
+      max-width: 100%;
+    }
+
+    @include desktop-lg {
+      max-width: calc(1004px + 44px) !important;
+    }
+
+    @include desktop-xl {
+      max-width: calc(1280px + 60px) !important;
+    }
+
+    @include desktop-2k {
+      max-width: calc(1440px + 60px) !important;
+    }
+
+    @include desktop-5k {
+      max-width: calc(1920px + 60px) !important;
+    }
+  }
+}
+
+.header-content {
+  padding: 0 !important;
+  box-sizing: border-box;
+  background: map-get($colors, "navbar-bg-grey");
+  height: 76px;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+
+  @include mobile {
+    max-width: 100%;
+    padding-left: $padding-sm;
+    padding-right: $padding-sm;
+  }
+
+  @include tablet {
+    max-width: 720px;
+  }
+
+  @include desktop-lg {
+    max-width: 1004px;
+  }
+
+  @include desktop-xl {
+    max-width: 1280px;
+  }
+
+  @include desktop-2k {
+    max-width: 1440px;
+  }
+
+  @include desktop-5k {
+    max-width: 1920px;
+  }
+}
+
+.dropdown-content {
+  background: map-get($colors, "navbar-bg-grey");
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+
+  @include tablet {
+    max-width: 600px;
+  }
+
+  @include desktop-lg {
+    max-width: 1000px;
+    padding: 35px 0;
+  }
+
+  @include desktop-xl {
+    max-width: 1680px;
+    padding: 35px 0;
+  }
+
+  @include desktop-2k {
+    max-width: 2200px;
+    padding: 35px 0;
+  }
+
+  @include desktop-5k {
+    max-width: 3500px;
+    padding: 35px 0;
+  }
+}
+
+// Grouped dropdown columns moved to navbar-item.scss to centralize dropdown styles
+
+// Navbar-item grouped menu styles moved to navbar-item.scss
+
+// Utility class for handling long translations
+.header__text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }

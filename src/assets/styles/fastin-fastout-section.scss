@@ -1,0 +1,332 @@
+@import "vars";
+@import "mixins";
+
+.fastin-fastout-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 63px 0;
+
+  @include mobile {
+    padding: 125px 0 50px 0;
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1241px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    @include mobile {
+      max-width: 100%;
+      padding: 0;
+    }
+  }
+
+  /* Header Section */
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 63px;
+    width: 100%;
+
+    @include mobile {
+      margin-bottom: 36px;
+      padding: 0 16px;
+    }
+  }
+
+  /* Badge */
+  &__badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 1);
+    background: rgba(255, 68, 0, 0.15);
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    padding: 4px 12px;
+    margin-bottom: 18px;
+    width: fit-content;
+    height: 26px;
+
+    @include mobile {
+      margin-bottom: 12px;
+      gap: 4px;
+    }
+  }
+
+  &__badge-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+
+    @include mobile {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &__badge-text {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-weight: map-get($font-weight, "medium");
+    font-size: 14px;
+    line-height: 20px;
+    color: map-get($colors, "black");
+    white-space: nowrap;
+
+    @include mobile {
+      font-size: 14px;
+      line-height: 20px;
+    }
+  }
+
+  /* Title */
+  &__title {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 600; // Use exact Figma weight
+    font-size: 52px;
+    text-align: center;
+    letter-spacing: -0.02em; // -2%
+    margin: 0 0 24px 0;
+    max-width: 100%; // Ensure responsive behavior
+
+    // Figma exact gradient
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    @include mobile {
+      font-weight: 700; // Bold for mobile as per Figma
+      font-size: 36px; // Reduced for better mobile fit
+      line-height: 1.2; // Better line height for mobile
+      margin-bottom: 16px;
+      max-width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      // Keep same gradient for mobile
+      // background: linear-gradient(
+      //     102.31deg,
+      //     rgba(0, 0, 0, 0) 9.12%,
+      //     rgba(255, 68, 0, 0.45) 71.6%
+      //   ),
+      //   #000000;
+    }
+  }
+
+  /* Description */
+  &__description {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-weight: map-get($font-weight, "regular");
+    font-size: 18px;
+    line-height: 28px;
+    color: map-get($colors, "black");
+    text-align: center;
+    margin: 0;
+    max-width: 767px;
+    opacity: 0.7;
+
+    @include mobile {
+      font-size: 18px;
+      line-height: 28px;
+      max-width: 100%;
+    }
+  }
+
+  /* Features Grid */
+  &__features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 1241px;
+
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      max-width: 354px;
+    }
+  }
+
+  /* Individual Feature Card */
+  &__card {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 16px;
+    padding: 24px;
+    min-height: 234px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+    overflow: hidden;
+
+    @include mobile {
+      min-height: 205px;
+      padding: 24px;
+    }
+  }
+
+  &__card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 28px;
+    z-index: 2;
+    position: relative;
+
+    @include mobile {
+      gap: 24px;
+    }
+  }
+
+  /* Card Icon */
+  &__card-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    @include mobile {
+      width: 72px;
+      height: 72px;
+    }
+
+    img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+
+      @include mobile {
+        width: 72px;
+        height: 72px;
+      }
+    }
+  }
+
+  /* Card Details */
+  &__card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  &__card-title {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 700; // Bold for desktop as per Figma
+    font-size: 32px; // Figma exact size for desktop
+    letter-spacing: -0.02em; // -2% as per Figma
+    margin: 0;
+
+    // Figma exact gradient for desktop
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    @include mobile {
+      font-weight: 800; // Extra bold for mobile as per Figma
+      font-size: 24px; // Figma exact size for mobile
+      line-height: 24px; // Figma exact line-height for mobile
+      color: #000000; // Solid black for mobile (no gradient)
+
+      // Reset gradient properties for mobile
+      background: none;
+      -webkit-background-clip: unset;
+      -webkit-text-fill-color: unset;
+      background-clip: unset;
+    }
+
+    @include tablet {
+      font-size: 22px;
+    }
+
+    @include desktop-lg {
+      font-size: 32px;
+    }
+  }
+
+  &__card-description {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+
+    @include mobile {
+      gap: 6px;
+    }
+
+    span {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-weight: map-get($font-weight, "regular");
+      font-size: 16px;
+      line-height: 28px;
+      color: map-get($colors, "black");
+      margin: 0;
+      flex: 1;
+
+      @include mobile {
+        font-size: 14px;
+        line-height: 24px;
+      }
+    }
+  }
+
+  &__card-check {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    flex-shrink: 0;
+    margin-top: 6px;
+
+    @include mobile {
+      width: 14px;
+      height: 14px;
+      margin-top: 5px;
+    }
+  }
+
+  /* Card Background Overlay for better text readability */
+  &__card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    z-index: 1;
+  }
+}

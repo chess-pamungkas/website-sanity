@@ -23,13 +23,11 @@ export const useSearchData = () => {
             cn
             zh
             fr
-            pt
             vn
             th
             id
             jp
             br
-            de
             my
             ar
           }

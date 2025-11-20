@@ -1,0 +1,127 @@
+@import "vars";
+@import "mixins";
+
+.security-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 615px;
+  width: 100%;
+  padding-top: 18px;
+
+  .badge-row {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 10px;
+    gap: 5px;
+    width: fit-content;
+    height: 26px;
+    background: linear-gradient(
+        0deg,
+        rgba(255, 68, 0, 0.15),
+        rgba(255, 68, 0, 0.15)
+      ),
+      #fff;
+    mix-blend-mode: normal;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    span.badge-label {
+      font-style: normal;
+      font-weight: map-get($font-weight, "medium");
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      color: map-get($colors, "black");
+      width: fit-content;
+      height: 20px;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+  }
+
+  .security-title {
+    width: 615px;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 24px 0;
+
+    @include mobile {
+      font-size: 42px;
+      max-width: 352px;
+      width: 100%;
+      margin: 15px 0;
+    }
+
+    @include tablet {
+      margin: 5px 0;
+    }
+  }
+
+  .security-title .highlight {
+    /* Remove color override to preserve gradient */
+    color: inherit;
+  }
+  .security-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+    order: 2;
+    @include mobile {
+      margin: 0;
+    }
+    @include tablet {
+      margin: 0;
+    }
+    .security-point {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: map-get($font-weight, "regular");
+      color: map-get($colors, "black");
+      margin-bottom: 8px;
+      opacity: 0.7;
+      @include mobile {
+        font-size: 16px;
+      }
+      .point-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        margin-top: 6px;
+        @include mobile {
+          margin-top: 4px;
+        }
+      }
+      span {
+        margin-top: 0;
+        line-height: 1.5;
+        display: block;
+      }
+    }
+  }
+}

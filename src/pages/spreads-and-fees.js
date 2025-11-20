@@ -4,18 +4,19 @@ import { useTranslationWithVariables } from "../helpers/hooks/use-translation-wi
 import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import SpreadsAndFeesPageContent from "../components/pages-content/spreads-and-fees-page-content";
+import PageBackground from "../components/shared/page-background";
 
 const SpreadsFeesPage = () => {
   const { t } = useTranslationWithVariables();
 
   return (
-    <>
+    <PageBackground backgroundType="homepage-bg-2">
       <Seo
         title={t("page-spreads-title")}
         description={t("page-spreads-description")}
       />
       <SpreadsAndFeesPageContent />
-    </>
+    </PageBackground>
   );
 };
 

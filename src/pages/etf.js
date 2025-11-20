@@ -4,17 +4,20 @@ import { useTranslationWithVariables } from "../helpers/hooks/use-translation-wi
 import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import ETFContent from "../components/pages-content/etf-page-content";
+import PageBackground from "../components/shared/page-background";
 
 const ETFPage = () => {
   const { t } = useTranslationWithVariables();
 
   return (
     <>
-      <Seo
-        title={t("page-etf-title")}
-        description={t("page-etf-description")}
-      />
-      <ETFContent />
+      <PageBackground backgroundType="homepage-bg-1">
+        <Seo
+          title={t("page-etf-title")}
+          description={t("page-etf-description")}
+        />
+        <ETFContent />
+      </PageBackground>
     </>
   );
 };

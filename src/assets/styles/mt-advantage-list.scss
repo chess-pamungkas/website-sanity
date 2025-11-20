@@ -1,0 +1,283 @@
+@import "vars";
+@import "mixins";
+
+.mt-advantage-list {
+  position: relative;
+  width: 100%;
+  max-width: 818px;
+  margin-left: 50px;
+
+  @include mobile {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 30px;
+    margin-bottom: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @include tablet {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 30px;
+    margin-bottom: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @include desktop-lg {
+    width: 100%;
+    margin-top: 0;
+    max-width: 818px;
+    margin-left: 50px;
+  }
+
+  &__container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+
+    @include mobile {
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 40px;
+    }
+  }
+
+  &__bg-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__content {
+    position: relative;
+    z-index: 2;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    @include tablet {
+      padding: 32px;
+      gap: 8px;
+    }
+  }
+
+  &__badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    background: rgba(255, 68, 0, 0.15);
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    width: fit-content;
+
+    &-icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    &-text {
+      font-size: 14px;
+      font-weight: map-get($font-weight, "medium");
+      line-height: 20px;
+      color: map-get($colors, "black");
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 0px;
+      gap: 8px;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+
+      @include mobile {
+        font-size: 13px;
+      }
+    }
+  }
+
+  &__title {
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    line-height: 120%;
+    letter-spacing: -0.02em;
+    color: map-get($colors, "black");
+    margin: 0;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  &__features {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+
+    @include desktop-lg {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  &__feature-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  &__feature-text {
+    width: fit-content;
+    height: auto;
+    font-weight: map-get($font-weight, "regular");
+    font-size: 14px;
+    line-height: 28px;
+    color: map-get($colors, "black");
+    opacity: 0.7;
+    margin: 0;
+    flex: 1;
+    order: 1;
+    flex-grow: 1;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  &__platform-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  // Remove old platform tabs and cards styles since they're now in the Tabs component
+  // The platform selection is now handled by the Tabs component with isPlatformSelection={true}
+
+  // Mobile specific styles
+  @include mobile {
+    max-width: 100%;
+
+    &__content {
+      padding: 16px;
+      gap: 24px;
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+      // text-align: center;
+    }
+
+    &__title {
+      font-size: 36px;
+      line-height: 1.2;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+
+      @include small-mobile {
+        font-size: 32px;
+        line-height: 1.1;
+      }
+    }
+
+    &__features {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+      // justify-items: center;
+    }
+
+    &__feature-text {
+      font-size: 16px;
+      line-height: 24px;
+      flex: 1;
+      flex-grow: 1;
+      max-width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      // text-align: center;
+    }
+
+    &__platform-cards {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+      // justify-items: center;
+    }
+
+    &__platform-card {
+      flex-direction: row;
+      justify-content: flex-start;
+      padding: 12px;
+    }
+
+    &__platform-icon {
+      width: 32px;
+      height: 32px;
+    }
+
+    &__platform-name {
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    // &__badge {
+    //   margin: 0 auto;
+    //   justify-content: center;
+    //   align-items: center;
+    // }
+
+    &__badge-text {
+      text-align: center;
+    }
+  }
+}

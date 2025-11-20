@@ -12,12 +12,6 @@
     "build": "npm run copy:registration-script && gatsby build",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "split-locales": "node src/scripts/split-locales/index.js",
-    "scan-locales": "node src/scripts/scan-locales/index.js",
-    "apply-translation": "node src/scripts/apply-translation/index.js",
-    "check-missing": "node src/scripts/check-missing/index.js",
-    "reorder-locales": "node src/scripts/reorder-locales/index.js",
-    "generate-robots": "node src/scripts/generate-robots/index.js",
     "copy:registration-script": "node src/scripts/copy-registration-script/index.js"
   },
   "dependencies": {

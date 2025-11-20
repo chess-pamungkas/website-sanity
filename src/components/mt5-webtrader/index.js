@@ -144,39 +144,41 @@ const WebTraderLink = () => {
   }
 
   return (
-    <div
-      className="mt5-webtrader"
-      ref={containerRef}
-      data-interface={interfaceType}
-      style={{
-        paddingTop: isDesktop
-          ? HEADER_BIG_HEIGHT + 20
-          : isMobile
-          ? HEADER_SMALL_HEIGHT + 30 // More padding for mobile
-          : HEADER_SMALL_HEIGHT + 10,
-        height: isMobile ? "calc(100vh - 95px)" : "calc(100vh - 223px)", // Adjusted height for mobile
-      }}
-    >
-      {isLoading && (
-        <div className="webtrader-loading">
-          <div className="loading-spinner"></div>
-        </div>
-      )}
-      <iframe
-        src={getWebTraderUrl(selectedLanguage)}
-        width="100%"
-        height="100%"
-        onLoad={handleIframeLoad}
-        onError={handleIframeError}
+    <div className="container">
+      <div
+        className="mt5-webtrader"
+        ref={containerRef}
+        data-interface={interfaceType}
         style={{
-          border: "none",
-          opacity: isLoading ? 0 : 1,
-          transition: "opacity 0.3s ease-in-out",
+          paddingTop: isDesktop
+            ? HEADER_BIG_HEIGHT + 20
+            : isMobile
+            ? HEADER_SMALL_HEIGHT + 30 // More padding for mobile
+            : HEADER_SMALL_HEIGHT + 10,
+          height: isMobile ? "calc(100vh - 95px)" : "calc(100vh - 223px)", // Adjusted height for mobile
         }}
-        title="MT5 WebTrader"
-        allowFullScreen
-        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
-      />
+      >
+        {isLoading && (
+          <div className="webtrader-loading">
+            <div className="loading-spinner"></div>
+          </div>
+        )}
+        <iframe
+          src={getWebTraderUrl(selectedLanguage)}
+          width="100%"
+          height="100%"
+          onLoad={handleIframeLoad}
+          onError={handleIframeError}
+          style={{
+            border: "none",
+            opacity: isLoading ? 0 : 1,
+            transition: "opacity 0.3s ease-in-out",
+          }}
+          title="MT5 WebTrader"
+          allowFullScreen
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+        />
+      </div>
     </div>
   );
 };

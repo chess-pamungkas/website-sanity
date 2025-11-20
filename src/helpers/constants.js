@@ -29,7 +29,9 @@ import {
   CAMPAIGN_PARAMS,
 } from "./services/marketing-service";
 import { setLangParam } from "./services/language-service";
+import { PORTAL_LANGUAGES_MAP } from "./lang-options.config";
 import RegistrationPopup from "../components/registration-popup";
+import { isBrowser } from "./services/is-browser";
 
 export const WINDOW_SIZE_SM = 375;
 export const WINDOW_SIZE_MD = 768;
@@ -40,7 +42,7 @@ export const SM_MAX_WIDTH = 767;
 export const MD_MAX_WIDTH = 1023;
 export const LG_MAX_WIDTH = 1919;
 
-export const HEADER_BIG_HEIGHT = 203;
+export const HEADER_BIG_HEIGHT = 65;
 export const HEADER_SMALL_HEIGHT = 65;
 
 export const BURGER_MENU_LINES_COUNT = 3;
@@ -115,8 +117,28 @@ export const ShowRegistrationPopup = ({ isOpen, onClose, langParam }) => {
   );
 };
 
+// Helper function to get current language code from URL
+const getCurrentLangCode = () => {
+  if (isBrowser()) {
+    const { pathname } = window.location;
+    const matches = pathname.match(/\/[a-z]{2}\//);
+    if (matches) {
+      const langCode = matches[0].slice(1, 3);
+      return langCode;
+    }
+  }
+  return "en"; // Default to English
+};
+
+// Helper function to get language parameter for portal links
+const getLangParamForPortal = () => {
+  const langCode = getCurrentLangCode();
+  const portalLangCode = PORTAL_LANGUAGES_MAP[langCode] || langCode;
+  return `?language=${portalLangCode}`;
+};
+
 export const GetRegistrationLink = () => {
-  const langParam = setLangParam();
+  const langParam = getLangParamForPortal();
   const ibParams = setIBparamsToLink();
   const campaignParams = setCampaignParamsToLink();
 
@@ -143,13 +165,13 @@ export const GetRegistrationLink = () => {
 };
 
 export const GetLoginLink = () =>
-  `https://portal.oqtima.${topLevelDomain}/login${setLangParam()}`;
+  `https://portal.oqtima.${topLevelDomain}/login${getLangParamForPortal()}`;
 
 export const GetDepositLink = () =>
-  `https://portal.oqtima.${topLevelDomain}/funds/deposit${setLangParam()}`;
+  `https://portal.oqtima.${topLevelDomain}/funds/deposit${getLangParamForPortal()}`;
 
 export const GetWithdrawalLink = () =>
-  `https://portal.oqtima.${topLevelDomain}/funds/withdrawal${setLangParam()}`;
+  `https://portal.oqtima.${topLevelDomain}/funds/withdrawal${getLangParamForPortal()}`;
 
 export const COMING_SOON_PAGE_LINK = "/coming-soon";
 export const COMPANY_PAGE_LINK = "/company";
@@ -163,19 +185,14 @@ export const FOREX_PAGE_LINK = "/forex";
 export const SHARES_PAGE_LINK = "/shares";
 export const ENERGIES_PAGE_LINK = "/energies";
 export const METALS_PAGE_LINK = "/metals";
-export const PLATFORMS_LINK = "/platforms";
 export const ALL_MARKETS_PAGE_LINK = "/all-markets";
 export const MT4_PAGE_LINK = "/mt4";
 export const MT5_PAGE_LINK = "/mt5";
-export const CTRADER_PAGE_LINK = "/ctrader";
-export const TRADING_VIEW_PAGE_LINK = "/trading-view";
 export const TRADING_TOOLS_PAGE_LINK = "/trading-tools";
 export const VPS_PAGE_LINK = "/vps";
 export const SWAP_FREE_PAGE_LINK = "/swap-free";
 export const WITHDRAWAL_PAGE_LINK = "/funding";
 export const SPREADS_AND_FEES_PAGE_LINK = "/spreads-and-fees";
-export const PROFESSIONAL_QUALIFICATION_PAGE_LINK =
-  "/professional-qualification";
 export const PARTNERS_PAGE_LINK = "/partners";
 export const ACCOUNTS_TYPE_PAGE_LINK = "/accounts-type";
 export const ETF_PAGE_LINK = "/etf";
@@ -185,12 +202,6 @@ export const MT4_WEB_TRADER_LINK = "/mt4-webtrader";
 
 export const PRIVACY_POLICY_PAGE_LINK = "/legal/privacy";
 export const COOKIE_POLICY_PAGE_LINK = "/legal/cookie";
-
-export const ANGLE_ICON_COLOR = {
-  black: "#232323",
-  red: "#ff4400",
-  white: "#ffffff",
-};
 
 export const TABLE_PAGE_SIZES = [5, 10, 15];
 
@@ -291,8 +302,3 @@ export const PAYMENT_SYSTEMS = {
     logo: wiseLogo,
   },
 };
-
-export const YOUTUBE_VIDEO_SHARE_LINK = "https://youtu.be/";
-
-// used to apply specific styles for languages that have longer words and etc.
-export const BIGGER_LANGUAGES = ["my", "vn", "es", "id"];

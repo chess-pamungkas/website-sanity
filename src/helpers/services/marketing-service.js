@@ -1,19 +1,10 @@
-import {
-  MARKETING_GET_PARAMS,
-  SECT2_GROUP1_COUNT_OF_WORDS_DEFAULT,
-} from "../marketing.config";
-import { navigate } from "gatsby";
+import { MARKETING_GET_PARAMS } from "../marketing.config";
 import { isBrowser } from "./is-browser";
 import { IB_PARAMS } from "./ib-service";
 
 import _ from "lodash";
 
 export const getRandomArray = (arr, count) => _.sampleSize(arr, count);
-
-export const getSect2TextSequence = (group1, group2) => {
-  const arrRandom = getRandomArray(group1, SECT2_GROUP1_COUNT_OF_WORDS_DEFAULT);
-  return _.concat(arrRandom, group2);
-};
 
 const getParamsFromUrl = () => {
   return new URLSearchParams(window.location.search);
@@ -43,28 +34,114 @@ export const getCampaignParamsAndSetToStorage = () => {
   if (isBrowser()) {
     const urlParams = getParamsFromUrl();
     const campaignCode = urlParams.get(CAMPAIGN_PARAMS.campaign_code);
+    const utmSource = urlParams.get("utm_source");
+    const utmMedium = urlParams.get("utm_medium");
+    const utmCampaign = urlParams.get("utm_campaign");
 
-    // Check if the URL parameter starts with `?${CAMPAIGN_PARAMS.campaign_code}=`
-    if (
-      window.location.search.startsWith(`?${CAMPAIGN_PARAMS.campaign_code}=`)
-    ) {
+    // Check if campaign_code or UTM parameters exist in URL
+    const hasCampaignCode = !!campaignCode;
+    const hasUTMParams = !!(utmSource || utmMedium || utmCampaign);
+
+    if (hasCampaignCode || hasUTMParams) {
+      // Store campaign_code if exists
       if (campaignCode) {
         localStorage.setItem(CAMPAIGN_PARAMS.campaign_code, campaignCode);
         localStorage.removeItem(IB_PARAMS.r_code);
-
-        // Store UTM parameters in localStorage if they exist
-        const utmSource = urlParams.get("utm_source");
-        const utmMedium = urlParams.get("utm_medium");
-        const utmCampaign = urlParams.get("utm_campaign");
-
-        if (utmSource) localStorage.setItem("utm_source", utmSource);
-        if (utmMedium) localStorage.setItem("utm_medium", utmMedium);
-        if (utmCampaign) localStorage.setItem("utm_campaign", utmCampaign);
       }
-    }
 
-    const { pathname } = window.location;
-    navigate(pathname);
+      // Store UTM parameters in localStorage if they exist
+      if (utmSource) localStorage.setItem("utm_source", utmSource);
+      if (utmMedium) localStorage.setItem("utm_medium", utmMedium);
+      if (utmCampaign) localStorage.setItem("utm_campaign", utmCampaign);
+
+      // Remove campaign_code and UTM parameters from URL immediately and forcefully
+      const cleanUrlFromParams = () => {
+        const currentUrl = new URL(window.location.href);
+        let urlChanged = false;
+
+        // Remove campaign_code parameter
+        if (currentUrl.searchParams.has(CAMPAIGN_PARAMS.campaign_code)) {
+          currentUrl.searchParams.delete(CAMPAIGN_PARAMS.campaign_code);
+          urlChanged = true;
+        }
+
+        // Remove UTM parameters if they exist in URL
+        if (currentUrl.searchParams.has("utm_source")) {
+          currentUrl.searchParams.delete("utm_source");
+          urlChanged = true;
+        }
+        if (currentUrl.searchParams.has("utm_medium")) {
+          currentUrl.searchParams.delete("utm_medium");
+          urlChanged = true;
+        }
+        if (currentUrl.searchParams.has("utm_campaign")) {
+          currentUrl.searchParams.delete("utm_campaign");
+          urlChanged = true;
+        }
+
+        if (urlChanged) {
+          // Build clean URL - preserve pathname, other params, and hash
+          let cleanUrl = currentUrl.pathname;
+
+          // Add remaining query parameters if any
+          const remainingParams = currentUrl.searchParams.toString();
+          if (remainingParams) {
+            cleanUrl += `?${remainingParams}`;
+          }
+
+          // Add hash if exists
+          if (currentUrl.hash) {
+            cleanUrl += currentUrl.hash;
+          }
+
+          console.log("Cleaning URL:", {
+            from: window.location.href,
+            to: cleanUrl,
+          });
+
+          // Update URL immediately
+          window.history.replaceState(null, "", cleanUrl);
+
+          return true; // URL was cleaned
+        }
+        return false; // No parameters found to clean
+      };
+
+      // Clean URL immediately
+      const cleaned = cleanUrlFromParams();
+      console.log("Initial URL clean result:", cleaned);
+
+      // Also clean after a short delay to catch any late URL manipulations
+      setTimeout(() => {
+        const cleaned2 = cleanUrlFromParams();
+        if (cleaned2) {
+          console.log("URL cleaned again after 10ms");
+        }
+      }, 10);
+
+      // And clean again after a longer delay to be absolutely sure
+      setTimeout(() => {
+        const cleaned3 = cleanUrlFromParams();
+        if (cleaned3) {
+          console.log("URL cleaned again after 100ms");
+        }
+        // Final check - log if URL still has parameters
+        const finalCheck = new URL(window.location.href);
+        const stillHasParams =
+          finalCheck.searchParams.has(CAMPAIGN_PARAMS.campaign_code) ||
+          finalCheck.searchParams.has("utm_source") ||
+          finalCheck.searchParams.has("utm_medium") ||
+          finalCheck.searchParams.has("utm_campaign");
+        if (stillHasParams) {
+          console.warn(
+            "WARNING: URL still contains parameters after cleaning:",
+            window.location.href
+          );
+        } else {
+          console.log("✓ URL successfully cleaned:", window.location.href);
+        }
+      }, 100);
+    }
   }
 };
 

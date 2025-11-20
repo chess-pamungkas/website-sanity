@@ -1,0 +1,1001 @@
+@import "vars";
+@import "mixins";
+
+.our-spreads {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // padding: 58.5px 100px;
+  gap: 38px;
+  width: 100%;
+  max-width: 1440px;
+  height: auto;
+  background: transparent;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+
+  @include mobile {
+    padding: 0;
+    gap: 20px;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-top: 130px;
+  }
+
+  @include tablet {
+    margin-top: 130px;
+  }
+
+  @include desktop-lg {
+    margin-top: 150px;
+  }
+
+  // Background
+  &__bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  // Content Container
+  &__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 38px;
+    width: 100%;
+    max-width: 1241px;
+    height: auto;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      gap: 20px;
+      padding: 0;
+    }
+  }
+
+  // Header Section
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1241px;
+    height: auto;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      gap: 12px;
+    }
+  }
+
+  // Badge Group
+  &__badge-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    background: rgba(255, 68, 0, 0.15);
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    width: fit-content;
+
+    img {
+      width: 14px;
+      height: 14px;
+    }
+
+    span {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: map-get($font-weight, "medium");
+      font-size: 14px;
+      line-height: 20px;
+      color: #000;
+    }
+  }
+
+  // Title
+  &__title {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    text-align: center;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+
+    @include mobile {
+      font-size: 42px;
+    }
+  }
+
+  // Tabs Container
+  &__tabs-container {
+    width: 100%;
+    max-width: 1032px;
+
+    @include mobile {
+      width: 100%;
+    }
+  }
+
+  // Platform Selection Styling for Spreads Tabs
+  &__platform-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__platform-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #e5e5e5;
+    background: rgba(255, 68, 0, 0.15);
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 12px;
+    padding: 8px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 32px;
+
+    @include mobile {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ff4400;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 20.5px 24px;
+      width: 100%;
+      height: 52px;
+      margin: 0 auto;
+      cursor: pointer;
+      position: relative;
+      z-index: 999;
+    }
+  }
+
+  &__platform-tab {
+    background: none;
+    border: none;
+    padding: 12px 24px;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: map-get($font-weight, "bold");
+    line-height: 22px;
+    color: #000000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    flex: 1;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+
+    &:hover {
+      color: #ff4400;
+    }
+
+    &--active {
+      background: rgba(255, 68, 0, 0.9);
+      color: #ffffff;
+      text-transform: uppercase;
+      font-size: 16px;
+      line-height: 22px;
+      font-weight: map-get($font-weight, "bold");
+      border: 1px solid rgba(255, 68, 0, 0.5);
+      letter-spacing: 0.55px;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+
+    @include tablet {
+      padding: 16px 32px;
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    @include mobile {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-size: 20px;
+      font-weight: map-get($font-weight, "medium");
+      line-height: 22px;
+      color: #ffffff;
+      cursor: pointer;
+      text-align: left;
+      white-space: nowrap;
+      flex: 1;
+      margin-right: 10px;
+      text-transform: none;
+      letter-spacing: 0.2px;
+      text-decoration: none;
+      outline: none;
+      border: none;
+      background: none;
+      box-shadow: none;
+      transition: none;
+      user-select: none;
+      -webkit-user-select: none;
+      opacity: 0.8;
+    }
+  }
+
+  &__dropdown-icon {
+    width: 16px;
+    height: 16px;
+    color: #ffffff;
+    transition: transform 0.3s ease;
+
+    &--open {
+      transform: rotate(180deg);
+    }
+
+    @include mobile {
+      width: 16px;
+      height: 16px;
+      color: #ffffff;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  &__platform-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 4px;
+    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    min-height: 100px;
+    overflow-y: auto;
+
+    &.show {
+      display: block !important;
+    }
+
+    @include mobile {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      margin-top: 4px;
+      z-index: 1000;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      min-height: 100px;
+      overflow-y: auto;
+
+      &.show {
+        display: block !important;
+      }
+    }
+  }
+
+  &__platform-option {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 12px 16px;
+    background: #ffffff;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-size: 18px;
+    font-weight: map-get($font-weight, "medium");
+    color: #000000;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1001;
+
+    &:hover {
+      background: rgba(255, 68, 0, 0.08);
+      color: #ff4400;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    @include mobile {
+      font-size: 18px;
+      padding: 14px 16px;
+      font-weight: map-get($font-weight, "semibold");
+    }
+  }
+
+  &__table-content {
+    width: 100%;
+
+    @include mobile {
+      margin-top: 50px;
+    }
+  }
+
+  // Desktop Table Styles (from forex-spreads-desktop)
+  &-desktop {
+    width: 100%;
+
+    .search-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: 36px;
+      margin-bottom: 32px;
+      margin-left: auto;
+      margin-right: auto;
+
+      @include desktop-lg {
+        max-width: 1032px;
+      }
+    }
+
+    .explanation-text {
+      font-family: "Sofia Pro";
+      font-weight: map-get($font-weight, "regular");
+      font-size: 16px;
+      line-height: 22px;
+      color: #525252;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .search-frame {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 355px;
+      height: 36px;
+      background: transparent;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 50px;
+      padding: 0 12px;
+      gap: 10px;
+      box-sizing: border-box;
+      position: relative;
+
+      &:focus-within {
+        border-color: rgba(255, 68, 0, 0.4);
+        box-shadow: 0 0 0 2px rgba(255, 68, 0, 0.1);
+      }
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-weight: map-get($font-weight, "medium");
+      font-size: 14px;
+      line-height: 22px;
+      color: #9c9c9c;
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      min-height: 0; // Prevent flex item from expanding
+
+      &::placeholder {
+        color: #9c9c9c;
+        font-size: 14px;
+      }
+
+      &:focus {
+        color: #000000;
+      }
+    }
+
+    .search-icon {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+      opacity: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spreads-table-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-body-scroll-container {
+      width: 100%;
+      max-height: 354px; // 6 rows * 59px = 354px
+      overflow-y: auto;
+      overflow-x: hidden;
+      border-radius: 0 0 12px 12px;
+      background: transparent;
+
+      // Hide scrollbar but keep functionality
+      scrollbar-width: none; // Firefox
+      -ms-overflow-style: none; // IE and Edge
+
+      &::-webkit-scrollbar {
+        display: none; // Chrome, Safari, Opera
+      }
+    }
+
+    .spreads-table-body {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      border: none;
+      margin: 0;
+
+      @include desktop-lg {
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      @include desktop-xl {
+        width: 1032px;
+        margin: 0 auto;
+      }
+
+      .table-body-section {
+        width: 100%;
+        height: auto;
+        display: table-row-group;
+      }
+
+      .table-row {
+        height: 59px;
+        min-height: 59px;
+        max-height: 59px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+        border-collapse: separate;
+        display: table-row;
+
+        .table-cell {
+          padding: 16px;
+          text-align: center;
+          font-weight: map-get($font-weight, "regular");
+          font-size: 16px;
+          line-height: 22px;
+          color: #000;
+          vertical-align: middle;
+          border: none;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+          height: 59px;
+          min-height: 59px;
+          max-height: 59px;
+          box-sizing: border-box;
+
+          &.table-cell__symbol {
+            text-align: left;
+            padding-left: 16px;
+            width: 25%;
+            font-weight: map-get($font-weight, "bold");
+          }
+
+          &.table-cell__min {
+            width: 18.75%;
+            text-align: center;
+            font-weight: map-get($font-weight, "bold");
+          }
+
+          &.table-cell__avg {
+            width: 18.75%;
+            text-align: center;
+            font-weight: map-get($font-weight, "regular");
+          }
+        }
+      }
+    }
+
+    .spreads-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      border-radius: 12px;
+      overflow: hidden;
+
+      // Ensure proper table structure
+      display: table;
+      border: none;
+
+      @include desktop-lg {
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      @include desktop-xl {
+        width: 1032px;
+        margin: 0 auto;
+      }
+
+      // Table Header Section (Frame 1000001821)
+      .table-header-section {
+        width: 100%;
+        height: auto;
+        display: table-row-group;
+      }
+
+      // Main Header Row (Frame 10311)
+      .table-main-header {
+        height: 59px;
+        min-height: 59px;
+        max-height: 59px;
+        background: url("../../assets/images/bg/funding-withdrawals/table-head.svg")
+          no-repeat center;
+        background-size: cover;
+        border-radius: 12px;
+        border: none;
+        overflow: hidden;
+        display: table-row;
+
+        th {
+          padding: 16px;
+          text-align: left;
+          font-weight: map-get($font-weight, "bold");
+          font-size: 16px;
+          line-height: 22px;
+          color: #fff;
+          border: none;
+          vertical-align: middle;
+          height: 59px;
+          box-sizing: border-box;
+
+          &:first-child {
+            width: 25%;
+            padding-left: 16px;
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+          }
+
+          &:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+          }
+
+          &.table-header__ecn {
+            width: 37.5%;
+            text-align: center;
+          }
+
+          &.table-header__oqtima {
+            width: 37.5%;
+            text-align: center;
+          }
+        }
+      }
+
+      // Sub Header Row (Frame 10318)
+      .table-sub-header {
+        height: 59px;
+        min-height: 59px;
+        max-height: 59px;
+        background: rgba(255, 68, 0, 0.1);
+        border-radius: 12px;
+        border: none;
+        overflow: hidden;
+        display: table-row;
+
+        th {
+          padding: 16px;
+          text-align: center;
+          font-weight: map-get($font-weight, "bold");
+          font-size: 16px;
+          line-height: 22px;
+          color: #000;
+          vertical-align: middle;
+          border: none;
+          height: 59px;
+          box-sizing: border-box;
+
+          &:first-child {
+            text-align: left;
+            padding-left: 16px;
+            width: 25%;
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+          }
+
+          &:nth-child(2) {
+            width: 18.75%;
+            text-align: center;
+          }
+
+          &:nth-child(3) {
+            width: 18.75%;
+            text-align: center;
+          }
+
+          &:nth-child(4) {
+            width: 18.75%;
+            text-align: center;
+          }
+
+          &:nth-child(5) {
+            width: 18.75%;
+            text-align: center;
+          }
+
+          &:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+          }
+        }
+      }
+
+      // Table Body Section - moved to spreads-table-body
+    }
+
+    // Clean and consistent table styling without !important
+    .spreads-table {
+      // Ensure consistent row heights for header sections only
+      .table-main-header,
+      .table-sub-header {
+        height: 59px;
+        min-height: 59px;
+        max-height: 59px;
+      }
+
+      // Consistent cell padding and alignment
+      th {
+        padding: 16px;
+        height: 59px;
+        min-height: 59px;
+        max-height: 59px;
+        box-sizing: border-box;
+        vertical-align: middle;
+        line-height: 22px;
+      }
+    }
+  }
+
+  // Mobile Card Styles (from crypto-spreads-mobile)
+  &-mobile {
+    width: 100%;
+
+    .search-container-mobile {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 36px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 50px;
+      padding: 0 12px;
+      gap: 10px;
+      margin-bottom: 20px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      z-index: 10;
+      background: #ffffff;
+      transition: all 0.3s ease;
+
+      &--hidden {
+        display: none;
+      }
+    }
+
+    .search-input-mobile {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: "Sofia Pro";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 22px;
+      color: rgba(0, 0, 0, 0.6125);
+      padding: 0;
+
+      &::placeholder {
+        color: rgba(0, 0, 0, 0.6125);
+        font-family: "Sofia Pro";
+        font-style: normal;
+        font-weight: map-get($font-weight, "medium");
+        font-size: 14px;
+        line-height: 22px;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .search-icon-mobile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        opacity: 1;
+        filter: none;
+      }
+    }
+
+    .spreads-disclaimer-mobile {
+      font-family: "Sofia Pro";
+      font-weight: map-get($font-weight, "regular");
+      font-size: 14px;
+      line-height: 16px;
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+
+    .spreads-cards-scroll-container {
+      max-height: 800px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      margin-bottom: 32px;
+
+      // Hide scrollbar but keep functionality
+      scrollbar-width: none; // Firefox
+      -ms-overflow-style: none; // IE and Edge
+
+      &::-webkit-scrollbar {
+        display: none; // Chrome, Safari, Opera
+      }
+    }
+
+    .spreads-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .spread-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 24px 28px;
+      min-height: 256px;
+      position: relative;
+      overflow: hidden;
+
+      &__header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 16px;
+        width: 100%;
+
+        @include mobile {
+          gap: 8px;
+          margin-bottom: 12px;
+        }
+
+        @include tablet {
+          gap: 10px;
+          margin-bottom: 16px;
+        }
+      }
+
+      &__icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-bottom: 0;
+
+        // Support for emoji icons (fallback)
+        font-size: 24px;
+        line-height: 1;
+
+        // Support for SVG icons
+        img,
+        svg {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          display: block;
+        }
+
+        // Ensure proper icon positioning
+        &::before {
+          content: "";
+          display: block;
+          width: 24px;
+          height: 24px;
+          background: transparent;
+        }
+
+        // Combined icons styling (overlapping flags)
+        &--combined {
+          width: 48px; // Wider to accommodate two icons
+          gap: 2px; // Small gap between icons
+
+          img,
+          svg {
+            width: 22px; // Slightly smaller to fit two icons
+            height: 22px;
+          }
+        }
+      }
+
+      &__symbol {
+        font-weight: map-get($font-weight, "bold");
+        font-size: 32px;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(
+            102.31deg,
+            rgba(0, 0, 0, 0) 9.12%,
+            rgba(255, 68, 0, 0.45) 71.6%
+          ),
+          #000000;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: block;
+        width: 100%;
+
+        // Fallback for browsers that don't support gradient text
+        @supports not (-webkit-background-clip: text) {
+          color: #000000;
+          background: none;
+        }
+      }
+
+      &__description {
+        font-weight: map-get($font-weight, "light");
+        font-size: 14px;
+        line-height: 20px;
+        color: #6b7280;
+        margin: 0;
+        padding: 0;
+      }
+
+      &__accounts {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      &__account {
+        flex: 1;
+      }
+
+      &__account-title {
+        font-weight: map-get($font-weight, "light");
+        font-size: 16px;
+        line-height: 22px;
+        color: map-get($colors, "black");
+        margin: 0 0 8px 0;
+      }
+
+      &__values {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      &__label {
+        font-family: "Sofia Pro";
+        font-weight: map-get($font-weight, "bold");
+        font-size: 16px;
+        line-height: 22px;
+        color: map-get($colors, "black");
+      }
+
+      &__divider {
+        height: 1px;
+        background: #e5e7eb;
+        margin: 8px 0;
+      }
+    }
+  }
+
+  // CTA Section
+  &__cta {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 1032px;
+
+    @include mobile {
+      width: 100%;
+    }
+  }
+
+  &__cta-desktop {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  &__cta-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  &__cta-button {
+    padding: 16px 32px;
+    border: none;
+    border-radius: 8px;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 16px;
+    line-height: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &--primary {
+      background: #ff4400;
+      color: #ffffff;
+
+      &:hover {
+        background: #e03d00;
+      }
+    }
+
+    &--secondary {
+      background: transparent;
+      color: #ff4400;
+      border: 1px solid #ff4400;
+
+      &:hover {
+        background: #ff4400;
+        color: #ffffff;
+      }
+    }
+
+    @include mobile {
+      width: 100%;
+      padding: 16px 24px;
+    }
+  }
+}

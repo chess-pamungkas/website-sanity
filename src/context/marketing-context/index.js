@@ -24,6 +24,26 @@ export const MarketingContextProvider = ({ children }) => {
     }
   }, []);
 
+  // Also handle URL changes (e.g., when navigating)
+  useEffect(() => {
+    if (isBrowser()) {
+      const handleLocationChange = () => {
+        getIBParamsAndSetToStorage();
+        getCampaignParamsAndSetToStorage();
+      };
+
+      // Listen for popstate events (back/forward navigation)
+      window.addEventListener("popstate", handleLocationChange);
+
+      // Also check on initial load and when location changes
+      handleLocationChange();
+
+      return () => {
+        window.removeEventListener("popstate", handleLocationChange);
+      };
+    }
+  }, []);
+
   return (
     <MarketingContext.Provider value={params}>
       {children}

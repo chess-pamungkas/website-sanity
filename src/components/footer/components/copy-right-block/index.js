@@ -6,11 +6,8 @@ import {
   getFooterCopyright,
 } from "../../../../helpers/footer.config";
 import "../../../../assets/styles/container.scss";
-import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 
 const CopyRightBlock = ({ className }) => {
-  const { isTablet, isMobile } = useWindowSize();
-
   return (
     <>
       <section className={cn("copy-right-block", className)}>

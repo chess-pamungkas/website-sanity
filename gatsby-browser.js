@@ -49,3 +49,7 @@ if ("serviceWorker" in navigator) {
     });
   }
 }
+
+export const onClientEntry = () => {};
+
+export const onRouteUpdate = () => {};

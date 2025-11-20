@@ -2,86 +2,274 @@
 @import "mixins";
 
 .lang-options {
-  padding: 42px 20px 35px 30px;
+  padding: 32px 42px 35px 42px;
   background-color: map-get($colors, "white");
+  border-radius: 32px;
+  width: 100%;
+  position: relative; // Add position relative for absolute positioning of close button
 
-  @include tablet {
-    padding: 56px 20px 35px 55px;
+  @include mobile {
+    padding: 32px 15px;
+    border-radius: 32px;
   }
 
-  &__title {
-    margin: 0 0 18px;
-    color: map-get($colors, "black-secondary");
-    font-weight: map-get($font-weight, "black");
-    font-size: 24px;
-    line-height: 30px;
-    text-align: center;
+  @include tablet {
+    padding: 32px 42px 35px 42px;
+  }
 
-    @include tablet {
-      font-size: 34px;
-      line-height: 42px;
+  @include desktop-lg {
+    padding: 32px 42px 35px 42px;
+  }
+
+  // Close Button
+  &__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+
+    @include mobile {
+      top: 16px;
+      right: 16px;
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover {
+      opacity: 0.7;
+      transform: scale(1.1);
     }
   }
 
-  &__list {
-    column-count: 2;
+  &__close-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+
+    @include mobile {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  // Badge Group
+  &__badge-group {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(255, 68, 0, 0.15);
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    padding: 4px;
+    width: fit-content;
+    box-sizing: border-box;
+    height: 26px;
+    margin-bottom: 10px;
+  }
+
+  &__badge {
+    border-radius: 16px;
+    padding: 2px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 18px;
+  }
+
+  &__badge-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  &__badge-text {
+    color: map-get($colors, "black");
+    font-size: 14px;
+    font-weight: map-get($font-weight, "medium");
+    line-height: 20px;
+    white-space: nowrap;
+  }
+
+  // Title
+  &__title {
+    margin: 0 0 20px 0;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 42px;
+    text-align: left;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    stroke: #000000;
+    stroke-width: 5.7px;
+
+    @include mobile {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
 
     @include tablet {
-      column-count: 3;
+      font-size: 40px;
+    }
+  }
+
+  // Language Grid
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(200px, 1fr));
+    gap: 15.5px;
+    width: 100%;
+    justify-items: center;
+
+    @include mobile {
+      grid-template-columns: repeat(
+        2,
+        minmax(100px, 1fr)
+      ); // Updated to match new mobile width
+      gap: 10px;
+    }
+
+    @include tablet {
+      grid-template-columns: repeat(3, minmax(200px, 1fr));
+      gap: 15.5px;
     }
   }
 
   &__item {
-    padding: 2px 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-width: 200px;
+    width: 100%;
+
+    @include mobile {
+      min-width: 100px; // Reduced from 164.08px for better mobile layout
+    }
+
+    @include tablet {
+      min-width: 200px;
+    }
 
     &--selected {
       & > .lang-options__select {
         background-color: map-get($colors, "red");
+        border-color: map-get($colors, "red");
+        color: map-get($colors, "white");
+
+        .lang-options__name {
+          color: map-get($colors, "white");
+        }
+
+        .lang-options__chevron {
+          color: map-get($colors, "white");
+        }
+
+        &:hover {
+          .lang-options__name {
+            color: map-get($colors, "red");
+          }
+        }
       }
     }
   }
 
   &__select {
     width: 100%;
+    min-width: 200px;
     display: flex;
     align-items: center;
-    padding: 7px 9px;
+    justify-content: center; // Center content horizontally
+    padding: 10.8px 10px;
     background: transparent;
     cursor: pointer;
-    border: 2px solid transparent;
-    border-radius: 9px;
+    border: 1px solid rgba(255, 68, 0, 0.8);
+    border-radius: 6.2px;
     outline: none;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    height: 40.2px;
+    box-sizing: border-box;
+    text-align: center; // Center text content
+
+    @include mobile {
+      min-width: 100px; // Reduced for better mobile layout
+      padding: 10px 8px;
+      height: 40px;
+      border-radius: 6px;
+    }
+
+    @include tablet {
+      min-width: 200px;
+    }
 
     &:hover {
       border-color: map-get($colors, "red");
+      background-color: rgba(255, 68, 0, 0.15);
     }
   }
 
   &__flag {
-    margin-right: 10px;
-    box-shadow: 0 0 2px 1px #0000001a;
+    width: 18.56px !important;
+    height: 18.56px !important;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-right: 8px !important; // Adjust spacing for centered layout
+
+    @include mobile {
+      width: 14.03px !important;
+      height: 14.03px !important;
+      margin-right: 6px !important; // Adjust spacing for mobile
+    }
   }
 
   &__name {
-    color: map-get($colors, "black-secondary");
-    font-weight: map-get($font-weight, "black");
-    font-size: 12px;
-    line-height: 15px;
-    text-align: left;
+    color: map-get($colors, "black");
+    font-weight: map-get($font-weight, "medium");
+    font-size: 16px;
+    line-height: 1.3;
+    text-align: center; // Center the text
+    flex: 0 1 auto; // Don't expand, just take needed space
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-    &--small {
-      font-size: 10px;
-      line-height: 15px;
+    @include mobile {
+      font-size: 12px;
+    }
+  }
 
-      @include tablet {
-        font-size: 14px;
-        line-height: 20px;
-      }
+  &__chevron {
+    width: 7.2px;
+    height: 7.2px;
+    flex-shrink: 0;
+    color: map-get($colors, "red");
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include mobile {
+      width: 7px;
+      height: 7px;
     }
 
-    @include tablet {
-      font-size: 16px;
-      line-height: 20px;
+    svg {
+      width: 100%;
+      height: 100%;
     }
   }
 }

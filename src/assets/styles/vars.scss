@@ -15,34 +15,40 @@ $font: "Sofia Pro", sans-serif;
 $font-secondary: "Lato", sans-serif;
 $fontJP: "Noto Sans JP", sans-serif;
 $font-sidebar: "Montserrat", sans-serif;
+$font-roboto: "Roboto", sans-serif;
 
 $font-weight: (
-  "light": 300,
   "regular": normal,
+  "light": 300,
+  "medium": 500,
+  "semibold": 600,
   "bold": bold,
   "black": 900,
 );
 
 $colors: (
-  "white": #ffffff,
+  "white": #f7f5f3,
   "red": #ff4400,
-  "red-secondary": #ff1200,
-  "green": #11ba55,
-  "light-green": #00ff66,
+  "red-secondary": #8f1f00,
+  "green": #0b5c2f,
+  "light-green": #148c4b,
   "grey": #9b9b9b,
-  "black": #232323,
+  "black": #000000,
   "black-secondary": #1a1a1a,
   "table-grey": #e3e3e3,
   "bg-grey": #b7b7b7,
+  "navbar-bg-grey": #eceae9,
+  "navbar-text-grey": #5e5f63,
+  "navbar-item-grey": #494949,
 );
 
-$padding-sm: 15px;
+$padding-sm: 25px;
 $padding-md: 35px;
 $padding-lg: 35px;
 $padding-xl: 70px;
 
 $border-radius-default: 31px;
-$border-radius-header: 27px;
+$border-radius-header: 10px;
 
 $button-default: (
   "height": 62px,
@@ -54,5 +60,5 @@ $button-header: (
 );
 
 $header-height: 150px;
-$header-height-small: 115px;
+$header-height-small: 88px;
 $header-height-small-mobile: 65px;

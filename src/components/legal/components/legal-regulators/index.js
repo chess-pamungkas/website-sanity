@@ -13,17 +13,18 @@ const LegalRegulators = ({ className, regulators }) => {
         "legal-regulators--rtl": isRTL,
       })}
     >
-      <div className={cn("legal-regulators__wrapper")}>
+      <div className="legal-regulators__wrapper">
         <div className="legal-regulators__items">
           {regulators.length > 0 &&
-            regulators.map((item) => (
+            regulators.map((item, index) => (
               <LegalRegulatorItem
-                key={`regulator-${item.title}`}
+                key={`regulator-${item.title}-${index}`}
                 icon={item.icon}
                 title={item.title}
                 titleAccent={item.titleAccent}
                 text={item.text}
                 anchorLink={item.anchorLink}
+                index={index}
               />
             ))}
         </div>
@@ -31,6 +32,7 @@ const LegalRegulators = ({ className, regulators }) => {
     </section>
   );
 };
+
 LegalRegulators.propTypes = {
   className: PropTypes.string,
   regulators: PropTypes.arrayOf(
@@ -43,4 +45,5 @@ LegalRegulators.propTypes = {
     })
   ).isRequired,
 };
+
 export default LegalRegulators;

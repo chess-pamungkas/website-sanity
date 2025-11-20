@@ -1,0 +1,326 @@
+@import "vars";
+@import "mixins";
+
+.trading-calendar {
+  position: relative;
+  width: 100%;
+  padding: 50px 0 20px 0;
+
+  @include mobile {
+    padding: 40px 0 60px 0;
+  }
+
+  &__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 60px;
+
+    @include mobile {
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    @include tablet {
+      margin: 0;
+      flex-direction: column;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    @include desktop-lg {
+      flex-direction: row;
+      gap: 60px;
+    }
+
+    @include desktop-2k {
+      max-width: 100%;
+    }
+  }
+
+  &__image-container {
+    flex: 1;
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+
+    @include mobile {
+      order: 1;
+    }
+  }
+
+  &__image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+    @include mobile {
+      border-radius: 8px;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+
+    @include mobile {
+      width: 100%;
+      order: 2;
+      gap: 20px;
+      padding: 0 16px;
+    }
+  }
+
+  &__badge {
+    box-sizing: border-box;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    gap: 12px;
+    width: fit-content;
+    height: 28px;
+    background: linear-gradient(
+        0deg,
+        rgba(255, 68, 0, 0.15),
+        rgba(255, 68, 0, 0.15)
+      ),
+      #fff;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    &-icon {
+      width: 14px;
+      height: 14px;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+
+    &-text {
+      width: fit-content;
+      height: 20px;
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: map-get($font-weight, "medium");
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      color: map-get($colors, "black");
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+    }
+  }
+
+  &__title {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0;
+
+    @include mobile {
+      width: 100%;
+      font-size: 36px;
+      line-height: 1.2;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+  }
+
+  &__benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @include mobile {
+      gap: 12px;
+    }
+  }
+
+  &__benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    @include mobile {
+      gap: 10px;
+    }
+  }
+
+  &__benefit-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+
+    @include mobile {
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+    }
+
+    &-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__benefit-text {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "regular");
+    font-size: 16px;
+    line-height: 24px;
+    color: #1a1a1a;
+
+    @include mobile {
+      font-size: 14px;
+      line-height: 22px;
+    }
+  }
+
+  // Button group styling to match cost-calculator-content
+  .navbar-dropdown-highlight__button-group {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+
+    @include mobile {
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+  }
+}
+
+// Custom styling for features-products in vps page mobile view
+@include mobile {
+  .trading-calendar-page .features-products {
+    // Ensure the section is visible
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-height: 200px !important;
+
+    &__header {
+      display: block !important;
+      visibility: visible !important;
+      text-align: center !important;
+      margin-bottom: 20px !important;
+
+      // Override the default mobile text-align: left from features-products.scss
+      * {
+        text-align: center !important;
+      }
+    }
+
+    &__badge {
+      margin: 0 auto !important;
+      margin-bottom: 10px !important;
+    }
+
+    &__grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 20px;
+      padding: 0;
+      visibility: visible !important;
+    }
+
+    &__slider {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 20px;
+      overflow: visible !important;
+      scroll-snap-type: none !important;
+      padding: 0;
+    }
+
+    &__grid-container {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 20px;
+      grid-template-columns: none !important;
+      visibility: visible !important;
+    }
+
+    &__card {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      width: 100% !important;
+      min-width: auto !important;
+      min-height: auto !important;
+      scroll-snap-align: none !important;
+      flex-shrink: 1 !important;
+      padding: 24px 28px;
+      margin-bottom: 0;
+      background: #ffffff !important; // Temporary background for debugging
+
+      &::before {
+        background-image: url("../../assets/images/bg/features-products/features-products-mobile.svg") !important;
+      }
+    }
+
+    &__card-icon {
+      display: flex !important;
+      visibility: visible !important;
+      width: 72px;
+      height: 72px;
+      margin-bottom: 16px;
+    }
+
+    &__card-title {
+      display: block !important;
+      visibility: visible !important;
+      font-size: 24px !important;
+      margin: 0 0 12px 0 !important;
+      line-height: 1.2;
+    }
+
+    &__card-description {
+      display: block !important;
+      visibility: visible !important;
+      font-size: 16px !important;
+      max-width: none !important;
+      line-height: 1.5;
+    }
+  }
+}

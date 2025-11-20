@@ -4,18 +4,19 @@ import { useTranslationWithVariables } from "../helpers/hooks/use-translation-wi
 import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import SwapFreeContent from "../components/pages-content/swap-free-page-content";
+import PageBackground from "../components/shared/page-background";
 
 const SwapFreePage = () => {
   const { t } = useTranslationWithVariables();
 
   return (
-    <>
+    <PageBackground backgroundType="homepage-bg-2">
       <Seo
         fsaTitle={t("page-swap-free-title")}
         fsaDescription={t("page-swap-free-description")}
       />
       <SwapFreeContent />
-    </>
+    </PageBackground>
   );
 };
 

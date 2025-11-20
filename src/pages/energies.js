@@ -4,17 +4,20 @@ import { useTranslationWithVariables } from "../helpers/hooks/use-translation-wi
 import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import EnergiesContent from "../components/pages-content/energies-page-content";
+import PageBackground from "../components/shared/page-background";
 
 const EnergiesPage = () => {
   const { t } = useTranslationWithVariables();
 
   return (
     <>
-      <Seo
-        title={t("page-energies-title")}
-        description={t("page-energies-description")}
-      />
-      <EnergiesContent />
+      <PageBackground backgroundType="homepage-bg-1">
+        <Seo
+          title={t("page-energies-title")}
+          description={t("page-energies-description")}
+        />
+        <EnergiesContent />
+      </PageBackground>
     </>
   );
 };

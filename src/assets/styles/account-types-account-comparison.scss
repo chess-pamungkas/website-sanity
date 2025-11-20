@@ -1,0 +1,1080 @@
+@import "vars";
+@import "mixins";
+@import "reusable-buttons";
+
+.account-types-account-comparison-content {
+  position: relative;
+  width: 100%;
+  min-height: 981px;
+  background: transparent;
+  border-radius: 24px;
+  overflow: hidden;
+  margin: 48px 0;
+
+  .account-comparison-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__image {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      object-fit: fill;
+      display: block;
+      opacity: 1;
+      mix-blend-mode: color-dodge;
+
+      @include mobile {
+        object-fit: cover;
+        object-position: center;
+      }
+    }
+  }
+
+  // Content container
+  > *:not(.account-comparison-bg) {
+    position: relative;
+    z-index: 4;
+  }
+
+  .account-comparison-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 73px 20px 0;
+    gap: 16px;
+    text-align: center;
+    .badge-row {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 4px 10px;
+      gap: 12px;
+      width: fit-content;
+      height: 28px;
+      background: #ffffff;
+      mix-blend-mode: normal;
+      border: 1px solid rgba(255, 68, 0, 0.15);
+      border-radius: 16px;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+
+      img {
+        width: 14px;
+        height: 14px;
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+      }
+
+      .badge-label {
+        width: fit-content;
+        height: 20px;
+        font-family: "Sofia Pro", Arial, sans-serif;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 20px;
+        text-align: left;
+        color: #000000;
+        flex: none;
+        order: 1;
+        flex-grow: 0;
+      }
+    }
+    .account-comparison-title {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 52px;
+      text-align: center;
+      letter-spacing: -0.02em;
+      background: linear-gradient(
+          102.31deg,
+          rgba(0, 0, 0, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #000000;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0;
+      flex: none;
+      order: 1;
+      align-self: stretch;
+      flex-grow: 0;
+    }
+    .account-comparison-subtitle {
+      width: 625px;
+      height: 56px;
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: 300;
+      font-size: 18px;
+      line-height: 28px;
+      text-align: center;
+      color: #000000;
+      opacity: 0.7;
+      margin: 0;
+      flex: none;
+      order: 2;
+      flex-grow: 0;
+    }
+  }
+
+  .account-cards {
+    display: flex;
+    gap: 27px;
+    padding: 42px 203px 0;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
+    .account-card {
+      flex: 1;
+      min-height: 507px;
+      background: transparent;
+      background-image: url("../../assets/images/accounts-type/account-comparison-desktop.svg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      border: 1px solid rgba(255, 68, 0, 0.2);
+      border-radius: 12px;
+      padding: 24px 20px;
+      backdrop-filter: blur(0);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 42px;
+      isolation: isolate;
+      box-sizing: border-box;
+      position: relative;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+      overflow: visible;
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        z-index: 2;
+        position: relative;
+        .card-badge {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 12px;
+          border-radius: 16px;
+          box-sizing: border-box;
+          flex: none;
+          order: 0;
+          flex-grow: 0;
+          img {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+          }
+          span {
+            font-style: normal;
+            font-weight: map-get($font-weight, medium);
+            font-size: 14px;
+            line-height: 20px;
+            text-align: center;
+            flex: none;
+            order: 1;
+            flex-grow: 0;
+          }
+        }
+      }
+      .card-stars {
+        position: absolute;
+        width: 109.46px;
+        height: 116px;
+        right: 18.54px;
+        top: 14px;
+        z-index: 5;
+        flex: none;
+        order: 4;
+        flex-grow: 0;
+        img {
+          width: 109.46px;
+          height: 116px;
+        }
+
+        @include mobile {
+          right: 0;
+        }
+      }
+      &.ecn-card {
+        position: relative;
+        transition: all 0.3s ease;
+
+        .card-header .card-badge {
+          width: fit-content;
+          height: 26px;
+          background: #ff4400;
+          mix-blend-mode: normal;
+          span {
+            color: #000 !important;
+            font-family: "Sofia Pro", Arial, sans-serif;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 20px;
+            text-align: center;
+          }
+        }
+
+        // Hover state
+        &:hover {
+          // Add orange glow effect as shown in Figma
+          box-shadow: 0 0 20px rgba(255, 68, 0, 0.3) !important;
+          // border: 1px solid #ff4400 !important;
+
+          // Add background overlay with orange tint
+          &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+              135deg,
+              rgba(255, 68, 0, 0.1) 0%,
+              rgba(255, 68, 0, 0.05) 100%
+            );
+            border-radius: 12px;
+            z-index: 1;
+            pointer-events: none;
+          }
+
+          .card-stars {
+            opacity: 0 !important;
+          }
+
+          // Show hover icon in top-right corner - positioned to cover card corner
+          &::before {
+            content: "";
+            position: absolute;
+            top: -30px;
+            right: -15px;
+            width: 155px;
+            height: 164.25px;
+            background-image: url("../../assets/images/icons/account-comparison/star-most-popular-hover.svg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: top right;
+            z-index: 10;
+            pointer-events: none;
+          }
+
+          // Button hover effect when card is hovered - using correct class name
+          .button-primary-comparison-accounts-type {
+            background: #ff4400 !important;
+            color: #fff !important;
+            border: none !important;
+            // Debug: add outline to see if button changes
+          }
+          .button-primary-comparison-accounts-type .button-text {
+            color: #fff !important;
+          }
+          .button-primary-comparison-accounts-type .button-arrow svg path {
+            stroke: #fff !important;
+          }
+        }
+      }
+      &.zero-card {
+        position: relative;
+        transition: all 0.3s ease;
+
+        .card-header .card-badge {
+          width: fit-content;
+          height: 26px;
+          mix-blend-mode: normal;
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          span {
+            color: #000;
+          }
+        }
+
+        // Hover state for zero card
+        &:hover {
+          // Add orange glow effect as shown in Figma
+          box-shadow: 0 0 20px rgba(255, 68, 0, 0.3) !important;
+          // border: 1px solid #ff4400 !important;
+
+          // Add background overlay with orange tint
+          &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+              135deg,
+              rgba(255, 68, 0, 0.1) 0%,
+              rgba(255, 68, 0, 0.05) 100%
+            );
+            border-radius: 12px;
+            z-index: 1;
+            pointer-events: none;
+          }
+
+          .card-stars {
+            opacity: 0 !important;
+          }
+
+          // Show hover icon in top-right corner - positioned to cover card corner
+          &::before {
+            content: "";
+            position: absolute;
+            top: -30px;
+            right: -15px;
+            width: 155px;
+            height: 164.25px;
+            background-image: url("../../assets/images/icons/account-comparison/star-beginner-choice-hover.svg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: top right;
+            z-index: 10;
+            pointer-events: none;
+          }
+
+          // Button hover effect when card is hovered - using correct class name
+          .button-primary-comparison-zero-accounts-type {
+            background: #ff4400 !important;
+            color: #fff !important;
+            border: none !important;
+            // Debug: add outline to see if button changes
+          }
+          .button-primary-comparison-zero-accounts-type .button-text {
+            color: #fff !important;
+          }
+          .button-primary-comparison-zero-accounts-type .button-arrow svg path {
+            stroke: #fff !important;
+          }
+        }
+      }
+      .card-title {
+        width: fit-content;
+        height: 50px;
+        font-family: "Sofia Pro", Arial, sans-serif;
+        font-style: normal;
+        font-weight: 900;
+        font-size: 72px;
+        line-height: 83px;
+        letter-spacing: -0.02em;
+        background: linear-gradient(
+            102.31deg,
+            rgba(0, 0, 0, 0) 9.12%,
+            rgba(255, 68, 0, 0.45) 71.6%
+          ),
+          #000000;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0;
+        flex: none;
+        order: 1;
+        flex-grow: 0;
+        z-index: 2;
+        position: relative;
+      }
+      .card-description {
+        // width: 462px;
+        // height: 52px;
+        font-family: "Sofia Pro", Arial, sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 26px;
+        height: 78px;
+        letter-spacing: 0.2px;
+        color: #000000;
+        opacity: 0.7;
+        margin: 0;
+        flex: none;
+        order: 2;
+        align-self: stretch;
+        flex-grow: 0;
+        z-index: 2;
+        position: relative;
+      }
+      .card-features {
+        width: 100%;
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        flex: none;
+        order: 2;
+        flex-grow: 0;
+        z-index: 2;
+        position: relative;
+        visibility: visible;
+        opacity: 1;
+        box-sizing: border-box;
+        min-height: 78px;
+
+        @include mobile {
+          margin: 80px 0 20px 0;
+        }
+        .feature-item {
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start;
+          padding: 0;
+          gap: 12px;
+          flex: none;
+          align-self: stretch;
+          flex-grow: 0;
+          position: relative;
+          z-index: 3;
+          background: transparent;
+          margin: 0;
+          border: none;
+          box-shadow: none;
+          border-radius: 0;
+          text-align: left;
+          visibility: visible;
+          opacity: 1;
+          box-sizing: border-box;
+          max-width: none !important;
+          min-height: auto !important;
+          .feature-icon {
+            width: 16px;
+            height: 16px;
+            flex: none;
+            order: 0;
+            flex-grow: 0;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 4px;
+            img {
+              width: 16px;
+              height: 16px;
+              object-fit: contain;
+            }
+          }
+          span {
+            width: fit-content;
+            display: block;
+            align-items: flex-start;
+            height: auto;
+            font-family: "Sofia Pro", Arial, sans-serif;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 18px;
+            line-height: 28px;
+            letter-spacing: 0.2px;
+            color: #000;
+            opacity: 0.7;
+            flex: 1;
+            order: 1;
+            flex-grow: 1;
+            visibility: visible;
+            background: transparent;
+            padding: 0;
+            margin: 0;
+            max-width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+          }
+        }
+      }
+      .card-buttons {
+        width: 462px;
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        gap: 20px;
+        flex: none;
+        order: 3;
+        flex-grow: 0;
+        z-index: 3;
+        position: relative;
+        .button-primary-hero,
+        .button-secondary-primary,
+        .button-secondary-hero {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          padding: 14px 24px;
+          gap: 10px;
+          width: 221px;
+          height: 51px;
+          border-radius: 8px;
+          flex: none;
+          order: 0;
+          flex-grow: 1;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-sizing: border-box;
+
+          @include desktop-lg {
+            width: 48% !important;
+          }
+        }
+        .button-primary-hero {
+          background: #000;
+          border: none;
+          .button-text {
+            width: fit-content;
+            height: 23px;
+            font-family: "Sofia Pro", Arial, sans-serif;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 23px;
+            color: #000;
+            flex: none;
+            order: 0;
+            flex-grow: 0;
+          }
+          .button-arrow {
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            width: 0;
+            margin-left: 0;
+            transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+            overflow: hidden;
+            z-index: 1;
+            position: relative;
+            color: #000;
+            flex: none;
+            order: 1;
+            flex-grow: 0;
+          }
+          &:hover {
+            background: rgba(255, 255, 255, 0.9);
+            .button-arrow {
+              opacity: 1;
+              width: 24px;
+              margin-left: 0;
+              color: #000;
+            }
+          }
+        }
+        .button-secondary-primary {
+          border: 1px solid #000;
+          background: transparent;
+          .button-text {
+            width: fit-content;
+            height: 23px;
+            font-family: "Sofia Pro", Arial, sans-serif;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 23px;
+            color: #000;
+            flex: none;
+            order: 0;
+            flex-grow: 0;
+          }
+          .button-arrow {
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            width: 0;
+            margin-left: 0;
+            transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+            overflow: hidden;
+            z-index: 1;
+            position: relative;
+            color: #000;
+            flex: none;
+            order: 1;
+            flex-grow: 0;
+          }
+          &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            .button-arrow {
+              opacity: 1;
+              width: 24px;
+              margin-left: 0;
+              color: #000;
+            }
+          }
+        }
+        .button-secondary-hero {
+          background: transparent;
+          border: none;
+          .button-text {
+            width: fit-content;
+            height: 23px;
+            font-family: "Sofia Pro", Arial, sans-serif;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 23px;
+            color: #000;
+            opacity: 0.75;
+            flex: none;
+            order: 0;
+            flex-grow: 0;
+          }
+          .button-arrow {
+            display: flex;
+            align-items: center;
+            margin-left: 0;
+            transition: color 0.2s;
+            color: currentColor;
+            flex: none;
+            order: 1;
+            flex-grow: 0;
+          }
+          &:hover {
+            // background: rgba(255, 255, 255, 0.1);
+            .button-arrow {
+              color: #ff4400;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .shared-features {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    margin: 42px auto 0;
+    height: 76px;
+    width: 100%;
+    background: #fff;
+    border: 1px solid rgba(255, 68, 0, 0.2);
+    backdrop-filter: blur(8.9px);
+    border-radius: 12px;
+    .shared-features-content {
+      width: 100%;
+      height: 28px;
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 28px;
+      text-align: center;
+      letter-spacing: 0.2px;
+      color: #000;
+      flex: none;
+      order: 0;
+      flex-grow: 1;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 15px;
+    }
+  }
+
+  @include mobile {
+    min-height: auto;
+    margin: 75px 0 50px 0;
+    .account-comparison-header {
+      padding: 52px 18px 40px 18px;
+      .account-comparison-title {
+        width: fit-content;
+        font-size: 42px;
+        max-width: fit-content;
+      }
+      .account-comparison-subtitle {
+        font-size: 16px;
+        max-width: 100%;
+      }
+    }
+    .account-cards {
+      flex-direction: column;
+      padding: 24px 18px 18px;
+      gap: 24px;
+      margin-top: 24px;
+      .account-card {
+        width: 100%;
+        padding: 24px;
+        gap: 12px;
+        .card-title {
+          font-size: 72px;
+          height: fit-content;
+        }
+        .card-description {
+          font-size: 16px;
+          line-height: 26px;
+        }
+        .card-features .feature-item span {
+          font-size: 14px;
+          line-height: 20px;
+          flex: 1;
+          flex-grow: 1;
+          max-width: 100%;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          hyphens: auto;
+        }
+        .card-buttons {
+          flex-direction: column !important;
+          width: 100% !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 12px !important;
+          margin: 0 auto !important;
+          padding: 0 !important;
+
+          .button-primary-hero,
+          .button-secondary-primary,
+          .button-secondary-hero {
+            width: 100% !important;
+            max-width: 100% !important;
+            justify-content: center;
+            margin: 0 !important;
+          }
+        }
+      }
+    }
+    .shared-features {
+      margin-top: 40px;
+      padding: 16px 0;
+      width: calc(100% - 36px);
+      height: 122px;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      .shared-features-content {
+        padding: 0 5px 16.46px;
+        font-size: 14px;
+        line-height: 28px;
+        white-space: normal;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+    }
+  }
+
+  @include tablet {
+    .account-cards {
+      flex-direction: column;
+      padding: 24px 18px 18px;
+      gap: 24px;
+      align-items: center;
+      .account-card {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .account-card {
+        width: 100%;
+        padding: 24px;
+        gap: 12px;
+        .card-title {
+          font-size: 72px;
+          height: fit-content;
+        }
+        .card-description {
+          font-size: 16px;
+          line-height: 26px;
+        }
+        .card-features .feature-item span {
+          font-size: 18px;
+          line-height: 28px;
+          flex: 1;
+          flex-grow: 1;
+          max-width: 100%;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          hyphens: auto;
+        }
+        .card-buttons {
+          width: 100% !important;
+        }
+        .card-buttons .card-button {
+          padding: 14px 20px;
+          font-size: 14px;
+          line-height: 20px;
+        }
+      }
+    }
+    .shared-features {
+      margin-top: 24px;
+      padding: 0 18px 24px;
+      width: calc(100% - 36px);
+      display: block;
+      .shared-features-content {
+        padding: 20px;
+        font-size: 16px;
+        line-height: 24px;
+        white-space: normal;
+        text-align: center;
+      }
+    }
+  }
+
+  @include desktop-lg {
+    .account-cards {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      padding: 42px 0 0 0 !important;
+      justify-content: center;
+      align-items: stretch;
+      margin: 0 auto;
+    }
+    .account-card {
+      width: 100% !important;
+      max-width: 49% !important;
+      margin-left: 0;
+      margin-right: 0;
+      padding: 24px 20px !important;
+    }
+
+    .shared-features {
+      display: block;
+      width: 980px !important;
+      margin: 42px auto 0;
+    }
+  }
+
+  @include desktop-xl {
+    .account-cards {
+      .account-card {
+        width: 510px !important;
+        margin-left: 0;
+        margin-right: 0;
+        .card-features .feature-item span {
+          font-size: 18px !important;
+          line-height: 28px !important;
+          flex: 1 !important;
+          flex-grow: 1 !important;
+          max-width: 100% !important;
+          word-wrap: break-word !important;
+          overflow-wrap: break-word !important;
+          hyphens: auto !important;
+        }
+      }
+      .card-description {
+        margin-bottom: 24px !important;
+      }
+      .card-buttons {
+        margin-top: 24px !important;
+      }
+    }
+
+    .shared-features {
+      display: block;
+      width: 1047px !important;
+      margin: 42px auto 0;
+    }
+  }
+}
+
+.button-primary-comparison-accounts-type {
+  @extend .reusable-button;
+  width: 221px;
+  background: #fff;
+  color: map-get($colors, "black");
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+
+  @include mobile {
+    width: 100%;
+  }
+
+  @include desktop-lg {
+    width: 48% !important;
+  }
+
+  .button-text {
+    position: relative;
+    width: fit-content;
+    height: 23px;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 23px;
+    color: #000;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  .button-arrow {
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    width: 0;
+    margin-left: 0;
+    transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+    overflow: hidden;
+    z-index: 1;
+    position: relative;
+    color: #000;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+
+  &:hover {
+    background: #ff4400;
+    color: #000 !important;
+
+    .button-text {
+      color: #000 !important;
+    }
+
+    .button-arrow {
+      opacity: 1;
+      width: 24px;
+      margin-left: 0;
+      color: #000;
+    }
+  }
+}
+
+// Zero+ specific button (transparent background)
+.button-primary-comparison-zero-accounts-type {
+  @extend .button-primary-comparison-accounts-type;
+  background: transparent;
+  border: 1px solid #000;
+  color: #000;
+
+  .button-text {
+    color: #000;
+  }
+
+  .button-arrow {
+    color: #000;
+  }
+
+  &:hover {
+    background: #fff;
+    border: none;
+    color: #000 !important;
+
+    .button-text {
+      color: #000 !important;
+    }
+
+    .button-arrow {
+      color: #000;
+    }
+  }
+}
+
+.button-secondary-comparison-accounts-type {
+  @extend .reusable-button;
+  background: transparent;
+  transition: all 0.3s ease;
+
+  @include desktop-lg {
+    width: 48% !important;
+  }
+
+  .button-text {
+    position: relative;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 23px;
+    color: #000;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  .button-arrow {
+    display: flex;
+    align-items: center;
+    opacity: 1;
+    width: 11px;
+    margin-left: 0;
+    transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+    z-index: 1;
+    position: relative;
+    color: #000;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+
+  &:hover {
+    background: transparent;
+
+    .button-text {
+      color: #000;
+    }
+
+    .button-arrow {
+      opacity: 1;
+      width: 24px;
+      margin-left: 0;
+      color: #ff4400;
+    }
+  }
+}
+
+.ecn-card .button-primary-hero:hover {
+  background: #ff4400 !important;
+  color: #000 !important;
+}
+.ecn-card .button-primary-hero:hover .button-text {
+  color: #000 !important;
+}
+.ecn-card .button-primary-hero:hover .button-arrow svg path {
+  stroke: #000 !important;
+  // border: 1.3333px solid #000;
+}
+
+.zero-card .button-secondary-primary:hover {
+  background: #ff4400 !important;
+  color: #000 !important;
+  border: none !important;
+}
+.zero-card .button-secondary-primary:hover .button-text {
+  color: #000 !important;
+}
+.zero-card .button-secondary-primary:hover .button-arrow svg path {
+  stroke: #000 !important;
+  border: 1.3333px solid #000;
+}
+.button-secondary-hero:hover .button-arrow svg path {
+  stroke: #ff4400 !important;
+  border: 1.3333px solid #ff4400;
+}
+.button-secondary-hero:hover .button-text {
+  color: #fff !important;
+  opacity: 0.75 !important;
+  text-decoration: underline;
+}

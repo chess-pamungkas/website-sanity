@@ -1,559 +1,795 @@
 @import "vars";
 @import "mixins";
 
-.accounts-type-page-promotion {
-  background: url("../../assets/images/accounts-type/promotion-bg.svg")
-    no-repeat center;
-  background-size: cover;
-  padding-top: 90px;
-  padding-bottom: 100px;
+.account-types {
+  position: relative;
+  overflow: visible;
+  color: map-get($colors, "white");
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding-top: 80px;
+  z-index: 2;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  box-sizing: border-box;
+  align-items: center;
+
+  @include mobile {
+    height: 953px;
+    border-radius: 20px;
+    padding-top: 73px;
+    margin-top: 0;
+    margin-bottom: 0;
+    overflow: visible;
+  }
 
   @include tablet {
-    padding: 92px 21px 140px 15px;
+    height: 555px;
+    border-radius: 24px;
+    padding-top: 70px;
+    padding-bottom: 0;
   }
 
   @include desktop-lg {
-    padding-top: 150px;
-    padding-bottom: 82px;
+    height: 583px;
+    border-radius: 24px;
+    padding-top: 83px;
+    padding-bottom: 0;
   }
 
   @include desktop-xl {
-    padding-top: 150px;
-    padding-bottom: 150px;
+    height: 583px;
+    padding-top: 83px;
   }
 
-  .top-market-promotion__description {
-    @include tablet {
-      max-width: 732px;
-    }
-
-    @include desktop-lg {
-      margin: 50px 0 50px;
-    }
-
-    @include desktop-xl {
-      max-width: 900px;
-      margin: 50px 0 50px;
-    }
+  @include desktop-2k {
+    height: 583px;
+    padding-top: 83px;
   }
 
-  .top-market-promotion__text {
-    @include tablet {
-      font-weight: map-get($font-weight, "black");
-      font-size: 52px;
-      line-height: 65px;
-    }
-
-    @include desktop-lg {
-      font-size: 46px;
-      line-height: 58px;
-      text-align: center;
-    }
-
-    @include desktop-xl {
-      font-size: 64px;
-      line-height: 75px;
-      text-align: left;
-    }
+  @include desktop-5k {
+    height: 583px;
+    padding-top: 83px;
   }
 
-  .top-market-promotion__wrapper {
-    position: relative;
+  &__hero-container {
     width: 100%;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
     height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    border-radius: 24px;
+    background: #000000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+
+    @include mobile {
+      width: 100%;
+      max-width: 100%;
+      height: 953px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 73px;
+      margin: 0 auto;
+      border-radius: 20px;
+    }
+
+    @include tablet {
+      width: 768px;
+      max-width: 768px;
+      height: 555px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 73px;
+      margin: 0 auto;
+      border-radius: 24px;
+    }
+
+    @include desktop-lg {
+      width: calc(100vw - 20px);
+      max-width: 1200px;
+      height: 583px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
+      border-radius: 24px;
+    }
 
     @include desktop-xl {
-      max-width: 1680px;
-      flex-direction: unset;
-
-      &--reverse {
-        flex-direction: row-reverse;
-      }
+      width: calc(100vw - 120px);
+      max-width: 1400px;
+      height: 583px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
     }
 
     @include desktop-2k {
-      max-width: 2400px;
-      flex-direction: unset;
-
-      &--reverse {
-        flex-direction: row-reverse;
-      }
+      width: calc(100vw - 160px);
+      max-width: 1600px;
+      height: 583px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
     }
 
     @include desktop-5k {
-      max-width: 3840px;
-      flex-direction: unset;
-
-      &--reverse {
-        flex-direction: row-reverse;
-      }
+      width: calc(100vw - 200px);
+      max-width: 2000px;
+      height: 583px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
     }
   }
 
-  .top-market-promotion__block {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+  &__hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    border-radius: 24px;
+    z-index: 1;
+    overflow: hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    @include mobile {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      border-radius: 20px;
+      background: url("../../assets/images/bg/hero/accounts-type/accounts-type-mobile.svg")
+        no-repeat center center;
+      background-size: cover;
+      overflow: hidden;
+      border-radius: 20px;
+      background-color: transparent;
+    }
+
+    @include tablet {
+      background: url("../../assets/images/bg/hero/accounts-type/accounts-type-desktop.svg")
+        no-repeat 86% 100%;
+      background-size: cover;
+      background-color: transparent;
+    }
+
+    @include desktop-lg {
+      background: url("../../assets/images/bg/hero/accounts-type/accounts-type-desktop.svg")
+        no-repeat right center;
+      background-size: cover;
+      background-color: transparent;
+    }
 
     @include desktop-xl {
-      width: 100%;
+      background: url("../../assets/images/bg/hero/accounts-type/accounts-type-desktop.svg")
+        no-repeat center center;
+      background-size: cover;
+      background-color: transparent;
     }
 
     @include desktop-2k {
-      width: 100%;
-      align-items: baseline;
+      background: url("../../assets/images/bg/hero/accounts-type/accounts-type-desktop.svg")
+        no-repeat center center;
+      background-size: cover;
+      background-color: transparent;
+    }
+
+    @include desktop-5k {
+      background: url("../../assets/images/bg/hero/accounts-type/accounts-type-desktop.svg")
+        no-repeat center center;
+      background-size: cover;
+      background-color: transparent;
     }
   }
-}
 
-.accounts-type-page-mid-promotion {
-  background: map-get($colors, "black-secondary") 0 0 no-repeat padding-box;
-  padding-top: 158px;
-  padding-bottom: 85px;
+  &__content-container {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 100%;
+    flex: 1;
 
-  @include tablet {
-    padding-top: 302px;
-    padding-bottom: 261px;
-  }
-
-  @include desktop-lg {
-    padding-top: 75px;
-    padding-bottom: 47px;
-  }
-
-  @include desktop-xl {
-    padding-top: 130px;
-    padding-bottom: 130px;
-  }
-
-  &:before {
-    content: "";
-    position: absolute;
-    background: url("../../assets/images/accounts-type/mid-promo-bg-top-sm.svg")
-      no-repeat;
-    width: 92px;
-    height: 110px;
-    top: 0;
-    left: 0;
+    @include mobile {
+      padding-top: 50px;
+    }
 
     @include tablet {
-      background: url("../../assets/images/accounts-type/mid-promo-bg-top-md.svg")
-        no-repeat;
-      width: 187px;
-      height: 226px;
+      padding-top: 90px;
+      gap: 16px;
     }
 
     @include desktop-lg {
-      background: url("../../assets/images/accounts-type/mid-promo-bg-top-lg.svg")
-        no-repeat;
-      width: 177px;
-      height: 213px;
+      max-width: 980px;
+      gap: 16px;
     }
 
     @include desktop-xl {
-      background: url("../../assets/images/accounts-type/mid-promo-bg-top-xl.svg")
-        no-repeat;
-      width: 261px;
-      height: 299px;
+      max-width: 1280px;
+    }
+
+    @include desktop-2k {
+      max-width: 1440px;
+    }
+
+    @include desktop-5k {
+      max-width: 1920px;
     }
   }
 
-  &:after {
-    content: "";
-    position: absolute;
-    background: url("../../assets/images/accounts-type/mid-promo-bg-bot-sm.svg")
-      no-repeat;
-    width: 92px;
-    height: 110px;
-    bottom: 0;
-    right: 0;
+  &__badge-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #0f0f0f;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    padding: 4px 10px;
+    width: fit-content;
+    box-sizing: border-box;
+    height: fit-content;
 
-    @include tablet {
-      background: url("../../assets/images/accounts-type/mid-promo-bg-bot-md.svg")
-        no-repeat;
-      width: 188px;
-      height: 225px;
-    }
-
-    @include desktop-lg {
-      background: url("../../assets/images/accounts-type/mid-promo-bg-bot-lg.svg")
-        no-repeat;
-      width: 177px;
-      height: 213px;
-    }
-
-    @include desktop-xl {
-      background: url("../../assets/images/accounts-type/mid-promo-bg-bot-xl.svg")
-        no-repeat;
-      width: 261px;
-      height: 299px;
+    @include mobile {
+      max-width: fit-content;
+      margin-bottom: 16px;
     }
   }
 
-  .top-market-promotion__img {
-    width: 244px;
-    margin-bottom: unset;
-
-    @include tablet {
-      width: 487px;
-    }
-
-    @include desktop-lg {
-      width: 569px;
-    }
-
-    @include desktop-xl {
-      width: 1116px;
-    }
-  }
-
-  .top-market-promotion__wrapper {
-    flex-direction: column-reverse;
-  }
-
-  .top-market-promotion__block {
+  &__badge {
+    background: rgba(39, 39, 39, 1);
+    border-radius: 16px;
+    padding: 2px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
   }
 
-  .top-market-promotion__description {
-    margin: 0;
-    margin-top: 48px;
-
-    @include tablet {
-      margin-top: 68px;
-    }
-
-    @include desktop-lg {
-      margin-top: 55px;
-    }
-
-    @include desktop-xl {
-      margin-top: 65px;
-    }
+  &__badge-text {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: map-get($font-weight, "medium");
+    line-height: 20px;
   }
 
-  .top-market-promotion__btn {
-    // width: 152px;
-    font-weight: map-get($font-weight, "black");
-    // font-size: 12px;
-    // line-height: 33px;
-    color: map-get($colors, "red");
-    background: map-get($colors, "black-secondary");
-    border: 2px solid map-get($colors, "red");
-    transition: all ease-in 0.4s;
-
-    &:hover {
-      color: map-get($colors, "white");
-      background: map-get($colors, "red");
-    }
-
-    // @include desktop-lg {
-    //   width: 203px;
-    //   font-size: 12px;
-    //   line-height: 33px;
-    // }
-
-    // @include desktop-xl {
-    //   width: 380px;
-    //   font-size: 24px;
-    //   line-height: 62px;
-    // }
-  }
-}
-
-.accounts-type {
-  background: url("../../assets/images/accounts-type/accounts-type-bg-xl.svg");
-  padding: 24px 0 0 0;
-  display: grid;
-  grid-template-areas: "desc" "acc1" "acc2";
-  justify-items: center;
-  align-items: center;
-
-  @include tablet {
-    grid-template-areas: "desc desc" "acc1 acc2";
-    padding: 15px 0 61px 0;
-    display: grid;
-  }
-
-  @include desktop-lg {
-    padding: 38px 0 116px 0;
-  }
-
-  @include desktop-xl {
+  &__badge-content {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-direction: row;
-    padding: 85px 0 85px 0;
+    gap: 4px;
+    max-width: fit-content;
   }
 
-  &__title {
-    margin: 0;
-    padding-bottom: 24px;
-    font-weight: map-get($font-weight, "black");
-    font-size: 25px;
-    line-height: 31px;
-    text-align: center;
+  &__badge-message {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: map-get($font-weight, "medium");
+    line-height: 20px;
 
-    @include tablet {
-      padding-bottom: 50px;
-      font-size: 35px;
-      line-height: 44px;
-    }
-
-    @include desktop-lg {
-      padding-bottom: 41px;
-      font-size: 39px;
-      line-height: 49px;
-    }
-
-    @include desktop-xl {
-      padding-bottom: 24px;
-      font-size: 60px;
-      line-height: 80px;
-      text-align: left;
-    }
-  }
-
-  &__description {
-    margin: 0;
-    padding-bottom: 24px;
-    font-weight: map-get($font-weight, "bold");
-    font-size: 24px;
-    line-height: 30px;
-    text-align: center;
-
-    @include tablet {
-      padding-bottom: 50px;
-      font-size: 28px;
-      line-height: 35px;
-    }
-
-    @include desktop-lg {
-      padding-bottom: 40px;
-      font-size: 27px;
-      line-height: 34px;
-    }
-
-    @include desktop-xl {
-      font-size: 36px;
-      line-height: 60px;
-      text-align: left;
-    }
-  }
-
-  &__desc-block {
-    grid-area: desc;
-    max-width: 595px;
-
-    @include desktop-lg {
-      max-width: 737px;
-    }
-
-    @include desktop-xl {
-      max-width: 572px;
-    }
-  }
-
-  .acc1 {
-    grid-area: acc1;
-  }
-
-  .acc2 {
-    grid-area: acc2;
-  }
-}
-
-.account-type {
-  background: #ffffff 0 0 no-repeat padding-box;
-  box-shadow: 0 0 10px #0000001a;
-  border-radius: 10px;
-  width: 353px;
-  padding: 0 23px 61px 24px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 40px;
-
-  @include tablet {
-    margin-bottom: 0;
-  }
-
-  @include desktop-lg {
-    width: 395px;
-    padding: 0 30px 42px 30px;
-  }
-
-  @include desktop-xl {
-    width: 475px;
-  }
-
-  &__header {
-    height: 7px;
-    background-color: map-get($colors, "red");
-    margin-left: -24px;
-    margin-right: -23px;
-
-    @include desktop-lg {
-      margin-left: -30px;
-      margin-right: -30px;
-    }
-
-    @include desktop-xl {
-      height: 10px;
-    }
-  }
-
-  &__title {
-    padding-top: 32px;
-    margin: 0;
-    text-align: center;
-    font-weight: map-get($font-weight, "bold");
-    font-size: 16px;
-    line-height: 35px;
-
-    @include desktop-lg {
-      padding-top: 35px;
-      font-size: 18px;
-      line-height: 35px;
-    }
-  }
-
-  &__name {
-    margin: 0;
-    text-align: center;
-    color: map-get($colors, "red");
-    font-weight: map-get($font-weight, "black");
-    font-size: 35px;
-    line-height: 35px;
-    padding-bottom: 36px;
-
-    @include desktop-lg {
-      font-size: 40px;
-      line-height: 35px;
-    }
-  }
-
-  &__btn {
-    width: 152px;
-    font-weight: map-get($font-weight, "black");
-    font-size: 8px;
-    line-height: 25px;
-    color: map-get($colors, "red");
-    background: map-get($colors, "white");
-    border: 2px solid map-get($colors, "red");
-    align-self: center;
-    margin-top: 40px;
-
-    &:hover {
-      color: map-get($colors, "white");
-      background: map-get($colors, "red");
-    }
-
-    @include desktop-lg {
-      font-size: 24px;
-      line-height: 62px;
-      width: 380px;
-    }
-  }
-}
-
-.account-type-advantage {
-  display: grid;
-  grid-template-areas: "title value" "hr hr";
-
-  &__title {
-    margin: 0;
-    font-weight: map-get($font-weight, "black");
-    font-size: 12px;
-    line-height: 25px;
-    justify-self: start;
-    grid-area: title;
-
-    @include desktop-lg {
-      font-size: 15px;
-      line-height: 25px;
-    }
-
-    @include desktop-xl {
-      font-size: 18px;
-      line-height: 25px;
-    }
-  }
-
-  &__value {
-    margin: 0;
-    font-weight: map-get($font-weight, "black");
-    font-size: 12px;
-    line-height: 25px;
-    color: map-get($colors, "red");
-    justify-self: end;
-    max-width: 90px;
-    grid-area: value;
-    text-align: right;
-
-    @include desktop-lg {
-      font-size: 15px;
-      line-height: 25px;
-      max-width: 130px;
-    }
-
-    @include desktop-xl {
-      font-size: 18px;
-      line-height: 25px;
-      max-width: 170px;
-    }
-
-    &--small {
-      font-weight: map-get($font-weight, "black");
+    @include mobile {
       font-size: 12px;
-      line-height: 25px;
+      line-height: 18px;
+    }
+  }
+
+  &__badge-arrow {
+    flex-shrink: 0;
+    align-items: center;
+    margin-top: 5px;
+    margin-left: 5px;
+    z-index: 1;
+    position: relative;
+  }
+
+  &__heading {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  &__title {
+    display: block;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 72px;
+    letter-spacing: -0.02em; // -2%
+    line-height: 1.2;
+    background: linear-gradient(
+        102.31deg,
+        rgba(255, 255, 255, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #ffffff;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding-bottom: 10px;
+
+    @include mobile {
+      font-size: 42px;
+      width: 100%;
+      line-height: 1.1;
+    }
+
+    @include tablet {
+      font-size: 52px;
+      width: 500px;
+    }
+
+    @include desktop-lg {
+      font-size: 72px;
+      width: 758px;
+    }
+
+    &--big {
+      text-transform: uppercase;
+      font-family: "Sofia Pro", sans-serif;
+      font-style: normal;
+      font-weight: 700; // Bold (not Semi Bold)
+      font-size: 72px;
+      line-height: 83px; // Exact pixel value from Figma
+      letter-spacing: -0.02em; // -2%
+      width: 758px;
+      height: 166px;
+      background: linear-gradient(
+          102.31deg,
+          rgba(255, 255, 255, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #ffffff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      flex: none;
+      order: 1;
+      align-self: stretch;
+      flex-grow: 0;
+
+      @include mobile {
+        font-size: 44px;
+        line-height: 55px;
+        letter-spacing: -0.02em;
+        width: 100%;
+        height: auto;
+      }
+
+      @include tablet {
+        font-size: 58px;
+        line-height: 72px;
+        letter-spacing: -0.02em;
+        width: 100%;
+        height: auto;
+      }
 
       @include desktop-lg {
-        font-size: 15px;
-        line-height: 25px;
+        font-size: 72px;
+        line-height: 83px;
+        letter-spacing: -0.02em;
+        width: 100%;
+        height: auto;
       }
 
       @include desktop-xl {
-        font-size: 14px;
-        line-height: 25px;
+        font-size: 72px;
+        line-height: 83px;
+        letter-spacing: -0.02em;
+        width: 758px;
+        height: 166px;
+      }
+
+      @include desktop-2k {
+        font-size: 84px;
+        line-height: 97px;
+        letter-spacing: -0.02em;
+        width: 900px;
+        height: 200px;
+      }
+
+      @include desktop-5k {
+        font-size: 96px;
+        line-height: 111px;
+        letter-spacing: -0.02em;
+        width: 1100px;
+        height: 240px;
       }
     }
+  }
 
-    &--higher {
-      height: 50px;
+  &__subheading {
+    font-size: 18px;
+    line-height: 28px;
+    color: #ffffff;
+    font-weight: map-get($font-weight, "regular");
+    margin: 0;
+    max-width: 450px;
+    opacity: 0.7;
+
+    @include mobile {
+      font-size: 16px;
+      font-weight: map-get($font-weight, "light");
+      line-height: 24px;
+      max-width: 100%;
     }
-  }
 
-  &__icon {
-    width: 26px;
-    height: 26px;
-    grid-area: value;
-    justify-self: end;
-  }
-
-  &__hr {
-    width: 250px;
-    height: 0;
-    border: 1px solid map-get($colors, "table-grey");
-    grid-area: hr;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    @include tablet {
+      max-width: 300px;
+      font-size: 18px;
+      line-height: 28px;
+    }
 
     @include desktop-lg {
-      width: 275px;
+      max-width: 625px;
+      font-size: 18px;
+      line-height: 28px;
     }
 
     @include desktop-xl {
-      width: 363px;
+      max-width: 650px;
+      font-size: 18px;
+      line-height: 28px;
     }
+
+    @include desktop-2k {
+      max-width: 650px;
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    @include desktop-5k {
+      max-width: 650px;
+      font-size: 18px;
+      line-height: 28px;
+    }
+  }
+
+  &__button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 31px;
+    max-width: 440px;
+
+    @include mobile {
+      max-width: 100%;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    @include tablet {
+      max-width: 100%;
+      gap: 25px;
+    }
+
+    @include desktop-lg {
+      max-width: 440px;
+      gap: 31px;
+    }
+
+    @include desktop-xl {
+      max-width: 440px;
+      gap: 31px;
+    }
+
+    @include desktop-2k {
+      max-width: 500px;
+      gap: 35px;
+    }
+
+    @include desktop-5k {
+      max-width: 600px;
+      gap: 40px;
+    }
+
+    .button-container {
+      @include tablet {
+        gap: 0;
+      }
+
+      @include desktop-lg {
+        gap: 12px;
+      }
+
+      @include desktop-xl {
+        gap: 12px;
+      }
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    position: relative;
+
+    @include mobile {
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0px;
+      width: 100%;
+      height: 114px;
+      flex: none;
+      order: 0;
+      align-self: stretch;
+      flex-grow: 0;
+      gap: 16px;
+    }
+  }
+
+  &__button-primary {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 24px;
+    gap: 10px;
+    width: 167px;
+    height: 51px;
+    background: #fff;
+    color: map-get($colors, "black");
+    box-shadow: 0px 0px 19.3px rgba(255, 68, 0, 0.5);
+    border-radius: 8px;
+    border: none;
+    font-weight: map-get($font-weight, "medium");
+    font-size: 20px;
+    line-height: 23px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s,
+      width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    outline: none;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    box-sizing: border-box;
+    white-space: nowrap;
+
+    @include mobile {
+      width: 100%;
+      align-self: stretch;
+      height: 51px;
+      border-radius: 8px;
+    }
+
+    .account-types__button-text {
+      transition: color 0.3s;
+      z-index: 1;
+      position: relative;
+      white-space: nowrap;
+      color: inherit;
+
+      @include mobile {
+        width: 119px;
+        height: 23px;
+        font-weight: map-get($font-weight, "medium");
+        font-size: 20px;
+        line-height: 23px;
+        // color: map-get($colors, "black");
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+      }
+    }
+    .account-types__button-arrow {
+      display: flex;
+      align-items: center;
+      opacity: 0;
+      width: 0;
+      margin-left: 0;
+      transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+      overflow: hidden;
+      z-index: 1;
+      position: relative;
+      color: map-get($colors, "black");
+    }
+    &:hover,
+    &:focus {
+      width: 200px;
+      background: #ff4400;
+      color: map-get($colors, "black") !important;
+      box-shadow: 0 0 19.3px 0 rgba(255, 68, 0, 0.5);
+
+      @include mobile {
+        width: 100%;
+      }
+
+      .account-types__button-arrow {
+        opacity: 1;
+        width: 24px;
+        margin-left: 0;
+        color: map-get($colors, "black");
+      }
+      .account-types__button-text {
+        color: map-get($colors, "black") !important;
+      }
+    }
+  }
+
+  &__button-secondary {
+    // box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 24px;
+    gap: 10px;
+    width: fit-content;
+    height: 51px;
+    // border-radius: 8px;
+    background: transparent;
+    color: #fff;
+    border: none;
+    font-weight: map-get($font-weight, "medium");
+    font-size: 20px;
+    line-height: 23px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s, border 0.3s, text-decoration 0.3s;
+    outline: none;
+    text-decoration: none;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+
+    @include mobile {
+      width: 100%;
+      align-self: stretch;
+      height: 51px;
+      justify-content: center;
+    }
+
+    .account-types__button-text {
+      transition: color 0.3s, text-decoration 0.3s;
+      z-index: 1;
+      position: relative;
+    }
+    .account-types__button-arrow {
+      display: flex;
+      align-items: center;
+      margin-left: 0;
+      transition: color 0.2s;
+      color: currentColor;
+    }
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+      border: none;
+      .account-types__button-arrow {
+        color: #ff4400;
+      }
+    }
+  }
+
+  &__button-icon {
+    flex-shrink: 0;
+  }
+
+  &__trust-pilot {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 14.73px;
+    width: fit-content;
+    height: 30px;
+    background: none;
+    border: none;
+    box-shadow: none;
+    margin-top: 90px;
+    padding: 0;
+
+    @include mobile {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-content: center;
+      width: 100%;
+      margin-top: 50px;
+    }
+    @include tablet {
+      width: 100%;
+      margin-top: 50px;
+    }
+    @include desktop-lg {
+      width: 393.48px;
+      height: 30px;
+      margin-top: 100px;
+    }
+    @include desktop-xl {
+      width: 393.48px;
+      height: 30px;
+    }
+    @include desktop-2k {
+      width: 393.48px;
+      height: 30px;
+    }
+    @include desktop-5k {
+      width: 393.48px;
+      height: 30px;
+    }
+  }
+
+  &__trust-rating {
+    width: 56px;
+    height: 30px;
+    font-family: $font-roboto;
+    font-weight: map-get($font-weight, "bold");
+    font-size: 13.6px;
+    line-height: 29px;
+    color: #fff;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  &__trust-stars {
+    display: flex;
+    align-items: center;
+  }
+
+  &__trust-reviews {
+    width: fit-content;
+    height: 30px;
+    font-family: $font-roboto;
+    font-weight: map-get($font-weight, "bold");
+    font-size: 13.6px;
+    line-height: 29px;
+    color: #fff;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+
+  &__trust-brand {
+    display: flex;
+    align-items: center;
+    gap: 4.53px;
+    order: 2;
+    @include mobile {
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      order: 4;
+    }
+  }
+
+  &__trust-logo {
+    flex-shrink: 0;
+  }
+
+  &__trust-name {
+    width: 60px;
+    height: 30px;
+    font-family: $font-roboto;
+    font-weight: map-get($font-weight, "bold");
+    font-size: 13.6px;
+    line-height: 29px;
+    color: #fff;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
   }
 }

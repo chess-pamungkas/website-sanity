@@ -4,15 +4,16 @@ import { useTranslationWithVariables } from "../helpers/hooks/use-translation-wi
 import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import LegalContentGlobal from "../components/pages-content/legal-global-content";
+import PageBackground from "../components/shared/page-background";
 
 const LegalPage = () => {
   const { t } = useTranslationWithVariables();
 
   return (
-    <>
+    <PageBackground backgroundType="homepage-bg-1">
       <Seo title={t("page-legal-title")} />
       <LegalContentGlobal />
-    </>
+    </PageBackground>
   );
 };
 

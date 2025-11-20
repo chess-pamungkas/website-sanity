@@ -71,7 +71,7 @@ export const COLUMN_COOKIES = [
 export const DATA_COOKIES = [
   {
     col1: <span>{"OQtima"}</span>,
-    col2: <span>{"used to store user consent settings for cookies."}</span>,
+    col2: <span>{"Used to store user consent settings for cookies."}</span>,
     col3: <span>{"Essential"}</span>,
   },
   {
@@ -79,7 +79,7 @@ export const DATA_COOKIES = [
     col2: (
       <span>
         {
-          "used to determine if a cookie popup or any other popup should be shown to the user"
+          "Used to determine if a cookie popup or any other popup should be shown to the user"
         }
       </span>
     ),
@@ -87,7 +87,7 @@ export const DATA_COOKIES = [
   },
   {
     col1: <span>{"OQtima"}</span>,
-    col2: <span>{"used to store the last selected language"}</span>,
+    col2: <span>{"Used to store the last selected language"}</span>,
     col3: <span>{"Essential"}</span>,
   },
   {

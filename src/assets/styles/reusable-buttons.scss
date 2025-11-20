@@ -1,0 +1,910 @@
+@import "vars";
+@import "mixins";
+
+// Reusable Button Components
+// This file contains all button variants used across the application
+
+// Base button styles
+.reusable-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 24px;
+  gap: 10px;
+  height: 51px;
+  border-radius: 8px;
+  border: none;
+  font-weight: map-get($font-weight, "medium");
+  font-size: 16px;
+  line-height: 23px;
+  cursor: pointer;
+  position: relative;
+  outline: none;
+  box-sizing: border-box;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+
+  @include mobile {
+    width: 100%;
+    align-self: stretch;
+    height: 51px;
+    border-radius: 8px;
+  }
+
+  // @include tablet {
+  //   font-size: 16px;
+  // }
+
+  // @include desktop-lg {
+  //   font-size: 18px;
+  // }
+
+  // Button text styles
+  .button-text {
+    transition: color 0.3s;
+    z-index: 1;
+    white-space: nowrap;
+    color: inherit;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  // Button arrow styles
+  .button-arrow {
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+    color: currentColor;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+}
+
+// ========================================
+// SCENARIO 1: Hero Section Buttons
+// ========================================
+.button-primary-hero {
+  @extend .reusable-button;
+  width: fit-content;
+  background: #fff;
+  color: map-get($colors, "black");
+  box-shadow: 0px 0px 19.3px rgba(255, 68, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: visible; // Changed from hidden to visible to allow expansion
+  position: relative;
+  transform-origin: left center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 24px; // Add left padding to position text correctly
+
+  @include mobile {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 0; // Remove left padding on mobile for centering
+    padding-right: 0; // Reset right padding on mobile
+    overflow: hidden; // Hide overflow on mobile for proper centering
+    font-size: 16px;
+  }
+
+  @include small-mobile {
+    font-size: 14px;
+  }
+
+  // @include tablet {
+  //   width: 145px;
+  //   font-size: 16px;
+  // }
+
+  // @include desktop-lg {
+  //   width: 167px;
+  //   font-size: 20px;
+  // }
+
+  .button-text {
+    position: relative;
+    white-space: nowrap;
+    z-index: 2;
+    transition: none; // Text should NOT move
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin-left: 0; // Remove margin since we're using padding on the button
+
+    @include mobile {
+      position: relative;
+      transform: none;
+      margin-left: 0;
+    }
+  }
+
+  .button-arrow {
+    // opacity: 0;
+    // width: 0;
+    display: none;
+    margin-left: 0; // Add spacing between text and arrow
+    margin-top: 4px;
+    transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+    overflow: hidden;
+    z-index: 1;
+    position: relative; // Use relative positioning for proper flexbox flow
+    color: map-get($colors, "black");
+
+    @include mobile {
+      position: relative;
+      transform: none;
+      margin-left: 0;
+      width: 0; // Ensure arrow takes no space on mobile before hover
+      // opacity: 0; // Ensure arrow is completely hidden on mobile before hover
+      display: none;
+    }
+  }
+
+  &:hover,
+  &:focus {
+    width: fit-content; // Increased to accommodate: 24px left padding + text + 24px arrow + 24px right padding
+    background: map-get($colors, "red");
+    color: map-get($colors, "black") !important;
+    box-shadow: 0 0 19.3px 0 rgba(map-get($colors, "red"), 0.5);
+    padding-right: 8px; // Add right padding to balance the left padding
+
+    @include mobile {
+      width: 100%;
+      padding-right: 0;
+      overflow: hidden; // Hide overflow on mobile for proper centering
+    }
+
+    // @include tablet {
+    //   width: 160px;
+    // }
+
+    // @include desktop-lg {
+    //   width: 240px;
+    // }
+
+    // @include desktop-xl {
+    //   width: 240px;
+    // }
+
+    // @include desktop-2k {
+    //   width: 190px;
+    // }
+
+    // @include desktop-5k {
+    //   width: 190px;
+    // }
+
+    .button-arrow {
+      // opacity: 1;
+      display: flex;
+      width: 24px;
+      margin-left: 0; // Add spacing between text and arrow
+      margin-top: 4px;
+      color: map-get($colors, "black");
+    }
+
+    .button-text {
+      color: map-get($colors, "black") !important;
+      // NO position change - text stays exactly where it is
+    }
+  }
+
+  // Special styling for MT4 and MT5 hero buttons
+  &.mt4-hero-button,
+  &.mt5-hero-button {
+    width: fit-content;
+
+    @include mobile {
+      width: 100%;
+    }
+
+    &:hover,
+    &:focus {
+      width: fit-content;
+
+      @include mobile {
+        width: 100%;
+      }
+    }
+  }
+
+  // Special styling for Legal hero buttons
+  &.legal-hero-button {
+    width: 296px;
+
+    @include mobile {
+      width: 100%;
+    }
+
+    @include tablet {
+      width: fit-content;
+    }
+
+    @include desktop-lg {
+      width: fit-content;
+    }
+
+    &:hover,
+    &:focus {
+      width: 310px;
+
+      @include mobile {
+        width: 100%;
+      }
+
+      @include tablet {
+        width: fit-content;
+      }
+
+      @include desktop-lg {
+        width: fit-content;
+      }
+    }
+  }
+}
+
+.button-secondary-hero {
+  @extend .reusable-button;
+  width: fit-content;
+  background: transparent;
+  color: #fff;
+  transition: color 0.3s, border 0.3s, text-decoration 0.3s;
+  text-decoration: none;
+
+  @include mobile {
+    width: 100%;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  @include tablet {
+    font-size: 16px;
+  }
+
+  @include desktop-lg {
+    font-size: 16px;
+  }
+
+  .button-text {
+    position: relative;
+    transition: color 0.3s, text-decoration 0.3s;
+  }
+
+  .button-arrow {
+    margin-left: 0;
+    margin-top: 4px;
+    color: currentColor;
+  }
+
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+    border: none;
+
+    .button-arrow {
+      color: map-get($colors, "red");
+    }
+  }
+}
+
+// ========================================
+// SCENARIO 2: Standard Buttons (Red Background)
+// ========================================
+.button-primary-standard {
+  @extend .reusable-button;
+  width: fit-content;
+  background: map-get($colors, "red");
+  color: #fff;
+  // box-shadow: 0px 0px 19.3px rgba(map-get($colors, "red"), 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: visible; // Changed from hidden to visible to allow expansion
+  position: relative;
+  transform-origin: left center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 24px; // Add left padding to position text correctly
+
+  @include mobile {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 0; // Remove left padding on mobile for centering
+    padding-right: 0; // Reset right padding on mobile
+    overflow: hidden; // Hide overflow on mobile for proper centering
+  }
+
+  .button-text {
+    position: relative;
+    white-space: nowrap;
+    z-index: 2;
+    transition: none; // Text should NOT move
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin-left: 0; // Remove margin since we're using padding on the button
+
+    @include mobile {
+      position: relative;
+      transform: none;
+      margin-left: 0;
+    }
+  }
+
+  .button-arrow {
+    // opacity: 0;
+    display: none;
+    width: 0;
+    margin-left: 0;
+    margin-top: 4px;
+    transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+    overflow: hidden;
+    z-index: 1;
+    position: relative;
+    color: #fff;
+
+    @include mobile {
+      position: relative;
+      transform: none;
+      margin-left: 0;
+    }
+  }
+
+  &:hover,
+  &:focus {
+    width: fit-content; // Increased to accommodate: 24px left padding + text + 24px arrow + 24px right padding
+    background: map-get($colors, "red");
+    color: #fff !important;
+    box-shadow: 0 0 19.3px 0 rgba(map-get($colors, "red"), 0.5);
+    padding-right: 8px; // Add right padding to balance the left padding
+
+    @include mobile {
+      width: 100%;
+      padding-right: 0;
+      overflow: hidden; // Hide overflow on mobile for proper centering
+    }
+
+    .button-arrow {
+      // opacity: 1;
+      display: flex;
+      width: 24px;
+      margin-left: 0; // Add spacing between text and arrow
+      margin-top: 4px;
+      color: #fff;
+    }
+
+    .button-text {
+      color: #fff !important;
+      // NO position change - text stays exactly where it is
+    }
+  }
+}
+
+.button-secondary-standard {
+  @extend .reusable-button;
+  width: fit-content;
+  background: transparent;
+  color: map-get($colors, "black");
+  transition: color 0.3s, border 0.3s, text-decoration 0.3s;
+  text-decoration: none;
+
+  @include mobile {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .button-text {
+    position: relative;
+    transition: color 0.3s, text-decoration 0.3s;
+  }
+
+  .button-arrow {
+    margin-left: 0;
+    margin-top: 4px;
+    color: currentColor;
+  }
+
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+    border: none;
+
+    .button-arrow {
+      color: map-get($colors, "red");
+    }
+  }
+}
+
+// ========================================
+// SCENARIO 3: Our Community Buttons
+// ========================================
+.button-primary-community {
+  @extend .reusable-button;
+  width: 237px;
+  background: map-get($colors, "red");
+  color: #fff;
+  // box-shadow: 0px 0px 19.3px rgba(map-get($colors, "red"), 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: visible; // Changed from hidden to visible to allow expansion
+  position: relative;
+  transform-origin: left center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 24px; // Add left padding to position text correctly
+
+  @include mobile {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 0; // Remove left padding on mobile for centering
+    padding-right: 0; // Reset right padding on mobile
+    overflow: hidden; // Hide overflow on mobile for proper centering
+  }
+
+  @include tablet {
+    width: fit-content;
+    font-size: 16px;
+  }
+
+  @include desktop-lg {
+    width: fit-content;
+    font-size: 16px;
+  }
+
+  @include desktop-xl {
+    width: fit-content;
+    font-size: 16px;
+  }
+
+  .button-text {
+    position: relative;
+    white-space: nowrap;
+    z-index: 2;
+    transition: none; // Text should NOT move
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin-left: 0; // Remove margin since we're using padding on the button
+
+    @include mobile {
+      position: relative;
+      transform: none;
+      margin-left: 0;
+    }
+  }
+
+  .button-arrow {
+    // opacity: 0;
+    display: none;
+    width: 0;
+    margin-left: 0;
+    margin-top: 4px;
+    transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+    overflow: hidden;
+    z-index: 1;
+    position: relative;
+    color: #fff;
+
+    @include mobile {
+      position: relative;
+      transform: none;
+      margin-left: 0;
+    }
+  }
+
+  &:hover,
+  &:focus {
+    width: fit-content; // Increased to accommodate: 24px left padding + text + 24px arrow + 24px right padding
+    background: map-get($colors, "red");
+    color: #fff !important;
+    box-shadow: 0 0 19.3px 0 rgba(map-get($colors, "red"), 0.5);
+    padding-right: 8px; // Add right padding to balance the left padding
+
+    @include mobile {
+      width: 100%;
+      padding-right: 0;
+      overflow: hidden; // Hide overflow on mobile for proper centering
+    }
+
+    @include tablet {
+      width: fit-content;
+    }
+
+    @include desktop-lg {
+      width: fit-content;
+    }
+
+    @include desktop-xl {
+      width: fit-content;
+    }
+
+    .button-arrow {
+      // opacity: 1;
+      display: flex;
+      width: 24px;
+      margin-left: 0; // Add spacing between text and arrow
+      margin-top: 4px;
+      color: #fff;
+    }
+
+    .button-text {
+      color: #fff !important;
+      // NO position change - text stays exactly where it is
+    }
+  }
+}
+
+.button-secondary-community {
+  @extend .reusable-button;
+  width: fit-content;
+  background: transparent;
+  color: #fff;
+  transition: color 0.3s, border 0.3s, text-decoration 0.3s;
+  text-decoration: none;
+
+  @include mobile {
+    width: 100%;
+    justify-content: center;
+  }
+
+  @include tablet {
+    font-size: 16px;
+  }
+
+  @include desktop-lg {
+    font-size: 18px;
+  }
+
+  @include desktop-xl {
+    font-size: 20px;
+  }
+
+  .button-text {
+    position: relative;
+    transition: color 0.3s, text-decoration 0.3s;
+  }
+
+  .button-arrow {
+    margin-left: 0;
+    margin-top: 4px;
+    color: currentColor;
+  }
+
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+    border: none;
+
+    .button-arrow {
+      color: map-get($colors, "red");
+    }
+  }
+}
+
+// ========================================
+// SCENARIO 4: Account Comparison Buttons (Fixed Width)
+// ========================================
+.button-primary-comparison {
+  @extend .reusable-button;
+  width: 221px;
+  background: #fff;
+  color: map-get($colors, "black");
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+
+  @include mobile {
+    width: 100%;
+  }
+
+  @include desktop-lg {
+    width: 48% !important;
+  }
+
+  .button-text {
+    position: relative;
+    width: fit-content;
+    height: 23px;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 23px;
+    color: #000;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  .button-arrow {
+    // display: flex;
+    align-items: center;
+    // opacity: 0;
+    display: none;
+    width: 0;
+    margin-left: 0;
+    margin-top: 4px;
+    transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+    overflow: hidden;
+    z-index: 1;
+    position: relative;
+    color: #000;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+
+  &:hover {
+    background: map-get($colors, "red");
+    color: #fff !important;
+
+    .button-text {
+      color: #fff !important;
+    }
+
+    .button-arrow {
+      // opacity: 1;
+      display: flex;
+      width: 24px;
+      margin-left: 0;
+      margin-top: 4px;
+      color: #fff;
+    }
+  }
+}
+
+.button-secondary-comparison {
+  @extend .reusable-button;
+  // width: 221px;
+  // border: 1px solid #fff;
+  background: transparent;
+  transition: all 0.3s ease;
+
+  @include desktop-lg {
+    width: 48% !important;
+  }
+
+  .button-text {
+    position: relative;
+    // width: 102px;
+    // height: 23px;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 23px;
+    color: #fff;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  .button-arrow {
+    display: flex;
+    align-items: center;
+    opacity: 1;
+    width: 11px;
+    margin-left: 0;
+    margin-top: 4px;
+    transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+    // overflow: visible;
+    z-index: 1;
+    position: relative;
+    color: #fff;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+
+  &:hover {
+    background: transparent;
+
+    .button-arrow {
+      // opacity: 1;
+      // display: flex;
+      // width: 24px;
+      // margin-left: 0;
+      // margin-top: 4px;
+      color: map-get($colors, "red");
+    }
+  }
+}
+
+// Zero+ specific button (transparent background)
+.button-primary-comparison-zero {
+  @extend .button-primary-comparison;
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+
+  .button-text {
+    color: #fff;
+  }
+
+  &:hover {
+    background: map-get($colors, "red");
+    border: none;
+    color: #fff !important;
+
+    .button-text {
+      color: #fff !important;
+    }
+
+    .button-arrow {
+      color: #fff;
+    }
+  }
+}
+
+// ========================================
+// SCENARIO 5: Learn More Button (Transparent to Red)
+// ========================================
+.button-learn-more {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 24px;
+  gap: 10px;
+  width: 349px;
+  height: 51px;
+  border: 1px solid map-get($colors, "red");
+  border-radius: 8px;
+  background: transparent;
+  color: #000000;
+  font-family: "Sofia Pro";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  flex: none;
+  order: 3;
+  align-self: stretch;
+  flex-grow: 0;
+  z-index: 3;
+  cursor: pointer;
+  outline: none;
+
+  @include mobile {
+    width: 100%;
+    height: 48px;
+    font-size: 18px;
+    line-height: 22px;
+    padding: 12px 20px;
+  }
+
+  .button-text {
+    width: auto;
+    height: 23px;
+    font-family: "Sofia Pro";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 23px;
+    color: #000000;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    transition: color 0.3s;
+
+    @include mobile {
+      width: auto;
+      height: auto;
+      font-size: 18px;
+      line-height: 22px;
+    }
+  }
+
+  .button-arrow {
+    display: none;
+    width: 9.33px;
+    height: 9.33px;
+    // border: 1.3333px solid map-get($colors, "red");
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    transition: all 0.3s;
+  }
+
+  &:hover,
+  &:focus {
+    background: map-get($colors, "red");
+    color: #ffffff;
+
+    .button-text {
+      color: #ffffff;
+    }
+
+    .button-arrow {
+      display: flex;
+      width: 24px;
+      border-color: #110909;
+      color: #ffffff;
+    }
+  }
+}
+
+// ========================================
+// Button Container Styles
+// ========================================
+.button-container {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+
+  @include mobile {
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0px;
+    width: 100%;
+    height: 114px;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+    gap: 16px;
+  }
+}
+
+.button-container-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 31px;
+  max-width: 440px;
+
+  @include mobile {
+    max-width: 100%;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  @include tablet {
+    max-width: 100%;
+    gap: 25px;
+  }
+
+  @include desktop-lg {
+    max-width: 440px;
+    gap: 31px;
+  }
+
+  @include desktop-xl {
+    max-width: 440px;
+    gap: 31px;
+  }
+
+  @include desktop-2k {
+    max-width: 500px;
+    gap: 35px;
+  }
+
+  @include desktop-5k {
+    max-width: 600px;
+    gap: 40px;
+  }
+}

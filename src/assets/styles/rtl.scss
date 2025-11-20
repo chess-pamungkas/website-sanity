@@ -18,26 +18,33 @@
     padding-right: 0;
     padding-left: unset;
     order: 3;
+    display: flex;
+    align-items: center;
+    min-width: auto;
+    flex-basis: auto;
   }
 
   .header__main-wrapper {
     display: flex;
     flex-direction: row-reverse;
-    align-items: stretch;
+    align-items: center;
     justify-content: space-between;
-
-    // @include tablet {
-    //   padding: 10px 20px;
-    // }
-
-    // @include desktop-lg {
-    //   padding: 12px 30px;
-    // }
+    width: 100%;
+    height: 100%;
+    position: relative;
+    margin: 0 auto;
+    box-sizing: border-box;
   }
 
   .header__center {
     order: 2;
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    min-width: auto;
+    flex-basis: auto;
 
     @include tablet {
       justify-content: center;
@@ -45,49 +52,74 @@
     }
   }
 
-  .header__right {
-    order: 1;
-
-    @include tablet {
-      justify-content: flex-start;
-      padding-left: 0;
-    }
-  }
-
-  .header__navigation {
-    @include tablet {
-      justify-content: center;
-      padding: 0;
-    }
-  }
-
   @include mobile {
-    padding-right: unset;
-    padding-left: unset;
+    padding-right: padding-sm;
+    padding-left: padding-sm;
   }
 
-  .header__signin {
-    margin-right: 26px;
-    margin-left: unset;
-    padding: 0 33px;
-
-    @include tablet {
-      margin-right: 20px;
+  @include tablet {
+    .header__main-wrapper {
+      max-width: 720px;
     }
 
-    @include desktop-xl {
-      margin-right: 50px;
-      margin-left: unset;
-      padding: 0 38px;
+    // .header__left,
+    // .header__center,
+    // .header__right {
+    //   min-width: auto;
+    //   flex-basis: auto;
+    // }
+  }
+
+  @include desktop-lg {
+    .header__main-wrapper {
+      max-width: 1004px;
+      margin: 0 auto;
     }
   }
 
-  .header__start {
-    margin-right: 10px;
-    margin-left: unset;
-    // TODO check this padding after translations will be added
-    padding: 0 50px;
+  @include desktop-xl {
+    .header__main-wrapper {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
   }
+
+  @include desktop-2k {
+    .header__main-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+  }
+
+  @include desktop-5k {
+    .header__main-wrapper {
+      max-width: 1920px;
+      margin: 0 auto;
+    }
+  }
+
+  // .header__signin {
+  //   margin-right: 26px;
+  //   margin-left: unset;
+  //   padding: 0 33px;
+
+  //   @include tablet {
+  //     margin-right: 20px;
+  //   }
+
+  //   @include desktop-xl {
+  //     margin-right: 50px;
+  //     margin-left: unset;
+  //     padding: 0 38px;
+  //   }
+  // }
+
+  // .header__start {
+  //   margin-right: 10px;
+  //   margin-left: unset;
+  //   // TODO check this padding after translations will be added
+  //   padding: 0 50px;
+  // }
 
   .header__search {
     right: unset;
@@ -98,12 +130,45 @@
     flex-direction: row;
   }
 
-  .lang-select {
-    flex-direction: row-reverse;
-  }
+  // .lang-select {
+  //   flex-direction: row-reverse;
+  // }
 
   .navbar-item__title {
     order: 2;
+  }
+
+  .navbar-item__icon-wrapper {
+    order: 1;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .navbar-item__icon--partners {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .navbar-item {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header__navigation ul {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
   }
 
   .dropdown-item__subtitles {
@@ -113,12 +178,18 @@
 
   .dropdown-item__icon {
     margin-right: unset;
-    margin-left: 10px;
+    margin-left: 20px;
   }
 
   .burger-menu__trigger {
-    left: 26px;
-    right: unset;
+    @include mobile {
+      left: 25px;
+      right: unset;
+    }
+    @include tablet {
+      left: 0;
+      right: unset;
+    }
   }
 
   .burger-menu__signin {
@@ -138,6 +209,626 @@
   .burger-menu__navbar {
     right: 0;
     left: 0;
+  }
+
+  .header__controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: auto;
+    flex-basis: auto;
+
+    @include mobile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: unset;
+      margin-left: 50px;
+    }
+
+    @include tablet {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: unset;
+      margin-left: 50px;
+    }
+
+    @include desktop-lg {
+      display: flex;
+      gap: 0;
+      margin-right: 0;
+      margin-left: 0;
+    }
+
+    // Control elements styling
+    // .lang-select,
+    // .header__signin,
+    // .header__start {
+    //   display: flex;
+    //   align-items: center;
+    //   justify-content: center;
+    //   min-width: auto;
+    //   flex-basis: auto;
+    // }
+  }
+}
+
+// Navbar dropdown RTL styling
+.navbar-dropdown-highlight--rtl {
+  .navbar-dropdown-highlight__button-arrow {
+    // Flip the arrow to point left in RTL
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .navbar-dropdown-highlight__button--primary:hover {
+    // Override padding to prevent text shift in RTL
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+
+    .navbar-dropdown-highlight__button-text {
+      // Prevent text from shifting in RTL on hover
+      margin-left: 0 !important;
+      margin-right: 8px !important;
+      transform: none !important;
+    }
+
+    .navbar-dropdown-highlight__button-arrow {
+      // Keep the arrow flipped in RTL even on hover
+      transform: scaleX(-1) !important;
+      // margin-left: 0 !important;
+      // margin-right: 0 !important;
+
+      svg {
+        transform: scaleX(-1) !important;
+      }
+    }
+  }
+
+  .navbar-dropdown-highlight__button--secondary:hover {
+    .navbar-dropdown-highlight__button-arrow {
+      // Keep the arrow flipped in RTL even on hover
+      transform: scaleX(-1) !important;
+
+      svg {
+        transform: scaleX(-1) !important;
+      }
+    }
+  }
+
+  // Handle cases where translateY is applied
+  .our-community__content,
+  .vps-complimentary__content,
+  .swap-free-our-community__content {
+    .navbar-dropdown-highlight__button--primary:hover {
+      // Override padding to prevent text shift in RTL
+      padding-right: 8px !important;
+      padding-left: 0 !important;
+
+      .navbar-dropdown-highlight__button-text {
+        // Prevent text from shifting in RTL on hover
+        margin-left: 0 !important;
+        margin-right: 8px !important;
+        transform: none !important;
+      }
+
+      .navbar-dropdown-highlight__button-arrow {
+        transform: translateY(-50%) scaleX(-1) !important;
+        // margin-left: 0 !important;
+        // margin-right: 0 !important;
+
+        svg {
+          transform: scaleX(-1) !important;
+        }
+      }
+    }
+  }
+}
+
+// Reusable buttons RTL styling
+.button-primary-hero--rtl,
+.button-secondary-hero--rtl,
+.button-primary-standard--rtl,
+.button-secondary-standard--rtl {
+  .button-arrow {
+    // Flip the arrow to point left in RTL
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  &:hover .button-arrow {
+    // Ensure arrow stays flipped on hover
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+}
+
+// Direct arrow RTL class
+.arrow-rtl {
+  transform: scaleX(-1) !important;
+}
+
+// Market sentiment button arrows RTL styling
+.market-sentiment__btn .button-arrow svg {
+  &.arrow-rtl {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for market sentiment arrows
+html[dir="rtl"] .market-sentiment__btn .button-arrow svg,
+html[lang="ar"] .market-sentiment__btn .button-arrow svg,
+body[dir="rtl"] .market-sentiment__btn .button-arrow svg,
+[dir="rtl"] .market-sentiment__btn .button-arrow svg {
+  transform: scaleX(-1) !important;
+}
+
+// FORCE ALL ARROWS TO FLIP IN RTL - NUCLEAR OPTION
+html[dir="rtl"] .button-arrow svg,
+html[lang="ar"] .button-arrow svg,
+body[dir="rtl"] .button-arrow svg,
+[dir="rtl"] .button-arrow svg,
+html[dir="rtl"] .button-arrow,
+html[lang="ar"] .button-arrow,
+body[dir="rtl"] .button-arrow,
+[dir="rtl"] .button-arrow {
+  transform: scaleX(-1) !important;
+  -webkit-transform: scaleX(-1) !important;
+  -moz-transform: scaleX(-1) !important;
+  -ms-transform: scaleX(-1) !important;
+}
+
+// Force navbar dropdown arrows too
+html[dir="rtl"] .navbar-dropdown-highlight__button-arrow svg,
+html[lang="ar"] .navbar-dropdown-highlight__button-arrow svg,
+body[dir="rtl"] .navbar-dropdown-highlight__button-arrow svg,
+[dir="rtl"] .navbar-dropdown-highlight__button-arrow svg,
+html[dir="rtl"] .navbar-dropdown-highlight__button-arrow,
+html[lang="ar"] .navbar-dropdown-highlight__button-arrow,
+body[dir="rtl"] .navbar-dropdown-highlight__button-arrow,
+[dir="rtl"] .navbar-dropdown-highlight__button-arrow {
+  transform: scaleX(-1) !important;
+  -webkit-transform: scaleX(-1) !important;
+  -moz-transform: scaleX(-1) !important;
+  -ms-transform: scaleX(-1) !important;
+}
+
+// Force main promotion badge arrows too
+html[dir="rtl"] .main-promotion__badge-arrow svg,
+html[lang="ar"] .main-promotion__badge-arrow svg,
+body[dir="rtl"] .main-promotion__badge-arrow svg,
+[dir="rtl"] .main-promotion__badge-arrow svg,
+html[dir="rtl"] .main-promotion__badge-arrow,
+html[lang="ar"] .main-promotion__badge-arrow,
+body[dir="rtl"] .main-promotion__badge-arrow,
+[dir="rtl"] .main-promotion__badge-arrow {
+  transform: scaleX(-1) !important;
+  -webkit-transform: scaleX(-1) !important;
+  -moz-transform: scaleX(-1) !important;
+  -ms-transform: scaleX(-1) !important;
+}
+
+// Force navbar item partners icons too
+html[dir="rtl"] .navbar-item__icon--partners svg,
+html[lang="ar"] .navbar-item__icon--partners svg,
+body[dir="rtl"] .navbar-item__icon--partners svg,
+[dir="rtl"] .navbar-item__icon--partners svg,
+html[dir="rtl"] .navbar-item__icon--partners,
+html[lang="ar"] .navbar-item__icon--partners,
+body[dir="rtl"] .navbar-item__icon--partners,
+[dir="rtl"] .navbar-item__icon--partners {
+  transform: scaleX(-1) !important;
+  -webkit-transform: scaleX(-1) !important;
+  -moz-transform: scaleX(-1) !important;
+  -ms-transform: scaleX(-1) !important;
+}
+
+// Account comparison RTL styling
+.account-comparison-content--rtl,
+html[dir="rtl"] .account-comparison-content,
+html[lang="ar"] .account-comparison-content,
+body[dir="rtl"] .account-comparison-content,
+[dir="rtl"] .account-comparison-content {
+  .account-cards {
+    .account-card {
+      .card-stars {
+        right: unset;
+        left: 20px;
+
+        @include mobile {
+          left: 16px;
+        }
+
+        @include tablet {
+          left: 18px;
+        }
+      }
+
+      .card-features {
+        .feature-item {
+          flex-direction: row-reverse;
+          text-align: right;
+          align-items: flex-start;
+
+          @include mobile {
+            align-items: flex-start;
+          }
+
+          .feature-icon {
+            order: 2;
+            margin-left: 12px;
+            margin-right: 0;
+            flex-shrink: 0;
+
+            @include mobile {
+              margin-left: 8px;
+            }
+          }
+
+          span {
+            order: 1;
+            text-align: right;
+            align-self: flex-start;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            flex: 1;
+            min-width: 0;
+
+            @include mobile {
+              font-size: 12px;
+              line-height: 1.4;
+              max-width: calc(100% - 32px);
+            }
+          }
+        }
+      }
+
+      // RTL hover state for ECN card
+      &.ecn-card:hover {
+        &::before {
+          right: unset !important;
+          left: -15px !important;
+          background-position: top left !important;
+        }
+
+        .card-stars {
+          right: unset !important;
+          left: 20px !important;
+
+          @include mobile {
+            left: 16px !important;
+          }
+
+          @include tablet {
+            left: 18px !important;
+          }
+        }
+      }
+
+      // RTL hover state for Zero card
+      &.zero-card:hover {
+        &::before {
+          right: unset !important;
+          left: -15px !important;
+          background-position: top left !important;
+        }
+
+        .card-stars {
+          right: unset !important;
+          left: 20px !important;
+
+          @include mobile {
+            left: 16px !important;
+          }
+
+          @include tablet {
+            left: 18px !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Cost calculator RTL styling
+.cost-calculator-content--rtl {
+  .cost-calculator-content__slider-label {
+    text-align: right;
+
+    .cost-calculator-content__slider-value {
+      order: 1;
+      margin-left: 0;
+      margin-right: auto;
+    }
+  }
+
+  .cost-calculator-content__slider-label-2 {
+    text-align: right;
+  }
+
+  .cost-calculator-content__monthly-trades {
+    justify-content: flex-end;
+    direction: rtl;
+  }
+
+  .cost-calculator-content__comparison-container {
+    direction: rtl;
+
+    .cost-calculator-content__comparison-row {
+      flex-direction: row-reverse;
+    }
+
+    .cost-calculator-content__savings-info {
+      text-align: right;
+    }
+  }
+
+  // RTL slider thumb positioning fix
+  .cost-calculator-content__slider-thumb {
+    transform: translate(-12px, 0) !important;
+
+    &:hover,
+    &:focus {
+      transform: translate(-12px, 0) !important;
+    }
+  }
+}
+
+// Our community content RTL styling
+.our-community-content--rtl {
+  &::before {
+    transform: scaleX(-1) !important;
+  }
+
+  .our-community-content__title {
+    text-align: right !important;
+  }
+
+  .our-community-content__subtitle {
+    text-align: right !important;
+  }
+}
+
+// Global RTL our community content background image flip
+html[dir="rtl"] .our-community-content,
+html[lang="ar"] .our-community-content,
+body[dir="rtl"] .our-community-content,
+[dir="rtl"] .our-community-content {
+  transform: scaleX(-1) !important;
+}
+
+// Flip the container back so content is not flipped
+html[dir="rtl"] .our-community-content__container,
+html[lang="ar"] .our-community-content__container,
+body[dir="rtl"] .our-community-content__container,
+[dir="rtl"] .our-community-content__container {
+  transform: scaleX(-1) !important;
+}
+
+// Global RTL our community content text alignment
+html[dir="rtl"] .our-community-content__title,
+html[lang="ar"] .our-community-content__title,
+body[dir="rtl"] .our-community-content__title,
+[dir="rtl"] .our-community-content__title {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .our-community-content__subtitle,
+html[lang="ar"] .our-community-content__subtitle,
+body[dir="rtl"] .our-community-content__subtitle,
+[dir="rtl"] .our-community-content__subtitle {
+  text-align: right !important;
+}
+
+// EXTREME NUCLEAR OPTION - Target ALL possible arrow containers
+html[dir="rtl"] *[class*="arrow"] svg,
+html[lang="ar"] *[class*="arrow"] svg,
+body[dir="rtl"] *[class*="arrow"] svg,
+[dir="rtl"] *[class*="arrow"] svg {
+  transform: scaleX(-1) !important;
+  -webkit-transform: scaleX(-1) !important;
+  -moz-transform: scaleX(-1) !important;
+  -ms-transform: scaleX(-1) !important;
+}
+
+// ANIMATION FORCE - Use CSS animation to force transform
+@keyframes forceFlip {
+  0% {
+    transform: scaleX(1) !important;
+    -webkit-transform: scaleX(1) !important;
+    -moz-transform: scaleX(1) !important;
+    -ms-transform: scaleX(1) !important;
+  }
+  100% {
+    transform: scaleX(-1) !important;
+    -webkit-transform: scaleX(-1) !important;
+    -moz-transform: scaleX(-1) !important;
+    -ms-transform: scaleX(-1) !important;
+  }
+}
+
+// Apply animation to force flip
+html[dir="rtl"] .button-arrow svg,
+html[lang="ar"] .button-arrow svg,
+body[dir="rtl"] .button-arrow svg,
+[dir="rtl"] .button-arrow svg {
+  animation: forceFlip 0.1s ease-in-out forwards !important;
+  -webkit-animation: forceFlip 0.1s ease-in-out forwards !important;
+  -moz-animation: forceFlip 0.1s ease-in-out forwards !important;
+  -ms-animation: forceFlip 0.1s ease-in-out forwards !important;
+}
+
+// FINAL NUCLEAR OPTION - Use all possible selectors
+html[dir="rtl"] svg[width="9.33"],
+html[lang="ar"] svg[width="9.33"],
+html[dir="rtl"] svg[viewBox="0 0 11 11"],
+html[lang="ar"] svg[viewBox="0 0 11 11"] {
+  transform: scaleX(-1) !important;
+  -webkit-transform: scaleX(-1) !important;
+  -moz-transform: scaleX(-1) !important;
+  -ms-transform: scaleX(-1) !important;
+}
+
+// ULTIMATE SPECIFICITY - Target everything with maximum specificity
+html[dir="rtl"] body .button-arrow svg,
+html[lang="ar"] body .button-arrow svg,
+html[dir="rtl"] #___gatsby .button-arrow svg,
+html[lang="ar"] #___gatsby .button-arrow svg {
+  transform: scaleX(-1) !important;
+  -webkit-transform: scaleX(-1) !important;
+  -moz-transform: scaleX(-1) !important;
+  -ms-transform: scaleX(-1) !important;
+}
+
+// Header dropdown card RTL styling
+.header-dropdown-card--rtl,
+html[dir="rtl"] .header-dropdown-card,
+html[lang="ar"] .header-dropdown-card {
+  direction: rtl;
+
+  .header__main-wrapper {
+    flex-direction: row-reverse;
+  }
+
+  .header__left {
+    order: 3;
+  }
+
+  .header__center {
+    order: 2;
+  }
+
+  .header__right {
+    order: 1;
+  }
+
+  .navbar-item__dropdown-columns {
+    direction: rtl;
+  }
+
+  .navbar-item__dropdown-column {
+    direction: rtl;
+  }
+
+  .dropdown-item__link {
+    direction: rtl;
+    grid-template-columns: 1fr 50px;
+    text-align: right;
+
+    .dropdown-item__icon--above + .dropdown-item__content {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      text-align: right;
+      align-items: flex-start;
+    }
+  }
+
+  .dropdown-item__content {
+    text-align: right;
+    align-items: flex-start;
+  }
+
+  .dropdown-item__icon {
+    order: 2;
+  }
+
+  .dropdown-item__icon--above {
+    order: 1;
+    justify-self: flex-end;
+    margin-left: auto;
+    margin-right: 0;
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .dropdown-item__content {
+    order: 1;
+  }
+
+  .dropdown-item__icon--above + .dropdown-item__content {
+    order: 2;
+    text-align: right;
+    align-items: flex-start;
+  }
+}
+
+// Force dropdown item arrows to flip in RTL
+html[dir="rtl"] .dropdown-item__link::after,
+html[lang="ar"] .dropdown-item__link::after,
+html[dir="rtl"] .dropdown-item::after,
+html[lang="ar"] .dropdown-item::after {
+  content: "→";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%) scaleX(-1);
+  color: #b6b6b6;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+// Alternative: Add arrow via CSS if not present
+html[dir="rtl"] .dropdown-item__link:not(:has(.dropdown-item__arrow))::after,
+html[lang="ar"] .dropdown-item__link:not(:has(.dropdown-item__arrow))::after {
+  content: "→";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%) scaleX(-1);
+  color: #b6b6b6;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+// Main promotion badge arrow RTL styling
+.main-promotion--rtl,
+html[dir="rtl"] .main-promotion,
+html[lang="ar"] .main-promotion {
+  .main-promotion__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+}
+
+// Metals component RTL styling
+.metals--rtl {
+  .metals__button-primary,
+  .metals__button-secondary {
+    .metals__button-arrow {
+      // Flip the arrow to point left in RTL
+      transform: scaleX(-1) !important;
+
+      svg {
+        transform: scaleX(-1) !important;
+      }
+    }
+
+    &:hover .metals__button-arrow {
+      // Ensure arrow stays flipped on hover
+      transform: scaleX(-1) !important;
+
+      svg {
+        transform: scaleX(-1) !important;
+      }
+    }
   }
 }
 
@@ -275,15 +966,14 @@
 }
 
 .promotion4.promotion--rtl {
-  background: url("../../assets/images/promotions/promo4-rtl.svg") no-repeat 0;
+  // background: url("../../assets/images/promotions/promo4-rtl.svg") no-repeat 0;
   background-size: cover;
 
   @include desktop-xl {
     direction: ltr;
 
     .promotion__bg {
-      background: url("../../assets/images/promotions/promo4-rtl.svg") no-repeat
-        center;
+      // background: url("../../assets/images/promotions/promo4-rtl.svg") no-repeat center;
       background-size: cover;
     }
 
@@ -317,35 +1007,6 @@
   left: 0 !important;
   transform: none !important;
   transition: none !important;
-}
-
-.top-market--rtl {
-  background: url("../../assets/images/top-markets/bg-rtl.svg") no-repeat center;
-  background-size: cover;
-
-  .top-market__title {
-    @include desktop-xl {
-      text-align: right;
-    }
-  }
-
-  .top-market__text {
-    @include desktop-xl {
-      text-align: right;
-    }
-  }
-
-  .top-market__btn {
-    @include desktop-xl {
-      &:first-child {
-        margin: 0 0 0 10px;
-      }
-
-      &:last-child {
-        margin: 0 10px 0 0;
-      }
-    }
-  }
 }
 
 .top-market-promotion--rtl {
@@ -435,88 +1096,6 @@
   }
 }
 
-.all-markets--rtl {
-  background: url("../../assets/images/all-markets/bg-rtl.svg") no-repeat center;
-  background-size: cover;
-
-  .all-markets__title {
-    @include desktop-xl {
-      text-align: right;
-    }
-  }
-
-  .all-markets__text {
-    @include desktop-xl {
-      text-align: right;
-    }
-  }
-}
-
-.market-items-list--rtl {
-  .market-item {
-    &:before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 50%;
-      right: 50%;
-      margin-left: -50vw;
-      margin-right: -50vw;
-      width: 100vw;
-      height: 100%;
-      background: url("../../assets/images/all-markets/top-bg-sm.svg") no-repeat
-        right top;
-      background-size: 95px 114px;
-      z-index: 1;
-      pointer-events: none;
-      transform: scaleX(-1);
-
-      @include tablet {
-        background: url("../../assets/images/all-markets/top-bg-md.svg")
-          no-repeat right top;
-        background-size: 219px 263px;
-      }
-
-      @include desktop-xl {
-        background: url("../../assets/images/all-markets/top-bg-lg.svg")
-          no-repeat right top;
-        background-size: 332px 398px;
-      }
-    }
-
-    &--gray {
-      &:before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
-        width: 100vw;
-        height: 100%;
-        background-color: #f9f9f9;
-        z-index: -999999999;
-        transform: scaleX(-1);
-      }
-    }
-  }
-
-  .market-item-advantages__text {
-    padding-left: 0;
-    padding-right: 20px;
-  }
-
-  .market-item__description {
-    @include desktop-lg {
-      padding-left: 40px;
-    }
-    @include desktop-xl {
-      padding-left: 60px;
-    }
-  }
-}
-
 .split-text-promotion--rtl {
   .split-text-promotion__block--left {
     &:after {
@@ -537,27 +1116,7 @@
 
 .legal-page-promotion--rtl {
   direction: rtl;
-  background: url("../../assets/images/bg/legal/banner-sm-rtl.svg") no-repeat
-    center;
   background-size: cover;
-
-  @include tablet {
-    background: url("../../assets/images/bg/legal/banner-md-rtl.svg") no-repeat
-      center;
-    background-size: cover;
-  }
-
-  @include desktop-lg {
-    background: url("../../assets/images/bg/legal/banner-lg-rtl.svg") no-repeat
-      center;
-    background-size: cover;
-  }
-
-  @include desktop-xl {
-    background: url("../../assets/images/bg/legal/banner-xl-rtl.svg") no-repeat
-      center;
-    background-size: cover;
-  }
 
   .top-market-promotion__text {
     text-align: center;
@@ -586,81 +1145,6 @@
   .top-market-promotion__wrapper {
     @include desktop-lg {
       flex-direction: row-reverse;
-    }
-  }
-}
-
-.top-market--platforms--rtl {
-  .top-market__trader-tools {
-    img + img {
-      margin-left: unset;
-      margin-right: 30px;
-
-      @include tablet {
-        margin-left: unset;
-        margin-right: 25px;
-      }
-
-      @include desktop-xl {
-        margin-left: unset;
-        margin-right: 20px;
-      }
-    }
-  }
-}
-
-.meta-trader--rtl {
-  &:before {
-    -webkit-transform: scaleX(-1);
-    transform: scaleX(-1);
-    right: unset;
-    left: 0;
-  }
-
-  .meta-trader__description {
-    @include desktop-lg {
-      margin-right: unset;
-      margin-left: 34px;
-    }
-
-    @include desktop-xl {
-      margin-right: unset;
-      margin-left: 230px;
-    }
-  }
-
-  .market-item-advantages__text {
-    padding-left: unset;
-    padding-right: 10px;
-
-    @include tablet {
-      padding-right: 20px;
-    }
-  }
-
-  .meta-trader__more-link {
-    margin-right: unset;
-    margin-left: 18px;
-
-    @include desktop-xl {
-      margin-left: 50px;
-    }
-  }
-
-  .meta-trader__tool-icon {
-    margin-right: unset;
-    margin-left: 25px;
-
-    @include desktop-lg {
-      margin-left: 35px;
-    }
-
-    @include desktop-xl {
-      margin-left: 55px;
-    }
-
-    &:last-child {
-      margin-left: 0;
     }
   }
 }
@@ -779,33 +1263,6 @@
     background-size: cover;
   }
 
-  @include desktop-2k {
-    position: relative;
-    width: 100vw;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    background-size: cover;
-  }
-
-  @include desktop-5k {
-    transform: translateX(-50%);
-    left: 75%;
-    right: auto;
-    width: 100%;
-    max-width: 5120px;
-    margin: 0 auto;
-
-    &:before {
-      display: none;
-    }
-
-    &:after {
-      display: none;
-    }
-  }
-
   &__wrapper {
     @include desktop-xl {
       margin-right: auto;
@@ -822,6 +1279,58 @@
 
   .contact-us__text {
     text-align: right;
+  }
+
+  .contact-us__info-item {
+    flex-direction: row-reverse !important;
+  }
+
+  .contact-us__info-icon {
+    margin-right: 0 !important;
+    margin-left: 20px !important;
+    order: 2 !important;
+  }
+
+  .contact-us__info-content {
+    order: 1 !important;
+    text-align: right !important;
+  }
+}
+
+// Contact Us RTL - using contact-us-content-section--rtl class
+.contact-us-content-section--rtl {
+  .contact-us__info-item {
+    flex-direction: row-reverse !important;
+  }
+
+  .contact-us__info-icon {
+    margin-right: 0 !important;
+    margin-left: 20px !important;
+    order: 2 !important;
+  }
+
+  .contact-us__info-content {
+    order: 1 !important;
+    text-align: right !important;
+  }
+}
+
+// Global fallback for contact us info RTL
+html[dir="rtl"] .contact-us__info-item,
+html[lang="ar"] .contact-us__info-item,
+body[dir="rtl"] .contact-us__info-item,
+[dir="rtl"] .contact-us__info-item {
+  flex-direction: row-reverse !important;
+
+  .contact-us__info-icon {
+    margin-right: 0 !important;
+    margin-left: 20px !important;
+    order: 2 !important;
+  }
+
+  .contact-us__info-content {
+    order: 1 !important;
+    text-align: right !important;
   }
 }
 
@@ -876,12 +1385,6 @@
   }
 }
 
-.accounts-type-page-promotion--rtl {
-  direction: rtl;
-  background: url("../../assets/images/top-markets/bg-rtl.svg") no-repeat center;
-  background-size: cover;
-}
-
 .accounts-type--rtl {
   .accounts-type__title {
     @include desktop-xl {
@@ -903,31 +1406,6 @@
         margin: 0 30px 0 0;
       }
     }
-  }
-}
-
-.split-bg--rtl {
-  direction: rtl;
-  background: url("../../assets/images/bg/split-bg/bg-sm-rtl.svg") no-repeat
-    center;
-  background-size: cover;
-
-  @include tablet {
-    background: url("../../assets/images/bg/split-bg/bg-md-rtl.svg") no-repeat
-      bottom;
-    background-size: cover;
-  }
-
-  @include desktop-lg {
-    background: url("../../assets/images/bg/split-bg/bg-lg-rtl.svg") no-repeat
-      right;
-    background-size: cover;
-  }
-
-  @include desktop-xl {
-    background: url("../../assets/images/bg/split-bg/bg-xl-rtl.svg") no-repeat
-      center;
-    background-size: cover;
   }
 }
 
@@ -966,13 +1444,6 @@
   @include desktop-xl {
     left: -81px;
   }
-}
-
-.partners-page-promotion--rtl {
-  direction: rtl;
-
-  background: url("../../assets/images/all-markets/bg-rtl.svg") no-repeat center;
-  background-size: cover;
 }
 
 .partners-income--rtl {
@@ -1083,20 +1554,6 @@
   }
 }
 
-.top-market--trading-tools--rtl {
-  .top-market__btn {
-    @include desktop-xl {
-      &:first-child {
-        margin: 0 0 0 10px;
-      }
-
-      &:last-child {
-        margin: 49px 0 0 0;
-      }
-    }
-  }
-}
-
 .alpha-generation--rtl,
 .featured-ideas--rtl {
   .trading-tools-tabs .tabs__tab {
@@ -1157,32 +1614,6 @@
   }
 }
 
-.swap-free-promotion--rtl {
-  .swap-free-promotion__title {
-    @include tablet {
-      text-align: right;
-    }
-  }
-
-  .swap-free-promotion__description {
-    @include tablet {
-      text-align: right;
-    }
-  }
-
-  .swap-free-promotion__text {
-    @include tablet {
-      text-align: right;
-    }
-  }
-
-  .swap-free-promotion__img-block {
-    @include desktop-xl {
-      padding-left: 200px;
-    }
-  }
-}
-
 .vps-promotion--rtl {
   .vps-promotion__title {
     @include desktop-xl {
@@ -1203,8 +1634,44 @@
   }
 }
 
+// RTL styling for phone number container
+html[dir="rtl"] .phone-number-container,
+html[lang="ar"] .phone-number-container,
+body[dir="rtl"] .phone-number-container,
+[dir="rtl"] .phone-number-container {
+  .phone-country-code {
+    border-right: 1px solid #d1d5db !important;
+    border-left: none !important;
+    border-radius: 0 6px 6px 0 !important;
+  }
+
+  .phone-number-input .popup-registration__input {
+    border-right: none !important;
+    border-left: 1px solid #d1d5db !important;
+    border-radius: 6px 0 0 6px !important;
+  }
+
+  @include mobile {
+    gap: 0 !important;
+
+    .phone-number-input {
+      margin-left: 0 !important;
+    }
+
+    .phone-country-code-group .phone-chevron-icon {
+      margin-right: 0 !important;
+      margin-left: 8px !important;
+    }
+  }
+}
+
 .popup-registration {
-  &__container--rtl {
+  // RTL Container - Flex direction row-reverse for correct layout
+  &__container--rtl,
+  html[dir="rtl"] &__container,
+  html[lang="ar"] &__container,
+  body[dir="rtl"] &__container,
+  [dir="rtl"] &__container {
     text-align: right !important;
     z-index: 1000001;
     width: 100%;
@@ -1212,8 +1679,7 @@
     max-height: 100vh;
     margin: auto;
     display: flex;
-    flex-direction: row;
-    // overflow-y: auto;
+    flex-direction: row-reverse !important; // Reverse the flex direction for RTL
     -webkit-overflow-scrolling: touch;
 
     input[type="text"],
@@ -1228,128 +1694,209 @@
     }
 
     @include mobile {
-      flex-direction: column;
+      flex-direction: column !important;
       width: 100%;
       height: 100%;
       max-height: 100vh;
-      // padding: 0.625rem;
       overflow-y: auto;
     }
 
-    // @include tablet {
-    //   padding: 0.625rem;
-    // }
-
     @include desktop-lg {
-      max-width: 73.25rem;
-      // max-height: 47rem;
+      max-width: 966px;
+      gap: 20px;
     }
 
     @include desktop-xl {
-      max-width: 75rem;
-      max-height: 48rem;
+      max-width: 966px;
+      max-height: 850px;
     }
   }
 
-  &__content--rtl {
-    border-radius: 10px 0 0 10px !important;
-    width: 60%;
-    background-color: white;
+  // RTL toggle switches - ensure they are clickable on mobile
+  &__newsletter,
+  &__consent {
+    @include mobile {
+      position: relative !important;
+
+      .toggle-switch {
+        pointer-events: auto !important;
+        cursor: pointer !important;
+        z-index: 100 !important;
+        position: relative !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: rgba(255, 68, 0, 0.1) !important;
+
+        &.consent-toggle,
+        &.newsletter-toggle {
+          pointer-events: auto !important;
+          cursor: pointer !important;
+          z-index: 100 !important;
+          position: relative !important;
+        }
+      }
+
+      .toggle-text {
+        pointer-events: none !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+      }
+
+      input[type="checkbox"] {
+        pointer-events: none !important;
+      }
+    }
+  }
+
+  // RTL Content - Order 1 (left side), border-radius on left
+  &__content--rtl,
+  html[dir="rtl"] &__content,
+  html[lang="ar"] &__content,
+  body[dir="rtl"] &__content,
+  [dir="rtl"] &__content {
+    border-radius: 32px !important; // Rounded on left for RTL
+    order: 1 !important; // Position on left side in RTL
+    text-align: right !important;
 
     @include mobile {
-      width: 100%;
-      border-radius: 0 0 10px 10px !important;
+      border-radius: 20px !important;
+      padding: 50px 20px;
     }
 
     @include tablet {
-      padding: 2.5rem;
+      padding: 60px 20px;
     }
 
     @include desktop-lg {
-      padding: 3.125rem;
+      padding: 3.5rem 3.125rem;
+    }
+  }
+
+  // RTL Sidebar - Order 2 (right side), border-radius on left
+  &__sidebar--rtl,
+  html[dir="rtl"] &__sidebar,
+  html[lang="ar"] &__sidebar,
+  body[dir="rtl"] &__sidebar,
+  [dir="rtl"] &__sidebar {
+    background: url("../images/bg/popup-registration/bg-popup-registration.svg")
+      no-repeat center center;
+    background-size: cover;
+    width: 331px;
+    height: 100%;
+    border-radius: 32px !important; // Rounded on right for RTL
+    position: relative;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    order: 2 !important; // Position on right side in RTL
+
+    @include mobile {
+      display: none;
+    }
+
+    @include tablet {
+      display: none;
+    }
+
+    @include desktop-lg {
+      display: block;
     }
 
     @include desktop-xl {
-      padding: 4.375rem 3.938rem;
+      background-size: cover;
+      background-position: center center;
     }
 
     @include desktop-2k {
-      padding: 5.375rem 4.938rem;
+      background-size: cover;
+      background-position: center center;
     }
 
     @include desktop-5k {
-      padding: 6.375rem 5.938rem;
+      background-size: cover;
+      background-position: center center;
     }
   }
 
-  &__sidebar--rtl {
-    position: relative;
-    z-index: 1000002;
-    background-color: #ff4400;
-    width: 40%;
-    background-image: url("../images/bg/register-img.png");
-    background-size: 85% auto;
-    background-repeat: no-repeat;
-    background-position: center calc(55%);
-    border-radius: 0 10px 10px 0 !important;
+  // RTL Content text alignment
+  html[dir="rtl"] &__content,
+  html[lang="ar"] &__content,
+  body[dir="rtl"] &__content,
+  [dir="rtl"] &__content {
+    text-align: right !important;
 
-    @include mobile {
-      width: 100%;
-      background-size: 70% auto;
-      background-position: center calc(70%);
-      max-height: none;
-      height: 21.875rem;
-      border-radius: 10px 10px 0 0 !important;
-    }
+    // Badge text alignment
+    &__badge {
+      text-align: right !important;
 
-    &__title--rtl {
-      position: relative;
-      max-width: 100%;
-      right: 0;
-      margin-top: 0;
-      margin-bottom: 0;
-
-      @include mobile {
-        padding-top: 2.375rem;
-      }
-
-      @include tablet {
-        padding-top: 3rem;
-      }
-
-      @include desktop-lg {
-        padding-top: 3.625rem;
-      }
-
-      @include desktop-xl {
-        padding-top: 4.625rem;
-      }
-
-      @include desktop-2k {
-        padding-top: 5.813rem;
-      }
-
-      @include desktop-5k {
-        padding-top: 6.813rem;
+      &-text {
+        text-align: right !important;
       }
     }
 
-    &__close--rtl {
-      position: absolute;
-      top: 0.9375rem;
-      right: 0.9375rem;
-      cursor: pointer;
-      width: 1.25rem;
-      height: 1.25rem;
-      z-index: 10000;
+    // Title alignment
+    &__title {
+      text-align: right !important;
+    }
 
-      @include mobile {
-        width: 0.9375rem;
-        height: 0.9375rem;
+    // Form elements
+    &__form {
+      text-align: right !important;
+
+      // Input labels
+      .popup-registration__label {
+        text-align: right !important;
+      }
+
+      // Input fields
+      .popup-registration__input,
+      .custom-dropdown__selected {
+        text-align: right !important;
+        direction: rtl;
+
+        &::placeholder {
+          text-align: right !important;
+        }
+      }
+
+      // Error messages
+      // .popup-registration__error {
+      //   text-align: right !important;
+      // }
+
+      // Risk warning
+      &__risk-warning {
+        text-align: right !important;
+
+        &-text {
+          text-align: right !important;
+        }
       }
     }
   }
+}
 
+// RTL styling for custom dropdown - move arrow to left in RTL
+html[dir="rtl"] .custom-dropdown,
+html[lang="ar"] .custom-dropdown,
+body[dir="rtl"] .custom-dropdown,
+[dir="rtl"] .custom-dropdown {
+  &__selected {
+    flex-direction: row !important; // Keep flex-direction row, but use order
+
+    .custom-dropdown__placeholder {
+      order: 2 !important; // Move text to right side
+      flex: 1 !important;
+      text-align: right !important;
+    }
+
+    .custom-dropdown__arrow {
+      order: 1 !important; // Move arrow to left side
+      margin-left: 0 !important;
+      margin-right: auto !important;
+    }
+  }
+}
+
+.popup-registration {
   &__wrapper {
     width: 100%;
     height: 100%;
@@ -1411,33 +1958,6 @@ h1.popup-registration-register--rtl {
   @include mobile {
     font-size: 1.125rem;
     margin-bottom: 1.5rem;
-  }
-}
-
-.swap-free-advantages--rtl {
-  &:before {
-    @include desktop-lg {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: unset;
-      left: 0;
-      margin-left: 0;
-      margin-right: 0;
-      width: 100vw;
-      height: 100%;
-      background: url("../../assets/images/swap-free/trg-bg-top-lg.svg")
-        no-repeat;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    @include desktop-xl {
-      background: url("../../assets/images/swap-free/trg-bg-top-xl.svg")
-        no-repeat;
-      width: 261px;
-      height: 299px;
-    }
   }
 }
 
@@ -1646,9 +2166,4824 @@ html[dir="rtl"] {
   }
 }
 
-// body.popup-open {
-//   overflow: hidden;
-//   position: fixed;
-//   width: 100%;
-//   height: 100%;
+// VPS Page RTL Styling
+.get-complimentary-vps--rtl {
+  .get-complimentary-vps-cards {
+    .minimum-trading-card {
+      .vps-image-container {
+        .vps-hand-icon {
+          // @include mobile {
+          //   transform: scaleX(-1);
+          // }
+          // @include tablet {
+          //   transform: scaleX(-1);
+          // }
+          @include desktop-lg {
+            transform: scaleX(-1);
+          }
+          @include desktop-xl {
+            transform: scaleX(-1);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Main Promotion RTL Styling for VPS Images
+.main-promotion--rtl {
+  .main-promotion__hero-img {
+    // Move globe image to left side for RTL
+    right: unset;
+    left: -50px;
+    // Flip globe image horizontally for RTL
+    transform: scaleX(-1);
+
+    @include mobile {
+      left: -180px;
+      right: unset;
+    }
+
+    @include tablet {
+      left: 60px;
+      right: unset;
+    }
+
+    @include desktop-lg {
+      left: 50px;
+      right: unset;
+    }
+
+    @include desktop-xl {
+      left: 45px;
+      right: unset;
+    }
+
+    @include desktop-2k {
+      left: 238px;
+      right: unset;
+    }
+
+    @include desktop-5k {
+      left: 238px;
+      right: unset;
+    }
+  }
+
+  .main-promotion__hand-container {
+    // Move hand image to left side for RTL
+    right: unset;
+    left: 70px;
+
+    @include mobile {
+      left: -80px;
+      right: unset;
+    }
+
+    @include tablet {
+      left: -50px;
+      right: unset;
+    }
+
+    @include desktop-lg {
+      left: -70px;
+      right: unset;
+    }
+
+    @include desktop-xl {
+      left: -90px;
+      right: unset;
+    }
+
+    @include desktop-2k {
+      left: 105px;
+      right: unset;
+    }
+
+    @include desktop-5k {
+      left: 105px;
+      right: unset;
+    }
+  }
+
+  .main-promotion__hand-img {
+    // Flip hand image horizontally for RTL
+    transform: scaleX(-1);
+  }
+
+  .main-promotion__warning-container {
+    padding-right: 0;
+  }
+}
+
+// Features Component RTL Styling
+.features-component--rtl {
+  .features-component__header-row {
+    direction: rtl;
+  }
+
+  .features-component__header-col {
+    text-align: right;
+  }
+
+  .features-component__title {
+    text-align: right;
+  }
+
+  .features-component__subtitle {
+    text-align: right;
+  }
+
+  .features-component__nav {
+    direction: ltr; // Keep navigation buttons in LTR for consistency
+  }
+
+  .features-component__nav-btn {
+    // Ensure proper button styling for RTL
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .features-component__card-icon {
+    direction: ltr;
+    align-self: flex-end !important;
+    margin-right: 0 !important;
+    margin-left: auto !important;
+  }
+
+  .features-component__card-value {
+    font-size: 48px;
+  }
+
+  .features-component__cards-row {
+    direction: rtl; // Reverse the flow of cards from right to left
+    // Add padding to ensure last card has proper spacing
+    padding-right: 20px;
+  }
+
+  .features-component__card {
+    direction: ltr; // Keep card content in LTR for proper text flow
+    text-align: right; // Align text to the right in RTL
+    align-items: flex-end !important; // Align content to the right
+  }
+
+  .features-component__card-content {
+    text-align: right !important;
+    align-items: flex-end !important;
+    align-self: flex-end !important;
+    margin-right: 0 !important;
+    margin-left: auto !important;
+  }
+
+  .features-component__card-value {
+    text-align: right !important;
+  }
+
+  .features-component__card-desc {
+    text-align: right !important;
+  }
+
+  .features-component__card-badge {
+    text-align: right !important;
+    margin-right: 0 !important;
+    margin-left: auto !important;
+    align-self: flex-end !important;
+  }
+}
+
+// All Markets RTL Styling
+.all-markets--rtl {
+  .all-markets__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .all-markets__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
+        no-repeat 130% -70% !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
+        no-repeat -800px center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-xl {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
+        no-repeat -750px center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+  }
+}
+
+// Global fallback for all-markets badge arrow
+html[dir="rtl"] .all-markets__badge-arrow,
+html[lang="ar"] .all-markets__badge-arrow,
+body[dir="rtl"] .all-markets__badge-arrow,
+[dir="rtl"] .all-markets__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for all-markets hero background
+html[dir="rtl"] .all-markets__hero-bg,
+html[lang="ar"] .all-markets__hero-bg,
+body[dir="rtl"] .all-markets__hero-bg,
+[dir="rtl"] .all-markets__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
+      no-repeat 130% -70% !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
+      no-repeat -800px center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
+      no-repeat -750px center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+}
+
+// Crypto RTL Styling
+.crypto--rtl {
+  .crypto__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .crypto__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat
+        130% 100% !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat -830px
+        center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-xl {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat -750px
+        center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+  }
+}
+
+// Global fallback for crypto badge arrow
+html[dir="rtl"] .crypto__badge-arrow,
+html[lang="ar"] .crypto__badge-arrow,
+body[dir="rtl"] .crypto__badge-arrow,
+[dir="rtl"] .crypto__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for crypto hero background
+html[dir="rtl"] .crypto__hero-bg,
+html[lang="ar"] .crypto__hero-bg,
+body[dir="rtl"] .crypto__hero-bg,
+[dir="rtl"] .crypto__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat
+      130% 100% !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat -830px
+      center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat -750px
+      center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+}
+
+// Crypto Spreads Table RTL Styling
+.crypto-spreads-desktop--rtl {
+  .spreads-table {
+    .table-main-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-bottom-left-radius: 12px !important;
+        // text-align: right !important;
+      }
+    }
+
+    .table-sub-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-top-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 12px !important;
+        text-align: center !important;
+      }
+    }
+  }
+
+  .spreads-table-body {
+    .table-row {
+      .table-cell:first-child {
+        text-align: right !important;
+      }
+    }
+  }
+}
+
+// Global fallback for crypto spreads table RTL styling
+html[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+html[lang="ar"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+body[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+html[lang="ar"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+body[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+// Global fallback for crypto spreads table sub-header RTL styling
+html[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+html[lang="ar"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+body[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+html[lang="ar"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+body[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+[dir="rtl"]
+  .crypto-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  text-align: center !important;
+}
+
+// html[dir="rtl"]
+//   .crypto-spreads-desktop
+//   .spreads-table-body
+//   .table-row
+//   .table-cell:first-child,
+// html[lang="ar"]
+//   .crypto-spreads-desktop
+//   .spreads-table-body
+//   .table-row
+//   .table-cell:first-child,
+// body[dir="rtl"]
+//   .crypto-spreads-desktop
+//   .spreads-table-body
+//   .table-row
+//   .table-cell:first-child,
+// [dir="rtl"]
+//   .crypto-spreads-desktop
+//   .spreads-table-body
+//   .table-row
+//   .table-cell:first-child {
+//   text-align: right !important;
 // }
+
+// Crypto FAQ Section RTL Styling
+.faq-section--crypto--rtl {
+  .faq-right {
+    .faq__title-text {
+      text-align: right !important;
+    }
+  }
+}
+
+// Global fallback for crypto FAQ title text RTL styling
+html[dir="rtl"] .faq-section.faq-section--crypto .faq-right .faq__title-text,
+html[lang="ar"] .faq-section.faq-section--crypto .faq-right .faq__title-text,
+body[dir="rtl"] .faq-section.faq-section--crypto .faq-right .faq__title-text,
+[dir="rtl"] .faq-section.faq-section--crypto .faq-right .faq__title-text {
+  text-align: right !important;
+}
+
+// Forex FAQ Section RTL Styling
+.faq-section--forex--rtl {
+  .faq-right {
+    .faq__title-text {
+      text-align: right !important;
+    }
+  }
+}
+
+// Global fallback for forex FAQ title text RTL styling
+html[dir="rtl"] .faq-section.faq-section--forex .faq-right .faq__title-text,
+html[lang="ar"] .faq-section.faq-section--forex .faq-right .faq__title-text,
+body[dir="rtl"] .faq-section.faq-section--forex .faq-right .faq__title-text,
+[dir="rtl"] .faq-section.faq-section--forex .faq-right .faq__title-text {
+  text-align: right !important;
+}
+
+// Metals FAQ Section RTL Styling
+.faq-section--metals--rtl {
+  .faq-right {
+    .faq__title-text {
+      text-align: right !important;
+    }
+  }
+}
+
+// Global fallback for metals FAQ title text RTL styling
+html[dir="rtl"] .faq-section.faq-section--metals .faq-right .faq__title-text,
+html[lang="ar"] .faq-section.faq-section--metals .faq-right .faq__title-text,
+body[dir="rtl"] .faq-section.faq-section--metals .faq-right .faq__title-text,
+[dir="rtl"] .faq-section.faq-section--metals .faq-right .faq__title-text {
+  text-align: right !important;
+}
+
+// Indices FAQ Section RTL Styling
+.faq-section--indices--rtl {
+  .faq-right {
+    .faq__title-text {
+      text-align: right !important;
+    }
+  }
+}
+
+// Global fallback for indices FAQ title text RTL styling
+html[dir="rtl"] .faq-section.faq-section--indices .faq-right .faq__title-text,
+html[lang="ar"] .faq-section.faq-section--indices .faq-right .faq__title-text,
+body[dir="rtl"] .faq-section.faq-section--indices .faq-right .faq__title-text,
+[dir="rtl"] .faq-section.faq-section--indices .faq-right .faq__title-text {
+  text-align: right !important;
+}
+
+// Shares FAQ Section RTL Styling
+.faq-section--shares--rtl {
+  .faq-right {
+    .faq__title-text {
+      text-align: right !important;
+    }
+  }
+}
+
+// Global fallback for shares FAQ title text RTL styling
+html[dir="rtl"] .faq-section.faq-section--shares .faq-right .faq__title-text,
+html[lang="ar"] .faq-section.faq-section--shares .faq-right .faq__title-text,
+body[dir="rtl"] .faq-section.faq-section--shares .faq-right .faq__title-text,
+[dir="rtl"] .faq-section.faq-section--shares .faq-right .faq__title-text {
+  text-align: right !important;
+}
+
+// Energies FAQ Section RTL Styling
+.faq-section--energies--rtl {
+  .faq-right {
+    .faq__title-text {
+      text-align: right !important;
+    }
+  }
+}
+
+// Global fallback for energies FAQ title text RTL styling
+html[dir="rtl"] .faq-section.faq-section--energies .faq-right .faq__title-text,
+html[lang="ar"] .faq-section.faq-section--energies .faq-right .faq__title-text,
+body[dir="rtl"] .faq-section.faq-section--energies .faq-right .faq__title-text,
+[dir="rtl"] .faq-section.faq-section--energies .faq-right .faq__title-text {
+  text-align: right !important;
+}
+
+// ETF FAQ Section RTL Styling
+.faq-section--etf--rtl {
+  .faq-right {
+    .faq__title-text {
+      text-align: right !important;
+    }
+  }
+}
+
+// Global fallback for ETF FAQ title text RTL styling
+html[dir="rtl"] .faq-section.faq-section--etf .faq-right .faq__title-text,
+html[lang="ar"] .faq-section.faq-section--etf .faq-right .faq__title-text,
+body[dir="rtl"] .faq-section.faq-section--etf .faq-right .faq__title-text,
+[dir="rtl"] .faq-section.faq-section--etf .faq-right .faq__title-text {
+  text-align: right !important;
+}
+
+// Account Types RTL Styling
+.account-types--rtl {
+  .account-types__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .account-types__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
+        no-repeat 135% 100% !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
+        no-repeat -800px center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-xl {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
+        no-repeat -750px center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+  }
+}
+
+// Global fallback for account types badge arrow
+html[dir="rtl"] .account-types__badge-arrow,
+html[lang="ar"] .account-types__badge-arrow,
+body[dir="rtl"] .account-types__badge-arrow,
+[dir="rtl"] .account-types__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for account types hero background
+html[dir="rtl"] .account-types__hero-bg,
+html[lang="ar"] .account-types__hero-bg,
+body[dir="rtl"] .account-types__hero-bg,
+[dir="rtl"] .account-types__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
+      no-repeat 135% 100% !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
+      no-repeat -800px center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
+      no-repeat -750px center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+}
+
+// ETF RTL Styling
+.etf--rtl {
+  .etf__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .etf__hero-bg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for ETF badge arrow
+html[dir="rtl"] .etf__badge-arrow,
+html[lang="ar"] .etf__badge-arrow,
+body[dir="rtl"] .etf__badge-arrow,
+[dir="rtl"] .etf__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for ETF hero background
+html[dir="rtl"] .etf__hero-bg,
+html[lang="ar"] .etf__hero-bg,
+body[dir="rtl"] .etf__hero-bg,
+[dir="rtl"] .etf__hero-bg {
+  transform: scaleX(-1) !important;
+}
+
+// Energies RTL Styling
+.energies--rtl {
+  .energies__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .energies__hero-bg {
+    @include tablet {
+      transform: scaleX(-1) !important;
+    }
+
+    @include desktop-lg {
+      transform: scaleX(-1) !important;
+    }
+
+    @include desktop-xl {
+      transform: scaleX(-1) !important;
+    }
+  }
+}
+
+// Global fallback for energies badge arrow
+html[dir="rtl"] .energies__badge-arrow,
+html[lang="ar"] .energies__badge-arrow,
+body[dir="rtl"] .energies__badge-arrow,
+[dir="rtl"] .energies__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for energies hero background
+html[dir="rtl"] .energies__hero-bg,
+html[lang="ar"] .energies__hero-bg,
+body[dir="rtl"] .energies__hero-bg,
+[dir="rtl"] .energies__hero-bg {
+  @include tablet {
+    transform: scaleX(-1) !important;
+  }
+
+  @include desktop-lg {
+    transform: scaleX(-1) !important;
+  }
+
+  @include desktop-xl {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Indices RTL Styling
+.indices--rtl {
+  .indices__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .indices__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat
+        125% 100% !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat -800px
+        center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-xl {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat -750px
+        center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+  }
+}
+
+// Global fallback for indices badge arrow
+html[dir="rtl"] .indices__badge-arrow,
+html[lang="ar"] .indices__badge-arrow,
+body[dir="rtl"] .indices__badge-arrow,
+[dir="rtl"] .indices__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for indices hero background
+html[dir="rtl"] .indices__hero-bg,
+html[lang="ar"] .indices__hero-bg,
+body[dir="rtl"] .indices__hero-bg,
+[dir="rtl"] .indices__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat
+      125% 100% !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat -800px
+      center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat -750px
+      center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+}
+
+// Forex RTL Styling
+.forex--rtl {
+  .forex__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .forex__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat
+        135% 100% !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat -800px
+        center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-xl {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat -750px
+        center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+  }
+}
+
+// Global fallback for forex badge arrow
+html[dir="rtl"] .forex__badge-arrow,
+html[lang="ar"] .forex__badge-arrow,
+body[dir="rtl"] .forex__badge-arrow,
+[dir="rtl"] .forex__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for forex hero background
+html[dir="rtl"] .forex__hero-bg,
+html[lang="ar"] .forex__hero-bg,
+body[dir="rtl"] .forex__hero-bg,
+[dir="rtl"] .forex__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat 135%
+      100% !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat -800px
+      center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat -750px
+      center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+}
+
+// Metals RTL Styling
+.metals--rtl {
+  .metals__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .metals__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat
+        137% 100% !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat -800px
+        center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-xl {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat -750px
+        center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+  }
+}
+
+// Global fallback for metals badge arrow
+html[dir="rtl"] .metals__badge-arrow,
+html[lang="ar"] .metals__badge-arrow,
+body[dir="rtl"] .metals__badge-arrow,
+[dir="rtl"] .metals__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for metals hero background
+html[dir="rtl"] .metals__hero-bg,
+html[lang="ar"] .metals__hero-bg,
+body[dir="rtl"] .metals__hero-bg,
+[dir="rtl"] .metals__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat
+      137% 100% !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat -800px
+      center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat -750px
+      center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+}
+
+// Shares RTL Styling
+.shares--rtl {
+  .shares__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .shares__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/shares/shares-desktop.svg") no-repeat
+        135% 100% !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/shares/shares-desktop.svg") no-repeat -800px
+        center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+  }
+}
+
+// Global fallback for shares badge arrow
+html[dir="rtl"] .shares__badge-arrow,
+html[lang="ar"] .shares__badge-arrow,
+body[dir="rtl"] .shares__badge-arrow,
+[dir="rtl"] .shares__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for shares hero background
+html[dir="rtl"] .shares__hero-bg,
+html[lang="ar"] .shares__hero-bg,
+body[dir="rtl"] .shares__hero-bg,
+[dir="rtl"] .shares__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/shares/shares-desktop.svg") no-repeat
+      135% 100% !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/shares/shares-desktop.svg") no-repeat -800px
+      center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+}
+
+// Features Products RTL Styling
+.features-products--rtl {
+  .features-products__header {
+    text-align: right !important;
+  }
+
+  .features-products__title {
+    text-align: center !important;
+
+    @include mobile {
+      text-align: center !important;
+    }
+  }
+
+  .features-products__subtitle {
+    text-align: right !important;
+  }
+}
+
+// Global fallback for features products RTL styling
+html[dir="rtl"] .features-products .features-products__header,
+html[lang="ar"] .features-products .features-products__header,
+body[dir="rtl"] .features-products .features-products__header,
+[dir="rtl"] .features-products .features-products__header {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .features-products__title,
+html[lang="ar"] .features-products__title,
+body[dir="rtl"] .features-products__title,
+[dir="rtl"] .features-products__title {
+  text-align: center !important;
+}
+
+html[dir="rtl"] .features-products__subtitle,
+html[lang="ar"] .features-products__subtitle,
+body[dir="rtl"] .features-products__subtitle,
+[dir="rtl"] .features-products__subtitle {
+  text-align: right !important;
+}
+
+// Guide Content RTL styling for partners section
+html[dir="rtl"] .guide-content.guide-content--partners .guide-content__title,
+html[lang="ar"] .guide-content.guide-content--partners .guide-content__title,
+body[dir="rtl"] .guide-content.guide-content--partners .guide-content__title,
+[dir="rtl"] .guide-content.guide-content--partners .guide-content__title {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .guide-content.guide-content--partners .guide-content__subtitle,
+html[lang="ar"] .guide-content.guide-content--partners .guide-content__subtitle,
+body[dir="rtl"] .guide-content.guide-content--partners .guide-content__subtitle,
+[dir="rtl"] .guide-content.guide-content--partners .guide-content__subtitle {
+  text-align: right !important;
+}
+
+// Indices Spreads Table RTL Styling
+.indices-spreads-desktop--rtl {
+  .spreads-table {
+    .table-main-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-bottom-left-radius: 12px !important;
+        // text-align: right !important;
+      }
+    }
+
+    .table-sub-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-top-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 12px !important;
+        text-align: center !important;
+      }
+    }
+  }
+
+  .spreads-table-body {
+    .table-row {
+      .table-cell:first-child {
+        text-align: right !important;
+      }
+    }
+  }
+}
+
+// Global fallback for indices spreads table RTL styling
+html[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+html[lang="ar"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+body[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+html[lang="ar"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+body[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+// Global fallback for indices spreads table sub-header RTL styling
+html[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+html[lang="ar"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+body[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+html[lang="ar"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+body[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  text-align: center !important;
+}
+
+html[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+html[lang="ar"]
+  .indices-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+body[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+[dir="rtl"]
+  .indices-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child {
+  text-align: right !important;
+}
+
+// Forex Spreads Table RTL Styling
+.forex-spreads-desktop--rtl {
+  .spreads-table {
+    .table-main-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-top-right-radius: 12px !important;
+        border-bottom-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 12px !important;
+        border-bottom-left-radius: 12px !important;
+        // text-align: right !important;
+      }
+    }
+
+    .table-sub-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-top-right-radius: 12px !important;
+        border-bottom-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 12px !important;
+        border-bottom-left-radius: 12px !important;
+        text-align: center !important;
+      }
+    }
+  }
+
+  .spreads-table-body {
+    .table-row {
+      .table-cell:first-child {
+        text-align: right !important;
+      }
+    }
+  }
+}
+
+// Global fallback for forex spreads table RTL styling
+html[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+html[lang="ar"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+body[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 12px !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+html[lang="ar"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+body[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 12px !important;
+}
+
+// Company Section Card Title alignment in RTL
+html[dir="rtl"] .company-section .company-section-card__title,
+html[lang="ar"] .company-section .company-section-card__title,
+body[dir="rtl"] .company-section .company-section-card__title,
+[dir="rtl"] .company-section .company-section-card__title {
+  text-align: right !important;
+
+  @include mobile {
+    font-size: 36px !important;
+    line-height: 1.2 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+  }
+}
+
+html[dir="rtl"] .company-section .company-section-card__description,
+html[lang="ar"] .company-section .company-section-card__description,
+body[dir="rtl"] .company-section .company-section-card__description,
+[dir="rtl"] .company-section .company-section-card__description {
+  text-align: right !important;
+}
+
+// Contact Us form error message alignment in RTL
+html[dir="rtl"] .contact-us-form .error-message,
+html[lang="ar"] .contact-us-form .error-message,
+body[dir="rtl"] .contact-us-form .error-message,
+[dir="rtl"] .contact-us-form .error-message {
+  text-align: right !important;
+  right: 0 !important;
+  left: auto !important;
+}
+
+// Global fallback for forex spreads table sub-header RTL styling
+html[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+html[lang="ar"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+body[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-right-radius: 12px !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+html[lang="ar"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+body[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 12px !important;
+  text-align: center !important;
+}
+
+html[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+html[lang="ar"]
+  .forex-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+body[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+[dir="rtl"]
+  .forex-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child {
+  text-align: right !important;
+}
+
+// Energies Spreads Table RTL Styling
+.energies-spreads-desktop--rtl {
+  .spreads-table {
+    .table-main-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-top-right-radius: 12px !important;
+        border-bottom-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 12px !important;
+        border-bottom-left-radius: 12px !important;
+      }
+    }
+
+    .table-sub-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-top-right-radius: 12px !important;
+        border-bottom-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 12px !important;
+        border-bottom-left-radius: 12px !important;
+        text-align: center !important;
+      }
+    }
+  }
+
+  .spreads-table-body {
+    .table-row {
+      .table-cell:first-child {
+        text-align: right !important;
+      }
+    }
+  }
+}
+
+// Global fallback for energies spreads table RTL styling
+html[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+html[lang="ar"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+body[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-right-radius: 12px !important;
+  border-bottom-right-radius: 12px !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+html[lang="ar"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+body[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 12px !important;
+  border-bottom-left-radius: 12px !important;
+}
+
+// Global fallback for energies spreads table sub-header RTL styling
+html[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+html[lang="ar"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+body[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-right-radius: 12px !important;
+  border-bottom-right-radius: 12px !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+html[lang="ar"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+body[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 12px !important;
+  border-bottom-left-radius: 12px !important;
+  text-align: center !important;
+}
+
+html[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+html[lang="ar"]
+  .energies-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+body[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+[dir="rtl"]
+  .energies-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child {
+  text-align: right !important;
+}
+
+// Metals Spreads Table RTL Styling
+.metals-spreads-desktop--rtl {
+  .spreads-table {
+    .table-main-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-top-right-radius: 12px !important ;
+        border-bottom-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 12px !important;
+        border-bottom-left-radius: 12px !important;
+        // text-align: right !important;
+      }
+    }
+
+    .table-sub-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-top-right-radius: 12px !important;
+        border-bottom-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 12px !important;
+        border-bottom-left-radius: 12px !important;
+        text-align: center !important;
+      }
+    }
+  }
+
+  .spreads-table-body {
+    .table-row {
+      .table-cell:first-child {
+        text-align: right !important;
+      }
+    }
+  }
+}
+
+// Global fallback for metals spreads table RTL styling
+html[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+html[lang="ar"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+body[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 12px !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+html[lang="ar"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+body[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 12px !important;
+}
+
+// Global fallback for metals spreads table sub-header RTL styling
+html[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+html[lang="ar"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+body[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-right-radius: 12px !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+html[lang="ar"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+body[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 12px !important;
+  text-align: center !important;
+}
+
+html[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+html[lang="ar"]
+  .metals-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+body[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+[dir="rtl"]
+  .metals-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child {
+  text-align: right !important;
+}
+
+// Funding Withdrawals RTL Styling
+.funding-withdrawals--rtl {
+  .funding-withdrawals__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .funding-withdrawals__hero-bg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for funding-withdrawals badge arrow
+html[dir="rtl"] .funding-withdrawals__badge-arrow,
+html[lang="ar"] .funding-withdrawals__badge-arrow,
+body[dir="rtl"] .funding-withdrawals__badge-arrow,
+[dir="rtl"] .funding-withdrawals__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for funding-withdrawals hero background
+html[dir="rtl"] .funding-withdrawals__hero-bg,
+html[lang="ar"] .funding-withdrawals__hero-bg,
+body[dir="rtl"] .funding-withdrawals__hero-bg,
+[dir="rtl"] .funding-withdrawals__hero-bg {
+  transform: scaleX(-1) !important;
+}
+
+// Withdrawal Table RTL Styling
+.withdrawal-table--rtl {
+  .withdrawal-table-main {
+    .table-main-header {
+      .table-header-column {
+        text-align: right !important;
+      }
+
+      .table-header-column:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-top-right-radius: 12px !important;
+        border-bottom-right-radius: 12px !important;
+      }
+
+      .table-header-column:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 12px !important;
+        border-bottom-left-radius: 12px !important;
+      }
+    }
+  }
+
+  .withdrawal-table-body {
+    .table-body-section {
+      .table-row {
+        .table-cell {
+          text-align: right !important;
+        }
+      }
+    }
+  }
+}
+
+// Global fallback for withdrawal table RTL styling
+html[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column,
+html[lang="ar"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column,
+body[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column,
+[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column {
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-body
+  .table-body-section
+  .table-row
+  .table-cell,
+html[lang="ar"]
+  .withdrawal-table
+  .withdrawal-table-body
+  .table-body-section
+  .table-row
+  .table-cell,
+body[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-body
+  .table-body-section
+  .table-row
+  .table-cell,
+[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-body
+  .table-body-section
+  .table-row
+  .table-cell {
+  text-align: right !important;
+}
+
+// Spreads Fees RTL Styling
+.spreads-fees--rtl {
+  .spreads-fees__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .spreads-fees__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
+        no-repeat 135% 100% !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
+        no-repeat -800px center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-xl {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
+        no-repeat -750px center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+  }
+}
+
+// Global fallback for spreads-fees badge arrow
+html[dir="rtl"] .spreads-fees__badge-arrow,
+html[lang="ar"] .spreads-fees__badge-arrow,
+body[dir="rtl"] .spreads-fees__badge-arrow,
+[dir="rtl"] .spreads-fees__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for spreads-fees hero background
+html[dir="rtl"] .spreads-fees__hero-bg,
+html[lang="ar"] .spreads-fees__hero-bg,
+body[dir="rtl"] .spreads-fees__hero-bg,
+[dir="rtl"] .spreads-fees__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
+      no-repeat 135% 100% !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
+      no-repeat -800px center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
+      no-repeat -750px center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+}
+
+// Our Spreads Desktop RTL Styling
+.our-spreads-desktop--rtl {
+  .spreads-table {
+    .table-main-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-top-right-radius: 12px !important;
+        border-bottom-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 12px !important;
+        border-bottom-left-radius: 12px !important;
+      }
+    }
+
+    .table-sub-header {
+      th:first-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-top-right-radius: 12px !important;
+        border-bottom-right-radius: 12px !important;
+        text-align: right !important;
+      }
+
+      th:last-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 12px !important;
+        border-bottom-left-radius: 12px !important;
+        text-align: center !important;
+      }
+    }
+  }
+
+  .spreads-table-body {
+    .table-row {
+      .table-cell:first-child {
+        text-align: right !important;
+      }
+    }
+  }
+}
+
+// Global fallback for our-spreads-desktop RTL styling
+html[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+html[lang="ar"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+body[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child,
+[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-right-radius: 12px !important;
+  border-bottom-right-radius: 12px !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+html[lang="ar"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+body[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child,
+[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-main-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 12px !important;
+  border-bottom-left-radius: 12px !important;
+}
+
+html[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+html[lang="ar"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+body[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child,
+[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-right-radius: 12px !important;
+  border-bottom-right-radius: 12px !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+html[lang="ar"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+body[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child,
+[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table
+  .table-sub-header
+  th:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 12px !important;
+  border-bottom-left-radius: 12px !important;
+  text-align: center !important;
+}
+
+html[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+html[lang="ar"]
+  .our-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+body[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child,
+[dir="rtl"]
+  .our-spreads-desktop
+  .spreads-table-body
+  .table-row
+  .table-cell:first-child {
+  text-align: right !important;
+}
+
+// Global fallback for cost swap rate formula RTL styling
+html[dir="rtl"] .cost-swap-rate__formula,
+html[lang="ar"] .cost-swap-rate__formula,
+body[dir="rtl"] .cost-swap-rate__formula,
+[dir="rtl"] .cost-swap-rate__formula {
+  text-align: right !important;
+}
+
+// Trading Tools RTL Styling
+.trading-tools--rtl {
+  .trading-tools__badge-arrow {
+    transform: scaleX(-1) !important;
+
+    svg {
+      transform: scaleX(-1) !important;
+    }
+  }
+
+  .trading-tools__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
+        no-repeat 128% 100% !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
+        no-repeat -800px center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-xl {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
+        no-repeat -750px center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+  }
+}
+
+// Global fallback for trading-tools badge arrow
+html[dir="rtl"] .trading-tools__badge-arrow,
+html[lang="ar"] .trading-tools__badge-arrow,
+body[dir="rtl"] .trading-tools__badge-arrow,
+[dir="rtl"] .trading-tools__badge-arrow {
+  transform: scaleX(-1) !important;
+
+  svg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for trading-tools hero background
+html[dir="rtl"] .trading-tools__hero-bg,
+html[lang="ar"] .trading-tools__hero-bg,
+body[dir="rtl"] .trading-tools__hero-bg,
+[dir="rtl"] .trading-tools__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
+      no-repeat 128% 100% !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
+      no-repeat -800px center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
+      no-repeat -750px center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+}
+
+// Featured Ideas RTL Styling
+.featured-ideas--rtl {
+  .featured-ideas__title,
+  .featured-ideas__description,
+  .featured-ideas__content-title,
+  .featured-ideas__content-description {
+    text-align: right !important;
+  }
+}
+
+// Global fallback for featured-ideas RTL styling
+html[dir="rtl"] .featured-ideas__title,
+html[lang="ar"] .featured-ideas__title,
+body[dir="rtl"] .featured-ideas__title,
+[dir="rtl"] .featured-ideas__title {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .featured-ideas__description,
+html[lang="ar"] .featured-ideas__description,
+body[dir="rtl"] .featured-ideas__description,
+[dir="rtl"] .featured-ideas__description {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .featured-ideas__content-title,
+html[lang="ar"] .featured-ideas__content-title,
+body[dir="rtl"] .featured-ideas__content-title,
+[dir="rtl"] .featured-ideas__content-title {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .featured-ideas__content-description,
+html[lang="ar"] .featured-ideas__content-description,
+body[dir="rtl"] .featured-ideas__content-description,
+[dir="rtl"] .featured-ideas__content-description {
+  text-align: right !important;
+}
+
+// Market Buzz RTL Styling
+.market-buzz--rtl {
+  .market-buzz__ai-card {
+    flex-direction: row-reverse !important;
+  }
+}
+
+// Global fallback for market-buzz AI card RTL styling
+html[dir="rtl"] .market-buzz .market-buzz__ai-card,
+html[lang="ar"] .market-buzz .market-buzz__ai-card,
+body[dir="rtl"] .market-buzz .market-buzz__ai-card,
+[dir="rtl"] .market-buzz .market-buzz__ai-card {
+  flex-direction: row-reverse !important;
+}
+
+// Alpha Generation RTL Styling
+.alpha-generation--rtl {
+  .alpha-generation__title,
+  .alpha-generation__description,
+  .alpha-generation__content-title,
+  .alpha-generation__content-description {
+    text-align: right !important;
+  }
+}
+
+// Global fallback for alpha-generation RTL styling
+html[dir="rtl"] .alpha-generation__title,
+html[lang="ar"] .alpha-generation__title,
+body[dir="rtl"] .alpha-generation__title,
+[dir="rtl"] .alpha-generation__title {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .alpha-generation__description,
+html[lang="ar"] .alpha-generation__description,
+body[dir="rtl"] .alpha-generation__description,
+[dir="rtl"] .alpha-generation__description {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .alpha-generation__content-title,
+html[lang="ar"] .alpha-generation__content-title,
+body[dir="rtl"] .alpha-generation__content-title,
+[dir="rtl"] .alpha-generation__content-title {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .alpha-generation__content-description,
+html[lang="ar"] .alpha-generation__content-description,
+body[dir="rtl"] .alpha-generation__content-description,
+[dir="rtl"] .alpha-generation__content-description {
+  text-align: right !important;
+}
+
+// VPS RTL Styling
+.vps--rtl {
+  .vps__badge-arrow {
+    transform: scaleX(-1) !important;
+  }
+
+  .vps__hero-bg {
+    left: 0 !important;
+    right: unset !important;
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Global fallback for VPS RTL styling
+html[dir="rtl"] .vps .vps__badge-arrow,
+html[lang="ar"] .vps .vps__badge-arrow,
+body[dir="rtl"] .vps .vps__badge-arrow,
+[dir="rtl"] .vps .vps__badge-arrow {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .vps .vps__hero-bg,
+html[lang="ar"] .vps .vps__hero-bg,
+body[dir="rtl"] .vps .vps__hero-bg,
+[dir="rtl"] .vps .vps__hero-bg {
+  left: 0 !important;
+  right: unset !important;
+  transform: scaleX(-1) !important;
+}
+
+// VPS Cards RTL Override - Keep exact same positioning as non-RTL mode
+.get-complimentary-vps--rtl {
+  // Reverse card order to match non-RTL layout
+  .get-complimentary-vps-cards {
+    @include mobile {
+      flex-direction: column !important;
+    }
+
+    @include tablet {
+      flex-direction: column !important;
+    }
+
+    @include desktop-lg {
+      flex-direction: row-reverse !important;
+    }
+
+    @include desktop-xl {
+      flex-direction: row-reverse !important;
+    }
+
+    @include desktop-2k {
+      flex-direction: row-reverse !important;
+    }
+
+    @include desktop-5k {
+      flex-direction: row-reverse !important;
+    }
+  }
+
+  // Minimum deposit card - keep all elements on the left (same as non-RTL)
+  .get-complimentary-vps-card.minimum-deposit-card {
+    .card-icon {
+      position: absolute !important;
+      right: auto !important;
+
+      @include mobile {
+        top: 20px !important;
+        left: 250px !important;
+      }
+
+      @include small-mobile {
+        top: 10px !important;
+        left: 173px !important;
+      }
+
+      @include tablet {
+        top: 22px !important;
+        left: 245px !important;
+      }
+
+      @include desktop-lg {
+        top: 24px !important;
+        left: 175px !important;
+      }
+
+      @include desktop-xl {
+        top: 24px !important;
+        left: 242px !important;
+      }
+
+      @include desktop-2k {
+        top: 24px !important;
+        left: 175px !important;
+      }
+
+      @include desktop-5k {
+        top: 24px !important;
+        left: 175px !important;
+      }
+    }
+
+    .card-title {
+      text-align: right !important;
+      direction: rtl !important;
+      margin-bottom: 8px !important;
+
+      @include mobile {
+        margin-top: 80px !important;
+      }
+
+      @include tablet {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-lg {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-xl {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-2k {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-5k {
+        margin-top: 60px !important;
+      }
+    }
+
+    .card-description {
+      text-align: right !important;
+      direction: rtl !important;
+    }
+  }
+
+  // Minimum trading card - keep content wrapper on left, vps-image-container on right (same as non-RTL)
+  .get-complimentary-vps-card.minimum-trading-card {
+    display: flex !important;
+
+    @include mobile {
+      flex-direction: column !important;
+    }
+
+    @include tablet {
+      flex-direction: column !important;
+    }
+
+    @include desktop-lg {
+      flex-direction: row !important;
+    }
+
+    @include desktop-xl {
+      flex-direction: row !important;
+    }
+
+    @include desktop-2k {
+      flex-direction: row !important;
+    }
+
+    @include desktop-5k {
+      flex-direction: row !important;
+    }
+
+    .card-content-wrapper {
+      text-align: right !important;
+      align-items: flex-start !important;
+      justify-content: flex-start !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      order: 1 !important;
+      flex: 1 !important;
+    }
+
+    .card-content-wrapper .card-title {
+      text-align: right !important;
+      direction: rtl !important;
+      margin-top: 60px !important;
+      margin-bottom: 8px !important;
+    }
+
+    .card-content-wrapper .card-description {
+      text-align: right !important;
+      direction: rtl !important;
+    }
+
+    .vps-image-container {
+      order: 2 !important;
+      margin-left: auto !important;
+      margin-right: 0 !important;
+      flex-shrink: 0 !important;
+    }
+
+    .card-icon {
+      position: absolute !important;
+      left: 250px !important;
+      right: auto !important;
+      z-index: 10 !important;
+
+      @include mobile {
+        left: 245px !important;
+        top: 20px !important;
+      }
+
+      @include small-mobile {
+        left: 173px !important;
+        top: 10px !important;
+      }
+
+      @include tablet {
+        left: 245px !important;
+        top: 22px !important;
+      }
+
+      @include desktop-lg {
+        left: 175px !important;
+        top: 24px !important;
+      }
+
+      @include desktop-xl {
+        left: 242px !important;
+        top: 24px !important;
+      }
+
+      @include desktop-2k {
+        left: 242px !important;
+        top: 24px !important;
+      }
+
+      @include desktop-5k {
+        left: 242px !important;
+        top: 24px !important;
+      }
+    }
+
+    .vps-hand-icon.desktop-only {
+      // position: absolute !important;
+      // right: -30px !important;
+      // left: auto !important;
+      transform: none !important;
+    }
+  }
+}
+
+// Global fallback for VPS cards RTL override
+html[dir="rtl"] .get-complimentary-vps .get-complimentary-vps-cards,
+html[lang="ar"] .get-complimentary-vps .get-complimentary-vps-cards,
+body[dir="rtl"] .get-complimentary-vps .get-complimentary-vps-cards,
+[dir="rtl"] .get-complimentary-vps .get-complimentary-vps-cards {
+  @include mobile {
+    flex-direction: column !important;
+  }
+
+  @include tablet {
+    flex-direction: column !important;
+  }
+
+  @include desktop-lg {
+    flex-direction: row-reverse !important;
+  }
+
+  @include desktop-xl {
+    flex-direction: row-reverse !important;
+  }
+
+  @include desktop-2k {
+    flex-direction: row-reverse !important;
+  }
+
+  @include desktop-5k {
+    flex-direction: row-reverse !important;
+  }
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-icon,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-icon,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-icon,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-icon {
+  position: absolute !important;
+  right: auto !important;
+  z-index: 10 !important;
+
+  @include mobile {
+    left: 250px !important;
+    top: 20px !important;
+  }
+
+  @include small-mobile {
+    left: 173px !important;
+    top: 10px !important;
+  }
+
+  @include tablet {
+    left: 245px !important;
+    top: 22px !important;
+  }
+
+  @include desktop-lg {
+    left: 175px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-xl {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-2k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-5k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-title,
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-description,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-title,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-description,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-title,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-description,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-title,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-description {
+  text-align: left !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-icon,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-icon,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-icon,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-icon {
+  position: absolute !important;
+  right: auto !important;
+  z-index: 10 !important;
+
+  @include mobile {
+    left: 250px !important;
+    top: 20px !important;
+  }
+
+  @include small-mobile {
+    top: 10px !important;
+    left: 173px !important;
+  }
+
+  @include tablet {
+    left: 245px !important;
+    top: 22px !important;
+  }
+
+  @include desktop-lg {
+    left: 175px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-xl {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-2k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-5k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper {
+  text-align: left !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  order: 1 !important;
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-image-container,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-image-container,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-image-container,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-image-container {
+  order: 2 !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+// Force minimum trading card to use row layout in RTL
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-hand-icon.desktop-only,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-hand-icon.desktop-only,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-hand-icon.desktop-only,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-hand-icon.desktop-only {
+  position: absolute !important;
+  right: -30px !important;
+  left: auto !important;
+  transform: none !important;
+}
+
+// Extra specific rules to force VPS cards layout in RTL
+html[dir="rtl"] .get-complimentary-vps .get-complimentary-vps-cards,
+html[lang="ar"] .get-complimentary-vps .get-complimentary-vps-cards,
+body[dir="rtl"] .get-complimentary-vps .get-complimentary-vps-cards,
+[dir="rtl"] .get-complimentary-vps .get-complimentary-vps-cards {
+  display: flex !important;
+
+  @include mobile {
+    flex-direction: column !important;
+  }
+
+  @include tablet {
+    flex-direction: column !important;
+  }
+
+  @include desktop-lg {
+    flex-direction: row-reverse !important;
+  }
+
+  @include desktop-xl {
+    flex-direction: row-reverse !important;
+  }
+
+  @include desktop-2k {
+    flex-direction: row-reverse !important;
+  }
+
+  @include desktop-5k {
+    flex-direction: row-reverse !important;
+  }
+}
+
+// Force minimum deposit card to use column layout (text below icon)
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card {
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+  direction: ltr !important;
+  align-items: flex-start !important;
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-title,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-title,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-title,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-title {
+  order: 2 !important;
+  text-align: right !important;
+  direction: rtl !important;
+  margin-bottom: 8px !important;
+  margin-top: 60px !important;
+
+  @include mobile {
+    width: 100% !important;
+  }
+
+  @include tablet {
+    width: 270px !important;
+  }
+
+  @include desktop-lg {
+    width: 200px !important;
+  }
+
+  @include desktop-xl {
+    width: 270px !important;
+  }
+
+  @include desktop-2k {
+    width: 270px !important;
+  }
+
+  @include desktop-5k {
+    width: 270px !important;
+  }
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-description,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-description,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-description,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-deposit-card
+  .card-description {
+  order: 3 !important;
+  text-align: right !important;
+  direction: rtl !important;
+
+  @include mobile {
+    width: 100% !important;
+  }
+
+  @include tablet {
+    width: 270px !important;
+  }
+
+  @include desktop-lg {
+    width: 200px !important;
+  }
+
+  @include desktop-xl {
+    width: 270px !important;
+  }
+
+  @include desktop-2k {
+    width: 270px !important;
+  }
+
+  @include desktop-5k {
+    width: 270px !important;
+  }
+}
+
+// Force trading card layout - content wrapper in column, image container separate
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card {
+  display: flex !important;
+  flex-direction: row !important;
+  text-align: left !important;
+  direction: ltr !important;
+}
+
+// RTL Arabic mobile: Set minimum-trading-card to column layout
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card {
+  @include mobile {
+    flex-direction: column !important;
+  }
+}
+
+// Keep Your VPS Cards RTL Styling - Apply same patterns as get-complimentary-vps cards
+.keep-your-vps--rtl {
+  // Cards container - responsive flex direction
+  .keep-your-vps-cards {
+    @include mobile {
+      flex-direction: column !important;
+    }
+
+    @include tablet {
+      flex-direction: column !important;
+    }
+
+    @include desktop-lg {
+      flex-direction: row-reverse !important;
+    }
+
+    @include desktop-xl {
+      flex-direction: row-reverse !important;
+    }
+
+    @include desktop-2k {
+      flex-direction: row-reverse !important;
+    }
+
+    @include desktop-5k {
+      flex-direction: row-reverse !important;
+    }
+  }
+
+  // Maintain Balance Card - keep all elements on the left (same as non-RTL)
+  .keep-your-vps-card.maintain-balance-card {
+    .card-icon {
+      position: absolute !important;
+      right: auto !important;
+
+      @include mobile {
+        top: 20px !important;
+        left: 250px !important;
+      }
+
+      @include small-mobile {
+        top: 10px !important;
+        left: 173px !important;
+      }
+
+      @include tablet {
+        top: 22px !important;
+        left: 245px !important;
+      }
+
+      @include desktop-lg {
+        top: 24px !important;
+        left: 175px !important;
+      }
+
+      @include desktop-xl {
+        top: 24px !important;
+        left: 242px !important;
+      }
+
+      @include desktop-2k {
+        top: 24px !important;
+        left: 242px !important;
+      }
+
+      @include desktop-5k {
+        top: 24px !important;
+        left: 242px !important;
+      }
+    }
+
+    .card-title {
+      text-align: right !important;
+      direction: rtl !important;
+      margin-bottom: 8px !important;
+      width: 200px !important;
+
+      @include mobile {
+        margin-top: 80px !important;
+      }
+
+      @include tablet {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-lg {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-xl {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-2k {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-5k {
+        margin-top: 60px !important;
+      }
+    }
+
+    .card-description {
+      text-align: right !important;
+      direction: rtl !important;
+    }
+  }
+
+  // Monthly Trading Card - keep content wrapper on left, image container on right (same as non-RTL)
+  .keep-your-vps-card.monthly-trading-card {
+    display: flex !important;
+
+    @include mobile {
+      flex-direction: column !important;
+    }
+
+    @include tablet {
+      flex-direction: column !important;
+    }
+
+    @include desktop-lg {
+      flex-direction: row !important;
+    }
+
+    @include desktop-xl {
+      flex-direction: row !important;
+    }
+
+    @include desktop-2k {
+      flex-direction: row !important;
+    }
+
+    @include desktop-5k {
+      flex-direction: row !important;
+    }
+
+    .card-content-wrapper {
+      text-align: right !important;
+      align-items: flex-start !important;
+      justify-content: flex-start !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      order: 1 !important;
+      flex: 1 !important;
+    }
+
+    .card-content-wrapper .card-title {
+      text-align: right !important;
+      direction: rtl !important;
+      margin-bottom: 8px !important;
+
+      @include mobile {
+        margin-top: 80px !important;
+      }
+
+      @include tablet {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-lg {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-xl {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-2k {
+        margin-top: 60px !important;
+      }
+
+      @include desktop-5k {
+        margin-top: 60px !important;
+      }
+    }
+
+    .card-content-wrapper .card-description {
+      text-align: right !important;
+      direction: rtl !important;
+    }
+
+    .card-icon {
+      position: absolute !important;
+      right: auto !important;
+      z-index: 10 !important;
+
+      @include mobile {
+        left: 250px !important;
+        top: 20px !important;
+      }
+
+      @include small-mobile {
+        left: 173px !important;
+        top: 10px !important;
+      }
+
+      @include tablet {
+        left: 245px !important;
+        top: 22px !important;
+      }
+
+      @include desktop-lg {
+        left: 175px !important;
+        top: 24px !important;
+      }
+
+      @include desktop-xl {
+        left: 242px !important;
+        top: 24px !important;
+      }
+
+      @include desktop-2k {
+        left: 242px !important;
+        top: 24px !important;
+      }
+
+      @include desktop-5k {
+        left: 242px !important;
+        top: 24px !important;
+      }
+    }
+  }
+}
+
+// Global fallback for Keep Your VPS cards RTL override
+html[dir="rtl"] .keep-your-vps .keep-your-vps-cards,
+html[lang="ar"] .keep-your-vps .keep-your-vps-cards,
+body[dir="rtl"] .keep-your-vps .keep-your-vps-cards,
+[dir="rtl"] .keep-your-vps .keep-your-vps-cards {
+  @include mobile {
+    flex-direction: column !important;
+  }
+
+  @include tablet {
+    flex-direction: column !important;
+  }
+
+  @include desktop-lg {
+    flex-direction: row-reverse !important;
+  }
+
+  @include desktop-xl {
+    flex-direction: row-reverse !important;
+  }
+
+  @include desktop-2k {
+    flex-direction: row-reverse !important;
+  }
+
+  @include desktop-5k {
+    flex-direction: row-reverse !important;
+  }
+}
+
+// Maintain Balance Card Global Fallback
+html[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-icon,
+html[lang="ar"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-icon,
+body[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-icon,
+[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-icon {
+  position: absolute !important;
+  right: auto !important;
+  z-index: 10 !important;
+
+  @include mobile {
+    left: 250px !important;
+    top: 20px !important;
+  }
+
+  @include small-mobile {
+    left: 173px !important;
+    top: 10px !important;
+  }
+
+  @include tablet {
+    left: 245px !important;
+    top: 22px !important;
+  }
+
+  @include desktop-lg {
+    left: 175px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-xl {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-2k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-5k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+}
+
+// Monthly Trading Card Global Fallback
+html[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-icon,
+html[lang="ar"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-icon,
+body[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-icon,
+[dir="rtl"] .keep-your-vps .keep-your-vps-card.monthly-trading-card .card-icon {
+  position: absolute !important;
+  right: auto !important;
+  z-index: 10 !important;
+
+  @include mobile {
+    left: 250px !important;
+    top: 20px !important;
+  }
+
+  @include small-mobile {
+    left: 173px !important;
+    top: 10px !important;
+  }
+
+  @include tablet {
+    left: 245px !important;
+    top: 22px !important;
+  }
+
+  @include desktop-lg {
+    left: 175px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-xl {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-2k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-5k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+}
+
+// Keep Your VPS Maintain Balance Card - Follow exact same patterns as get-complimentary-vps minimum-deposit-card
+html[dir="rtl"] .keep-your-vps .keep-your-vps-card.maintain-balance-card,
+html[lang="ar"] .keep-your-vps .keep-your-vps-card.maintain-balance-card,
+body[dir="rtl"] .keep-your-vps .keep-your-vps-card.maintain-balance-card,
+[dir="rtl"] .keep-your-vps .keep-your-vps-card.maintain-balance-card {
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+  direction: ltr !important;
+  align-items: flex-start !important;
+}
+
+html[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-icon,
+html[lang="ar"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-icon,
+body[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-icon,
+[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-icon {
+  position: absolute !important;
+  right: auto !important;
+  z-index: 10 !important;
+
+  @include mobile {
+    left: 250px !important;
+    top: 20px !important;
+  }
+
+  @include small-mobile {
+    left: 173px !important;
+    top: 10px !important;
+  }
+
+  @include tablet {
+    left: 245px !important;
+    top: 22px !important;
+  }
+
+  @include desktop-lg {
+    left: 175px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-xl {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-2k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-5k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+}
+
+html[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-title,
+html[lang="ar"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-title,
+body[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-title,
+[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-title {
+  order: 2 !important;
+  text-align: right !important;
+  direction: rtl !important;
+  margin-bottom: 8px !important;
+  margin-top: 60px !important;
+
+  @include mobile {
+    width: 100% !important;
+  }
+
+  @include tablet {
+    width: 270px !important;
+  }
+
+  @include desktop-lg {
+    width: 200px !important;
+  }
+
+  @include desktop-xl {
+    width: 270px !important;
+  }
+
+  @include desktop-2k {
+    width: 270px !important;
+  }
+
+  @include desktop-5k {
+    width: 270px !important;
+  }
+}
+
+html[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-description,
+html[lang="ar"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-description,
+body[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-description,
+[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.maintain-balance-card
+  .card-description {
+  order: 3 !important;
+  text-align: right !important;
+  direction: rtl !important;
+  @include mobile {
+    width: 100% !important;
+  }
+
+  @include tablet {
+    width: 270px !important;
+  }
+
+  @include desktop-lg {
+    width: 200px !important;
+  }
+
+  @include desktop-xl {
+    width: 270px !important;
+  }
+
+  @include desktop-2k {
+    width: 270px !important;
+  }
+
+  @include desktop-5k {
+    width: 270px !important;
+  }
+}
+
+// Keep Your VPS Monthly Trading Card - Follow exact same patterns as get-complimentary-vps minimum-trading-card
+html[dir="rtl"] .keep-your-vps .keep-your-vps-card.monthly-trading-card,
+html[lang="ar"] .keep-your-vps .keep-your-vps-card.monthly-trading-card,
+body[dir="rtl"] .keep-your-vps .keep-your-vps-card.monthly-trading-card,
+[dir="rtl"] .keep-your-vps .keep-your-vps-card.monthly-trading-card {
+  display: flex !important;
+  flex-direction: row !important;
+  text-align: left !important;
+  direction: ltr !important;
+
+  @include mobile {
+    flex-direction: column !important;
+  }
+}
+
+html[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-icon,
+html[lang="ar"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-icon,
+body[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-icon,
+[dir="rtl"] .keep-your-vps .keep-your-vps-card.monthly-trading-card .card-icon {
+  position: absolute !important;
+  right: auto !important;
+  z-index: 10 !important;
+
+  @include mobile {
+    left: 250px !important;
+    top: 20px !important;
+  }
+
+  @include small-mobile {
+    left: 173px !important;
+    top: 10px !important;
+  }
+
+  @include tablet {
+    left: 245px !important;
+    top: 22px !important;
+  }
+
+  @include desktop-lg {
+    left: 175px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-xl {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-2k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+
+  @include desktop-5k {
+    left: 242px !important;
+    top: 24px !important;
+  }
+}
+
+html[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper,
+html[lang="ar"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper,
+body[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper,
+[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  order: 1 !important;
+  flex: 1 !important;
+  text-align: left !important;
+  direction: ltr !important;
+  margin-right: 20px !important;
+}
+
+html[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper
+  .card-title,
+html[lang="ar"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper
+  .card-title,
+body[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper
+  .card-title,
+[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper
+  .card-title {
+  order: 2 !important;
+  text-align: right !important;
+  direction: rtl !important;
+  margin-bottom: 8px !important;
+  margin-top: 60px !important;
+
+  @include mobile {
+    width: 100% !important;
+  }
+
+  @include tablet {
+    width: 270px !important;
+  }
+
+  @include desktop-lg {
+    width: 200px !important;
+  }
+
+  @include desktop-xl {
+    width: 270px !important;
+  }
+
+  @include desktop-2k {
+    width: 270px !important;
+  }
+
+  @include desktop-5k {
+    width: 270px !important;
+  }
+}
+
+html[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper
+  .card-description,
+html[lang="ar"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper
+  .card-description,
+body[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper
+  .card-description,
+[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .card-content-wrapper
+  .card-description {
+  order: 3 !important;
+  text-align: right !important;
+  direction: rtl !important;
+
+  @include mobile {
+    width: 100% !important;
+  }
+
+  @include tablet {
+    width: 270px !important;
+  }
+
+  @include desktop-lg {
+    width: 200px !important;
+  }
+
+  @include desktop-xl {
+    width: 270px !important;
+  }
+
+  @include desktop-2k {
+    width: 270px !important;
+  }
+
+  @include desktop-5k {
+    width: 270px !important;
+  }
+}
+
+html[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .vps-image-container,
+html[lang="ar"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .vps-image-container,
+body[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .vps-image-container,
+[dir="rtl"]
+  .keep-your-vps
+  .keep-your-vps-card.monthly-trading-card
+  .vps-image-container {
+  order: 2 !important;
+  flex-shrink: 0 !important;
+  text-align: left !important;
+  direction: ltr !important;
+}
+
+// Swap Free RTL Styling
+.swap-free--rtl {
+  // Flip badge arrow to point left
+  .swap-free__badge-arrow {
+    transform: scaleX(-1) !important;
+  }
+
+  // Position hero background to the left
+  .swap-free__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
+        no-repeat 135% 100% !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
+        no-repeat -800px center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+
+    @include desktop-xl {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
+        no-repeat -750px center !important;
+      background-color: map-get($colors, "black") !important;
+    }
+  }
+}
+
+// Global fallback for Swap Free RTL
+html[dir="rtl"] .swap-free .swap-free__badge-arrow,
+html[lang="ar"] .swap-free .swap-free__badge-arrow,
+body[dir="rtl"] .swap-free .swap-free__badge-arrow,
+[dir="rtl"] .swap-free .swap-free__badge-arrow {
+  transform: scaleX(-1) !important;
+}
+
+// MT4 RTL Styling
+.mt4--rtl {
+  // Flip badge arrow to point left
+  .mt4__badge-arrow {
+    transform: scaleX(-1) !important;
+  }
+
+  // Position hero background to the left similar to swap-free
+  .mt4__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat 128%
+        100% !important;
+      background-color: transparent !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat -800px center !important;
+      background-color: transparent !important;
+    }
+
+    @include desktop-xl {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat -750px center !important;
+      background-color: transparent !important;
+    }
+  }
+}
+
+// Global fallback for MT4 RTL
+html[dir="rtl"] .mt4 .mt4__badge-arrow,
+html[lang="ar"] .mt4 .mt4__badge-arrow,
+body[dir="rtl"] .mt4 .mt4__badge-arrow,
+[dir="rtl"] .mt4 .mt4__badge-arrow {
+  transform: scaleX(-1) !important;
+}
+
+// MT5 RTL Styling
+.mt5--rtl {
+  // Flip badge arrow to point left
+  .mt5__badge-arrow {
+    transform: scaleX(-1) !important;
+  }
+
+  // Position hero background to the left similar to MT4
+  .mt5__hero-bg {
+    @include tablet {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat 128%
+        100% !important;
+      background-color: transparent !important;
+    }
+
+    @include desktop-lg {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat -800px center !important;
+      background-color: transparent !important;
+    }
+
+    @include desktop-xl {
+      right: unset !important;
+      left: 0 !important;
+      background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat -750px center !important;
+      background-color: transparent !important;
+    }
+  }
+}
+
+// Global fallback for MT5 RTL
+html[dir="rtl"] .mt5 .mt5__badge-arrow,
+html[lang="ar"] .mt5 .mt5__badge-arrow,
+body[dir="rtl"] .mt5 .mt5__badge-arrow,
+[dir="rtl"] .mt5 .mt5__badge-arrow {
+  transform: scaleX(-1) !important;
+}
+
+// Company RTL Styling
+.company--rtl {
+  .company__badge-arrow {
+    transform: scaleX(-1) !important;
+  }
+
+  .company__hero-bg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+html[dir="rtl"] .company .company__badge-arrow,
+html[lang="ar"] .company .company__badge-arrow,
+body[dir="rtl"] .company .company__badge-arrow,
+[dir="rtl"] .company .company__badge-arrow {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .company .company__hero-bg,
+html[lang="ar"] .company .company__hero-bg,
+body[dir="rtl"] .company .company__hero-bg,
+[dir="rtl"] .company .company__hero-bg {
+  transform: scaleX(-1) !important;
+}
+
+// Contact Us RTL Styling
+.contact-us--rtl {
+  .contact-us__badge-arrow {
+    transform: scaleX(-1) !important;
+  }
+
+  .contact-us__hero-bg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+html[dir="rtl"] .contact-us .contact-us__badge-arrow,
+html[lang="ar"] .contact-us .contact-us__badge-arrow,
+body[dir="rtl"] .contact-us .contact-us__badge-arrow,
+[dir="rtl"] .contact-us .contact-us__badge-arrow {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .contact-us .contact-us__hero-bg,
+html[lang="ar"] .contact-us .contact-us__hero-bg,
+body[dir="rtl"] .contact-us .contact-us__hero-bg,
+[dir="rtl"] .contact-us .contact-us__hero-bg {
+  transform: scaleX(-1) !important;
+}
+
+// Legal RTL Styling
+.legal--rtl {
+  .legal__badge-arrow {
+    transform: scaleX(-1) !important;
+  }
+
+  .legal__hero-bg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+html[dir="rtl"] .legal .legal__badge-arrow,
+html[lang="ar"] .legal .legal__badge-arrow,
+body[dir="rtl"] .legal .legal__badge-arrow,
+[dir="rtl"] .legal .legal__badge-arrow {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .legal .legal__hero-bg,
+html[lang="ar"] .legal .legal__hero-bg,
+body[dir="rtl"] .legal .legal__hero-bg,
+[dir="rtl"] .legal .legal__hero-bg {
+  transform: scaleX(-1) !important;
+}
+
+// Legal subheading - set width for RTL
+html[dir="rtl"] .legal__subheading,
+html[lang="ar"] .legal__subheading,
+body[dir="rtl"] .legal__subheading,
+[dir="rtl"] .legal__subheading {
+  max-width: 725px !important;
+
+  @include mobile {
+    max-width: 100% !important;
+  }
+
+  @include tablet {
+    max-width: 400px !important;
+  }
+
+  @include desktop-lg {
+    max-width: 650px !important;
+  }
+
+  @include desktop-xl {
+    max-width: 650px !important;
+  }
+
+  @include desktop-2k {
+    max-width: 650px !important;
+  }
+
+  @include desktop-5k {
+    max-width: 650px !important;
+  }
+}
+
+// Legal documents - align document name to the right in RTL
+html[dir="rtl"] .document__name,
+html[lang="ar"] .document__name,
+body[dir="rtl"] .document__name,
+[dir="rtl"] .document__name {
+  text-align: right !important;
+}
+
+// Help Center RTL alignments
+html[dir="rtl"] .help-center__block-title,
+html[lang="ar"] .help-center__block-title,
+body[dir="rtl"] .help-center__block-title,
+[dir="rtl"] .help-center__block-title,
+html[dir="rtl"] .help-center__block-title--quick-answer,
+html[lang="ar"] .help-center__block-title--quick-answer,
+body[dir="rtl"] .help-center__block-title--quick-answer,
+[dir="rtl"] .help-center__block-title--quick-answer,
+html[dir="rtl"] .help-center__block-subtitle,
+html[lang="ar"] .help-center__block-subtitle,
+body[dir="rtl"] .help-center__block-subtitle,
+[dir="rtl"] .help-center__block-subtitle,
+html[dir="rtl"] .help-center .faq--help-center .faq__title-text,
+html[lang="ar"] .help-center .faq--help-center .faq__title-text,
+body[dir="rtl"] .help-center .faq--help-center .faq__title-text,
+[dir="rtl"] .help-center .faq--help-center .faq__title-text {
+  text-align: right !important;
+}
+
+// Partners RTL Styling
+.partners--rtl {
+  .partners__badge-arrow {
+    transform: scaleX(-1) !important;
+  }
+
+  .partners__hero-bg {
+    transform: scaleX(-1) !important;
+  }
+}
+
+html[dir="rtl"] .partners .partners__badge-arrow,
+html[lang="ar"] .partners .partners__badge-arrow,
+body[dir="rtl"] .partners .partners__badge-arrow,
+[dir="rtl"] .partners .partners__badge-arrow {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .partners .partners__hero-bg,
+html[lang="ar"] .partners .partners__hero-bg,
+body[dir="rtl"] .partners .partners__hero-bg,
+[dir="rtl"] .partners .partners__hero-bg {
+  transform: scaleX(-1) !important;
+}
+
+// Income Slider RTL flipping (visual only, preserves functionality)
+.income-slider--rtl {
+  .income-slider__progress-container {
+    transform: scaleX(-1) !important;
+  }
+
+  // Flip the fill back to normal direction so it appears from right
+  .income-slider__progress-fill {
+    transform: scaleX(-1) !important;
+  }
+
+  // Flip the thumb back to normal direction
+  .income-slider__progress-thumb {
+    transform: scaleX(-1) !important;
+  }
+
+  // Reverse order of numbers without flipping visual appearance
+  .income-slider__progress-numbers {
+    display: flex !important;
+    flex-direction: row-reverse !important;
+
+    .partners-income__slider-mark-number {
+      // Keep numbers visually normal (not flipped)
+      transform: scaleX(-1) !important;
+    }
+  }
+}
+
+// Global fallback RTL selectors for income slider
+html[dir="rtl"] .income-slider .income-slider__progress-container,
+html[lang="ar"] .income-slider .income-slider__progress-container,
+body[dir="rtl"] .income-slider .income-slider__progress-container,
+[dir="rtl"] .income-slider .income-slider__progress-container {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .income-slider .income-slider__progress-numbers,
+html[lang="ar"] .income-slider .income-slider__progress-numbers,
+body[dir="rtl"] .income-slider .income-slider__progress-numbers,
+[dir="rtl"] .income-slider .income-slider__progress-numbers {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+}
+
+html[dir="rtl"] .income-slider .income-slider__progress-fill,
+html[lang="ar"] .income-slider .income-slider__progress-fill,
+body[dir="rtl"] .income-slider .income-slider__progress-fill,
+[dir="rtl"] .income-slider .income-slider__progress-fill {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .income-slider .income-slider__progress-thumb,
+html[lang="ar"] .income-slider .income-slider__progress-thumb,
+body[dir="rtl"] .income-slider .income-slider__progress-thumb,
+[dir="rtl"] .income-slider .income-slider__progress-thumb {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .income-slider .partners-income__slider-mark-number,
+html[lang="ar"] .income-slider .partners-income__slider-mark-number,
+body[dir="rtl"] .income-slider .partners-income__slider-mark-number,
+[dir="rtl"] .income-slider .partners-income__slider-mark-number {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .mt5 .mt5__hero-bg,
+html[lang="ar"] .mt5 .mt5__hero-bg,
+body[dir="rtl"] .mt5 .mt5__hero-bg,
+[dir="rtl"] .mt5 .mt5__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat 128% 100% !important;
+    background-color: transparent !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat -800px center !important;
+    background-color: transparent !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat -750px center !important;
+    background-color: transparent !important;
+  }
+}
+
+html[dir="rtl"] .mt4 .mt4__hero-bg,
+html[lang="ar"] .mt4 .mt4__hero-bg,
+body[dir="rtl"] .mt4 .mt4__hero-bg,
+[dir="rtl"] .mt4 .mt4__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat 128% 100% !important;
+    background-color: transparent !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat -800px center !important;
+    background-color: transparent !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat -750px center !important;
+    background-color: transparent !important;
+  }
+}
+
+html[dir="rtl"] .swap-free .swap-free__hero-bg,
+html[lang="ar"] .swap-free .swap-free__hero-bg,
+body[dir="rtl"] .swap-free .swap-free__hero-bg,
+[dir="rtl"] .swap-free .swap-free__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
+      no-repeat 135% 100% !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
+      no-repeat -800px center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
+      no-repeat -750px center !important;
+    background-color: map-get($colors, "black") !important;
+  }
+}
+
+// RTL: Flip badge arrow and move hero BG to left for Client Portal Assistance
+html[dir="rtl"]
+  .client-portal-assistance
+  .client-portal-assistance__badge-arrow,
+html[lang="ar"]
+  .client-portal-assistance
+  .client-portal-assistance__badge-arrow,
+body[dir="rtl"]
+  .client-portal-assistance
+  .client-portal-assistance__badge-arrow,
+[dir="rtl"] .client-portal-assistance .client-portal-assistance__badge-arrow {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .client-portal-assistance .client-portal-assistance__hero-bg,
+html[lang="ar"] .client-portal-assistance .client-portal-assistance__hero-bg,
+body[dir="rtl"] .client-portal-assistance .client-portal-assistance__hero-bg,
+[dir="rtl"] .client-portal-assistance .client-portal-assistance__hero-bg {
+  @include tablet {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
+      no-repeat 125% bottom !important;
+    background-color: transparent !important;
+  }
+
+  @include desktop-lg {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
+      no-repeat -800px bottom !important;
+    background-color: transparent !important;
+  }
+
+  @include desktop-xl {
+    right: unset !important;
+    left: 0 !important;
+    background: url("../images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
+      no-repeat -750px bottom !important;
+    background-color: transparent !important;
+  }
+}
+
+// How to Trade Swap Free RTL Styling
+html[dir="rtl"]
+  .how-to-trade-swap-free
+  .how-to-trade-cards
+  .how-to-trade-card
+  .card-description,
+html[lang="ar"]
+  .how-to-trade-swap-free
+  .how-to-trade-cards
+  .how-to-trade-card
+  .card-description,
+body[dir="rtl"]
+  .how-to-trade-swap-free
+  .how-to-trade-cards
+  .how-to-trade-card
+  .card-description,
+[dir="rtl"]
+  .how-to-trade-swap-free
+  .how-to-trade-cards
+  .how-to-trade-card
+  .card-description {
+  text-align: right !important;
+}
+
+// How to Trade Swap Free Card Button Mobile Padding - Both RTL and Non-RTL
+.how-to-trade-swap-free .card-button button {
+  @include mobile {
+    padding: 14px 24px !important;
+  }
+}
+
+// RTL specific mobile padding
+html[dir="rtl"] .how-to-trade-swap-free .card-button button,
+html[lang="ar"] .how-to-trade-swap-free .card-button button,
+body[dir="rtl"] .how-to-trade-swap-free .card-button button,
+[dir="rtl"] .how-to-trade-swap-free .card-button button {
+  @include mobile {
+    padding: 14px 24px !important;
+  }
+}
+
+// Force card-content-wrapper to use column layout (text below icon)
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  order: 1 !important;
+  flex: 1 !important;
+  text-align: left !important;
+  direction: ltr !important;
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper
+  .card-title,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper
+  .card-title,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper
+  .card-title,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper
+  .card-title {
+  order: 2 !important;
+  text-align: right !important;
+  direction: rtl !important;
+  margin-bottom: 8px !important;
+  margin-top: 60px !important;
+
+  @include mobile {
+    width: 100% !important;
+  }
+
+  @include tablet {
+    width: 270px !important;
+  }
+
+  @include desktop-lg {
+    width: 200px !important;
+  }
+
+  @include desktop-xl {
+    width: 270px !important;
+  }
+
+  @include desktop-2k {
+    width: 270px !important;
+  }
+
+  @include desktop-5k {
+    width: 270px !important;
+  }
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper
+  .card-description,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper
+  .card-description,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper
+  .card-description,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .card-content-wrapper
+  .card-description {
+  order: 3 !important;
+  text-align: right !important;
+  direction: rtl !important;
+  @include mobile {
+    width: 100% !important;
+  }
+
+  @include tablet {
+    width: 270px !important;
+  }
+
+  @include desktop-lg {
+    width: 200px !important;
+  }
+
+  @include desktop-xl {
+    width: 270px !important;
+  }
+
+  @include desktop-2k {
+    width: 270px !important;
+  }
+
+  @include desktop-5k {
+    width: 270px !important;
+  }
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-image-container,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-image-container,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-image-container,
+[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card.minimum-trading-card
+  .vps-image-container {
+  order: 2 !important;
+  flex-shrink: 0 !important;
+  text-align: left !important;
+  direction: ltr !important;
+}
+
+// VPS Button Arrow RTL Styling
+.get-complimentary-vps--rtl {
+  .get-complimentary-vps-card {
+    .btn {
+      display: flex !important;
+      flex-direction: row-reverse !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    .btn-text {
+      order: 2 !important;
+    }
+
+    .btn-arrow {
+      order: 1 !important;
+      margin-right: 8px !important;
+      margin-left: 0 !important;
+    }
+  }
+}
+
+// Global fallback for VPS button arrow RTL styling
+html[dir="rtl"] .get-complimentary-vps .get-complimentary-vps-card .btn,
+html[lang="ar"] .get-complimentary-vps .get-complimentary-vps-card .btn,
+body[dir="rtl"] .get-complimentary-vps .get-complimentary-vps-card .btn,
+[dir="rtl"] .get-complimentary-vps .get-complimentary-vps-card .btn {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card
+  .btn
+  .btn-text,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card
+  .btn
+  .btn-text,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card
+  .btn
+  .btn-text,
+[dir="rtl"] .get-complimentary-vps .get-complimentary-vps-card .btn .btn-text {
+  order: 2 !important;
+}
+
+html[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card
+  .btn
+  .btn-arrow,
+html[lang="ar"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card
+  .btn
+  .btn-arrow,
+body[dir="rtl"]
+  .get-complimentary-vps
+  .get-complimentary-vps-card
+  .btn
+  .btn-arrow,
+[dir="rtl"] .get-complimentary-vps .get-complimentary-vps-card .btn .btn-arrow {
+  order: 1 !important;
+  margin-right: 8px !important;
+  margin-left: 0 !important;
+}
+
+// VPS Start Trading Button RTL Styling
+html[dir="rtl"] .vps-start-trading-btn,
+html[lang="ar"] .vps-start-trading-btn,
+body[dir="rtl"] .vps-start-trading-btn,
+[dir="rtl"] .vps-start-trading-btn {
+  flex-direction: row !important;
+}
+
+html[dir="rtl"] .vps-start-trading-btn .btn-text,
+html[lang="ar"] .vps-start-trading-btn .btn-text,
+body[dir="rtl"] .vps-start-trading-btn .btn-text,
+[dir="rtl"] .vps-start-trading-btn .btn-text {
+  order: 2 !important;
+}
+
+html[dir="rtl"] .vps-start-trading-btn .btn-arrow,
+html[lang="ar"] .vps-start-trading-btn .btn-arrow,
+body[dir="rtl"] .vps-start-trading-btn .btn-arrow,
+[dir="rtl"] .vps-start-trading-btn .btn-arrow {
+  order: 1 !important;
+  margin-left: 8px !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"] .vps-start-trading-btn .btn-arrow svg,
+html[lang="ar"] .vps-start-trading-btn .btn-arrow svg,
+body[dir="rtl"] .vps-start-trading-btn .btn-arrow svg,
+[dir="rtl"] .vps-start-trading-btn .btn-arrow svg {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .vps-start-trading-btn:hover .btn-arrow svg,
+html[lang="ar"] .vps-start-trading-btn:hover .btn-arrow svg,
+body[dir="rtl"] .vps-start-trading-btn:hover .btn-arrow svg,
+[dir="rtl"] .vps-start-trading-btn:hover .btn-arrow svg {
+  transform: scaleX(-1) translateX(0) !important;
+}
+
+html[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column:first-child,
+html[lang="ar"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column:first-child,
+body[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column:first-child,
+[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-right-radius: 12px !important;
+  border-bottom-right-radius: 12px !important;
+}
+
+html[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column:last-child,
+html[lang="ar"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column:last-child,
+body[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column:last-child,
+[dir="rtl"]
+  .withdrawal-table
+  .withdrawal-table-main
+  .table-main-header
+  .table-header-column:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 12px !important;
+  border-bottom-left-radius: 12px !important;
+}
+
+// OnboardingGuideStep RTL Styles
+html[dir="rtl"] .onboarding-guide-step__card-icon,
+html[lang="ar"] .onboarding-guide-step__card-icon,
+body[dir="rtl"] .onboarding-guide-step__card-icon,
+[dir="rtl"] .onboarding-guide-step__card-icon {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .onboarding-guide-step__bullet-icon,
+html[lang="ar"] .onboarding-guide-step__bullet-icon,
+body[dir="rtl"] .onboarding-guide-step__bullet-icon,
+[dir="rtl"] .onboarding-guide-step__bullet-icon {
+  transform: scaleX(-1) !important;
+}
+
+// Community Buttons Secondary Link RTL Styles
+html[dir="rtl"] .community-buttons__secondary-link,
+html[lang="ar"] .community-buttons__secondary-link,
+body[dir="rtl"] .community-buttons__secondary-link,
+[dir="rtl"] .community-buttons__secondary-link {
+  margin-left: unset;
+  margin-right: 16px;
+}
+
+html[dir="rtl"] .community-buttons__secondary-link-arrow,
+html[lang="ar"] .community-buttons__secondary-link-arrow,
+body[dir="rtl"] .community-buttons__secondary-link-arrow,
+[dir="rtl"] .community-buttons__secondary-link-arrow {
+  transform: scaleX(-1);
+}
+
+html[dir="rtl"]
+  .community-buttons__secondary-link:hover
+  .community-buttons__secondary-link-arrow,
+html[dir="rtl"]
+  .community-buttons__secondary-link:focus
+  .community-buttons__secondary-link-arrow,
+html[lang="ar"]
+  .community-buttons__secondary-link:hover
+  .community-buttons__secondary-link-arrow,
+html[lang="ar"]
+  .community-buttons__secondary-link:focus
+  .community-buttons__secondary-link-arrow,
+body[dir="rtl"]
+  .community-buttons__secondary-link:hover
+  .community-buttons__secondary-link-arrow,
+body[dir="rtl"]
+  .community-buttons__secondary-link:focus
+  .community-buttons__secondary-link-arrow,
+[dir="rtl"]
+  .community-buttons__secondary-link:hover
+  .community-buttons__secondary-link-arrow,
+[dir="rtl"]
+  .community-buttons__secondary-link:focus
+  .community-buttons__secondary-link-arrow {
+  transform: scaleX(-1) translateX(-4px);
+}
+
+// Force live chat widget to remain LTR in RTL pages
+html[dir="rtl"],
+body[dir="rtl"],
+[dir="rtl"] {
+  // Target all Convrs live chat elements
+  [id*="convrs"],
+  [class*="convrs"],
+  [id*="Convrs"],
+  [class*="Convrs"] {
+    direction: ltr !important;
+    text-align: left !important;
+
+    * {
+      direction: ltr !important;
+      text-align: left !important;
+    }
+
+    // Ensure input fields are LTR
+    input,
+    textarea {
+      direction: ltr !important;
+      text-align: left !important;
+    }
+
+    // Ensure message bubbles are left-aligned
+    [class*="message"],
+    [class*="Message"],
+    [class*="bubble"],
+    [class*="Bubble"] {
+      direction: ltr !important;
+      text-align: left !important;
+      margin-left: 0 !important;
+      margin-right: auto !important;
+    }
+
+    // Ensure header and footer elements are LTR
+    [class*="header"],
+    [class*="Header"],
+    [class*="footer"],
+    [class*="Footer"] {
+      direction: ltr !important;
+      text-align: left !important;
+    }
+
+    // Ensure icons and buttons maintain LTR layout
+    [class*="icon"],
+    [class*="Icon"],
+    button,
+    [class*="button"],
+    [class*="Button"] {
+      direction: ltr !important;
+    }
+  }
+}
