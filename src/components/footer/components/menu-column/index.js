@@ -5,6 +5,17 @@ import { useTranslationWithVariables } from "../../../../helpers/hooks/use-trans
 import { stringTransformToKebabCase } from "../../../../helpers/services/string-service";
 import InternalLink from "../../../shared/internal-link";
 
+const LIVE_CHAT_TITLE = "header-nav-tab-trading-hub-live-chat-title";
+
+const handleLiveChatClick = (event, title) => {
+  if (title === LIVE_CHAT_TITLE) {
+    event.preventDefault();
+    if (typeof window !== "undefined" && window.ConvrsChat) {
+      window.ConvrsChat.ShowWebChat();
+    }
+  }
+};
+
 const MenuColumn = ({ className, items }) => {
   const { t } = useTranslationWithVariables();
 
@@ -42,6 +53,9 @@ const MenuColumn = ({ className, items }) => {
                         <InternalLink
                           className={cn("menu-column__link")}
                           to={groupItem.link}
+                          onClick={(e) =>
+                            handleLiveChatClick(e, groupItem.title)
+                          }
                         >
                           {t(groupItem.title)}
                         </InternalLink>
@@ -61,7 +75,11 @@ const MenuColumn = ({ className, items }) => {
               className="menu-column__item"
               key={`footer-menu-${stringTransformToKebabCase(item.title)}`}
             >
-              <InternalLink className={cn("menu-column__link")} to={item.link}>
+              <InternalLink
+                className={cn("menu-column__link")}
+                to={item.link}
+                onClick={(e) => handleLiveChatClick(e, item.title)}
+              >
                 {t(item.title)}
               </InternalLink>
             </li>
