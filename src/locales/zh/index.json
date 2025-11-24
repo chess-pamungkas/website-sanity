@@ -1437,7 +1437,7 @@
   "popup-registration-benefits-verification": "簡化，無繁瑣驗證",
   "popup-registration-consent": "我同意允許公司處理我的個人資料，以履行其法規義務，並且我已閱讀並理解公司的《<1>隱私政策</1>》和《<3>Cookie 政策</3>》。",
   "popup-registration-continue": "繼續",
-  "popup-registration-countryCode": "代碼",
+  "popup-registration-countryCode": "",
   "popup-registration-countryCode-required": "必須填寫代碼",
   "popup-registration-countryOfResidence": "居住國家",
   "popup-registration-countryOfResidence-required": "必須填寫居住國家",

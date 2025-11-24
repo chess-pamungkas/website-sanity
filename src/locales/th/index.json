@@ -1437,7 +1437,7 @@
   "popup-registration-benefits-verification": "การตรวจสอบที่ง่ายและไม่ยุ่งยาก",
   "popup-registration-consent": "ฉันยินยอมให้บริษัทดำเนินการประมวลผลข้อมูลส่วนบุคคลของฉันเพื่อให้เป็นไปตามข้อกำหนดทางกฎหมายของบริษัท และฉันได้อ่านและเข้าใจ <1>นโยบายความเป็นส่วนตัว</1> และ <3>นโยบายคุกกี้</3> ของบริษัทแล้ว",
   "popup-registration-continue": "ดำเนินการต่อ",
-  "popup-registration-countryCode": "รหัสประเทศ",
+  "popup-registration-countryCode": "",
   "popup-registration-countryCode-required": "จำเป็นต้องระบุรหัส",
   "popup-registration-countryOfResidence": "ประเทศที่อาศัย",
   "popup-registration-countryOfResidence-required": "จำเป็นต้องระบุประเทศที่พำนักอาศัย",

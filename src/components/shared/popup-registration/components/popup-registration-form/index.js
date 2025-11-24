@@ -1373,6 +1373,51 @@ const PopupRegistrationForm = ({ params }) => {
 
   // Debugging logs for effective language
 
+  // Valid language codes according to PopupRegistrationSchema
+  const VALID_LANGUAGE_CODES = [
+    "en",
+    "es",
+    "ja",
+    "fr",
+    "it",
+    "ms",
+    "pt",
+    "zh-Hans",
+    "ar",
+    "vi",
+    "zh-Hant",
+    "th",
+    "id",
+  ];
+
+  // Helper function to validate and normalize language code
+  const normalizeLanguageCode = (langCode) => {
+    if (!langCode) return "en";
+
+    const langLower = langCode.toLowerCase().trim();
+
+    // Check if it's a Brazilian Portuguese variant
+    if (langLower === "br" || langLower === "pt-br" || langLower === "pt_br") {
+      return "pt";
+    }
+
+    // Check if it's already a valid code
+    if (VALID_LANGUAGE_CODES.includes(langLower)) {
+      return langLower;
+    }
+
+    // Try to map using PORTAL_LANGUAGES_MAP
+    const mapped =
+      PORTAL_LANGUAGES_MAP[langLower] ||
+      PORTAL_LANGUAGES_MAP[effectiveLanguage];
+    if (mapped && VALID_LANGUAGE_CODES.includes(mapped)) {
+      return mapped;
+    }
+
+    // Default to "en" if nothing matches
+    return "en";
+  };
+
   // Initialize the portalLanguageCode variable
   let portalLanguageCode;
 
@@ -1401,6 +1446,9 @@ const PopupRegistrationForm = ({ params }) => {
       portalLanguageCode = "pt";
     }
   }
+
+  // CRITICAL: Normalize portalLanguageCode to ensure it's valid
+  portalLanguageCode = normalizeLanguageCode(portalLanguageCode);
 
   // Get translation function outside the effect to avoid the error
   const { i18n } = useTranslation();
@@ -2421,7 +2469,7 @@ const PopupRegistrationForm = ({ params }) => {
                 )?.code || ""
               : "",
             mobile: "",
-            language: portalLanguageCode || "en",
+            language: normalizeLanguageCode(portalLanguageCode),
             is_subscribe: 1,
             agreement: 0,
           }}
@@ -2440,6 +2488,7 @@ const PopupRegistrationForm = ({ params }) => {
             setFieldValue,
             setTouched,
             isSubmitting,
+            validateForm,
           }) => {
             // Move the initialization effect here where setFieldValue is available
             useEffect(() => {
@@ -2461,6 +2510,14 @@ const PopupRegistrationForm = ({ params }) => {
                 }
               }
             }, [clientConfig, setFieldValue]);
+
+            // CRITICAL: Ensure language field is always valid
+            useEffect(() => {
+              const normalizedLang = normalizeLanguageCode(portalLanguageCode);
+              if (values.language !== normalizedLang) {
+                setFieldValue("language", normalizedLang, false); // Don't validate immediately
+              }
+            }, [portalLanguageCode, setFieldValue, values.language]);
 
             const handleCountrySelect = (countryName) => {
               setSelectedCountry(countryName);
@@ -2494,9 +2551,37 @@ const PopupRegistrationForm = ({ params }) => {
               setSearchCode("");
             };
 
+            // Custom form submit handler
+            const handleFormSubmit = async (e) => {
+              e.preventDefault();
+
+              // Touch all fields to show validation errors
+              await setTouched(
+                {
+                  first_name: true,
+                  last_name: true,
+                  email: true,
+                  country: true,
+                  country_code: true,
+                  mobile: true,
+                  agreement: true,
+                  is_subscribe: true,
+                },
+                true
+              );
+
+              // Force validation and wait for it to complete
+              const validationErrors = await validateForm();
+
+              // If form is valid, call the original handleSubmit
+              if (Object.keys(validationErrors).length === 0) {
+                handleSubmit();
+              }
+            };
+
             return (
               <form
-                onSubmit={handleSubmit}
+                onSubmit={handleFormSubmit}
                 className={cn("popup-registration__form", {
                   "popup-registration__form--rtl": isRTLMode,
                   "popup-registration__form--submitting": isSubmitting,
@@ -2826,33 +2911,7 @@ const PopupRegistrationForm = ({ params }) => {
                   className={cn("continue-button", {
                     "button-link--disabled": isSubmitting,
                   })}
-                  onClick={async (e) => {
-                    e.preventDefault();
-                    // Touch all fields to show validation errors
-                    await setTouched(
-                      {
-                        first_name: true,
-                        last_name: true,
-                        email: true,
-                        country: true,
-                        country_code: true,
-                        mobile: true,
-                        agreement: true,
-                        is_subscribe: true,
-                      },
-                      true
-                    );
-
-                    // Validate all fields
-                    Object.keys(values).forEach((field) => {
-                      setFieldValue(field, values[field], true);
-                    });
-
-                    // If form is valid, submit it
-                    if (Object.keys(errors).length === 0) {
-                      handleSubmit();
-                    }
-                  }}
+                  disabled={isSubmitting}
                 >
                   <span className="button-text">
                     {t("popup-registration-continue")}

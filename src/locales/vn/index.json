@@ -1437,7 +1437,7 @@
   "popup-registration-benefits-verification": "Xác minh đơn giản, không rắc rối",
   "popup-registration-consent": "Tôi đồng ý cho phép công ty xử lý dữ liệu cá nhân của tôi để đáp ứng các nghĩa vụ pháp lý và tôi đã đọc và hiểu <1>Chính sách Bảo mật</1> và <3>Chính sách Cookie</3> của Công ty.",
   "popup-registration-continue": "Tiếp tục",
-  "popup-registration-countryCode": "Mã quốc gia",
+  "popup-registration-countryCode": "",
   "popup-registration-countryCode-required": "Mã là bắt buộc",
   "popup-registration-countryOfResidence": "Quốc gia cư trú",
   "popup-registration-countryOfResidence-required": "Quốc gia cư trú là bắt buộc",

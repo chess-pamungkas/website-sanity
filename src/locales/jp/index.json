@@ -1437,7 +1437,7 @@
   "popup-registration-benefits-verification": "簡単で無駄のない認証プロセス",
   "popup-registration-consent": "以下の内容に同意します：会社が規制上の義務を果たすために私の個人データを処理すること、および、会社の<1>プライバシーポリシー</1>と<3>クッキーポリシー</3>を読み、理解しました。",
   "popup-registration-continue": "続ける",
-  "popup-registration-countryCode": "国コード",
+  "popup-registration-countryCode": "",
   "popup-registration-countryCode-required": "コードは必須です",
   "popup-registration-countryOfResidence": "居住国",
   "popup-registration-countryOfResidence-required": "居住国は必須です",
