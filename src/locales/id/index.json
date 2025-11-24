@@ -1437,7 +1437,7 @@
   "popup-registration-benefits-verification": "Verifikasi yang Mudah dan Tanpa Ribet",
   "popup-registration-consent": "Saya setuju untuk mengizinkan perusahaan memproses data pribadi saya untuk memenuhi kewajiban regulasinya, dan saya telah membaca serta memahami <1>Kebijakan Privasi</1> dan <3>Kebijakan Cookie</3> dari Perusahaan.",
   "popup-registration-continue": "Lanjutkan",
-  "popup-registration-countryCode": "Kode Negara",
+  "popup-registration-countryCode": "",
   "popup-registration-countryCode-required": "Kode wajib diisi",
   "popup-registration-countryOfResidence": "Negara Tempat Tinggal",
   "popup-registration-countryOfResidence-required": "Negara Tempat Tinggal wajib diisi",

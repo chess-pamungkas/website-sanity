@@ -1437,7 +1437,7 @@
   "popup-registration-benefits-verification": "Verificación simple y sin complicaciones",
   "popup-registration-consent": "Acepto permitir que la empresa procese mis datos personales para cumplir con sus obligaciones regulatorias. He leído y entendido la <1>Política de Privacidad</1> y la <3>Política de Cookies</3> de la Empresa.",
   "popup-registration-continue": "Continuar",
-  "popup-registration-countryCode": "Código de país",
+  "popup-registration-countryCode": "",
   "popup-registration-countryCode-required": "Se requiere el código",
   "popup-registration-countryOfResidence": "País de residencia",
   "popup-registration-countryOfResidence-required": "Se requiere el país de residencia",
