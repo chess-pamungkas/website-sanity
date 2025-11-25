@@ -1119,25 +1119,25 @@
     }
 
     @include desktop-lg {
-      max-width: 602px;
+      max-width: fit-content;
       font-size: 18px;
       line-height: 28px;
     }
 
     @include desktop-xl {
-      max-width: 602px;
+      max-width: fit-content;
       font-size: 18px;
       line-height: 28px;
     }
 
     @include desktop-2k {
-      max-width: 602px;
+      max-width: fit-content;
       font-size: 18px;
       line-height: 28px;
     }
 
     @include desktop-5k {
-      max-width: 602px;
+      max-width: fit-content;
       font-size: 18px;
       line-height: 28px;
     }

@@ -89,12 +89,27 @@
 
   @include tablet {
     flex-wrap: nowrap;
-    padding: 7px 31px;
+    padding: 7px 15px;
     overflow-x: scroll;
     gap: 16px;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+
+    // Ensure first and last items are fully visible when scrolled
+    scroll-padding: 0 15px;
 
     &::-webkit-scrollbar {
       display: none;
+    }
+
+    // Add padding to first and last child for better scroll experience
+    > *:first-child {
+      margin-left: 0;
+    }
+
+    > *:last-child {
+      margin-right: 0;
     }
   }
 

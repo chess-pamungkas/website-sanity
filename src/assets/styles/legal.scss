@@ -165,7 +165,7 @@
 
     @include tablet {
       background: url("../../assets/images/bg/hero/legal/legal-desktop.svg")
-        no-repeat 72% 50%;
+        no-repeat 65% 50%;
       background-size: cover;
       background-color: transparent;
       border-radius: 24px;
@@ -173,7 +173,7 @@
 
     @include desktop-lg {
       background: url("../../assets/images/bg/hero/legal/legal-desktop.svg")
-        no-repeat 60% 50%;
+        no-repeat 35% 50%;
       background-size: cover;
       background-color: transparent;
       border-radius: 24px;
@@ -430,7 +430,7 @@
     opacity: 0.7;
 
     @include mobile {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: map-get($font-weight, "light");
       line-height: 28px;
       max-width: 100%;
@@ -439,31 +439,31 @@
     @include tablet {
       font-size: 18px;
       line-height: 28px;
-      max-width: 400px;
+      max-width: 475px;
     }
 
     @include desktop-lg {
       font-size: 18px;
       line-height: 28px;
-      max-width: 725px;
+      max-width: 615px;
     }
 
     @include desktop-xl {
       font-size: 18px;
       line-height: 28px;
-      max-width: 725px;
+      max-width: 800px;
     }
 
     @include desktop-2k {
       font-size: 20px;
       line-height: 30px;
-      max-width: 725px;
+      max-width: 800px;
     }
 
     @include desktop-5k {
       font-size: 22px;
       line-height: 32px;
-      max-width: 725px;
+      max-width: 800px;
     }
   }
 

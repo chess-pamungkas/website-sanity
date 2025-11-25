@@ -564,13 +564,13 @@ $hand-image: url("/images/hand.webp");
     }
 
     @include tablet {
-      font-size: 42px;
+      font-size: 40px;
       width: 100%;
     }
 
     @include desktop-lg {
       font-size: 58px;
-      width: 950px;
+      width: 750px;
     }
 
     @include desktop-xl {
