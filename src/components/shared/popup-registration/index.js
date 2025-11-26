@@ -1450,6 +1450,123 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     return () => clearTimeout(checkTimeout);
   }, []);
 
+  // Effect to hide/show live chat on mobile when popup opens/closes
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const manageLivechatVisibility = () => {
+      try {
+        const livechatElements = document.querySelectorAll(
+          '[id*="convrs"], [class*="convrs"]'
+        );
+
+        if (livechatElements.length === 0) {
+          return; // No livechat elements yet
+        }
+
+        // Check if we're on mobile
+        const isMobileDevice = isMobile || window.innerWidth <= 767;
+
+        livechatElements.forEach((el) => {
+          if (el && el.style) {
+            // Check if registration popup is open
+            if (isOpen && isMobileDevice) {
+              // Hide livechat when registration popup is open on mobile
+              el.style.setProperty("display", "none", "important");
+              el.style.setProperty("visibility", "hidden", "important");
+              el.style.setProperty("pointer-events", "none", "important");
+              el.setAttribute("data-registration-popup-hidden", "true");
+            } else {
+              // Show livechat when popup is closed or not on mobile
+              // Only restore if it wasn't hidden by burger menu or other reasons
+              const isBurgerMenuHidden =
+                el.getAttribute("data-burger-menu-hidden") === "true";
+              const isWebtraderPage =
+                window.location.pathname.includes("webtrader");
+
+              if (!isBurgerMenuHidden && !isWebtraderPage) {
+                el.style.removeProperty("display");
+                el.style.removeProperty("visibility");
+                el.style.removeProperty("pointer-events");
+                el.removeAttribute("data-registration-popup-hidden");
+              }
+            }
+          }
+        });
+      } catch (error) {
+        // Silent fail
+      }
+    };
+
+    // Run immediately
+    manageLivechatVisibility();
+
+    // Also set up a MutationObserver to catch dynamically added livechat elements
+    let observer;
+    try {
+      observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.type === "childList") {
+            mutation.addedNodes.forEach(function (node) {
+              if (
+                node.nodeType === 1 &&
+                ((node.id && node.id.includes("convrs")) ||
+                  (node.className &&
+                    typeof node.className === "string" &&
+                    node.className.includes("convrs")))
+              ) {
+                setTimeout(manageLivechatVisibility, 100);
+              }
+            });
+          }
+        });
+      });
+
+      if (document.body) {
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+      }
+    } catch (error) {
+      // Silent fail
+    }
+
+    // Clean up observer on unmount
+    return () => {
+      if (observer) {
+        observer.disconnect();
+      }
+      // Restore livechat visibility when component unmounts
+      try {
+        const livechatElements = document.querySelectorAll(
+          '[id*="convrs"], [class*="convrs"]'
+        );
+        livechatElements.forEach((el) => {
+          if (
+            el &&
+            el.style &&
+            el.getAttribute("data-registration-popup-hidden") === "true"
+          ) {
+            const isBurgerMenuHidden =
+              el.getAttribute("data-burger-menu-hidden") === "true";
+            const isWebtraderPage =
+              window.location.pathname.includes("webtrader");
+
+            if (!isBurgerMenuHidden && !isWebtraderPage) {
+              el.style.removeProperty("display");
+              el.style.removeProperty("visibility");
+              el.style.removeProperty("pointer-events");
+              el.removeAttribute("data-registration-popup-hidden");
+            }
+          }
+        });
+      } catch (error) {
+        // Silent fail
+      }
+    };
+  }, [isOpen, isMobile]);
+
   // NEW: Check for cookies containing referral parameters on page load
   useEffect(() => {
     if (typeof window === "undefined") return;
