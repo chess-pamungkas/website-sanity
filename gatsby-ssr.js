@@ -205,6 +205,56 @@ export const onRenderBody = ({
       dangerouslySetInnerHTML={{
         __html: `
           (function() {
+            // Add global styles to ensure livechat is above header
+            const addLivechatStyles = function() {
+              if (document.getElementById('livechat-z-index-fix')) return;
+              
+              const style = document.createElement('style');
+              style.id = 'livechat-z-index-fix';
+              style.textContent = \`
+                /* Ensure livechat is above header-wrapper (z-index: 1000) and header (z-index: 1001) */
+                #convrs-shadow-host,
+                [id*="convrs-shadow-host"] {
+                  z-index: 1002 !important;
+                  position: relative !important;
+                  pointer-events: auto !important;
+                }
+                
+                /* Ensure livechat container is above header */
+                .convrs-chat-webchat-container-full,
+                [id*="convrs-chat-webchat-container"] {
+                  z-index: 1002 !important;
+                }
+                
+                /* Ensure livechat header is above header-wrapper - most important for close button */
+                .convrs-chat-header-full,
+                [id*="convrs-chat-header"] {
+                  z-index: 1003 !important;
+                  position: relative !important;
+                  pointer-events: auto !important;
+                }
+                
+                /* On mobile, ensure livechat full screen mode is above header */
+                @media only screen and (max-width: 480px) {
+                  .convrs-chat-webchat-container-full {
+                    z-index: 2147483647 !important;
+                  }
+                  .convrs-chat-header-full {
+                    z-index: 2147483647 !important;
+                    pointer-events: auto !important;
+                  }
+                }
+              \`;
+              document.head.appendChild(style);
+            };
+            
+            // Add styles immediately
+            if (document.head) {
+              addLivechatStyles();
+            } else {
+              document.addEventListener('DOMContentLoaded', addLivechatStyles);
+            }
+            
             // Manage livechat z-index and behavior to prevent conflicts with burger menu
             function manageLivechatZIndex() {
               try {
@@ -214,31 +264,70 @@ export const onRenderBody = ({
                   return; // No livechat elements yet, skip management
                 }
                 
+                // Check if registration popup is open
+                const registrationPopup = document.querySelector('.popup-registration');
+                const isRegistrationPopupOpen = registrationPopup && 
+                  (registrationPopup.style.display !== 'none' && 
+                   registrationPopup.style.visibility !== 'hidden');
+                
+                // Check if we're on mobile
+                const isMobileDevice = window.innerWidth <= 767;
+                
+                // Check if burger menu is open
+                // Check both checkbox state and CSS class (more reliable)
+                const burgerMenuCheckbox = document.getElementById('bmt');
+                const burgerMenuTrigger = document.querySelector('.burger-menu__trigger');
+                const isBurgerMenuOpenByCheckbox = burgerMenuCheckbox && burgerMenuCheckbox.checked;
+                const isBurgerMenuOpenByClass = burgerMenuTrigger && burgerMenuTrigger.classList.contains('burger-menu__trigger--open');
+                const isBurgerMenuOpen = isBurgerMenuOpenByCheckbox || isBurgerMenuOpenByClass;
+                
+                // Check if we're on a webtrader page
+                const currentPath = window.location.pathname;
+                const isWebtraderPage = currentPath.includes('webtrader');
+                
                 livechatElements.forEach(el => {
                   if (el && el.style) {
-                    // Check if livechat is hidden by burger menu
-                    const isBurgerMenuHidden = el.getAttribute('data-burger-menu-hidden') === 'true';
-                    if (isBurgerMenuHidden) {
-                      // Don't modify if burger menu has hidden it
+                    // Priority 1: Check if registration popup is open on mobile
+                    if (isRegistrationPopupOpen && isMobileDevice) {
+                      // Hide livechat when registration popup is open on mobile
+                      el.style.setProperty('display', 'none', 'important');
+                      el.style.setProperty('visibility', 'hidden', 'important');
+                      el.style.setProperty('pointer-events', 'none', 'important');
+                      el.setAttribute('data-registration-popup-hidden', 'true');
                       return;
                     }
                     
-                    // Check if burger menu is open
-                    const burgerMenuCheckbox = document.getElementById('bmt');
-                    const isBurgerMenuOpen = burgerMenuCheckbox && burgerMenuCheckbox.checked;
-                    
+                    // Priority 2: Check if burger menu is open
+                    // Use same pattern as popup registration: if condition, then hide and set attribute
                     if (isBurgerMenuOpen) {
                       // Hide livechat when burger menu is open
                       el.style.setProperty('display', 'none', 'important');
                       el.style.setProperty('visibility', 'hidden', 'important');
                       el.style.setProperty('pointer-events', 'none', 'important');
-                      return;
+                      el.setAttribute('data-burger-menu-hidden', 'true');
+                    } else {
+                      // Burger menu is closed - use same pattern as popup registration
+                      // Show livechat when burger menu is closed
+                      // Only restore if it wasn't hidden by registration popup or other reasons
+                      const isBurgerMenuHidden = el.getAttribute('data-burger-menu-hidden') === 'true';
+                      const isRegistrationPopupHidden = el.getAttribute('data-registration-popup-hidden') === 'true';
+                      
+                      if (isBurgerMenuHidden && !isRegistrationPopupHidden && !isWebtraderPage) {
+                        // Force remove all hiding styles - be more aggressive
+                        // First remove the important styles
+                        el.style.removeProperty('display');
+                        el.style.removeProperty('visibility');
+                        el.style.removeProperty('pointer-events');
+                        // Remove attribute immediately
+                        el.removeAttribute('data-burger-menu-hidden');
+                        // Ensure z-index is set correctly after restore
+                        el.style.setProperty('z-index', '1002', 'important');
+                        // Force a reflow to ensure changes take effect
+                        void el.offsetHeight;
+                      }
                     }
                     
-                    // Check if we're on a webtrader page
-                    const currentPath = window.location.pathname;
-                    const isWebtraderPage = currentPath.includes('webtrader');
-                    
+                    // Priority 3: Check if we're on a webtrader page
                     if (isWebtraderPage) {
                       // Hide livechat on webtrader pages
                       el.style.setProperty('display', 'none', 'important');
@@ -247,9 +336,57 @@ export const onRenderBody = ({
                       return;
                     }
                     
+                    // If livechat was hidden by registration popup, restore it when popup is closed
+                    // Use same pattern as popup registration: check attribute, then restore if conditions allow
+                    const isRegistrationPopupHidden = el.getAttribute('data-registration-popup-hidden') === 'true';
+                    if (isRegistrationPopupHidden && !isRegistrationPopupOpen) {
+                      // Show livechat when popup is closed
+                      // Only restore if it wasn't hidden by burger menu or other reasons
+                      const isBurgerMenuHiddenCheck = el.getAttribute('data-burger-menu-hidden') === 'true';
+                      if (!isBurgerMenuHiddenCheck && !isWebtraderPage) {
+                        el.style.removeProperty('display');
+                        el.style.removeProperty('visibility');
+                        el.style.removeProperty('pointer-events');
+                        el.removeAttribute('data-registration-popup-hidden');
+                      }
+                    }
+                    
                     // For normal pages, ensure livechat is visible and properly z-indexed
-                    // Only set z-index, don't touch display/visibility to let livechat show naturally
-                    el.style.setProperty('z-index', '21', 'important');
+                    // Set z-index higher than header-wrapper (1000) and header (1001)
+                    el.style.setProperty('z-index', '1002', 'important');
+                    
+                    // Also ensure livechat container and header are above header-wrapper
+                    // Use querySelectorAll to find all nested elements
+                    try {
+                      // Find shadow host and shadow root elements
+                      const shadowHost = el.querySelector && el.querySelector('#convrs-shadow-host');
+                      if (shadowHost) {
+                        shadowHost.style.setProperty('z-index', '1002', 'important');
+                        shadowHost.style.setProperty('position', 'relative', 'important');
+                        shadowHost.style.setProperty('pointer-events', 'auto', 'important');
+                      }
+                      
+                      // Find chat container (may be in shadow DOM, so we try direct query)
+                      const chatContainers = el.querySelectorAll && el.querySelectorAll('.convrs-chat-webchat-container-full, [id*="convrs-chat-webchat-container"]');
+                      if (chatContainers && chatContainers.length > 0) {
+                        chatContainers.forEach(container => {
+                          container.style.setProperty('z-index', '1002', 'important');
+                          container.style.setProperty('position', 'fixed', 'important');
+                        });
+                      }
+                      
+                      // Find chat header (most important - this is what user clicks to close)
+                      const chatHeaders = el.querySelectorAll && el.querySelectorAll('.convrs-chat-header-full, [id*="convrs-chat-header"]');
+                      if (chatHeaders && chatHeaders.length > 0) {
+                        chatHeaders.forEach(header => {
+                          header.style.setProperty('z-index', '1003', 'important');
+                          header.style.setProperty('position', 'relative', 'important');
+                          header.style.setProperty('pointer-events', 'auto', 'important');
+                        });
+                      }
+                    } catch (e) {
+                      // Silent fail if querySelector fails
+                    }
                     
                     // Force LTR direction for live chat widget in RTL pages
                     const isRTL = document.documentElement.getAttribute('dir') === 'rtl' || 
@@ -317,12 +454,148 @@ export const onRenderBody = ({
             }
             
             // Run management on burger menu state change
+            // Listen for clicks on burger menu trigger (including when it has --open class)
             document.addEventListener('click', function(e) {
               const burgerTrigger = e.target.closest('.burger-menu__trigger');
-              if (burgerTrigger) {
-                setTimeout(manageLivechatZIndex, 100);
+              const burgerCheckbox = e.target.closest('#bmt');
+              const burgerBar = e.target.closest('.burger-menu__bar');
+              // Also check if clicking on any element inside burger menu
+              if (burgerTrigger || burgerCheckbox || burgerBar || 
+                  (e.target.closest && e.target.closest('.burger-menu'))) {
+                // Use multiple timeouts to ensure we catch the state change
+                setTimeout(manageLivechatZIndex, 50);
+                setTimeout(manageLivechatZIndex, 150);
+                setTimeout(manageLivechatZIndex, 300);
               }
-            });
+            }, true); // Use capture phase to catch earlier
+            
+            // Also listen for change events on the checkbox (more reliable)
+            document.addEventListener('change', function(e) {
+              if (e.target && e.target.id === 'bmt') {
+                setTimeout(manageLivechatZIndex, 50);
+                setTimeout(manageLivechatZIndex, 150);
+              }
+            }, true);
+            
+            // Use MutationObserver to watch for checkbox state changes AND class changes
+            try {
+              const burgerObserver = new MutationObserver(function(mutations) {
+                let shouldCheck = false;
+                mutations.forEach(function(mutation) {
+                  // Check for checkbox checked attribute changes
+                  if (mutation.type === 'attributes' && mutation.attributeName === 'checked') {
+                    shouldCheck = true;
+                  }
+                  // Check for class changes on trigger button
+                  if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const target = mutation.target;
+                    if (target && (target.classList.contains('burger-menu__trigger') || 
+                        target.id === 'bmt')) {
+                      shouldCheck = true;
+                    }
+                  }
+                  // Check for class changes in childList (when trigger is added/removed)
+                  if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach(function(node) {
+                      if (node.nodeType === 1 && 
+                          (node.classList && node.classList.contains('burger-menu__trigger') ||
+                           node.id === 'bmt')) {
+                        shouldCheck = true;
+                      }
+                    });
+                  }
+                });
+                if (shouldCheck) {
+                  setTimeout(manageLivechatZIndex, 100);
+                }
+              });
+              
+              // Observe the checkbox and trigger when they become available
+              const observeBurger = setInterval(function() {
+                const burgerCheckbox = document.getElementById('bmt');
+                const burgerTrigger = document.querySelector('.burger-menu__trigger');
+                
+                if (burgerCheckbox) {
+                  burgerObserver.observe(burgerCheckbox, {
+                    attributes: true,
+                    attributeFilter: ['checked', 'class']
+                  });
+                }
+                
+                if (burgerTrigger) {
+                  burgerObserver.observe(burgerTrigger, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                  });
+                }
+                
+                if (burgerCheckbox || burgerTrigger) {
+                  // Also observe body for class changes on trigger (in case it's dynamically added)
+                  if (document.body) {
+                    burgerObserver.observe(document.body, {
+                      childList: true,
+                      subtree: true,
+                      attributes: true,
+                      attributeFilter: ['class']
+                    });
+                  }
+                  clearInterval(observeBurger);
+                }
+              }, 500);
+              
+              // Stop trying after 10 seconds
+              setTimeout(function() {
+                clearInterval(observeBurger);
+              }, 10000);
+            } catch (error) {
+              // Silent fail
+            }
+            
+            // Monitor for registration popup open/close
+            // Use MutationObserver to detect when popup is added/removed or visibility changes
+            let popupObserver;
+            try {
+              popupObserver = new MutationObserver(function(mutations) {
+                let shouldCheck = false;
+                mutations.forEach(function(mutation) {
+                  if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach(function(node) {
+                      if (node.nodeType === 1 && 
+                          (node.classList && node.classList.contains('popup-registration'))) {
+                        shouldCheck = true;
+                      }
+                    });
+                    mutation.removedNodes.forEach(function(node) {
+                      if (node.nodeType === 1 && 
+                          (node.classList && node.classList.contains('popup-registration'))) {
+                        shouldCheck = true;
+                      }
+                    });
+                  }
+                  if (mutation.type === 'attributes' && 
+                      (mutation.attributeName === 'style' || mutation.attributeName === 'class')) {
+                    const target = mutation.target;
+                    if (target && target.classList && target.classList.contains('popup-registration')) {
+                      shouldCheck = true;
+                    }
+                  }
+                });
+                if (shouldCheck) {
+                  setTimeout(manageLivechatZIndex, 100);
+                }
+              });
+              
+              if (document.body) {
+                popupObserver.observe(document.body, {
+                  childList: true,
+                  subtree: true,
+                  attributes: true,
+                  attributeFilter: ['style', 'class']
+                });
+              }
+            } catch (error) {
+              // Silent fail
+            }
             
             // Run immediately after a delay to let livechat load
             setTimeout(manageLivechatZIndex, 2000);
@@ -333,6 +606,27 @@ export const onRenderBody = ({
                 setTimeout(manageLivechatZIndex, 2000);
               });
             }
+            
+            // Add polling to check burger menu state periodically (similar to popup registration useEffect)
+            // This ensures we catch state changes even if events don't fire
+            let lastBurgerMenuState = null;
+            const burgerMenuPollInterval = setInterval(function() {
+              const burgerCheckbox = document.getElementById('bmt');
+              const burgerTrigger = document.querySelector('.burger-menu__trigger');
+              const currentState = (burgerCheckbox && burgerCheckbox.checked) || 
+                                   (burgerTrigger && burgerTrigger.classList.contains('burger-menu__trigger--open'));
+              
+              // Only call manageLivechatZIndex if state changed
+              if (currentState !== lastBurgerMenuState) {
+                lastBurgerMenuState = currentState;
+                manageLivechatZIndex();
+              }
+            }, 200); // Check every 200ms for faster response
+            
+            // Clean up interval after 5 minutes (should be enough for page session)
+            setTimeout(function() {
+              clearInterval(burgerMenuPollInterval);
+            }, 300000);
           })();
         `,
       }}
