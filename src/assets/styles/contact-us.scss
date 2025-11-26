@@ -1066,7 +1066,7 @@
     }
 
     @include tablet {
-      padding-top: 90px;
+      padding-top: 50px;
       gap: 16px;
     }
 
@@ -1119,25 +1119,25 @@
     }
 
     @include desktop-lg {
-      max-width: fit-content;
+      max-width: 700px;
       font-size: 18px;
       line-height: 28px;
     }
 
     @include desktop-xl {
-      max-width: fit-content;
+      max-width: 700px;
       font-size: 18px;
       line-height: 28px;
     }
 
     @include desktop-2k {
-      max-width: fit-content;
+      max-width: 700px;
       font-size: 18px;
       line-height: 28px;
     }
 
     @include desktop-5k {
-      max-width: fit-content;
+      max-width: 700px;
       font-size: 18px;
       line-height: 28px;
     }
