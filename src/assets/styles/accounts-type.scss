@@ -433,31 +433,31 @@
     }
 
     @include tablet {
-      max-width: 300px;
-      font-size: 18px;
+      max-width: 375px;
+      font-size: 16px;
       line-height: 28px;
     }
 
     @include desktop-lg {
-      max-width: 625px;
+      max-width: 560px;
       font-size: 18px;
       line-height: 28px;
     }
 
     @include desktop-xl {
-      max-width: 650px;
+      max-width: 560px;
       font-size: 18px;
       line-height: 28px;
     }
 
     @include desktop-2k {
-      max-width: 650px;
+      max-width: 560px;
       font-size: 18px;
       line-height: 28px;
     }
 
     @include desktop-5k {
-      max-width: 650px;
+      max-width: 560px;
       font-size: 18px;
       line-height: 28px;
     }
