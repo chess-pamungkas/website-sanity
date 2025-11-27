@@ -170,6 +170,79 @@ export const onRenderBody = ({
 
   setPreBodyComponents(preBodyComponents);
   setPostBodyComponents([
+    // Prevent livechat from modifying document.title
+    <script
+      key="prevent-livechat-title-change"
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            // Store original title
+            const originalTitle = document.title;
+            
+            // Override document.title setter to prevent livechat from changing it
+            let titleDescriptor = Object.getOwnPropertyDescriptor(Document.prototype, 'title');
+            if (!titleDescriptor) {
+              titleDescriptor = Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'title');
+            }
+            
+            if (titleDescriptor && titleDescriptor.set) {
+              const originalSet = titleDescriptor.set;
+              titleDescriptor.set = function(value) {
+                // Allow title changes that don't contain "unread" or "message"
+                if (typeof value === 'string' && 
+                    (value.toLowerCase().includes('unread') || 
+                     value.toLowerCase().includes('message'))) {
+                  // Block livechat title changes - keep original title
+                  return;
+                }
+                // Allow other title changes (from React Helmet, etc.)
+                originalSet.call(this, value);
+              };
+              Object.defineProperty(document, 'title', titleDescriptor);
+            }
+            
+            // Also monitor for title changes via MutationObserver as fallback
+            if (typeof window !== 'undefined' && window.MutationObserver) {
+              const titleObserver = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                  if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                    const titleElement = document.querySelector('title');
+                    if (titleElement) {
+                      const currentTitle = titleElement.textContent || document.title;
+                      if (currentTitle.toLowerCase().includes('unread') || 
+                          currentTitle.toLowerCase().includes('message')) {
+                        // Restore original title
+                        titleElement.textContent = originalTitle;
+                        document.title = originalTitle;
+                      }
+                    }
+                  }
+                });
+              });
+              
+              // Observe title element
+              const titleElement = document.querySelector('title');
+              if (titleElement) {
+                titleObserver.observe(titleElement, {
+                  childList: true,
+                  characterData: true,
+                  subtree: true
+                });
+              }
+              
+              // Also observe document.head for title changes
+              if (document.head) {
+                titleObserver.observe(document.head, {
+                  childList: true,
+                  subtree: true
+                });
+              }
+            }
+          })();
+        `,
+      }}
+    />,
+    // Defer livechat script loading until after page load to reduce initial JS execution
     <script
       key="live-chat"
       defer
