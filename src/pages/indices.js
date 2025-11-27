@@ -4,17 +4,20 @@ import { useTranslationWithVariables } from "../helpers/hooks/use-translation-wi
 import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import IndicesContent from "../components/pages-content/indices-page-content";
+import PageBackground from "../components/shared/page-background";
 
 const IndicesPage = () => {
   const { t } = useTranslationWithVariables();
 
   return (
     <>
-      <Seo
-        title={t("page-indices-title")}
-        description={t("page-indices-description")}
-      />
-      <IndicesContent />
+      <PageBackground backgroundType="homepage-bg-1">
+        <Seo
+          title={t("page-indices-title")}
+          description={t("page-indices-description")}
+        />
+        <IndicesContent />
+      </PageBackground>
     </>
   );
 };

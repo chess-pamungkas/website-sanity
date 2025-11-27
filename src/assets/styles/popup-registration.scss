@@ -31,6 +31,12 @@
     background: transparent;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+
+    @include mobile {
+      height: 100vh !important; // Full viewport height for mobile
+      min-height: 100vh !important; // Ensure minimum height
+      align-items: stretch; // Stretch content to full height
+    }
   }
 
   &__container {
@@ -39,176 +45,351 @@
     display: flex;
     width: 100%;
     height: auto;
-    border-radius: 0.3125rem;
+    border-radius: 32px;
     text-align: left !important;
     margin: auto;
     max-height: 100vh;
     overflow: hidden;
+    gap: 20px; // Based on Figma itemSpacing
 
     @include mobile {
       width: 100%;
-      height: 100%;
-      // padding: 0.625rem;
+      height: 100vh !important; // Full viewport height
+      min-height: 100vh !important; // Ensure minimum height
       flex-direction: column;
       overflow-y: auto;
+      max-width: none;
+      max-height: none;
+      border-radius: 32px;
+      gap: 0; // No gap on mobile - stacked layout
     }
 
-    // @include tablet {
-    //   padding: 0.625rem;
-    // }
+    @include tablet {
+      max-width: 100%;
+      max-height: 100vh;
+      border-radius: 32px;
+      gap: 0;
+    }
 
     @include desktop-lg {
-      max-width: 73.25rem;
-      max-height: 52rem;
+      max-width: 966px; // Based on Figma design (331 + 20 + 615)
+      max-height: 850px; // Based on Figma design
+      gap: 20px;
     }
 
     @include desktop-xl {
-      max-width: 75rem;
-      max-height: 48rem;
+      max-width: 966px; // Based on Figma design
+      max-height: 850px; // Based on Figma design
     }
 
     @include desktop-2k {
-      max-width: 90rem;
-      max-height: 56rem;
+      max-width: 966px; // Based on Figma design
+      max-height: 850px; // Based on Figma design
     }
 
     @include desktop-5k {
-      max-width: 120rem;
-      max-height: 74rem;
+      max-width: 966px; // Based on Figma design
+      max-height: 850px; // Based on Figma design
     }
   }
 
   &__sidebar {
-    background-color: #ff4400;
-    background-image: url("../images/bg/register-img.png");
-    background-size: 85% auto;
-    background-repeat: no-repeat;
-    background-position: center calc(55%);
-    width: 40%;
-    border-radius: 10px 0 0 10px;
-    align-items: center;
-    color: #1a1a1a;
+    background: url("../images/bg/popup-registration/bg-popup-registration.svg")
+      no-repeat center center;
+    background-size: cover;
+    width: 331px; // Based on Figma design
+    height: 100%; // Based on Figma design
+    border-radius: 32px; // Based on Figma design - full rounded corners since there's a gap
     position: relative;
+    overflow: hidden;
 
-    &__title {
-      font-family: $font-sidebar;
-      font-size: 1.5rem;
-      font-weight: map-get($font-weight, "black");
-      color: #1a1a1a;
-      line-height: 1.2;
-      white-space: pre-line;
-      padding: 3.125rem;
+    // Optimize background loading with fallback
+    background-color: #f8f9fa; // Fallback color while loading
+    background-image: url("../images/bg/popup-registration/bg-popup-registration.svg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
 
-      .normal-text {
-        display: inline;
-        font-weight: map-get($font-weight, "regular");
-      }
+    // Smooth transition when background loads
+    transition: background-image 0.3s ease-in-out;
 
-      .highlighted {
-        display: inline;
-        font-weight: map-get($font-weight, "black");
+    // Preload hint for better performance
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      opacity: 1;
+      transition: opacity 0.5s ease-in-out;
+      z-index: -1;
+    }
 
-        .white-text {
-          color: #ffffff;
-        }
+    // Hide fallback when background is loaded
+    &.background-loaded::before {
+      opacity: 0;
+    }
 
-        .journey {
-          display: inline;
-          color: #1a1a1a;
-        }
-      }
-
-      @include mobile {
-        font-size: 1.125rem;
-        padding: 2.25rem 1.25rem;
-      }
-
-      @include tablet {
-        padding: 2.813rem;
-      }
-
-      @include desktop-lg {
-        padding: 3.438rem;
-      }
-
-      @include desktop-xl {
-        padding: 4.625rem 3.375rem 0 3.375rem;
-      }
-
-      @include desktop-2k {
-        padding: 5.813rem 4.375rem 0 4.375rem;
-        font-size: 1.875rem;
-      }
-
-      @include desktop-5k {
-        padding: 6.813rem 5.375rem 0 5.375rem;
-        font-size: 2.25rem;
-      }
+    @include mobile {
+      display: none; // Completely hide sidebar on mobile
     }
 
     @include mobile {
       position: relative;
-      background-size: 70% auto;
-      background-position: center calc(70%);
+      background-size: cover;
+      background-position: center center;
       width: 100%;
-      padding: 0;
-      border-radius: 0.625rem 0.625rem 0 0;
-      max-height: 21.875rem;
+      height: 300px;
+      border-radius: 16px 16px 0 0 !important; // Top left and right rounded corners for mobile - force with !important
+      max-height: 300px;
     }
 
     @include tablet {
       padding: 0;
+      display: none;
     }
 
     @include desktop-lg {
       padding: 0;
+      display: block !important;
     }
 
     @include desktop-xl {
-      padding: 0;
+      background-size: cover;
+      background-position: center center;
     }
 
     @include desktop-2k {
-      padding: 0;
-      background-size: 80% auto;
+      background-size: cover;
+      background-position: center center;
     }
 
     @include desktop-5k {
-      padding: 0;
-      background-size: 75% auto;
+      background-size: cover;
+      background-position: center center;
     }
   }
 
   &__content {
     position: relative;
-    width: 60%;
+    width: 750px; // Based on Figma design
+    height: auto; // Based on Figma design
     background-color: white;
-    border-radius: 0 10px 10px 0;
+    border-radius: 32px; // Based on Figma design - full rounded corners since there's a gap
+    padding: 32px 42px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 780px; // Keep consistent height when dropdown overlays open
 
     @include mobile {
       width: 100%;
-      border-radius: 0 0 0.625rem 0.625rem;
-      padding: 1.875rem 1.25rem 1.875rem 1.25rem;
+      min-height: 100vh !important; // Full viewport height for mobile
+      height: 100vh !important; // Force full height
+      border-radius: 20px !important; // All corners rounded for mobile - force with !important
+      padding: 20px;
+      gap: 16px;
+      overflow-y: auto; // Allow scrolling when content exceeds height
+
+      &__badge {
+        padding: 3px 8px;
+
+        &-text {
+          font-size: 12px;
+          line-height: 16px;
+        }
+      }
+
+      &__title {
+        font-size: 32px;
+        line-height: 1.1;
+      }
+
+      &__form {
+        gap: 12px;
+      }
+
+      &__risk-warning-text {
+        font-size: 12px;
+        line-height: 16px;
+      }
     }
 
     @include tablet {
       padding: 2.5rem;
+      width: 100%;
     }
 
     @include desktop-lg {
       padding: 3.125rem;
+      width: auto; // Based on Figma design
+      max-height: 850px;
     }
 
     @include desktop-xl {
-      padding: 4.375rem 3.938rem;
+      width: 750px;
+      height: auto;
+      max-height: 850px;
     }
 
     @include desktop-2k {
-      padding: 5.375rem 4.938rem;
+      width: 750px; // Increase width to match sidebar scaling
+      height: auto; // Increase height to match sidebar scaling
+      max-height: 850px;
     }
 
     @include desktop-5k {
-      padding: 6.375rem 5.938rem;
+      width: 900px; // Increase width to match sidebar scaling
+      height: auto; // Increase height to match sidebar scaling
+      max-height: 850px;
+    }
+
+    &__badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 68, 0, 0.15);
+      border: 1px solid rgba(255, 68, 0, 0.15);
+      border-radius: 16px;
+      padding: 4px 10px;
+      width: fit-content;
+      min-height: 24px; // Ensure minimum height for visibility
+
+      &-icon {
+        width: 14px;
+        height: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0; // Prevent icon from shrinking
+
+        img {
+          width: 14px;
+          height: 14px;
+          object-fit: contain;
+          display: block; // Ensure image is visible
+          max-width: 100%;
+          max-height: 100%;
+        }
+      }
+
+      &-text {
+        font-weight: map-get($font-weight, "medium");
+        font-size: 14px;
+        line-height: 20px;
+        color: #000000;
+      }
+    }
+
+    &__title {
+      margin: 0;
+      font-size: 42px;
+      font-weight: map-get($font-weight, "semi-bold");
+      letter-spacing: -0.02em;
+      background: linear-gradient(
+          102.31deg,
+          rgba(0, 0, 0, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #000000;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+
+      @include mobile {
+        font-size: 36px;
+      }
+    }
+
+    &__form {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      @include mobile {
+        gap: 20px; // More space between form elements on mobile
+        padding-bottom: 20px; // Extra padding at bottom for scrolling
+      }
+
+      // Dynamic spacing based on error state
+      &:not(
+          :has(.popup-registration__error, .popup-registration-error-message)
+        ) {
+        .popup-registration__content__risk-warning {
+          margin-top: 20px; // Reduced space when no errors
+        }
+      }
+
+      // Normal space when there are errors
+      &:has(.popup-registration__error, .popup-registration-error-message) {
+        .popup-registration__content__risk-warning {
+          margin-top: 20px; // Normal space when errors exist
+        }
+      }
+
+      // Continue button spacing adjustments
+      .continue-button {
+        &:not(
+            :has(
+                + .popup-registration__error,
+                + .popup-registration-error-message
+              )
+          ) {
+          margin-bottom: 20px; // Reduced space when no errors below
+        }
+
+        &:has(
+            + .popup-registration__error,
+            + .popup-registration-error-message
+          ) {
+          margin-bottom: 16px; // Normal space when errors exist below
+        }
+      }
+    }
+
+    &__risk-warning {
+      margin-top: 0; // Reset margin since it's now inside form
+      width: 100%; // Full width container
+      display: flex;
+      justify-content: flex-start; // Left justify for left alignment
+      align-items: center;
+
+      &-text {
+        /* Label - Based on Figma Design */
+        width: 100%; // Full width (was 531px in Figma)
+        height: 25px; // Based on Figma: height: 25px
+
+        font-family: "Sofia Pro", sans-serif; // Based on Figma: 'Sofia Pro'
+        font-style: normal; // Based on Figma: font-style: normal
+        font-weight: 400; // Based on Figma: font-weight: 400
+        font-size: 12px; // Based on Figma: font-size: 10px
+        line-height: 18px; // Based on Figma: line-height: 18px (180%)
+        letter-spacing: -0.01em; // Based on Figma: letter-spacing: -0.01em
+
+        color: #6b7280; // Based on Figma: color: #6B7280
+
+        /* Inside auto layout */
+        flex: none; // Based on Figma: flex: none
+        order: 3; // Based on Figma: order: 3
+        align-self: stretch; // Based on Figma: align-self: stretch
+        flex-grow: 0; // Based on Figma: flex-grow: 0
+        z-index: 3; // Based on Figma: z-index: 3
+
+        margin: 0;
+        text-align: left; // Left align as requested
+        display: flex;
+        align-items: center;
+        justify-content: flex-start; // Left justify for left alignment
+
+        @include mobile {
+          font-size: 9px; // Slightly smaller on mobile
+          line-height: 16px; // Adjusted line height for mobile
+          height: 22px; // Slightly smaller height on mobile
+        }
+      }
     }
 
     h1.popup-registration-register {
@@ -367,7 +548,7 @@
     // -webkit-text-size-adjust: 100%;
 
     @supports (-webkit-touch-callout: none) {
-      font-size: 0.8125rem !important;
+      font-size: 1rem !important; // 16px to prevent iOS Safari auto-zoom
       transform-origin: left top;
     }
 
@@ -431,40 +612,101 @@
     }
   }
 
+  // Toggle Switch Styling based on Figma Design
   .popup-registration__newsletter,
-  .popup-registration__consent-text {
+  .popup-registration__consent {
     display: flex;
     align-items: flex-start;
-    margin-top: 0.625rem;
-    margin-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 10px;
     font-size: 0.75rem;
-    color: #1a1a1a;
+    line-height: 18px;
+    color: #6b7280; // Based on Figma: #6B7280
+    gap: 12px; // Based on Figma: itemSpacing: 12
+
+    // Hide original checkbox
     input[type="checkbox"] {
-      appearance: none;
-      width: 0.8125rem;
-      min-width: 0.8125rem;
-      height: 0.8125rem;
-      margin-right: 0.625rem;
-      border: 1px solid #ff4400;
-      border-radius: 3px;
-      cursor: pointer;
+      display: none;
+    }
+
+    // Toggle Switch Container
+    .toggle-switch {
+      flex-shrink: 0;
+      width: 36.67px; // Based on Figma: width: 36.66666793823242
+      height: 20px; // Based on Figma: height: 20
+      background: #e5e7eb; // Default light gray background
+      border-radius: 10px; // Based on Figma: cornerRadius: 9.999999046325684
       position: relative;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      padding: 0;
+      outline: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
 
-      &:checked {
-        background-color: #ff4400;
-      }
-
-      &:checked::after {
+      // Toggle Button (Circle)
+      &::after {
         content: "";
         position: absolute;
-        left: 0.25rem;
-        top: 0;
-        width: 0.25rem;
-        height: 0.625rem;
-        border: solid white;
-        border-width: 0 0.125rem 0.125rem 0;
-        transform: rotate(45deg);
+        top: 1.67px; // Based on Figma: y: 1.6666669845581055
+        left: 1.67px; // Based on Figma: x: 1.666666030883789 (OFF state)
+        width: 16.67px; // Based on Figma: width: 16.66666603088379
+        height: 16.67px; // Based on Figma: height: 16.66666603088379
+        background: #ffffff; // Based on Figma: white circle
+        border-radius: 50%;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0.83px 1.67px rgba(0, 0, 0, 0.06),
+          // Based on Figma shadow 1
+          0 0.83px 2.5px rgba(0, 0, 0, 0.1); // Based on Figma shadow 2
       }
+
+      // Hover effects
+      &:hover {
+        transform: scale(1.02);
+
+        &::after {
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08),
+            0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+      }
+
+      // Active/Checked State
+      &.active {
+        background: #ff4400; // Based on Figma: orange background for newsletter
+
+        &::after {
+          transform: translateX(16.67px); // Move button to right side
+        }
+      }
+
+      // Newsletter specific styling (always orange when checked)
+      &.newsletter-toggle.active {
+        background: #ff4400;
+      }
+
+      // Consent specific styling (light gray when unchecked)
+      &.consent-toggle {
+        background: #e5e7eb; // Light gray background
+
+        &.active {
+          background: #ff4400; // Orange when checked
+        }
+      }
+
+      // Focus state for accessibility
+      &:focus-visible {
+        outline: 2px solid #ff4400;
+        outline-offset: 2px;
+      }
+    }
+
+    // Text content
+    .toggle-text {
+      flex: 1;
+      line-height: 1.4;
+      margin: 0;
+      padding: 0;
     }
 
     .link {
@@ -472,41 +714,234 @@
       color: #ff4400;
       text-decoration: underline;
       margin: 0 0.125rem;
+      touch-action: manipulation;
+      pointer-events: auto;
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(255, 68, 0, 0.2);
+
+      @include mobile {
+        touch-action: manipulation !important;
+        pointer-events: auto !important;
+        -webkit-tap-highlight-color: rgba(255, 68, 0, 0.3);
+        display: inline-block;
+        padding: 2px 4px; // Add padding for better touch target
+        margin: 0; // Remove horizontal margin on mobile to eliminate gaps between text
+      }
     }
 
     @include mobile {
       font-size: 0.6875rem;
+      gap: 10px; // Slightly smaller gap on mobile
+
+      .toggle-switch {
+        width: 32px; // Slightly smaller on mobile
+        height: 18px;
+
+        &::after {
+          width: 14px;
+          height: 14px;
+          top: 2px;
+          left: 2px;
+        }
+
+        &.active::after {
+          transform: translateX(14px);
+        }
+      }
     }
   }
 
+  // Continue Button - Based on Figma Design and ButtonPrimaryStandard behavior
   .continue-button {
-    margin: 1.25rem 0 0.625rem 0;
-    padding: 0.75rem;
-    background-color: #ff4400;
-    color: white;
-    font-size: 0.75rem;
-    font-weight: map-get($font-weight, "black");
-    border: 1px solid #ff4400;
-    border-radius: 31px;
-    cursor: pointer;
-    width: 100%;
-    text-transform: uppercase;
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 24px;
+    gap: 10px;
+    overflow: hidden; // Changed back to hidden for proper arrow animation
 
-    &:hover {
-      background-color: white;
-      color: #ff4400;
+    width: 100%; // Full width as requested
+    height: 55px; // Based on Figma: height: 55px
+
+    background: #ff4400; // Based on Figma: #FF4400
+    border: none;
+    border-radius: 8px; // Based on Figma: border-radius: 8px
+    cursor: pointer;
+    position: relative;
+    overflow: visible; // Changed from 'hidden' to 'visible' so arrow can be seen
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    box-sizing: border-box;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 7;
+    align-self: stretch;
+    flex-grow: 0;
+
+    // Arrow behavior controlled by CSS transitions
+
+    // Dynamic spacing based on error state
+    &:not(
+        :has(+ .popup-registration__error, + .popup-registration-error-message)
+      ) {
+      margin-bottom: 20px; // Reduced space when no errors below
+    }
+
+    &:has(+ .popup-registration__error, + .popup-registration-error-message) {
+      margin-bottom: 16px; // Normal space when errors exist below
+    }
+
+    // Button text styling
+    .button-text {
+      /* Start Trading */
+      width: auto;
+      height: 27px; // Based on Figma: height: 27px
+
+      font-family: "Sofia Pro", sans-serif;
+      font-style: normal;
+      font-weight: 500; // Based on Figma: font-weight: 500
+      font-size: 20px; // Based on Figma: font-size: 20px
+      line-height: 27px; // Based on Figma: line-height: 27px
+
+      color: #ffffff; // Based on Figma: #FFFFFF
+      white-space: nowrap;
+      z-index: 2;
+      transition: none; // Text should NOT move
+      position: relative; // Ensure text has proper positioning context
+
+      /* Inside auto layout */
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+
+    // Button arrow (hidden by default, shows on hover)
+    .button-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      width: 0;
+      margin-left: 0;
+      transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+      overflow: hidden;
+      color: #ffffff;
+      z-index: 10;
+
+      /* Inside auto layout */
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+
+      // Arrow icon styling
+      svg {
+        stroke: currentColor;
+        stroke-width: 1.5; // Slightly thicker for better visibility
+        fill: none; // Ensure no fill
+      }
+    }
+
+    // Hover state - same behavior as ButtonPrimaryStandard
+    &:hover,
+    &:focus {
+      width: 100%; // Width stays 100% as requested
+      background: #ff4400;
+      color: #ffffff;
+      box-shadow: 0 0 19.3px 0 rgba(255, 68, 0, 0.5);
+
+      .button-text {
+        color: #ffffff;
+        // NO position change - text stays exactly where it is
+      }
+
+      .button-arrow {
+        opacity: 1;
+        width: 24px;
+        margin-left: 0; // Reduced spacing between text and arrow
+        color: #ffffff;
+      }
+    }
+
+    // Active state for better interaction feedback
+    &:active {
+      transform: translateY(1px); // Slight press effect
+
+      .button-arrow {
+        opacity: 1;
+        width: 24px;
+        margin-left: 0; // Reduced spacing between text and arrow
+        color: #ffffff;
+      }
+    }
+
+    // Focus state for accessibility
+    &:focus-visible {
+      outline: 2px solid #ffffff;
+      outline-offset: 2px;
+
+      .button-arrow {
+        opacity: 1;
+        width: 24px;
+        margin-left: 0; // Reduced spacing between text and arrow
+        color: #ffffff;
+      }
+    }
+
+    // Disabled state
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    @include mobile {
+      width: 100%;
+      height: 51px; // Slightly smaller on mobile
+      padding: 12px 20px;
+      overflow: visible; // Ensure arrow is visible on mobile
+
+      .button-text {
+        font-size: 18px; // Smaller font on mobile
+        line-height: 24px;
+        margin-right: 8px; // Add right margin to create space for arrow
+      }
+
+      // Mobile-specific spacing adjustments
+      &:not(
+          :has(
+              + .popup-registration__error,
+              + .popup-registration-error-message
+            )
+        ) {
+        margin-bottom: 4px; // Even smaller space on mobile when no errors
+      }
+
+      &:has(+ .popup-registration__error, + .popup-registration-error-message) {
+        margin-bottom: 12px; // Normal space on mobile when errors exist
+      }
     }
   }
 
   &__close {
     display: block !important;
     position: absolute;
-    top: 1.25rem;
-    right: 0.9375rem;
+    top: 25px;
+    right: 30px;
     cursor: pointer;
     width: 1.25rem;
     height: 1.25rem;
     z-index: 10002;
+
+    @include mobile {
+      top: 20px;
+      right: 20px;
+      width: 1.125rem;
+      height: 1.125rem;
+      z-index: 10003; // Higher z-index for mobile
+    }
   }
 
   @include mobile {
@@ -533,7 +968,7 @@
     input,
     .custom-dropdown__selected {
       &::placeholder {
-        color: #757575;
+        color: #6b7280;
         opacity: 1;
       }
     }
@@ -543,102 +978,6 @@
     position: relative;
     width: 100%;
     height: 2.625rem;
-
-    &__selected {
-      width: 100%;
-      padding: 0.5rem;
-      font-size: 0.813rem;
-      font-weight: 500;
-      border: none;
-      border-bottom: 1px solid #ff4400;
-      background-color: white;
-      cursor: pointer;
-      height: 2.625rem;
-      line-height: 1rem;
-      box-sizing: border-box;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #1a1a1a;
-
-      &[data-value=""] {
-        background-color: white !important;
-        color: #757575;
-        font-weight: 500;
-      }
-
-      &:not([data-value=""]) {
-        background-color: white !important;
-        color: #1a1a1a;
-        font-weight: 500;
-      }
-
-      &:hover {
-        background-color: white !important;
-      }
-
-      &--open {
-        outline: none;
-        border-bottom: 2px solid #ff4400;
-      }
-    }
-
-    &__placeholder {
-      color: #757575;
-    }
-
-    &__option {
-      padding: 0.5rem 0.75rem;
-      cursor: pointer;
-      font-size: 0.813rem;
-      color: #1a1a1a;
-
-      &:hover {
-        background-color: #ff4400;
-        color: white;
-      }
-
-      &--selected {
-        background-color: #ff4400;
-        color: white;
-      }
-
-      &--active {
-        background-color: #ff4400;
-        color: white;
-      }
-    }
-
-    &__options {
-      max-height: 15.625rem;
-      overflow-y: auto;
-      scroll-behavior: auto;
-    }
-
-    &__option {
-      padding: 0.5rem 0.75rem;
-      cursor: pointer;
-
-      &--selected {
-        background-color: #ff4400;
-        color: white;
-      }
-
-      &:hover:not(&--selected) {
-        background-color: #ffd6c6;
-        color: #ff4400;
-      }
-    }
-
-    &__arrow {
-      width: 0.625rem;
-      height: 0.375rem;
-      transition: transform 0.2s ease;
-
-      &--open {
-        transform: rotate(180deg);
-      }
-    }
 
     &__search {
       width: 100%;
@@ -680,6 +1019,19 @@
         width: 100%;
         background: white;
         padding: 0.25rem 0;
+        font-size: 0.75rem;
+        color: #ff0000;
+        line-height: 1.2;
+
+        @include mobile {
+          position: static;
+          margin-top: 0.25rem;
+          margin-bottom: 0.5rem;
+          font-size: 0.75rem;
+          line-height: 1.3;
+          padding: 0;
+          background: transparent;
+        }
       }
     }
   }
@@ -689,108 +1041,6 @@
     font-size: 0.8125rem;
     margin-bottom: 0.5rem;
     font-weight: map-get($font-weight, "black");
-  }
-
-  .three-fields-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-
-    .popup-registration__field {
-      width: 100%;
-      margin: 0;
-    }
-
-    @include desktop-lg {
-      .country-field {
-        grid-column: 1;
-      }
-
-      .mobile-code-phone {
-        grid-column: 2 / span 2;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-      }
-
-      .code-field {
-        width: 100%;
-      }
-
-      .phone-field {
-        width: 100%;
-      }
-    }
-
-    @media screen and (max-width: $max-lg) {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-
-      .mobile-code-phone {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-      }
-    }
-  }
-
-  .popup-registration__input,
-  .custom-dropdown__selected {
-    height: 2.625rem;
-    font-size: 0.8125rem;
-    border: none;
-    border-bottom: 1px solid #ff4400;
-    background-color: transparent;
-    padding: 0.5rem 0.75rem;
-
-    &:focus {
-      outline: none;
-      border-bottom: 2px solid #ff4400;
-    }
-  }
-
-  .custom-dropdown {
-    width: 100%;
-    min-width: 0;
-
-    &__selected {
-      width: 100%;
-      min-width: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    &__content {
-      width: 100%;
-      min-width: 0;
-    }
-  }
-
-  .popup-registration__field {
-    float: none;
-    position: static;
-  }
-
-  .popup-registration__input,
-  .custom-dropdown,
-  .custom-dropdown__selected {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .custom-dropdown {
-    &__selected {
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    &__content {
-      width: 100%;
-      box-sizing: border-box;
-    }
   }
 
   // @media screen and (max-width: $max-lg) and (orientation: landscape) {
@@ -1015,7 +1265,7 @@
     -webkit-text-size-adjust: 100%;
 
     @supports (-webkit-touch-callout: none) {
-      font-size: 0.8125rem !important;
+      font-size: 1rem !important; // 16px to prevent iOS Safari auto-zoom
       transform-origin: left top;
     }
   }
@@ -1045,14 +1295,19 @@
 
     // Special styling for agreement error
     &--agreement {
-      margin-top: 1.25rem;
-      margin-bottom: 0;
+      margin-top: 10px;
+      margin-bottom: 10px;
       text-align: center;
       font-weight: bold;
       font-size: 1.125rem;
       text-decoration: underline;
       @include mobile {
-        font-size: 1rem;
+        font-size: 0.875rem;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        line-height: 1.3;
+        padding: 0 0.5rem;
+        word-wrap: break-word;
       }
     }
   }
@@ -1168,7 +1423,7 @@
 
 .popup-registration__form input::placeholder,
 .popup-registration__form select::placeholder {
-  color: #757575;
+  color: #6b7280;
   opacity: 1;
 }
 
@@ -1203,7 +1458,10 @@
   text-decoration: underline;
 
   @include mobile {
-    font-size: 1rem;
+    font-size: 0.875rem;
+    margin: 0.25rem 0;
+    line-height: 1.3;
+    padding: 0 0.5rem;
   }
 }
 
@@ -1231,20 +1489,7 @@
   box-sizing: border-box;
 }
 
-.popup-registration__sidebar__close-mobile {
-  display: none;
-
-  @include mobile {
-    display: block;
-    position: absolute;
-    top: 0.9375rem;
-    right: 0.9375rem;
-    cursor: pointer;
-    width: 0.9375rem;
-    height: 0.9375rem;
-    z-index: 10000;
-  }
-}
+// Mobile close button styling moved to popup-registration__close with @include mobile
 
 .custom-dropdown {
   position: relative;
@@ -1319,7 +1564,7 @@
     width: 100%;
     padding: 0.5rem;
     border: none;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ff4400;
     font-size: 0.813rem;
 
     &:focus {
@@ -1353,16 +1598,6 @@
       color: white;
     }
   }
-
-  &__arrow {
-    width: 0.625rem;
-    height: 0.375rem;
-    transition: transform 0.2s ease;
-
-    &--open {
-      transform: rotate(180deg);
-    }
-  }
 }
 
 .custom-dropdown__options {
@@ -1384,10 +1619,6 @@
   }
 }
 
-.popup-registration__input {
-  width: 100%;
-}
-
 .popup-registration .custom-dropdown {
   width: 100%;
 }
@@ -1400,54 +1631,848 @@
 
   .popup-registration__field {
     width: 100%;
+
+    // Error state styling for name fields
+    &.has-error,
+    &:has(.popup-registration__error) {
+      .popup-registration__input {
+        border-color: #ff0000 !important;
+        border-width: 1px !important;
+        box-shadow: 0px 1px 2px rgba(255, 0, 0, 0.1);
+      }
+    }
   }
 
   @include mobile {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
+    margin-bottom: 1.5rem; // Extra space for name fields on mobile
   }
 }
 
 .popup-registration__field {
+  // Error state styling for all form fields
+  &.has-error,
+  &:has(.popup-registration__error) {
+    .popup-registration__input,
+    .custom-dropdown__selected {
+      border-color: #ff0000 !important;
+      border-width: 1px !important;
+      box-shadow: 0px 1px 2px rgba(255, 0, 0, 0.1);
+    }
+  }
+
   @include mobile {
     margin-bottom: 0.9375rem;
+
+    // Better error handling for mobile
+    &.has-error,
+    &:has(.popup-registration__error) {
+      margin-bottom: 1.25rem; // Extra space for error messages
+
+      .popup-registration__input,
+      .custom-dropdown__selected {
+        border-color: #ff0000 !important;
+        border-width: 1px !important;
+        box-shadow: 0px 1px 2px rgba(255, 0, 0, 0.1);
+      }
+    }
   }
 }
 
 .popup-registration__input,
 .custom-dropdown__selected {
-  width: 100%;
-  height: 2.625rem;
-  font-size: 0.8125rem;
-  box-sizing: border-box;
-  border: none;
-  border-bottom: 1px solid #ff4400;
-  background-color: transparent;
-  padding: 0.5rem 0.75rem;
+  box-sizing: border-box; // Based on Figma design
+
+  /* Auto layout */
+  display: flex; // Based on Figma design
+  flex-direction: row; // Based on Figma design
+  align-items: center; // Based on Figma design
+  padding: 13px 17px; // Based on Figma design
+
+  width: 260.5px; // Based on Figma design
+  height: 42px; // Based on Figma design
+
+  /* white */
+  background: #ffffff; // Based on Figma design
+  /* gray/300 */
+  border: 1px solid #d1d5db; // Based on Figma design
+  /* shadow/sm */
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05); // Based on Figma design
+  border-radius: 6px; // Based on Figma design
+
+  /* Inside auto layout */
+  flex: none; // Based on Figma design
+  order: 1; // Based on Figma design
+  align-self: stretch; // Based on Figma design
+  flex-grow: 0; // Based on Figma design
   margin: 0;
 
   &::placeholder {
-    color: #757575;
+    /* Placeholder */
+    font-weight: map-get($font-weight, "regular"); // Based on Figma design
+    font-size: 14px; // Based on Figma design
+    line-height: 24px; // Based on Figma design - identical to box height, or 171%
+
+    color: #6b7280; // Based on Figma design
+
+    /* Inside auto layout */
+    flex: none; // Based on Figma design
+    order: 0; // Based on Figma design
+    flex-grow: 0; // Based on Figma design
     opacity: 1;
   }
 
   &:focus {
     outline: none;
-    border-bottom: 2px solid #ff4400;
+    border: 1px solid #ff4400;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  // Error state styling
+  &.has-error,
+  &:has(+ .popup-registration__error),
+  .popup-registration__field:has(.popup-registration__error) & {
+    border-color: #ff0000 !important;
+    border-width: 1px !important;
+    box-shadow: 0px 1px 2px rgba(255, 0, 0, 0.1);
+  }
+
+  @include mobile {
+    width: 100%; // Full width on mobile
+    padding: 12px 16px; // Slightly smaller padding on mobile
+    font-size: 16px !important; // 16px to prevent iOS Safari auto-zoom
+    line-height: 1.4; // Better line height for mobile
+  }
+
+  @include tablet {
+    width: 100%; // Full width on tablet
+  }
+
+  @include desktop-lg {
+    width: 100%;
+  }
+}
+
+// Special styling for email input - full width
+.popup-registration__input[type="email"] {
+  width: 100% !important; // Force full width for email input
+}
+
+// Custom dropdown styling based on Figma JSON
+.custom-dropdown {
+  &__selected {
+    /* Form Fields/Text input */
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 9px 17px; // Based on Figma: x: 17, y: 9
+
+    width: 100%; // Changed from fixed width to be responsive
+    height: 42px; // Based on Figma: height: 42
+
+    /* white */
+    background: #ffffff;
+    /* gray/300 */
+    border: 1px solid #d1d5db; // Based on Figma: #D1D5DB
+    /* shadow/sm */
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05); // Based on Figma shadow
+    border-radius: 6px; // Based on Figma: cornerRadius: 6
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0;
+    cursor: pointer;
+
+    /* Text styling */
+    font-family: "Sofia Pro", sans-serif;
+    font-size: 14px;
+    line-height: 24px;
+    color: #6b7280; // Based on Figma placeholder color
+
+    @include mobile {
+      font-size: 16px !important; // 16px to prevent iOS Safari auto-zoom
+    }
+
+    &:focus {
+      outline: none;
+      border: 1px solid #ff4400;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    // Error state styling for dropdowns
+    &.has-error,
+    &:has(+ .popup-registration__error),
+    .popup-registration__field:has(.popup-registration__error) & {
+      border-color: #ff0000 !important;
+      border-width: 1px !important;
+      box-shadow: 0px 1px 2px rgba(255, 0, 0, 0.1);
+    }
+  }
+
+  &__arrow {
+    /* Selector */
+    // width: 20px; // Based on Figma: width: 20
+    // height: 20px; // Based on Figma: height: 20
+    margin-left: auto; // Position on the right
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__placeholder {
+    /* Text */
+    width: 203px; // Based on Figma: width: 203
+    height: 24px; // Based on Figma: height: 24
+
+    font-family: "Sofia Pro", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 24px; // identical to box height, or 171%
+
+    color: #6b7280; // Based on Figma: #6B7280
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 1;
+    opacity: 1;
+  }
+
+  @include mobile {
+    &__selected {
+      width: 100%; // Full width on mobile
+      padding: 12px 16px; // Adjusted padding for mobile
+    }
+
+    &__placeholder {
+      width: auto; // Flexible width on mobile
+      min-width: 200px; // Minimum width
+    }
+  }
+}
+
+// Email field container - ensure proper layout
+.popup-registration__field:has(.popup-registration__input[type="email"]) {
+  width: 100%;
+
+  // Error state styling for email field
+  &.has-error,
+  &:has(.popup-registration__error) {
+    .popup-registration__input {
+      border-color: #ff0000 !important;
+      border-width: 1px !important;
+      box-shadow: 0px 1px 2px rgba(255, 0, 0, 0.1);
+    }
+  }
+}
+
+// Email label - flexible width
+.popup-registration__field:has(.popup-registration__input[type="email"]) {
+  .popup-registration__label {
+    width: auto;
+    min-width: 78px;
+  }
+}
+
+// Country and Phone Number row - side by side layout
+.country-phone-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem; // Same gap as First Name and Last Name
+  align-items: flex-start;
+  overflow: visible; // Allow dropdowns to extend beyond row
+
+  // Force specific widths for better layout control
+  .popup-registration__field.country-field {
+    width: 100% !important;
+    max-width: none !important;
+    flex-shrink: 0 !important;
+
+    // Ensure all child elements respect the width
+    .custom-dropdown,
+    .custom-dropdown__selected {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    // Error state styling for country field
+    &.has-error,
+    &:has(.popup-registration__error) {
+      .custom-dropdown__selected {
+        border-color: #ff0000 !important;
+        border-width: 1px !important;
+        box-shadow: 0px 1px 2px rgba(255, 0, 0, 0.1);
+      }
+    }
+  }
+
+  .popup-registration__field.phone-field {
+    position: relative; // Required for absolute positioning of child dropdowns
+    width: 100% !important;
+    max-width: none !important;
+    flex-shrink: 0 !important;
+    overflow: visible; // Allow dropdown to extend beyond container
+
+    // Ensure phone container takes full width
+    .phone-number-container {
+      width: 100% !important;
+    }
+
+    // Error state styling for phone field
+    // &.has-error,
+    // &:has(.popup-registration__error) {
+    //   .phone-number-container {
+    //     border-color: #ff0000 !important;
+    //     border-width: 1px !important;
+    //     box-shadow: 0px 1px 2px rgba(255, 0, 0, 0.1);
+    //   }
+    // }
+  }
+
+  @include mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem; // Same gap as mobile First Name and Last Name
+
+    .popup-registration__field.country-field {
+      width: 100% !important;
+      max-width: none !important;
+    }
+
+    .popup-registration__field.phone-field {
+      width: 100% !important;
+      max-width: none !important;
+    }
+  }
+}
+
+// Country field - same width as First Name and Last Name
+.popup-registration__field.country-field {
+  width: 100% !important; // Same width as First Name and Last Name
+  max-width: none !important; // Allow natural width
+  flex-shrink: 0 !important; // Prevent shrinking
+
+  // Override any conflicting width rules
+  .custom-dropdown {
+    width: 100% !important; // Ensure dropdown container takes full width of parent
+  }
+
+  .custom-dropdown__selected {
+    width: 100% !important; // Ensure dropdown takes full width of parent
+    max-width: 100% !important; // Prevent expansion beyond parent
+  }
+
+  // Error state styling for country field
+  &.has-error,
+  &:has(.popup-registration__error) {
+    .custom-dropdown__selected {
+      border-color: #ff0000 !important;
+      border-width: 1px !important;
+      box-shadow: 0px 1px 2px rgba(255, 0, 0, 0.1);
+    }
+  }
+
+  @include mobile {
+    width: 100% !important; // Full width on mobile
+    max-width: none !important; // Allow full width on mobile
+  }
+}
+
+// Phone field - same width as First Name and Last Name
+.popup-registration__field.phone-field {
+  width: 100% !important; // Same width as First Name and Last Name
+  max-width: none !important; // Allow natural width
+  flex-shrink: 0 !important; // Prevent shrinking
+
+  // Ensure phone number container takes full width
+  .phone-number-container {
+    width: 100% !important;
+  }
+
+  // Error state styling for phone field - removed to prevent duplication
+  // Error styling is now handled by .phone-number-container.has-error
+}
+
+// Phone number container - combines country code dropdown and phone input
+.phone-number-container {
+  position: relative; // Required for absolute positioning of dropdown
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%; // Take full width of parent container
+  height: 42px; // Match Figma design height
+
+  // Ensure proper alignment of child elements
+  align-items: stretch; // Stretch align vertically to fill container height
+
+  // Force consistent height for all child elements
+  .phone-country-code,
+  .phone-number-input {
+    height: 42px !important; // Force consistent height
+  }
+
+  // Remove unwanted hover effects
+  &:hover {
+    .phone-code-dropdown,
+    .phone-number-input .popup-registration__input {
+      border-color: #d1d5db; // Keep default border color on hover
+    }
+  }
+
+  // Country code dropdown group
+  .phone-country-code-group {
+    display: flex;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    // &:hover {
+    //   .phone-country-code {
+    //     background: #f9fafb; // Light hover effect
+    //   }
+    // }
+
+    &--open {
+      .phone-country-code {
+        border-color: #ff4400; // Orange border when open
+        background: #fff5f2; // Light orange background when open
+      }
+
+      .phone-chevron-icon {
+        border-color: #ff4400; // Orange border when open
+      }
+    }
+  }
+
+  .phone-country-code {
+    flex-shrink: 0;
+    width: 60px; // Compact width for country code only
+    height: 42px; // Ensure consistent height
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-right: none; // Remove right border to eliminate separator line on desktop
+    border-radius: 6px 0 0 6px; // Rounded left corners only
+    padding: 9px 12px; // Same vertical padding as other inputs for alignment
+    transition: all 0.2s ease;
+
+    .country-code-text {
+      font-size: 14px;
+      line-height: 24px;
+      color: #374151; // Darker text color for better readability
+      font-weight: 500;
+    }
+
+    // Placeholder styling for country code - same as custom-dropdown__placeholder
+    .custom-dropdown__placeholder {
+      /* Text - same styling as main custom-dropdown__placeholder */
+      width: auto; // Flexible width for country code container
+      height: 24px; // Same height as main placeholder
+
+      font-family: "Sofia Pro", sans-serif; // Same font family
+      font-style: normal; // Same font style
+      font-weight: 400; // Same font weight
+      font-size: 14px; // Same font size
+      line-height: 24px; // Same line height
+
+      color: #6b7280; // Same color as main placeholder
+
+      /* Inside auto layout - same structure */
+      flex: none;
+      order: 0;
+      flex-grow: 0; // Don't grow in compact container
+      opacity: 1; // Same opacity as main placeholder
+
+      /* Additional styling for country code context */
+      text-align: center; // Center align for compact space
+
+      /* Ensure perfect vertical alignment */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0; // Remove any default margins
+      padding: 0; // Remove any default padding
+    }
+
+    // Error state styling for placeholder - same as main error state
+    // .popup-registration__field:has(.popup-registration__error) & {
+    //   .custom-dropdown__placeholder {
+    //     color: #ff0000 !important; // Same red color as other error states
+    //     opacity: 1; // Same opacity as main placeholder
+    //   }
+    // }
+  }
+
+  // Chevron down icon styling
+  .phone-chevron-icon {
+    flex-shrink: 0;
+    width: 20px; // Compact width for icon
+    height: 42px; // Match container height
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-left: none; // Remove left border to eliminate separator line on desktop
+    border-right: none; // Remove right border to eliminate separator line on desktop
+    padding: 0 4px;
+    transition: all 0.2s ease;
+
+    .chevron-down-icon {
+      width: 16px;
+      height: 16px;
+      opacity: 0.6; // Slightly transparent for subtle appearance
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); // Smooth rotation transition
+      transform: rotate(0deg); // Initial position
+
+      &--rotated {
+        transform: rotate(180deg); // Rotated when dropdown is open
+      }
+    }
+  }
+
+  .phone-number-input {
+    flex: 1;
+    min-width: 0; // Allow shrinking
+    height: 42px; // Ensure consistent height
+
+    .popup-registration__input {
+      width: 100%;
+      height: 100%;
+      border-radius: 0 6px 6px 0; // Rounded right corners only
+      padding: 9px 17px;
+      font-size: 14px;
+      line-height: 24px;
+      color: #6b7280;
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-left: none; // Remove left border to eliminate separator line on desktop
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+      text-align: left; // Ensure text alignment is left
+      display: flex; // Ensure proper alignment
+      align-items: center; // Center vertically like country code
+
+      @include mobile {
+        font-size: 16px !important; // 16px to prevent iOS Safari auto-zoom
+      }
+
+      &:focus {
+        outline: none;
+        border-color: #ff4400;
+      }
+
+      &::placeholder {
+        color: #6b7280;
+        opacity: 1;
+        font-family: "Sofia Pro", sans-serif; // Same font family as other placeholders
+        font-size: 14px; // Same font size as other placeholders
+        line-height: 24px; // Same line height as other placeholders
+        font-weight: 400; // Same font weight as other placeholders
+
+        /* Ensure perfect vertical alignment */
+        margin: 0; // Remove any default margins
+        padding: 0; // Remove any default padding
+        vertical-align: middle; // Ensure vertical alignment
+      }
+    }
+  }
+
+  // Country code dropdown content - using same styling as main custom-dropdown
+  .phone-country-dropdown {
+    position: absolute;
+    top: calc(
+      100% + 2px
+    ); // Position exactly below phone-number-container with 2px gap
+    left: 0;
+    width: 100%; // Same width as phone-number-container
+    z-index: 10004;
+    pointer-events: auto; // Ensure dropdown is clickable
+
+    // Use same styling as main custom-dropdown__content
+    .custom-dropdown__content {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      max-height: 18.75rem;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 0.25rem;
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+      z-index: 10003;
+      // Remove overflow-y: auto to prevent double scrolling
+    }
+
+    // Style the search input within dropdown
+    .custom-dropdown__search {
+      width: 100%;
+      padding: 0.5rem;
+      border: none;
+      border-bottom: 1px solid #ff4400;
+      font-size: 0.813rem;
+
+      &:focus {
+        outline: none;
+        border-bottom: 2px solid #ff4400;
+      }
+    }
+
+    // Style the options within dropdown - using same styling as main custom-dropdown
+    .custom-dropdown__options {
+      max-height: 15.625rem;
+      overflow-y: auto; // Only this should have scrolling
+    }
+
+    .custom-dropdown__option {
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      font-size: 0.813rem;
+
+      &:hover {
+        background-color: #ff4400;
+        color: white;
+      }
+
+      &--selected {
+        background-color: #ff4400;
+        color: white;
+      }
+
+      &--active {
+        background-color: #ff4400;
+        color: white;
+      }
+    }
+  }
+
+  // Focus state - show connected borders without separator
+  &:focus-within {
+    .phone-country-code-group {
+      .phone-country-code {
+        border-color: #ff4400;
+        border-right: none; // Maintain no separator line on focus
+      }
+
+      .phone-chevron-icon {
+        border-color: #ff4400;
+      }
+    }
+
+    .phone-number-input .popup-registration__input {
+      border-color: #ff4400;
+      border-left: none; // Maintain no separator line on focus
+    }
+  }
+
+  // Override hover effects to prevent unwanted border color changes
+  // &:hover {
+  //   .phone-country-code-group {
+  //     .phone-country-code {
+  //       border-color: #d1d5db; // Keep default border color on hover
+  //       border-right: none; // Maintain no separator line
+  //     }
+
+  //     .phone-chevron-icon {
+  //       border-color: #d1d5db; // Keep default border color on hover
+  //     }
+  //   }
+
+  //   .phone-number-input .popup-registration__input {
+  //     border-color: #d1d5db; // Keep default border color on hover
+  //     border-left: none; // Maintain no separator line
+  //   }
+  // }
+
+  // Error state - consistent styling without border duplication
+  &.has-error {
+    .phone-country-code-group {
+      .phone-country-code,
+      .phone-chevron-icon {
+        border-color: #ff0000 !important;
+      }
+
+      // Maintain no separator line in error state
+      .phone-country-code {
+        border-right: none;
+      }
+
+      .phone-chevron-icon {
+        border-left: none;
+        border-right: none;
+      }
+    }
+
+    .phone-number-input .popup-registration__input {
+      border-color: #ff0000 !important;
+      border-left: none;
+    }
+  }
+
+  // Error state from parent field - simplified to prevent border duplication
+  .popup-registration__field:has(.popup-registration__error) & {
+    // Remove container border to prevent double borders
+    // Only style individual elements
+
+    .phone-country-code-group {
+      .phone-country-code,
+      .phone-chevron-icon {
+        border-color: #ff0000 !important;
+      }
+    }
+
+    .phone-number-input .popup-registration__input {
+      border-color: #ff0000 !important;
+    }
+  }
+}
+
+// Mobile responsive adjustments - same layout structure as desktop
+@include mobile {
+  .phone-number-container {
+    width: 100%; // Full width on mobile
+    flex-direction: row; // Keep horizontal layout for phone fields
+    height: 42px; // Keep same height as desktop
+    gap: 8px; // Add gap between elements for proper spacing
+
+    // Error state styling for mobile - same as desktop
+    &.has-error {
+      .phone-country-code-group {
+        .phone-country-code,
+        .phone-chevron-icon {
+          border-color: #ff0000 !important;
+        }
+
+        // Maintain no separator line in error state (same as desktop)
+        .phone-country-code {
+          border-right: none;
+        }
+
+        .phone-chevron-icon {
+          border-left: none;
+          border-right: none;
+        }
+      }
+
+      .phone-number-input .popup-registration__input {
+        border-color: #ff0000 !important;
+        border-left: none; // No separator line (same as desktop)
+      }
+    }
+
+    .phone-country-code-group {
+      flex-shrink: 0; // Prevent shrinking
+      width: 60px; // Keep same width as desktop for country code
+
+      .phone-country-code {
+        width: 100%;
+        border-radius: 6px 0 0 6px; // Rounded left corners only (same as desktop)
+        height: 42px;
+        border-right: none; // No separator line (same as desktop)
+
+        // Mobile placeholder styling - same as main custom-dropdown__placeholder mobile
+        .custom-dropdown__placeholder {
+          width: auto; // Flexible width for country code container
+          min-width: 60px; // Minimum width for country code
+          font-size: 14px; // Same font size as main placeholder mobile
+          line-height: 24px; // Same line height as main placeholder
+        }
+      }
+
+      .phone-chevron-icon {
+        display: flex !important; // Show chevron icon on mobile (same as desktop)
+        flex-shrink: 0;
+        width: 20px; // Same width as desktop
+        height: 42px; // Same height as desktop
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        border: 1px solid #d1d5db;
+        border-left: none; // No separator line (same as desktop)
+        border-right: none; // No separator line (same as desktop)
+        padding: 0 4px;
+        margin-right: 8px !important; // Add space between chevron and phone input - force with !important
+        transition: all 0.2s ease;
+
+        .chevron-down-icon {
+          width: 16px;
+          height: 16px;
+          opacity: 0.6;
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transform: rotate(0deg);
+        }
+      }
+    }
+
+    .phone-number-input {
+      flex: 1; // Take remaining width
+      min-width: 0; // Allow shrinking
+      margin-left: 8px; // Add left margin to create space from chevron icon
+
+      .popup-registration__input {
+        border-radius: 0 6px 6px 0; // Rounded right corners only (same as desktop)
+        height: 42px;
+        border-left: none; // No separator line (same as desktop)
+
+        @include mobile {
+          font-size: 16px !important; // 16px to prevent iOS Safari auto-zoom
+        }
+      }
+    }
+
+    // Focus states for mobile - same as desktop
+    &:focus-within {
+      .phone-country-code-group {
+        .phone-country-code {
+          border-color: #ff4400;
+          border-right: none; // No separator line (same as desktop)
+        }
+
+        .phone-chevron-icon {
+          border-color: #ff4400;
+        }
+      }
+
+      .phone-number-input .popup-registration__input {
+        border-color: #ff4400;
+        border-left: none; // No separator line (same as desktop)
+      }
+    }
   }
 }
 
 .popup-registration__label {
   display: block;
-  font-size: 0.8125rem;
-  margin-bottom: 0;
-  color: #1a1a1a;
-  font-weight: map-get($font-weight, "black");
-  margin-top: 1.25rem;
+  font-weight: map-get($font-weight, "regular"); // Based on Figma design
+  font-size: 14px; // Based on Figma design
+  line-height: 20px; // Based on Figma design - identical to box height
+  color: #0b121c; // Based on Figma design - Brand Dark Blue
+  margin: 0; // Reset margins
 
   &:first-child {
     margin-top: 0;
+  }
+
+  @include mobile {
+    width: auto; // Allow flexible width on mobile
+    height: auto; // Allow flexible height on mobile
+    min-height: 20px; // Maintain minimum height
+    margin-bottom: 4px; // Add some spacing below on mobile
   }
 }
 
@@ -1460,5 +2485,79 @@
         margin-bottom: 0;
       }
     }
+  }
+
+  // Mobile responsive for country-phone row - keep horizontal layout for phone fields
+  .country-phone-row {
+    flex-direction: column; // Country field above, phone fields below
+    gap: 0; // No gap between country and phone row
+  }
+
+  .popup-registration__field.country-field {
+    width: 100%;
+    margin-bottom: 20px; // Space between Country of Residence and Phone Number row
+  }
+}
+
+// Submit button styling based on Figma design
+.popup-registration__submit-button {
+  width: 100%;
+  height: 55px; // Based on Figma design
+  background: #ff4400;
+  border: none;
+  border-radius: 8px; // Based on Figma design
+  color: #ffffff;
+  font-family: "Sofia Pro", sans-serif;
+  font-weight: 600;
+  font-size: 18px; // Based on Figma design
+  line-height: 27px; // Based on Figma design
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  &:hover {
+    background: #e63900;
+    transform: translateY(-1px);
+  }
+
+  &::after {
+    content: "→";
+    font-size: 20px;
+    color: #ffffff;
+  }
+}
+
+// Grecaptcha badge styling - hide behind popup on mobile
+.grecaptcha-badge {
+  @include mobile {
+    display: none !important; // Completely hide on mobile
+    visibility: hidden !important; // Additional hiding method
+    opacity: 0 !important; // Make transparent
+    pointer-events: none !important; // Disable interaction
+    position: absolute !important; // Remove from flow
+    left: -9999px !important; // Move off-screen
+    top: -9999px !important; // Move off-screen
+  }
+}
+
+// Additional global styling to override Google's inline styles
+@include mobile {
+  iframe[src*="recaptcha"] {
+    display: none !important;
+  }
+
+  .grecaptcha-badge,
+  div[style*="grecaptcha"],
+  iframe[title*="reCAPTCHA"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
   }
 }

@@ -1,12 +1,9 @@
-import forexIcon from "../assets/images/all-markets/forex.svg";
-import indicesIcon from "../assets/images/all-markets/indices.svg";
-import sharesIcon from "../assets/images/all-markets/shares.svg";
-import commoditiesIcon from "../assets/images/all-markets/commodities.svg";
-import energiesIcon from "../assets/images/all-markets/energies.svg";
-import cryptoIcon from "../assets/images/all-markets/crypto.svg";
-import accountIcon from "../assets/images/icons/account.svg";
-import fundingIcon from "../assets/images/icons/funding.svg";
-import tradingIcon from "../assets/images/icons/trading.svg";
+import forexIcon from "../assets/images/icons/all-markets/forex.svg";
+import indicesIcon from "../assets/images/icons/all-markets/indices.svg";
+import sharesIcon from "../assets/images/icons/all-markets/shares.svg";
+import metalsIcon from "../assets/images/icons/all-markets/metals.svg";
+import energiesIcon from "../assets/images/icons/all-markets/energies.svg";
+import cryptoIcon from "../assets/images/icons/all-markets/crypto.svg";
 
 export const FAQ_FOREX = [
   {
@@ -304,7 +301,6 @@ export const FAQ_QUICK_ANSWER = [
 export const FAQ_ALL = [
   {
     title: "faq_account-title",
-    icon: accountIcon,
     content: [
       {
         question: "faq_account-q1",
@@ -341,7 +337,6 @@ export const FAQ_ALL = [
   },
   {
     title: "faq_funding-title",
-    icon: fundingIcon,
     content: [
       {
         question: "faq_funding-q1",
@@ -367,7 +362,6 @@ export const FAQ_ALL = [
   },
   {
     title: "faq_trading-title",
-    icon: tradingIcon,
     content: [
       {
         question: "faq_trading-q1",
@@ -427,7 +421,7 @@ export const FSA_FAQ_MARKET = [
   },
   {
     title: "faq_metals-title",
-    icon: commoditiesIcon,
+    icon: metalsIcon,
     content: [
       {
         question: "faq_metals-q1",
@@ -588,5 +582,24 @@ export const FAQ_COPY_TRADING = [
       "copy-trading_faq-content2-2",
       "copy-trading_faq-content2-3",
     ],
+  },
+];
+
+export const FAQ_CLIENT_PORTAL_ASSISTANCE = [
+  {
+    question: "client-portal-assistance_faq-title1",
+    answer: ["client-portal-assistance_faq-content1"],
+  },
+  {
+    question: "client-portal-assistance_faq-title2",
+    answer: ["client-portal-assistance_faq-content2"],
+  },
+  {
+    question: "client-portal-assistance_faq-title3",
+    answer: ["client-portal-assistance_faq-content3"],
+  },
+  {
+    question: "client-portal-assistance_faq-title4",
+    answer: ["client-portal-assistance_faq-content4"],
   },
 ];

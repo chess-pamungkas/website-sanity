@@ -1,949 +1,1175 @@
 @import "vars";
 @import "mixins";
 
-.partners-page-promotion {
-  background: url("../../assets/images/partners/promotion-bg.svg") no-repeat
-    center;
-  background-size: cover;
-  padding-top: 90px;
-  padding-bottom: 48px;
-
-  @include tablet {
-    padding-top: 90px;
-    padding-bottom: 112px;
-  }
-
-  @include desktop-lg {
-    padding-top: 150px;
-    padding-bottom: 50px;
-  }
-
-  @include desktop-xl {
-    padding-top: 161px;
-    padding-bottom: 112px;
-  }
-
-  .top-market-promotion__wrapper {
-    flex-direction: column-reverse;
-
-    @include desktop-xl {
-      flex-direction: row;
-    }
-  }
-
-  .top-market-promotion__description {
-    max-width: 799px;
-
-    @include desktop-lg {
-      max-width: 780px;
-    }
-  }
-
-  .top-market-promotion__text {
-    font-weight: map-get($font-weight, "black");
-    font-size: 28px;
-    line-height: 35px;
-    text-align: center;
-    padding-bottom: 85px;
-
-    @include tablet {
-      font-size: 41px;
-      line-height: 51px;
-      padding-bottom: 78px;
-    }
-
-    @include tablet {
-      padding-top: 40px;
-      padding-bottom: 20px;
-    }
-
-    @include desktop-xl {
-      font-size: 48px;
-      line-height: 60px;
-      text-align: left;
-    }
-  }
-
-  .top-market-promotion__block {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    @include desktop-xl {
-      display: block;
-    }
-  }
-}
-
-.partners-page-bottom-promotion {
-  background: map-get($colors, "red");
-  padding-top: 18px;
-  padding-bottom: 38px;
-
-  @include tablet {
-    padding-top: 35px;
-    padding-bottom: 42px;
-  }
-
-  @include desktop-lg {
-    padding-top: 46px;
-    padding-bottom: 48px;
-  }
-
-  @include desktop-xl {
-    padding-top: 86px;
-    padding-bottom: 130px;
-  }
-
-  .top-market-promotion__wrapper {
-    flex-direction: column-reverse;
-  }
-
-  .top-market-promotion__block {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    width: unset;
-  }
-
-  .top-market-promotion__description {
-    margin: unset;
-
-    @include tablet {
-      max-width: 508px;
-    }
-
-    @include desktop-lg {
-      max-width: 626px;
-    }
-
-    @include desktop-xl {
-      max-width: 1294px;
-    }
-  }
-
-  .top-market-promotion__text {
-    font-weight: map-get($font-weight, "black");
-    font-size: 19px;
-    line-height: 23px;
-    text-align: center;
-    padding-top: 25px;
-
-    @include tablet {
-      font-size: 23px;
-      line-height: 28px;
-      padding-top: 31px;
-    }
-
-    @include desktop-lg {
-      font-size: 32px;
-      line-height: 40px;
-      padding-top: 45px;
-    }
-
-    @include desktop-xl {
-      font-size: 60px;
-      line-height: 75px;
-      padding-top: 56px;
-    }
-  }
-
-  .top-market-promotion__img {
-    width: 67px;
-    margin-bottom: unset;
-
-    @include desktop-lg {
-      width: 89px;
-    }
-
-    @include desktop-xl {
-      width: 166px;
-    }
-  }
-}
-
-.partners-income {
+.partners {
   position: relative;
+  overflow: visible;
+  color: map-get($colors, "white");
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding-top: 80px;
+  z-index: 2;
   left: 50%;
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  width: 100vw;
-  display: flex;
+  box-sizing: border-box;
   align-items: center;
-  justify-content: center;
-  background: map-get($colors, "white");
+
+  @include mobile {
+    height: 953px;
+    border-radius: 20px;
+    padding-top: 73px;
+    margin-top: 0;
+    margin-bottom: 0;
+    overflow: visible;
+  }
 
   @include tablet {
-    background: url("../../assets/images/bg/top-market-page/left/bottom-md.svg")
-      no-repeat bottom;
+    height: 555px;
+    border-radius: 24px;
+    padding-top: 70px;
+    padding-bottom: 0;
   }
 
   @include desktop-lg {
-    background: url("../../assets/images/bg/top-market-page/left/bottom-lg.svg")
-      no-repeat bottom;
+    height: 583px;
+    border-radius: 24px;
+    padding-top: 83px;
+    padding-bottom: 0;
   }
 
   @include desktop-xl {
-    background: url("../../assets/images/bg/top-market-page/left/bottom-xl.svg")
-      no-repeat bottom;
+    height: 583px;
+    padding-top: 83px;
   }
 
-  padding: 72px 56px;
+  @include desktop-2k {
+    height: 583px;
+    padding-top: 83px;
+  }
 
-  &__wrapper {
-    position: relative;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 0;
+  @include desktop-5k {
+    height: 583px;
+    padding-top: 83px;
+  }
+
+  &__hero-container {
     width: 100%;
     height: 100%;
-    display: grid;
-    gap: 15px;
-    grid-template-areas: "title title" "desc desc" "total-clients total-income" "slider slider";
-
-    @include tablet {
-      max-width: 720px;
-      gap: 30px 9px;
-      grid-template-areas: "title desc" "total-clients total-income" "slider slider";
-    }
-
-    @include desktop-lg {
-      max-width: 1200px;
-      gap: 40px 25px;
-      grid-template-areas: "title title title desc desc" "total-clients slider slider slider total-income";
-    }
-
-    @include desktop-xl {
-      max-width: 1680px;
-      gap: 49px 60px;
-      grid-template-areas: "title title desc" "total-clients slider total-income";
-      padding: 204px 0;
-    }
-
-    @include desktop-2k {
-      max-width: 2400px;
-    }
-
-    @include desktop-5k {
-      max-width: 3840px;
-    }
-  }
-
-  &__title {
-    font-weight: map-get($font-weight, "regular");
-    font-size: 15px;
-    line-height: 19px;
-    margin: 0;
-    width: 233px;
-    grid-area: title;
-    justify-self: center;
-    text-align: center;
-
-    @include tablet {
-      font-size: 21px;
-      line-height: 26px;
-      width: 287px;
-      justify-self: start;
-      text-align: left;
-    }
-
-    @include desktop-lg {
-      font-size: 34px;
-      line-height: 42px;
-      width: 480px;
-    }
-
-    @include desktop-xl {
-      font-size: 48px;
-      line-height: 60px;
-      width: 823px;
-    }
-  }
-
-  &__description {
-    font-weight: map-get($font-weight, "regular");
-    font-size: 10px;
-    line-height: 13px;
-    color: map-get($colors, "grey");
-    margin: 0;
-    width: 264px;
-    grid-area: desc;
-    justify-self: center;
-    text-align: center;
-
-    @include tablet {
-      font-size: 18px;
-      line-height: 22px;
-      justify-self: right;
-      width: 291px;
-      text-align: left;
-    }
-
-    @include desktop-lg {
-      font-size: 22px;
-      line-height: 27px;
-      width: 356px;
-    }
-
-    @include desktop-xl {
-      justify-self: unset;
-      width: 476px;
-    }
-  }
-
-  &__total-clients {
+    max-width: 1400px;
+    margin: 0 auto;
+    border-radius: 24px;
+    background: #000000;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    width: 80px;
-    grid-area: total-clients;
-    justify-self: start;
-    text-align: left;
+    justify-content: space-between;
+    box-sizing: border-box;
 
-    @include tablet {
-      width: 197px;
-    }
-
-    @include desktop-lg {
-      width: 142px;
-    }
-
-    @include desktop-xl {
-      width: 150px;
-    }
-  }
-
-  &__total-income {
-    display: flex;
-    flex-direction: column;
-    width: 87px;
-    grid-area: total-income;
-    justify-self: end;
-    text-align: right;
-
-    @include tablet {
-      width: 180px;
-    }
-
-    @include desktop-lg {
-      width: 247px;
-      text-align: left;
-    }
-
-    @include desktop-xl {
-      justify-self: unset;
-      text-align: left;
-    }
-  }
-
-  &__total-num {
-    font-weight: map-get($font-weight, "black");
-    font-size: 16px;
-    line-height: 20px;
-    margin: 0;
-
-    @include tablet {
-      font-size: 25px;
-      line-height: 31px;
-    }
-
-    @include desktop-lg {
-      font-size: 60px;
-      line-height: 75px;
-    }
-  }
-
-  &__total-note {
-    font-weight: map-get($font-weight, "black");
-    font-size: 9px;
-    line-height: 12px;
-
-    @include tablet {
-      font-size: 15px;
-      line-height: 19px;
-    }
-
-    @include desktop-lg {
-      font-size: 16px;
-      line-height: 20px;
-    }
-  }
-
-  &__slider {
-    width: 257px;
-    padding-top: 5px;
-    grid-area: slider;
-    justify-self: center;
-
-    @include tablet {
-      width: 574px;
-    }
-
-    @include desktop-lg {
-      width: 470px;
-      padding-top: 62px;
-    }
-
-    @include desktop-xl {
-      width: 630px;
-      padding-top: 62px;
-      justify-self: unset;
-    }
-  }
-
-  &__slider-track {
-    height: 2px;
-    top: 10px;
-
-    @include tablet {
-      height: 4px;
-      top: 17px;
-    }
-
-    @include desktop-lg {
-      top: 72px;
-    }
-
-    @include desktop-xl {
-      height: 7px;
+    @include mobile {
+      width: 393px;
+      max-width: 393px;
+      height: 953px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
       top: 73px;
+      margin: 0 auto;
+      border-radius: 20px;
     }
-
-    &-0 {
-      background: map-get($colors, "red");
-    }
-
-    &-1 {
-      background: map-get($colors, "black-secondary");
-    }
-  }
-
-  &__slider-thumb {
-    width: 12px;
-    height: 12px;
-    background: map-get($colors, "red");
-    border-radius: 100%;
-    cursor: pointer;
-    outline: none;
 
     @include tablet {
-      width: 27px;
-      height: 27px;
+      width: 768px;
+      max-width: 768px;
+      height: 555px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 73px;
+      margin: 0 auto;
+      border-radius: 24px;
     }
 
     @include desktop-lg {
-      width: 23px;
-      height: 23px;
-    }
-
-    @include desktop-xl {
-      width: 29px;
-      height: 29px;
-    }
-  }
-
-  &__slider-mark {
-    display: flex;
-    flex-direction: column;
-
-    &-v-line {
-      top: 15px;
-      height: 7px;
-      width: 0;
-      border: 1px solid map-get($colors, "grey");
-
-      @include tablet {
-        top: 30px;
-        height: 14px;
-      }
-
-      @include desktop-lg {
-        top: 80px;
-        height: 12px;
-      }
-
-      @include desktop-xl {
-        top: 85px;
-        height: 16px;
-      }
-    }
-
-    &-number {
-      top: 23px;
-      font-weight: map-get($font-weight, "regular");
-      font-size: 7px;
-      line-height: 9px;
-      color: map-get($colors, "grey");
-
-      @include tablet {
-        top: 43px;
-        font-size: 13px;
-        line-height: 17px;
-      }
-
-      @include desktop-lg {
-        top: 92px;
-        font-size: 8px;
-        line-height: 10px;
-      }
-
-      @include desktop-xl {
-        top: 100px;
-        font-size: 18px;
-        line-height: 22px;
-      }
-    }
-  }
-}
-
-.partners-advantages {
-  scroll-snap-align: start;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  padding-top: 51px;
-  padding-bottom: 53px;
-  width: 100vw;
-  background-size: cover;
-  background: map-get($colors, "white");
-  background-image: url("../../assets/images/partners/advantages-bg-sm.svg");
-  background-repeat: no-repeat;
-  background-position: top center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-
-  @include tablet {
-    padding-top: 47px;
-    padding-bottom: 60px;
-    background-image: url("../../assets/images/partners/advantages-bg-md.svg");
-  }
-
-  @include desktop-lg {
-    padding-top: 87px;
-    padding-bottom: 150px;
-    background-image: url("../../assets/images/partners/advantages-bg-lg.svg");
-  }
-
-  @include desktop-xl {
-    padding-top: 98px;
-    padding-bottom: 128px;
-    background-image: url("../../assets/images/partners/advantages-bg-xl.svg");
-  }
-
-  &__wrapper {
-    position: relative;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    @include tablet {
-      max-width: 720px;
-    }
-
-    @include desktop-lg {
+      width: calc(100vw - 20px);
       max-width: 1200px;
+      height: 583px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
+      border-radius: 24px;
     }
 
     @include desktop-xl {
-      max-width: 1680px;
+      width: calc(100vw - 120px);
+      max-width: 1400px;
+      height: 583px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
     }
 
     @include desktop-2k {
-      max-width: 2400px;
+      width: calc(100vw - 160px);
+      max-width: 1600px;
+      height: 583px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
     }
 
     @include desktop-5k {
-      max-width: 3840px;
+      width: calc(100vw - 200px);
+      max-width: 2000px;
+      height: 583px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 83px;
+      margin: 0 auto;
     }
   }
 
-  &__advantages {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding-top: 23px;
-
-    @include desktop-xl {
-      padding-top: 96px;
-      max-width: 1540px;
-    }
-
-    .advantage-block {
-      margin: 8px;
-      width: 136px;
-      padding: 9px;
-      text-align: center;
-      transition: all ease-in-out 0.4s;
-
-      @include tablet {
-        margin: 9px;
-        width: 230px;
-        padding: 15px 9px;
-      }
-
-      @include desktop-xl {
-        margin: 20px;
-        width: 330px;
-        padding: 30px 9px;
-      }
-    }
-
-    .advantage-block__text {
-      font-weight: map-get($font-weight, "black");
-      font-size: 10px;
-      line-height: 13px;
-
-      @include tablet {
-        font-size: 16px;
-        line-height: 20px;
-      }
-
-      @include desktop-xl {
-        font-size: 20px;
-        line-height: 25px;
-      }
-    }
-
-    .advantage-block__icon {
-      width: 40px;
-
-      @include tablet {
-        width: 86px;
-      }
-
-      @include desktop-xl {
-        width: 100px;
-      }
-    }
-  }
-
-  &__title {
-    font-weight: map-get($font-weight, "black");
-    font-size: 22px;
-    line-height: 27px;
-    text-align: center;
-    max-width: 202px;
-
-    @include tablet {
-      font-size: 36px;
-      line-height: 45px;
-      max-width: unset;
-    }
-
-    @include desktop-lg {
-      font-size: 40px;
-      line-height: 50px;
-    }
-
-    @include desktop-xl {
-      font-size: 60px;
-      line-height: 75px;
-    }
-  }
-}
-
-.partners-start {
-  scroll-snap-align: start;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  width: 100vw;
-  background-size: cover;
-  align-items: center;
-  background: map-get($colors, "black-secondary") 0 0 no-repeat padding-box;
-  padding-top: 59px;
-  padding-bottom: 39px;
-
-  @include tablet {
-    padding-top: 194px;
-    padding-bottom: 164px;
-  }
-
-  @include desktop-lg {
-    padding-top: 40px;
-    padding-bottom: 53px;
-  }
-
-  @include desktop-xl {
-    padding-top: 98px;
-    padding-bottom: 111px;
-  }
-
-  &:before {
-    content: "";
+  &__hero-bg {
     position: absolute;
-    background: url("../../assets/images/partners/start-bg-top-sm.svg")
-      no-repeat;
-    width: 92px;
-    height: 110px;
     top: 0;
     left: 0;
-
-    @include tablet {
-      background: url("../../assets/images/partners/start-bg-top-md.svg")
-        no-repeat;
-      width: 187px;
-      height: 226px;
-    }
-
-    @include desktop-lg {
-      background: url("../../assets/images/partners/start-bg-top-lg.svg")
-        no-repeat;
-      width: 177px;
-      height: 213px;
-    }
-
-    @include desktop-xl {
-      background: url("../../assets/images/partners/start-bg-top-xl.svg")
-        no-repeat;
-      width: 261px;
-      height: 299px;
-    }
-  }
-
-  &:after {
-    content: "";
-    position: absolute;
-    background: url("../../assets/images/partners/start-bg-bot-sm.svg")
-      no-repeat;
-    width: 92px;
-    height: 110px;
-    bottom: 0;
-    right: 0;
-
-    @include tablet {
-      background: url("../../assets/images/partners/start-bg-bot-md.svg")
-        no-repeat;
-      width: 188px;
-      height: 225px;
-    }
-
-    @include desktop-lg {
-      background: url("../../assets/images/partners/start-bg-bot-lg.svg")
-        no-repeat;
-      width: 177px;
-      height: 213px;
-    }
-
-    @include desktop-xl {
-      background: url("../../assets/images/partners/start-bg-bot-xl.svg")
-        no-repeat;
-      width: 261px;
-      height: 299px;
-    }
-  }
-
-  &__wrapper {
-    position: relative;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
     width: 100%;
     height: 100%;
+    margin: 0 auto;
+    border-radius: 24px;
+    z-index: 1;
+    overflow: hidden;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    @include mobile {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      border-radius: 20px;
+      background: url("../../assets/images/bg/hero/partners/partners-mobile.svg")
+        no-repeat center center;
+      background-size: cover;
+      overflow: hidden;
+      border-radius: 20px;
+      background-color: transparent;
+    }
+
+    @include tablet {
+      background: url("../../assets/images/bg/hero/partners/partners-desktop.svg")
+        no-repeat 75% 100%;
+      background-size: cover;
+      background-color: transparent;
+    }
 
     @include desktop-lg {
-      max-width: 1200px;
+      background: url("../../assets/images/bg/hero/partners/partners-desktop.svg")
+        no-repeat center center;
+      background-size: cover;
+      background-color: transparent;
     }
 
     @include desktop-xl {
-      max-width: 1680px;
+      background: url("../../assets/images/bg/hero/partners/partners-desktop.svg")
+        no-repeat center center;
+      background-size: cover;
+      background-color: transparent;
     }
+
+    @include desktop-2k {
+      background: url("../../assets/images/bg/hero/partners/partners-desktop.svg")
+        no-repeat center center;
+      background-size: cover;
+      background-color: transparent;
+    }
+
+    @include desktop-5k {
+      background: url("../../assets/images/bg/hero/partners/partners-desktop.svg")
+        no-repeat center center;
+      background-size: cover;
+      background-color: transparent;
+    }
+  }
+
+  &__content-container {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 100%;
+    flex: 1;
+
+    @include mobile {
+      padding-top: 50px;
+    }
+
+    @include tablet {
+      padding-top: 90px;
+      gap: 8px;
+    }
+
+    @include desktop-lg {
+      max-width: 980px;
+      gap: 16px;
+    }
+
+    @include desktop-xl {
+      max-width: 1280px;
+    }
+
+    @include desktop-2k {
+      max-width: 1440px;
+    }
+
+    @include desktop-5k {
+      max-width: 1920px;
+    }
+  }
+
+  &__badge-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #0f0f0f;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    padding: 4px 10px;
+    width: fit-content;
+    box-sizing: border-box;
+    height: 28px;
+
+    @include mobile {
+      max-width: fit-content;
+      margin-bottom: 16px;
+    }
+  }
+
+  &__badge {
+    background: rgba(39, 39, 39, 1);
+    border-radius: 16px;
+    padding: 2px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__badge-text {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: map-get($font-weight, "medium");
+    line-height: 20px;
+  }
+
+  &__badge-content {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    max-width: fit-content;
+  }
+
+  &__badge-message {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: map-get($font-weight, "medium");
+    line-height: 20px;
+
+    @include mobile {
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+
+  &__badge-arrow {
+    flex-shrink: 0;
+    align-items: center;
+    margin-top: 5px;
+    margin-left: 5px;
+    z-index: 1;
+    position: relative;
+  }
+
+  &__heading {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
   }
 
   &__title {
-    font-weight: map-get($font-weight, "black");
+    display: block;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 72px;
+    letter-spacing: -0.02em; // -2%
+    line-height: 1.2;
+    background: linear-gradient(
+        102.31deg,
+        rgba(255, 255, 255, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #ffffff;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding-bottom: 10px;
+
+    @include mobile {
+      font-size: 42px;
+      width: 100%;
+      line-height: 1.1;
+    }
+
+    @include tablet {
+      font-size: 38px;
+      width: 550px;
+    }
+
+    @include desktop-lg {
+      font-size: 72px;
+      width: 800px;
+    }
+
+    &--big {
+      text-transform: uppercase;
+      font-family: "Sofia Pro", sans-serif;
+      font-style: normal;
+      font-weight: 700; // Bold (not Semi Bold)
+      font-size: 72px;
+      line-height: 83px; // Exact pixel value from Figma
+      letter-spacing: -0.02em; // -2%
+      width: 681px;
+      height: 166px;
+      background: linear-gradient(
+          102.31deg,
+          rgba(255, 255, 255, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #ffffff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      flex: none;
+      order: 1;
+      align-self: stretch;
+      flex-grow: 0;
+
+      @include mobile {
+        font-size: 44px;
+        line-height: 55px;
+        letter-spacing: -0.02em;
+        width: 100%;
+        height: auto;
+      }
+
+      @include tablet {
+        font-size: 58px;
+        line-height: 72px;
+        letter-spacing: -0.02em;
+        width: 100%;
+        height: auto;
+      }
+
+      @include desktop-lg {
+        font-size: 72px;
+        line-height: 83px;
+        letter-spacing: -0.02em;
+        width: 100%;
+        height: auto;
+      }
+
+      @include desktop-xl {
+        font-size: 72px;
+        line-height: 83px;
+        letter-spacing: -0.02em;
+        width: 758px;
+        height: 166px;
+      }
+
+      @include desktop-2k {
+        font-size: 84px;
+        line-height: 97px;
+        letter-spacing: -0.02em;
+        width: 900px;
+        height: 200px;
+      }
+
+      @include desktop-5k {
+        font-size: 96px;
+        line-height: 111px;
+        letter-spacing: -0.02em;
+        width: 1100px;
+        height: 240px;
+      }
+    }
+  }
+
+  &__subheading {
     font-size: 18px;
-    line-height: 22px;
-    color: map-get($colors, "red");
-    padding-bottom: 49px;
+    line-height: 28px;
+    color: #ffffff;
+    font-weight: map-get($font-weight, "regular");
     margin: 0;
+    max-width: 615px;
+    opacity: 0.7;
+
+    @include mobile {
+      font-size: 16px;
+      font-weight: map-get($font-weight, "light");
+      line-height: 24px;
+      max-width: 100%;
+    }
 
     @include tablet {
-      font-size: 26px;
-      line-height: 32px;
-      padding-bottom: 67px;
-    }
-
-    @include desktop-lg {
-      font-size: 30px;
-      line-height: 37px;
-      padding-bottom: 70px;
-    }
-
-    @include desktop-xl {
-      font-size: 60px;
-      line-height: 75px;
-      padding-bottom: 134px;
-    }
-  }
-
-  &__items {
-    display: grid;
-    grid-template-areas: "a b c";
-    font-weight: map-get($font-weight, "black");
-    font-size: 12px;
-    line-height: 15px;
-    z-index: 2;
-
-    @include tablet {
+      max-width: 350px;
       font-size: 18px;
-      line-height: 22px;
+      line-height: 28px;
     }
 
     @include desktop-lg {
+      max-width: 625px;
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    @include desktop-xl {
+      max-width: 625px;
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    @include desktop-2k {
+      max-width: 625px;
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    @include desktop-5k {
+      max-width: 625px;
+      font-size: 18px;
+      line-height: 28px;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    position: relative;
+
+    @include mobile {
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0px;
+      width: 100%;
+      height: 114px;
+      flex: none;
+      order: 0;
+      align-self: stretch;
+      flex-grow: 0;
+      gap: 16px;
+    }
+  }
+
+  &__button-primary {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 24px;
+    gap: 10px;
+    width: 167px;
+    height: 51px;
+    background: #fff;
+    color: map-get($colors, "black");
+    box-shadow: 0px 0px 19.3px rgba(255, 68, 0, 0.5);
+    border-radius: 8px;
+    border: none;
+    font-weight: map-get($font-weight, "medium");
+    font-size: 20px;
+    line-height: 23px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s,
+      width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    outline: none;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    box-sizing: border-box;
+    white-space: nowrap;
+
+    @include mobile {
+      width: 100%;
+      align-self: stretch;
+      height: 51px;
+      border-radius: 8px;
+    }
+
+    .funding-withdrawals__button-text {
+      transition: color 0.3s;
+      z-index: 1;
+      position: relative;
+      white-space: nowrap;
+      color: inherit;
+
+      @include mobile {
+        width: 119px;
+        height: 23px;
+        font-weight: map-get($font-weight, "medium");
+        font-size: 20px;
+        line-height: 23px;
+        // color: map-get($colors, "black");
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+      }
+    }
+    .funding-withdrawals__button-arrow {
       display: flex;
+      align-items: center;
+      opacity: 0;
+      width: 0;
+      margin-left: 0;
+      transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+      overflow: hidden;
+      z-index: 1;
+      position: relative;
+      color: map-get($colors, "black");
+    }
+    &:hover,
+    &:focus {
+      width: 200px;
+      background: #ff4400;
+      color: map-get($colors, "black") !important;
+      box-shadow: 0 0 19.3px 0 rgba(255, 68, 0, 0.5);
+
+      @include mobile {
+        width: 100%;
+      }
+
+      .funding-withdrawals__button-arrow {
+        opacity: 1;
+        width: 24px;
+        margin-left: 0;
+        color: map-get($colors, "black");
+      }
+      .funding-withdrawals__button-text {
+        color: map-get($colors, "black") !important;
+      }
+    }
+  }
+
+  &__button-secondary {
+    // box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 24px;
+    gap: 10px;
+    width: fit-content;
+    height: 51px;
+    // border-radius: 8px;
+    background: transparent;
+    color: #fff;
+    border: none;
+    font-weight: map-get($font-weight, "medium");
+    font-size: 20px;
+    line-height: 23px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s, border 0.3s, text-decoration 0.3s;
+    outline: none;
+    text-decoration: none;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+
+    @include mobile {
+      width: 100%;
+      align-self: stretch;
+      height: 51px;
+      justify-content: center;
+    }
+
+    .funding-withdrawals__button-text {
+      transition: color 0.3s, text-decoration 0.3s;
+      z-index: 1;
+      position: relative;
+    }
+    .funding-withdrawals__button-arrow {
+      display: flex;
+      align-items: center;
+      margin-left: 0;
+      transition: color 0.2s;
+      color: currentColor;
+    }
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+      border: none;
+      .funding-withdrawals__button-arrow {
+        color: #ff4400;
+      }
+    }
+  }
+
+  &__button-icon {
+    flex-shrink: 0;
+  }
+
+  &__trust-pilot {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 14.73px;
+    width: fit-content;
+    height: 30px;
+    background: none;
+    border: none;
+    box-shadow: none;
+    margin-top: 90px;
+    padding: 0;
+
+    @include mobile {
+      flex-direction: row;
       flex-wrap: wrap;
-      justify-content: space-around;
+      justify-content: center;
+      align-content: center;
+      width: 100%;
+      margin-top: 65px;
     }
-
-    @include desktop-xl {
-      font-size: 24px;
-      line-height: 30px;
-    }
-  }
-
-  &__btn {
-    background: map-get($colors, "black-secondary");
-    font-weight: map-get($font-weight, "black");
-    font-size: 11px;
-    line-height: 31px;
-    border: 1px solid map-get($colors, "red");
-    width: 190px;
-
-    &:hover {
-      background: map-get($colors, "white");
-      border-color: map-get($colors, "white");
-      color: map-get($colors, "red");
-    }
-
     @include tablet {
-      font-size: 24px;
-      line-height: 62px;
-      width: 380px;
+      width: 100%;
+      margin-top: 30px;
     }
-  }
-
-  &__arrow1 {
-    position: absolute;
-    top: 135px;
-    left: calc(50% - 250px);
-    z-index: 1;
-
-    @include mobile {
-      top: 85px;
-      display: none;
-    }
-
-    @include tablet {
-      top: 305px;
-      left: calc(50% - 370px);
-      display: none;
-    }
-
     @include desktop-lg {
-      top: 115px;
-      left: calc(50% - 375px);
+      width: 393.48px;
+      height: 30px;
+      margin-top: 30px;
     }
-
     @include desktop-xl {
-      top: 240px;
-      left: calc(50% - 755px);
+      width: 393.48px;
+      height: 30px;
+    }
+    @include desktop-2k {
+      width: 393.48px;
+      height: 30px;
+    }
+    @include desktop-5k {
+      width: 393.48px;
+      height: 30px;
     }
   }
 
-  &__arrow2 {
-    position: absolute;
-    top: 275px;
-    right: calc(50% - 250px);
-    z-index: 1;
+  &__trust-rating {
+    width: 56px;
+    height: 30px;
+    font-family: $font-roboto;
+    font-weight: map-get($font-weight, "bold");
+    font-size: 13.6px;
+    line-height: 29px;
+    color: #fff;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
 
+  &__trust-stars {
+    display: flex;
+    align-items: center;
+  }
+
+  &__trust-reviews {
+    width: fit-content;
+    height: 30px;
+    font-family: $font-roboto;
+    font-weight: map-get($font-weight, "bold");
+    font-size: 13.6px;
+    line-height: 29px;
+    color: #fff;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+
+  &__trust-brand {
+    display: flex;
+    align-items: center;
+    gap: 4.53px;
+    order: 2;
     @include mobile {
-      top: 215px;
-      right: calc(50% - 250px);
-      display: none;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      order: 4;
     }
+  }
 
-    @include tablet {
-      top: 520px;
-      right: calc(50% - 370px);
-      display: none;
-    }
+  &__trust-logo {
+    flex-shrink: 0;
+  }
+
+  &__trust-name {
+    width: 60px;
+    height: 30px;
+    font-family: $font-roboto;
+    font-weight: map-get($font-weight, "bold");
+    font-size: 13.6px;
+    line-height: 29px;
+    color: #fff;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
   }
 }
 
-.partners-start-item {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-  width: 110px;
+// Partners Page Features Products Custom Styling
+.partners-page {
+  position: relative;
+  width: 100%;
+  min-height: 862px;
+  background: transparent;
+  border-radius: 24px;
+  overflow: hidden;
+  margin: 48px 0;
+
+  @include mobile {
+    margin: 0;
+  }
 
   @include tablet {
-    width: 194px;
+    padding-bottom: 40px;
   }
 
-  @include desktop-lg {
-    width: 149px;
-  }
+  .features-products {
+    position: relative;
+    width: 100%;
+    background: transparent;
+    border-radius: 24px;
+    overflow: hidden;
+    margin: 0px auto;
+    padding: 0 0 40px;
 
-  @include desktop-xl {
-    width: 280px;
-  }
-
-  &__text {
-    padding-top: 10px;
-    padding-bottom: 28px;
-    text-align: center;
-    max-width: 98px;
-    margin: 0;
-
-    @include tablet {
-      padding-top: 10px;
-      padding-bottom: 66px;
-      max-width: 154px;
+    @include mobile {
+      min-height: 1955px;
+      margin: 60px 0 20px;
     }
 
-    @include desktop-lg {
-      padding-top: 10px;
-      padding-bottom: 31px;
-      max-width: 126px;
+    // Background styling similar to account-comparison-bg
+    &-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &__image {
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        max-height: none;
+        object-fit: fill;
+        display: block;
+        opacity: 1;
+        mix-blend-mode: color-dodge;
+
+        @include mobile {
+          object-fit: cover;
+          object-position: center;
+        }
+
+        @include tablet {
+          object-fit: cover;
+          object-position: center;
+          width: 100%;
+          height: 100%;
+        }
+
+        @include desktop-lg {
+          object-fit: cover;
+          object-position: center;
+        }
+
+        @include desktop-xl {
+          object-fit: cover;
+          object-position: bottom center;
+        }
+      }
     }
 
-    @include desktop-xl {
-      padding-top: 20px;
-      padding-bottom: 134px;
-      max-width: 252px;
-    }
-  }
-
-  &__icon {
-    width: 55px;
-
-    @include tablet {
-      width: 87px;
+    // Content container
+    > *:not(.features-products-bg) {
+      position: relative;
+      z-index: 4;
     }
 
-    @include desktop-lg {
-      width: 71px;
+    &__container {
+      position: relative;
+      z-index: 2;
+      padding: 0;
+      max-width: 1200px;
+      margin: 0 auto;
+
+      @include mobile {
+        padding: 52px 18px 0;
+      }
     }
 
-    @include desktop-xl {
-      width: 142px;
+    &__header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 73px 20px 0;
+      gap: 16px;
+      text-align: center;
+      margin-bottom: 60px;
+
+      @include mobile {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+    }
+
+    &__badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 10px;
+      background: rgba(15, 15, 15, 1);
+      border: 1px solid rgba(255, 68, 0, 0.15);
+      border-radius: 16px;
+      width: fit-content;
+      margin: 0 auto;
+      margin-bottom: 10px;
+
+      @include mobile {
+        margin-bottom: 10px;
+      }
+
+      img {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    &__badge-icon {
+      width: 14px;
+      height: 14px;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+      border-radius: 2px;
+
+      @include mobile {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    &__badge-text {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 20px;
+      color: #fff;
+
+      @include mobile {
+        font-size: 14px;
+        line-height: 20px;
+      }
+    }
+
+    &__title {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: map-get($font-weight, semibold);
+      font-size: 52px;
+      text-align: center;
+      letter-spacing: -0.02em;
+      background: linear-gradient(
+          102.31deg,
+          rgba(255, 255, 255, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #fff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+
+      .highlight {
+        background: inherit;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      @include mobile {
+        font-size: 42px;
+        align-self: stretch;
+        width: 100%;
+        height: auto;
+      }
+
+      @include tablet {
+        font-size: 52px;
+        width: 100%;
+        height: auto;
+      }
+
+      @include desktop-lg {
+        font-size: 52px;
+      }
+    }
+
+    &__subtitle {
+      font-weight: map-get($font-weight, regular);
+      font-size: 18px;
+      line-height: 28px;
+      color: #fff;
+      margin: 0;
+      max-width: 625px;
+      opacity: 0.7;
+      order: 2;
+
+      @include mobile {
+        font-size: 16px;
+        line-height: 24px;
+        max-width: 100%;
+      }
+
+      @include tablet {
+        font-size: 18px;
+        line-height: 28px;
+        max-width: 100%;
+      }
+
+      @include desktop-lg {
+        max-width: 625px;
+      }
+    }
+
+    &__grid {
+      display: flex;
+      gap: 27px;
+      padding: 42px 203px 0;
+      justify-content: center;
+      width: 100%;
+      margin: 0 auto;
+
+      @include mobile {
+        margin-top: 60px;
+        flex-direction: column;
+        gap: 24px;
+        padding: 0 20px;
+      }
+
+      @include tablet {
+        flex-direction: column;
+        gap: 32px;
+        padding: 0 40px;
+      }
+
+      @include desktop-lg {
+        flex-direction: row;
+        gap: 27px;
+        padding: 42px 203px 0;
+      }
+    }
+
+    &__slider {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 24px;
+      padding: 0 20px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      @include mobile {
+        display: flex;
+        flex-direction: column;
+        overflow-x: visible;
+        overflow-y: visible;
+        scroll-snap-type: none;
+        gap: 24px;
+        padding: 0 18px;
+      }
+    }
+
+    &__grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 13px;
+      align-items: start;
+
+      @include mobile {
+        grid-template-columns: 1fr;
+        gap: 13px;
+      }
+
+      @include tablet {
+        grid-template-columns: 1fr;
+        gap: 13px;
+        gap: 13px;
+      }
+
+      @include desktop-lg {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 13px;
+      }
+
+      @include desktop-xl {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 13px;
+      }
+    }
+
+    &__card {
+      flex: 1;
+      min-height: 258px;
+      background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.05) 100%
+        ),
+        rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      gap: 12px;
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      min-width: 405px;
+
+      // Background image similar to features-products__card
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("../../assets/images/bg/partners/bg-card-features-partners-desktop.svg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.1;
+        z-index: 0;
+
+        @include mobile {
+          background-image: url("../../assets/images/bg/partners/bg-card-features-partners-mobile.svg");
+        }
+      }
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      }
+
+      @include mobile {
+        min-height: 258px;
+        padding: 24px;
+        gap: 16px;
+        min-width: 100%;
+        width: 100%;
+        flex-shrink: 1;
+        scroll-snap-align: none;
+      }
+    }
+
+    &__card-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    &__card-title {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: map-get($font-weight, "bold");
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      background: linear-gradient(
+          102.31deg,
+          rgba(0, 0, 0, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #ffffff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      flex: none;
+      flex-grow: 0;
+      z-index: 2;
+      margin: 0 0 12px 0;
+
+      @include mobile {
+        margin: 0 0 8px 0;
+      }
+    }
+
+    &__card-description {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: map-get($font-weight, "regular");
+      font-size: 18px;
+      letter-spacing: 0.2px;
+      color: #ffffff;
+      opacity: 0.7;
+      flex: none;
+      order: 3;
+      align-self: stretch;
+      flex-grow: 0;
+      z-index: 3;
+      margin: 0;
+
+      @include mobile {
+        font-size: 18px;
+        line-height: 28px;
+      }
     }
   }
 }

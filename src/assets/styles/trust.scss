@@ -1,0 +1,1015 @@
+@import "vars";
+@import "mixins";
+
+.trust-content {
+  width: 100%;
+  padding: 120px 0 0;
+
+  &__container {
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  // Video Section
+  &__video-section {
+    flex: 1;
+    max-width: 589px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    // Default state background
+    background: url("/images/trust-video-desktop.webp") no-repeat center center;
+    background-size: cover;
+    border-radius: 24px;
+    overflow: hidden;
+
+    // Hovered state background
+    &--hovered {
+      background: url("../../assets/images/trust/trust-video-hovered.svg")
+        no-repeat center center;
+      background-size: cover;
+      transform: scale(1.02);
+    }
+
+    // Clicked state background
+    &--clicked {
+      background: url("../../assets/images/trust/trust-video-overlay.svg")
+        no-repeat center center;
+      background-size: cover;
+      transform: scale(1.05);
+    }
+  }
+
+  &__video-container {
+    position: relative;
+    width: 100%;
+    height: 450px;
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  &__video-background {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__video-placeholder {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__play-button {
+    position: absolute;
+    top: 153px;
+    left: 36px;
+    width: 48px;
+    height: 48px;
+    background: #ff4400;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #ff4400;
+      transform: scale(1.1);
+    }
+  }
+
+  &__video-image {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 60%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      border-radius: 0 24px 24px 0;
+    }
+  }
+
+  &__video-overlay {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    color: #fff;
+    z-index: 3;
+  }
+
+  &__video-name {
+    position: absolute;
+    width: 191px;
+    height: 101px;
+    left: 32px;
+    top: 228px;
+    font-family: "Sofia Pro";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 43.2857px;
+    line-height: 50px;
+    letter-spacing: 0.360714px;
+    color: #ffffff;
+    margin: 0;
+  }
+
+  &__video-title {
+    position: absolute;
+    width: 625px;
+    height: 28px;
+    left: 30px;
+    top: 390px;
+    font-family: "Sofia Pro";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: 0.2px;
+    color: #ffffff;
+    opacity: 0.4;
+    margin: 0;
+  }
+
+  // YouTube Overlay State
+  &__youtube-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  &__close-button {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.8);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+    opacity: 0.8;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.9);
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+
+  &__youtube-player {
+    width: 1200px;
+    height: 675px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: visible;
+
+    &:hover .trust-content__video-controls {
+      opacity: 1;
+    }
+  }
+
+  &__video-element {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+  }
+
+  &__video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__controls-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__controls-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__progress-container {
+    flex: 1;
+    margin: 0 16px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  &__progress-bar {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  &__progress-filled {
+    height: 100%;
+    background: #ff0000;
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s ease;
+  }
+
+  &__progress-handle {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    background: #ff0000;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &__progress-container:hover &__progress-handle {
+    opacity: 1;
+  }
+
+  &__time-display {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: white;
+    font-size: 14px;
+    font-family: "Roboto", "Arial", sans-serif;
+    min-width: 80px;
+  }
+
+  &__current-time,
+  &__duration {
+    font-size: 14px;
+    color: white;
+  }
+
+  &__time-separator {
+    color: white;
+    font-size: 14px;
+  }
+
+  &__play-pause-button,
+  &__volume-button,
+  &__fullscreen-button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__youtube-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: #ff4400;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(255, 68, 0, 0.4);
+    z-index: 2;
+
+    &:hover {
+      background: #ff4400;
+      transform: translate(-50%, -50%) scale(1.1);
+      box-shadow: 0 12px 32px rgba(255, 68, 0, 0.6);
+    }
+  }
+
+  &__youtube-content {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    color: white;
+    z-index: 2;
+  }
+
+  &__youtube-name {
+    font-size: 24px;
+    font-weight: map-get($font-weight, "semibold");
+    margin: 0 0 8px 0;
+    color: white;
+  }
+
+  &__youtube-title {
+    font-size: 16px;
+    font-weight: map-get($font-weight, "light");
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  // Content Section
+  &__content-section {
+    flex: 1;
+    max-width: 625px;
+    padding: 18px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  // Badge
+  &__badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    height: 26px;
+    background: rgba(255, 68, 0, 0.1);
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    padding: 6px 10px;
+    box-sizing: border-box;
+  }
+
+  &__badge-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  &__badge-text {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: map-get($font-weight, "medium");
+    color: map-get($colors, "black");
+    white-space: nowrap;
+  }
+
+  // Title
+  &__title {
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    letter-spacing: -0.02em;
+    margin: 0;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  &__title-highlight {
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  // Subtitle
+  &__subtitle {
+    font-size: 18px;
+    font-weight: map-get($font-weight, "light");
+    line-height: 28px;
+    color: #000;
+    opacity: 0.7;
+    margin: 0;
+    letter-spacing: 0.2px;
+  }
+
+  // Features
+  &__features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0;
+  }
+
+  &__feature-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  &__feature-text {
+    font-size: 18px;
+    font-weight: map-get($font-weight, "light");
+    line-height: 28px;
+    color: map-get($colors, "black");
+    flex: 1;
+    opacity: 0.7;
+  }
+
+  // Button Group - Using navbar-dropdown-highlight styles
+  .navbar-dropdown-highlight__button-group {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  // Responsive Design
+  @include mobile {
+    padding: 60px 0 20px 0;
+
+    &__container {
+      flex-direction: column;
+      gap: 32px;
+      align-items: center;
+    }
+
+    &__video-section {
+      width: 100%;
+      max-width: 352px;
+      height: 484px;
+      order: 2;
+      display: block;
+      visibility: visible;
+      background: url("../../assets/images/trust/trust-video-mobile.svg")
+        no-repeat center center;
+      background-size: 100% 100%;
+      border-radius: 16px;
+    }
+
+    &__video-container {
+      width: 100%;
+      height: 484px;
+      border-radius: 16px;
+    }
+
+    &__play-button {
+      top: 200px;
+      left: 20px;
+      width: 40px;
+      height: 40px;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    &__video-name {
+      font-size: 28px;
+      line-height: 32px;
+      left: 20px;
+      top: 300px;
+      width: 200px;
+      height: auto;
+    }
+
+    &__video-title {
+      font-size: 14px;
+      line-height: 20px;
+      left: 20px;
+      top: 380px;
+      width: 250px;
+      height: auto;
+    }
+
+    &__youtube-placeholder {
+      width: 90%;
+      height: 70%;
+    }
+
+    &__youtube-player {
+      width: 100%;
+      max-width: 352px;
+      height: 484px;
+    }
+
+    &__youtube-play-button {
+      width: 60px;
+      height: 60px;
+
+      svg {
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    &__youtube-content {
+      bottom: 24px;
+      left: 24px;
+    }
+
+    &__youtube-name {
+      font-size: 20px;
+    }
+
+    &__youtube-title {
+      font-size: 14px;
+    }
+
+    &__close-button {
+      top: 5px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+    }
+
+    &__close-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    &__youtube-player {
+      width: 100%;
+      max-width: 352px;
+      height: 300px;
+    }
+
+    &__video-element {
+      width: 100%;
+      height: 300px;
+    }
+
+    &__video-controls {
+      height: 50px;
+      padding: 0 12px;
+      gap: 12px;
+    }
+
+    &__play-pause-button,
+    &__fullscreen-button {
+      font-size: 20px;
+      padding: 6px 12px;
+    }
+
+    &__close-button {
+      top: 5px;
+      right: 0;
+      width: 32px;
+      height: 32px;
+    }
+
+    &__content-section {
+      width: 100%;
+      max-width: 352px;
+      order: 1;
+      gap: 20px;
+      padding: 0;
+    }
+
+    &__title {
+      font-size: 42px;
+    }
+
+    &__features {
+      gap: 12px;
+    }
+
+    &__feature-icon {
+      margin-top: 3px;
+    }
+
+    &__feature-text {
+      font-size: 18px;
+    }
+
+    .navbar-dropdown-highlight__button-group {
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    &__button-group {
+      gap: 12px;
+    }
+
+    &__button {
+      font-size: 16px;
+      height: 48px;
+      padding: 0 20px;
+
+      &--primary {
+        width: 100%;
+      }
+
+      &--secondary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  // Mobile landscape - video fullscreen with controls at bottom
+  @media screen and (max-width: 767px) and (orientation: landscape) {
+    &__youtube-overlay {
+      background: #000 !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      align-items: flex-start !important;
+      justify-content: flex-start !important;
+    }
+
+    &__youtube-player {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: 100% !important;
+      max-height: 100vh !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      justify-content: stretch !important;
+    }
+
+    &__video-element {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      flex: 1 !important;
+    }
+
+    &__video-controls {
+      position: relative !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 60px !important;
+      background: rgba(0, 0, 0, 0.8) !important;
+      z-index: 10 !important;
+      display: flex !important;
+      flex-shrink: 0 !important;
+      opacity: 1 !important;
+    }
+
+    &__close-button {
+      position: absolute !important;
+      top: 12px !important;
+      right: 12px !important;
+      z-index: 11 !important;
+    }
+  }
+
+  @include tablet {
+    padding: 75px 0;
+
+    &__container {
+      flex-direction: column;
+      gap: 32px;
+      align-items: center;
+    }
+
+    &__video-section {
+      width: 100%;
+      max-width: 100%;
+      height: 484px;
+      order: 2;
+      display: block;
+      visibility: visible;
+      background: url("/images/trust-video-desktop.webp") no-repeat center
+        center;
+      background-size: 100% 100%;
+      border-radius: 16px;
+    }
+
+    &__video-container {
+      width: 100%;
+      height: 484px;
+      border-radius: 16px;
+    }
+
+    &__play-button {
+      top: 200px;
+      left: 20px;
+      width: 40px;
+      height: 40px;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    &__video-name {
+      font-size: 28px;
+      line-height: 32px;
+      left: 20px;
+      top: 300px;
+      width: 200px;
+      height: auto;
+    }
+
+    &__video-title {
+      font-size: 14px;
+      line-height: 20px;
+      left: 20px;
+      top: 380px;
+      width: 250px;
+      height: auto;
+    }
+
+    &__youtube-placeholder {
+      width: 90%;
+      height: 70%;
+    }
+
+    &__youtube-player {
+      width: 100%;
+      max-width: 900px;
+      height: 506px;
+    }
+
+    &__youtube-play-button {
+      width: 60px;
+      height: 60px;
+
+      svg {
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    &__youtube-content {
+      bottom: 24px;
+      left: 24px;
+    }
+
+    &__youtube-name {
+      font-size: 20px;
+    }
+
+    &__youtube-title {
+      font-size: 14px;
+    }
+
+    &__close-button {
+      top: 5px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+    }
+
+    &__close-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    &__youtube-background-image {
+      width: 100%;
+      height: 100%;
+    }
+
+    &__content-section {
+      width: 100%;
+      max-width: 100%;
+      order: 1;
+      gap: 20px;
+      padding: 0;
+    }
+
+    &__title {
+      font-size: 42px;
+    }
+
+    &__features {
+      gap: 12px;
+    }
+
+    &__feature-icon {
+      margin-top: 8px;
+    }
+
+    &__feature-text {
+      font-size: 18px;
+    }
+
+    .navbar-dropdown-highlight__button-group {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    &__button-group {
+      gap: 12px;
+    }
+
+    &__button {
+      font-size: 16px;
+      height: 48px;
+      padding: 0 20px;
+
+      &--primary {
+        width: 100%;
+      }
+
+      &--secondary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  @include desktop-lg {
+    padding: 100px 0;
+
+    &__container {
+      justify-content: space-between;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    // Video Section
+    &__video-section {
+      order: 1;
+      height: 360px;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    &__title {
+      font-size: 36px;
+    }
+
+    &__subtitle {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    &__video-container {
+      height: 350px;
+    }
+
+    // Content Section
+    &__content-section {
+      padding: 0;
+      gap: 10px;
+    }
+
+    &__close-button {
+      top: 5px;
+    }
+
+    &__feature-text {
+      font-size: 14px;
+    }
+
+    .navbar-dropdown-highlight__button-group {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      margin-top: 8px;
+    }
+  }
+
+  @include desktop-xl {
+    padding: 120px 0 100px;
+
+    &__container {
+      gap: 42px;
+    }
+
+    // Video Section
+    &__video-section {
+      height: 450px;
+    }
+
+    &__video-container {
+      height: 450px;
+    }
+
+    // Content Section
+    &__content-section {
+      padding: 18px 0;
+    }
+
+    &__title {
+      font-size: 52px;
+    }
+
+    &__subtitle {
+      font-size: 18px;
+      margin: 0 0 10px 0;
+    }
+
+    &__feature-text {
+      font-size: 18px;
+    }
+  }
+
+  @include desktop-2k {
+    // Fix image stretching on 2K displays - maintain aspect ratio
+    &__video-section {
+      // Use 100% auto to maintain aspect ratio while filling width
+      background-size: auto 100%;
+      background-position: center center;
+
+      &--hovered {
+        background-size: cover;
+        transform: scale(1.02);
+      }
+
+      &--clicked {
+        background-size: cover;
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  @include desktop-5k {
+    // Fix image stretching on 5K displays - maintain aspect ratio
+    &__video-section {
+      // Use 100% auto to maintain aspect ratio while filling width
+      background-size: auto 100%;
+      background-position: center center;
+
+      &--hovered {
+        background-size: cover;
+        transform: scale(1.02);
+      }
+
+      &--clicked {
+        background-size: cover;
+        transform: scale(1.05);
+      }
+    }
+  }
+}

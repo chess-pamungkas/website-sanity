@@ -4,20 +4,19 @@ import { useTranslationWithVariables } from "../helpers/hooks/use-translation-wi
 import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import AllMarkets from "../components/all-markets";
-import MarketItemsList from "../components/all-markets/components/market-items-list";
+import PageBackground from "../components/shared/page-background";
 
 const AllMarketsPage = () => {
   const { t } = useTranslationWithVariables();
 
   return (
-    <>
+    <PageBackground backgroundType="homepage-bg-1">
       <Seo
         title={t("page-allmarkets-title")}
         description={t("page-allmarkets-description")}
       />
       <AllMarkets />
-      <MarketItemsList />
-    </>
+    </PageBackground>
   );
 };
 

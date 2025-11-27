@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import cn from "classnames";
 import PropTypes from "prop-types";
 
@@ -8,7 +9,7 @@ const Popup = ({
   isPopupOpen = false,
   handlePopupClose = () => {},
 }) => {
-  return (
+  const popupContent = (
     <div className={cn("popup", { "popup--active": isPopupOpen }, className)}>
       {/* Close the popup on outer wrapper click */}
       <div
@@ -28,7 +29,11 @@ const Popup = ({
       </div>
     </div>
   );
+
+  // Use portal to render at document body level
+  return ReactDOM.createPortal(popupContent, document.body);
 };
+
 Popup.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node,

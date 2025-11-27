@@ -11,6 +11,13 @@ import {
 } from "../../helpers/constants";
 import ContactUsForm from "./components/contact-us-form";
 import { useRtlDirection } from "../../helpers/hooks/use-rtl-direction";
+import { useWindowSize } from "../../helpers/hooks/use-window-size";
+
+// Import icons
+import BadgeIcon from "../../assets/images/icons/main-page/badge-security.svg";
+import EmailIcon from "../../assets/images/icons/contact-us/email.svg";
+import PhoneIcon from "../../assets/images/icons/contact-us/phone.svg";
+import AddressIcon from "../../assets/images/icons/contact-us/address.svg";
 
 const ContactUs = ({ className }) => {
   const { t } = useTranslationWithVariables();
@@ -20,50 +27,91 @@ const ContactUs = ({ className }) => {
 
   return (
     <section
-      className={cn("contact-us", className, {
-        "contact-us--rtl": isRTL,
+      className={cn("contact-us-content-section", className, {
+        "contact-us-content-section--rtl": isRTL,
       })}
       dir={isRTL ? DIR_RTL : DIR_LTR}
     >
-      <div className="contact-us__wrapper">
-        <div className="contact-us__block">
+      <div className="contact-us-content-section__container">
+        {/* Left Section - Content */}
+        <div className="contact-us__content">
+          {/* Badge */}
+          <div className="contact-us__page-badge-group">
+            <div className="contact-us__page-badge-content">
+              <img
+                src={BadgeIcon}
+                alt="Icon"
+                className="contact-us__page-badge-icon"
+              />
+              <span className="contact-us__page-badge-message">
+                {t("contact-us_badge-text-trade-the-next-level")}
+              </span>
+            </div>
+          </div>
+
+          {/* Title */}
           <h2 className="contact-us__title">{t("contact-us_page-title")}</h2>
-          <p className="contact-us__text">{t("contact-us_page-text")}</p>
-          <div className="contact-us__contact-block">
-            <p className="contact-us__contact-block-title">
-              {t("contact-us_email")}
-            </p>
-            <a
-              className="contact-us__contact-block-href"
-              href={`mailto:${email}`}
-            >
-              {email}
-            </a>
-          </div>
-          <div className="contact-us__contact-block">
-            <p className="contact-us__contact-block-title">
-              {t("contact-us_phone")}
-            </p>
-            <a className="contact-us__contact-block-href" href={`tel:${phone}`}>
-              {`+${phone}`}
-            </a>
-            <a
-              className="contact-us__contact-block-href"
-              href={`tel:${CONTACT_PHONE_FSA_2}`}
-            >
-              {`+${CONTACT_PHONE_FSA_2}`}
-            </a>
-          </div>
-          <div className="contact-us__contact-block">
-            <p className="contact-us__contact-block-title">
-              {t("contact-us_address")}
-            </p>
-            <p className="contact-us__contact-block-text">
-              {t("contact-us_address_result")}
-            </p>
+
+          {/* Subtitle */}
+          <p className="contact-us__subtitle">{t("contact-us_page-text")}</p>
+
+          {/* Contact Information */}
+          <div className="contact-us__info">
+            {/* Email */}
+            <div className="contact-us__info-item">
+              <div className="contact-us__info-icon">
+                <img src={EmailIcon} alt="Email" />
+              </div>
+              <div className="contact-us__info-content">
+                <h3 className="contact-us__info-title">
+                  {t("contact-us_email")}
+                </h3>
+                <a className="contact-us__info-link" href={`mailto:${email}`}>
+                  {email}
+                </a>
+              </div>
+            </div>
+
+            {/* Phone */}
+            <div className="contact-us__info-item">
+              <div className="contact-us__info-icon">
+                <img src={PhoneIcon} alt="Phone" />
+              </div>
+              <div className="contact-us__info-content">
+                <h3 className="contact-us__info-title">
+                  {t("contact-us_phone")}
+                </h3>
+                <a className="contact-us__info-link" href={`tel:${phone}`}>
+                  +{phone}
+                </a>
+                <a
+                  className="contact-us__info-link"
+                  href={`tel:${CONTACT_PHONE_FSA_2}`}
+                >
+                  +{CONTACT_PHONE_FSA_2}
+                </a>
+              </div>
+            </div>
+
+            {/* Address */}
+            <div className="contact-us__info-item">
+              <div className="contact-us__info-icon">
+                <img src={AddressIcon} alt="Address" />
+              </div>
+              <div className="contact-us__info-content">
+                <h3 className="contact-us__info-title">
+                  {t("contact-us_address")}
+                </h3>
+                <p className="contact-us__info-text">
+                  {t("contact-us_address_result")}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="contact-us__block">
+
+        {/* Right Section - Form */}
+        <div id="contact-us__form-section" className="contact-us__form-section">
           <ContactUsForm />
         </div>
       </div>

@@ -7,13 +7,13 @@ import {
   SHARES_PAGE_LINK,
   ETF_PAGE_LINK,
 } from "./constants";
-import forexIcon from "../assets/images/all-markets/forex.svg";
-import IndicesIcon from "../assets/images/all-markets/indices.svg";
-import sharesIcon from "../assets/images/all-markets/shares.svg";
-import CommoditiesIcon from "../assets/images/all-markets/commodities.svg";
-import EnergiesIcon from "../assets/images/all-markets/energies.svg";
-import CryptoIcon from "../assets/images/all-markets/crypto.svg";
-import EtfIcon from "../assets/images/all-markets/etf.svg";
+import forexIcon from "../assets/images/icons/all-markets/forex.svg";
+import IndicesIcon from "../assets/images/icons/all-markets/indices.svg";
+import sharesIcon from "../assets/images/icons/all-markets/shares.svg";
+import MetalsIcon from "../assets/images/icons/all-markets/metals.svg";
+import EnergiesIcon from "../assets/images/icons/all-markets/energies.svg";
+import CryptoIcon from "../assets/images/icons/all-markets/crypto.svg";
+import EtfIcon from "../assets/images/icons/all-markets/etf.svg";
 
 const FOREX = {
   key: "forex",
@@ -62,11 +62,7 @@ const INDICES = {
   key: "indices",
   icon: IndicesIcon,
   title: "all-markets_market-items-list-indices-title",
-  text: [
-    "all-markets_market-items-list-indices-text",
-    "all-markets_market-items-list-indices-text2",
-    "all-markets_market-items-list-indices-text3",
-  ],
+  text: ["all-markets_market-items-list-indices-text"],
   isGrayBackground: true,
   link: INDICES_PAGE_LINK,
   advantages: [
@@ -149,47 +145,44 @@ const SHARES = {
 };
 
 const METALS = {
-  key: "commodities",
-  icon: CommoditiesIcon,
-  title: "all-markets_market-items-list-commodities-title",
-  text: [
-    "all-markets_market-items-list-commodities-text",
-    "all-markets_market-items-list-commodities-text2",
-  ],
+  key: "metals",
+  icon: MetalsIcon,
+  title: "all-markets_market-items-list-metals-title",
+  text: ["all-markets_market-items-list-metals-text"],
   isGrayBackground: true,
   link: METALS_PAGE_LINK,
   advantages: [
     {
       key: "adv1",
-      text: "all-markets_market-items-list-commodities-adv1",
+      text: "all-markets_market-items-list-metals-adv1",
     },
     {
       key: "adv2",
-      text: "all-markets_market-items-list-commodities-adv2-fsa",
+      text: "all-markets_market-items-list-metals-adv2-fsa",
     },
     {
       key: "adv2-1",
-      text: "all-markets_market-items-list-commodities-adv2-1-fsa",
+      text: "all-markets_market-items-list-metals-adv2-1-fsa",
     },
     {
       key: "adv3",
-      text: "all-markets_market-items-list-commodities-adv3",
+      text: "all-markets_market-items-list-metals-adv3",
     },
     {
       key: "adv4",
-      text: "all-markets_market-items-list-commodities-adv4",
+      text: "all-markets_market-items-list-metals-adv4",
     },
     {
       key: "adv5",
-      text: "all-markets_market-items-list-commodities-adv5",
+      text: "all-markets_market-items-list-metals-adv5",
     },
     {
       key: "adv6",
-      text: "all-markets_market-items-list-commodities-adv6",
+      text: "all-markets_market-items-list-metals-adv6",
     },
     {
       key: "adv7",
-      text: "all-markets_market-items-list-commodities-adv7",
+      text: "all-markets_market-items-list-metals-adv7",
     },
   ],
 };

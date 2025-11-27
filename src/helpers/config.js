@@ -1,142 +1,21 @@
-import webTraderIcon from "../assets/images/icons/tools/webTrader.svg";
-import iosIcon from "../assets/images/icons/tools/ios_black.svg";
-import androidIcon from "../assets/images/icons/tools/android.svg";
-import windowsIcon from "../assets/images/icons/tools/windows.svg";
-import windows from "../assets/images/icons/tools/windows.svg";
-import metaTrader4Icon from "../assets/images/icons/tools/metaTrader4.svg";
-import metaTrader5Icon from "../assets/images/icons/tools/metaTrader5.svg";
-import {
-  AdvantageIcon1,
-  AdvantageIcon2,
-  AdvantageIcon3,
-  AdvantageIcon4,
-  AdvantageIcon5,
-  AdvantageIcon6,
-  AdvantageIcon7,
-  QualityAdvantageIcon,
-  SafetyAdvantageIcon,
-  TrustAdvantageIcon,
-} from "../components/shared/icons";
-
-export const ADVANTAGES = [
-  {
-    icon: AdvantageIcon1,
-    text: "index_performance-advantage1",
-    accent: "performance-advantage1-accent",
-    subtext: "index_performance-advantage1-subtext",
-  },
-  {
-    icon: AdvantageIcon2,
-    text: "index_performance-advantage2-fsa",
-    accent: "performance-advantage2-accent-fsa",
-    subtext: "index_performance-advantage2-subtext",
-  },
-  {
-    icon: AdvantageIcon3,
-    text: "index_performance-advantage3-fsa",
-    accent: "performance-advantage3-accent-fsa",
-    subtext: "index_performance-advantage3-subtext",
-  },
-  {
-    icon: AdvantageIcon4,
-    text: "index_performance-advantage4",
-    accent: "performance-advantage4-accent",
-    subtext: "index_performance-advantage4-subtext",
-  },
-  {
-    icon: AdvantageIcon5,
-    text: "index_performance-advantage5-fsa",
-    accent: "performance-advantage5-accent-fsa",
-    subtext: "index_performance-advantage5-subtext",
-  },
-  {
-    icon: AdvantageIcon6,
-    text: "index_performance-advantage6-fsa",
-    accent: "performance-advantage6-accent-fsa",
-    subtext: "index_performance-advantage6-subtext",
-  },
-  {
-    icon: AdvantageIcon7,
-    text: "index_performance-advantage7",
-    accent: "performance-advantage7-accent",
-    subtext: "index_performance-advantage7-subtext",
-  },
-];
-
-export const FSA_ADVANTAGES = [
-  {
-    icon: AdvantageIcon1,
-    text: "index_performance-advantage1",
-    accent: "performance-advantage1-accent",
-  },
-  {
-    icon: AdvantageIcon2,
-    text: "index_performance-advantage2-fsa",
-    accent: "performance-advantage2-accent-fsa",
-  },
-  {
-    icon: AdvantageIcon3,
-    text: "index_performance-advantage3",
-    accent: "performance-advantage3-accent",
-  },
-  {
-    icon: AdvantageIcon5,
-    text: "index_performance-advantage5-fsa",
-    accent: "performance-advantage5-accent-fsa",
-  },
-  {
-    icon: AdvantageIcon6,
-    text: "index_performance-advantage6-fsa",
-    accent: "performance-advantage6-accent-fsa",
-  },
-  {
-    icon: AdvantageIcon7,
-    text: "index_performance-advantage7",
-    accent: "performance-advantage7-accent",
-  },
-];
-
 export const MT4_PLATFORMS = {
   ios: {
-    icon: iosIcon,
     title: "index_trading-tools-platforms-ios",
   },
   android: {
-    icon: androidIcon,
     title: "index_trading-tools-platforms-android",
   },
   windows: {
-    icon: windowsIcon,
     title: "index_trading-tools-platforms-windows",
   },
 };
 
 export const MOBILE_PLATFORMS = {
   ios: {
-    icon: iosIcon,
     title: "index_trading-tools-platforms-ios",
   },
   android: {
-    icon: androidIcon,
     title: "index_trading-tools-platforms-android",
-  },
-};
-
-const FSA_PLATFORMS = {
-  webTrader: {
-    icon: webTraderIcon,
-    title: "index_trading-tools-platforms-webtrader",
-  },
-  ios: MOBILE_PLATFORMS.ios,
-  android: MOBILE_PLATFORMS.android,
-  metaTrader4: {
-    icon: metaTrader4Icon,
-    title: "index_trading-tools-platforms-metatrader4",
-  },
-
-  metaTrader5: {
-    icon: metaTrader5Icon,
-    title: "index_trading-tools-platforms-metatrader5",
   },
 };
 
@@ -144,33 +23,9 @@ export const getPlatforms = () => FSA_PLATFORMS;
 
 export const ADDITIONAL_PLATFORMS = {
   windows: {
-    icon: windows,
     title: "index_trading-tools-platforms-windows",
   },
 };
-
-export const COMPANY_ADVANTAGES = [
-  {
-    title: "company_company-advantages-title1",
-    icon: SafetyAdvantageIcon,
-    textArray: [
-      "company_company-advantages-text1-1",
-      "company_company-advantages-text1-2-fsa",
-      "company_company-advantages-text1-3",
-      "company_company-advantages-text1-4",
-    ],
-  },
-  {
-    title: "company_company-advantages-title2",
-    icon: QualityAdvantageIcon,
-    textArray: ["company_company-advantages-text2"],
-  },
-  {
-    title: "company_company-advantages-title3",
-    icon: TrustAdvantageIcon,
-    textArray: ["company_company-advantages-text3"],
-  },
-];
 
 export const CRYPTO_TRADING_SECTION = {
   id: "crypto",
@@ -202,12 +57,12 @@ export const ETF_TRADING_SECTION = {
 };
 
 const FSA_TRADING_SECTIONS = [
+  METALS_TRADING_SECTION,
   CRYPTO_TRADING_SECTION,
   FOREX_TRADING_SECTION,
   SHARES_TRADING_SECTION,
-  ENERGIES_TRADING_SECTION,
-  METALS_TRADING_SECTION,
   INDICES_TRADING_SECTION,
+  ENERGIES_TRADING_SECTION,
   ETF_TRADING_SECTION,
 ];
 

@@ -9,6 +9,12 @@ import Menu from "./components/menu";
 import { useRtlDirection } from "../../helpers/hooks/use-rtl-direction";
 import { DIR_LTR, DIR_RTL } from "../../helpers/constants";
 import { useWindowSize } from "../../helpers/hooks/use-window-size";
+import LinkedInIcon from "../../assets/images/icons/linkedin.svg";
+import FacebookIcon from "../../assets/images/icons/facebook.svg";
+import InstagramIcon from "../../assets/images/icons/instagram.svg";
+import YoutubeIcon from "../../assets/images/icons/youtube.svg";
+import AppStoreIcon from "../../assets/images/icons/app-store.svg";
+import GooglePlayIcon from "../../assets/images/icons/google-play.svg";
 
 const Footer = ({ className }) => {
   const { t } = useTranslationWithVariables();
@@ -28,9 +34,57 @@ const Footer = ({ className }) => {
         })}
       >
         <div className="footer__wrapper">
-          <div className="footer__logo-wrapper">
-            <LogoTextMain />
+          <div className="footer__left">
+            <div className="footer__logo-wrapper">
+              <LogoTextMain />
+            </div>
             <p className="footer__text">{t(getFooterText())}</p>
+            <div className="footer__social-icons">
+              <a
+                href="https://www.linkedin.com/company/oqtimatrading"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src={LinkedInIcon} alt="LinkedIn" />
+              </a>
+              <a
+                href="https://www.facebook.com/OQtima.Global/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src={FacebookIcon} alt="Facebook" />
+              </a>
+              <a
+                href="https://www.instagram.com/oqtima.global/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src={InstagramIcon} alt="Instagram" />
+              </a>
+              <a
+                href="https://www.youtube.com/@OQtima"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src={YoutubeIcon} alt="YouTube" />
+              </a>
+            </div>
+            {/* <div className="footer__app-badges">
+              <a
+                href="https://apps.apple.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src={AppStoreIcon} alt="App Store" />
+              </a>
+              <a
+                href="https://play.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src={GooglePlayIcon} alt="Google Play" />
+              </a>
+            </div> */}
           </div>
           <div className="footer__menu-wrapper">
             <Menu />

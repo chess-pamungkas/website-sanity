@@ -1,9 +1,9 @@
 import React from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
-import HighlightedLocalizationText from "../../../shared/highlighted-localization-text";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
-import AnchorLink from "react-anchor-link-smooth-scroll";
+import legalCardDesktop from "../../../../assets/images/legal/legal-card-desktop.svg";
+import legalCardMobile from "../../../../assets/images/legal/legal-card-mobile.svg";
 
 const LegalRegulatorItem = ({
   className,
@@ -12,23 +12,57 @@ const LegalRegulatorItem = ({
   titleAccent,
   text,
   anchorLink,
+  index,
 }) => {
   const { t } = useTranslationWithVariables();
+
   return (
     <div className={cn("legal-regulator-item", className)}>
-      <img src={icon} alt="" className="legal-regulator-item__icon" />
-      <p className="legal-regulator-item__title">
-        <HighlightedLocalizationText
-          localizationText={title}
-          wordsToHighlight={titleAccent}
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-red"
+      {/* Card Background - Desktop */}
+      <div className="legal-regulator-item__background legal-regulator-item__background--desktop">
+        <img
+          src={legalCardDesktop}
+          alt=""
+          className="legal-regulator-item__card-bg"
         />
-      </p>
-      <p className="legal-regulator-item__text">{t(text)}</p>
-      <AnchorLink href={anchorLink} className={"legal-regulator-item__link"}>
-        {t("legal-regulator-read-more-fsa")}
-      </AnchorLink>
+      </div>
+
+      {/* Card Background - Mobile */}
+      <div className="legal-regulator-item__background legal-regulator-item__background--mobile">
+        <img
+          src={legalCardMobile}
+          alt=""
+          className="legal-regulator-item__card-bg"
+        />
+      </div>
+
+      {/* Content Container */}
+      <div className="legal-regulator-item__content">
+        {/* Icon */}
+        <div className="legal-regulator-item__icon-container">
+          <img src={icon} alt="" className="legal-regulator-item__icon" />
+        </div>
+
+        {/* Title */}
+        <div className="legal-regulator-item__title-container">
+          <h3 className="legal-regulator-item__title">
+            {t(title)}{" "}
+            <span className="highlighted-in-mixed">{t(titleAccent)}</span>
+          </h3>
+        </div>
+
+        {/* Description Text */}
+        <div className="legal-regulator-item__text-container">
+          <p className="legal-regulator-item__text">{t(text)}</p>
+        </div>
+
+        {/* Read More Link */}
+        {/* <div className="legal-regulator-item__link-container">
+          <AnchorLink href={anchorLink} className="legal-regulator-item__link">
+            {t("legal-regulator-read-more-fsa")}
+          </AnchorLink>
+        </div> */}
+      </div>
     </div>
   );
 };
@@ -40,5 +74,7 @@ LegalRegulatorItem.propTypes = {
   titleAccent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   text: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   anchorLink: PropTypes.string.isRequired,
+  index: PropTypes.number,
 };
+
 export default LegalRegulatorItem;

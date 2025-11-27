@@ -1,0 +1,525 @@
+@import "vars";
+@import "mixins";
+
+.commission {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // padding: 58.5px 100px;
+  gap: 38px;
+  width: 100%;
+  // max-width: 1440px;
+  height: 706px;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+
+  @include mobile {
+    padding: 20px;
+    gap: 20px;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-top: 50px;
+  }
+
+  @include tablet {
+    margin-top: 80px;
+    padding: 58.5px 0;
+  }
+
+  @include desktop-lg {
+    margin-top: 100px;
+  }
+
+  // Background
+  &__bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__image {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      object-fit: fill;
+      display: block;
+      opacity: 1;
+      mix-blend-mode: color-dodge;
+
+      @include mobile {
+        object-fit: cover;
+        object-position: center;
+      }
+
+      @include tablet {
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .desktop-bg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      @include mobile {
+        display: none;
+      }
+    }
+
+    .mobile-bg {
+      display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      @include mobile {
+        display: block;
+      }
+    }
+  }
+
+  // Content Container
+  &__content {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 38px;
+    width: 100%;
+    max-width: 1241px;
+    height: 589px;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      gap: 20px;
+      padding-top: 30px;
+    }
+  }
+
+  // Header Section
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1241px;
+    height: 138px;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      gap: 12px;
+    }
+  }
+
+  // Badge Group
+  &__badge-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 4px 10px;
+    background: rgba(255, 68, 0, 0.15);
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    width: fit-content;
+    height: 26px;
+
+    @include mobile {
+      width: fit-content;
+      margin: 0 auto;
+    }
+
+    img {
+      width: 14px;
+      height: 14px;
+      object-fit: contain;
+    }
+
+    span {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 18px;
+      color: #ffffff;
+    }
+  }
+
+  // Title and Subtitle Container
+  &__title-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 1241px;
+    height: 92px;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      gap: 8px;
+    }
+  }
+
+  // Title
+  &__title {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    text-align: center;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #ffffff;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+
+    @include mobile {
+      font-size: 42px;
+    }
+  }
+
+  // Subtitle
+  &__subtitle {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "light");
+    font-size: 18px;
+    line-height: 28px;
+    text-align: center;
+    color: #ffffff;
+    margin: 0;
+    opacity: 0.7;
+
+    @include mobile {
+      font-weight: map-get($font-weight, "regular");
+    }
+  }
+
+  // Table Container
+  &__table-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1032px;
+    height: 413px;
+    border-radius: 12px;
+    overflow: hidden;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  // Table Header
+  &__table-header {
+    display: flex;
+    align-items: center;
+    padding: 24px 16px;
+    gap: 250px;
+    width: 100%;
+    height: 59px;
+    background: rgba(255, 68, 0, 0.15);
+    border: 1px solid rgba(255, 68, 0, 0.45);
+    border-radius: 12px;
+
+    @include mobile {
+      display: none;
+    }
+
+    @include tablet {
+      gap: 0;
+    }
+
+    @include desktop-lg {
+      gap: 0;
+    }
+  }
+
+  // Header Column
+  &__header-column {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "bold");
+    font-size: 16px;
+    line-height: 22px;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+
+    &:first-child {
+      width: fit-content;
+      @include tablet {
+        width: 35%;
+      }
+
+      @include desktop-lg {
+        width: 40%;
+      }
+    }
+
+    &:last-child {
+      width: fit-content;
+      @include tablet {
+        width: fit-content;
+      }
+
+      @include desktop-lg {
+        width: fit-content;
+      }
+    }
+  }
+
+  // Table Body
+  &__table-body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 354px;
+
+    @include mobile {
+      height: auto;
+    }
+  }
+
+  // Table Row
+  &__table-row {
+    display: flex;
+    align-items: center;
+    padding: 24px 16px;
+    gap: 0;
+    width: 100%;
+    height: 59px;
+    border-bottom: 1px solid rgba(183, 183, 183, 0.15);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    @include mobile {
+      display: none;
+    }
+  }
+
+  // Row Column
+  &__row-column {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    color: #ffffff;
+
+    &--currency {
+      width: 495px;
+      height: 11px;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 22px;
+      letter-spacing: -0.02em;
+      opacity: 0.9;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      @include tablet {
+        width: 35%;
+        font-size: 13px;
+      }
+
+      @include desktop-lg {
+        width: 40%;
+        font-size: 16px;
+      }
+    }
+
+    &--rate {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      padding: 0px;
+      gap: 122px;
+      margin: 0 auto;
+      width: 500px;
+      height: 11px;
+      flex: none;
+      order: 1;
+      flex-grow: 1;
+      font-weight: map-get($font-weight, "regular");
+      font-size: 16px;
+      line-height: 22px;
+      letter-spacing: -0.02em;
+      opacity: 0.9;
+
+      @include tablet {
+        font-size: 13px;
+      }
+
+      @include desktop-lg {
+        font-size: 16px;
+      }
+    }
+  }
+
+  // Currency Code (White)
+  &__currency-code {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: -0.02em;
+  }
+
+  // Currency Name (Grey)
+  &__currency-name {
+    color: #888888;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: -0.02em;
+  }
+
+  // Mobile Table Component
+  &__mobile-table {
+    display: none;
+
+    @include mobile {
+      display: block;
+      width: 100%;
+    }
+  }
+}
+
+// Commission Table Mobile Styles
+.commission-table-mobile {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+
+  // Header Section
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 20px 16px;
+    background: rgba(255, 68, 0, 0.15);
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 12px;
+
+    &-title {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: map-get($font-weight, "bold");
+      font-size: 16px;
+      line-height: 22px;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      text-align: center;
+
+      @include mobile {
+        text-align: left;
+      }
+    }
+
+    &-subtitle {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: map-get($font-weight, "regular");
+      font-size: 16px;
+      line-height: 22px;
+      color: #ffffff;
+      text-align: center;
+      opacity: 0.75;
+
+      @include mobile {
+        text-align: left;
+      }
+    }
+  }
+
+  // Commission List
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  // Commission Item
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(183, 183, 183, 0.15);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  // Currency Section
+  &__currency {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.9;
+
+    &-code {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 22px;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    &-name {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 22px;
+      color: #888888;
+      letter-spacing: -0.02em;
+    }
+  }
+
+  // Commission Rate
+  &__rate {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "regular");
+    font-size: 16px;
+    line-height: 22px;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+  }
+}

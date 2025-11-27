@@ -1,151 +1,123 @@
 import React, { useContext, useState } from "react";
-import TopMarket from "../../top-market";
-import image from "../../../assets/images/top-markets/commodities.svg";
+import PropTypes from "prop-types";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
-import HighlightedLocalizationText from "../../shared/highlighted-localization-text";
-import TradingTicker from "../../trading-ticker";
-import TopMarketPromotion from "../../top-market-promotion";
-import commodities from "../../../assets/images/top-markets/images/commodities.svg";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
-import { METALS_TRADING_SECTION } from "../../../helpers/config";
-import animation from "../../../assets/images/bg/promotions/metals/metals.json";
-import MarketingCircle from "../../marketing-circle";
-import TopMarketLayout from "../../top-market-layout";
-import Faq from "../../faq";
-import { FAQ_METALS } from "../../../helpers/faq";
-import TableComponent from "../../shared/table";
-import {
-  DATA_METALS,
-  GeneralTableColumns,
-} from "../../../helpers/top-market-tables";
-import { updateTableDataWithLiveColumn } from "../../../helpers/services/update-table-data-with-live-column";
-import TradingContext from "../../../context/trading-context";
+import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { setLangParam } from "../../../helpers/services/language-service";
+import { updateTableDataWithLiveColumn } from "../../../helpers/services/update-table-data-with-live-column";
+import { getFeaturesByTradingType } from "../../../helpers/features-products.config";
+import { METALS_TRADING_SECTION } from "../../../helpers/config";
+import { DATA_METALS } from "../../../helpers/top-market-tables";
+import { FAQ_METALS } from "../../../helpers/faq";
+import BreadcrumbsTab from "../../shared/breadcrumbs-tab";
+import FeaturesProducts from "../../shared/features-products";
+import AccountComparison from "../../shared/account-comparison";
+import OurCommunityContent from "../../shared/our-community";
+import ContainerWrapper from "../../shared/container-wrapper";
+import Hero from "../../shared/hero";
+import GuideContent from "../../shared/guide-content";
+import SpreadsHeader from "../../shared/spreads-header";
+import FaqSection from "../../shared/faq-section";
+import TradingContext from "../../../context/trading-context";
+import TradingTicker from "../../trading-ticker";
+import TopMarketLayout from "../../top-market-layout";
+import MetalsSpreadsDesktop from "./metals-spreads-desktop";
+import MetalsSpreadsMobile from "./metals-spreads-mobile";
+import { useI18next } from "gatsby-plugin-react-i18next";
 
-const MetalsContent = () => {
+const MetalsContent = ({ className, isShowHero }) => {
   const { t } = useTranslationWithVariables();
+  const { isMobile } = useWindowSize();
   const { tradingSymbols } = useContext(TradingContext);
   const langParam = setLangParam(); // Get the language parameter
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
-
-  const handleShowRegistrationPopup = () => {
-    setIsPopupOpen(true); // Open the popup
-  };
+  const { navigate } = useI18next();
 
   const handleClosePopup = () => {
     setIsPopupOpen(false); // Close the popup
+  };
+
+  const handleFaqButtonClick = () => {
+    // Navigate to FAQ page
+    // Use navigate from useI18next to preserve language prefix in browser history
+    navigate("/faq");
   };
 
   updateTableDataWithLiveColumn(DATA_METALS, tradingSymbols);
 
   return (
     <>
-      <TopMarket
-        title={t("metals_top-market-title")}
-        image={image}
-        btn1Title={t("metals_top-market-btn1")}
-        btnOnClick1={handleShowRegistrationPopup}
-        btn2Title={t("metals_top-market-btn2")}
-        btnOnClick2={handleShowRegistrationPopup}
-      >
-        <HighlightedLocalizationText
-          localizationText="metals_top-market-promo-text"
-          wordsToHighlight="metals-top-market-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
-        />
-      </TopMarket>
-      <TradingTicker
-        title={t("metals_trading-ticker-title")}
-        pageSpecificSection={METALS_TRADING_SECTION}
+      <Hero
+        className={className}
+        isShowHero={isShowHero}
+        heroType="metals"
+        showWarning={false}
+        showHandImage={false}
+        showHeroImage={false}
+        desktopBackground="url(../images/bg/hero/metals/metals-desktop.svg)"
+        mobileBackground="url(../images/bg/hero/metals/metals-mobile.svg)"
       />
-      <TopMarketPromotion
-        className="commodities-promotion"
-        image={commodities}
-        btnTitle={t("metals_top-market-promo-btn")}
-        btnOnClick={handleShowRegistrationPopup}
-        note={t("metals_top-market-promotion-promo-note")}
-      >
-        <HighlightedLocalizationText
-          localizationText="metals_top-market-promotion-promo-text"
-          wordsToHighlight="metals-top-market-promotion-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-red"
+
+      <div className="metals-content">
+        <TradingTicker
+          title={t("metals_trading-ticker-title")}
+          pageSpecificSection={METALS_TRADING_SECTION}
         />
-      </TopMarketPromotion>
-      <MarketingCircle
-        animation={animation}
-        btnOnClick={handleShowRegistrationPopup}
-        upper={
-          <HighlightedLocalizationText
-            localizationText="metals_marketing-circle-upper"
-            wordsToHighlight="metals_marketing-circle-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        leftUpper={
-          <HighlightedLocalizationText
-            localizationText="metals_marketing-circle-left-upper"
-            wordsToHighlight="metals_marketing-circle-left-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        rightUpper={
-          <HighlightedLocalizationText
-            localizationText="metals_marketing-circle-right-upper"
-            wordsToHighlight="metals_marketing-circle-right-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        bottom={
-          <HighlightedLocalizationText
-            localizationText="metals_marketing-circle-bottom"
-            wordsToHighlight="metals_marketing-circle-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        leftBottom={
-          <HighlightedLocalizationText
-            localizationText="metals_marketing-circle-left-bottom"
-            wordsToHighlight="metals_marketing-circle-left-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        rightBottom={
-          <HighlightedLocalizationText
-            localizationText="metals_marketing-circle-right-bottom"
-            wordsToHighlight="metals_marketing-circle-right-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-      />
+
+        <BreadcrumbsTab currentPage={t("metals-text")} activeTab="metals" />
+      </div>
+
+      <ContainerWrapper>
+        {/* Metals Features Products */}
+        <FeaturesProducts
+          tradingType="metals"
+          features={getFeaturesByTradingType("metals")}
+        />
+      </ContainerWrapper>
+
+      <AccountComparison />
+
       <TopMarketLayout
-        title={t("metals_top-market-layout-title")}
-        btnTitle={t("metals_top-market-layout-btn")}
-        btnOnClick={handleShowRegistrationPopup}
+        className="top-market-layout--metals-spreads container"
+        headerTemplate={<SpreadsHeader tradingType="metals" />}
       >
-        <TableComponent
-          data={DATA_METALS}
-          columns={GeneralTableColumns()}
-          isWrapperPadding
-          tip={
-            <span>
-              <span className="bold">*MIN</span>&nbsp;-&nbsp;{t("table-tip1")}
-              &nbsp;
-              <span className="bold">AVG</span>&nbsp;-&nbsp;{t("table-tip2")}
-              &nbsp;
-            </span>
-          }
-          isSearch
-        />
+        {isMobile ? (
+          <MetalsSpreadsMobile data={DATA_METALS} />
+        ) : (
+          <MetalsSpreadsDesktop data={DATA_METALS} />
+        )}
       </TopMarketLayout>
-      <Faq faq={FAQ_METALS} />
+
+      {/* FAQ Section - Metals Trading Questions */}
+      {/* FAQ_METALS contains comprehensive metals FAQ data with 8 questions */}
+      <ContainerWrapper>
+        <FaqSection
+          faqData={FAQ_METALS}
+          className="faq-section--metals"
+          badgeTextKey="faq-badge-text"
+          titleKey="faq-title"
+          subtitleKey="faq-subtitle"
+          buttonTextKey="faq-button-text"
+          onFaqButtonClick={handleFaqButtonClick}
+        />
+      </ContainerWrapper>
+
+      {/* Guide Content Section */}
+      <ContainerWrapper>
+        <GuideContent
+          titleKey="metals-guide-title"
+          subtitleKey="metals-guide-subtitle"
+          className="guide-content--metals"
+        />
+      </ContainerWrapper>
+
+      {isMobile ? (
+        <OurCommunityContent />
+      ) : (
+        <ContainerWrapper>
+          <OurCommunityContent />
+        </ContainerWrapper>
+      )}
 
       {/* Render the popup */}
       {isPopupOpen && (
@@ -157,6 +129,11 @@ const MetalsContent = () => {
       )}
     </>
   );
+};
+
+MetalsContent.propTypes = {
+  className: PropTypes.string,
+  isShowHero: PropTypes.bool,
 };
 
 export default MetalsContent;

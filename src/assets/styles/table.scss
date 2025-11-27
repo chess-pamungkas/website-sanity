@@ -20,7 +20,7 @@
 }
 
 .table-scroll {
-  box-shadow: 4px 3px 15px #00000029;
+  // box-shadow: 4px 3px 15px #00000029;
   width: 100%;
   overflow-x: auto;
 
@@ -443,7 +443,8 @@
         border-style: solid;
         border-width: 5px 4px 0 4px;
         border-radius: 4px;
-        border-color: map-get($colors, "black") transparent transparent transparent;
+        border-color: map-get($colors, "black") transparent transparent
+          transparent;
       }
     }
   }

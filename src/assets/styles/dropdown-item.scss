@@ -1,30 +1,90 @@
 @import "vars";
 
+.dropdown-item,
+.navbar-item__dropdown-card {
+  height: 100%;
+}
+
+.dropdown-item--empty {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  pointer-events: none;
+  min-height: 56px;
+  height: 100%;
+}
+
 .dropdown-item {
   &--grow {
     height: 100%;
   }
 
   &__link {
-    display: flex;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    align-items: center;
     text-decoration: none;
+    column-gap: 16px;
+    width: 100%;
+    height: 100%;
+
+    // When there's no icon, adjust the layout
+    &:not(:has(.dropdown-item__icon)) {
+      grid-template-columns: 1fr;
+      column-gap: 0;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .dropdown-item__icon--above + .dropdown-item__content {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      text-align: left;
+      align-items: flex-start;
+    }
   }
 
   &__icon {
-    // width: 27px;
-    width: 35px;
-    height: auto;
-    margin-right: 10px;
-    flex-shrink: 0;
+    width: 50px;
+    min-width: 50px;
+    max-width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--above {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      justify-self: baseline;
+      margin-bottom: 12px;
+    }
+  }
+
+  &__content {
+    margin-left: 0;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    justify-content: center;
+    min-height: 26px; // Ensure minimum height for content
+
+    // When there's no icon, remove left margin
+    .dropdown-item__link:not(:has(.dropdown-item__icon)) & {
+      margin-left: 0;
+      padding-left: 0;
+    }
   }
 
   &__title {
-    color: map-get($colors, "black-secondary");
-    font-weight: map-get($font-weight, "black");
-    font-size: 14px;
+    color: map-get($colors, "black");
+    font-weight: map-get($font-weight, "bold");
+    font-size: 16px;
     line-height: 18px;
     transition: color 0.2s;
+    margin: 0;
+    padding: 0;
 
     @include desktop-xl {
       font-size: 16px;
@@ -38,10 +98,11 @@
 
   &__description {
     margin: 6px 0 0;
-    color: map-get($colors, "black-secondary");
-    font-weight: map-get($font-weight, "light");
-    font-size: 12px;
+    color: #696969;
+    font-weight: map-get($font-weight, "reguler");
+    font-size: 14px;
     line-height: 15px;
+    padding: 0;
 
     @include desktop-xl {
       font-size: 14px;

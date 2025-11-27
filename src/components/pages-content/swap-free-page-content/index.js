@@ -1,18 +1,25 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
-import TopMarket from "../../top-market";
-import topPromo from "../../../assets/images/swap-free/top-promo.png";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
-import HighlightedLocalizationText from "../../shared/highlighted-localization-text";
-import SwapFreeTopPromotion from "../../swap-free/components/swap-free-top-promotion";
-import SwapFreeCenterPromotion from "../../swap-free/components/swap-free-center-promotion";
-import SwapFreeAdvantages from "../../swap-free/components/swap-free-advantages";
-import { SWAP_FREE_ADVANTAGES } from "../../../helpers/swap-free.config";
-import SwapFreeBottomPromotion from "../../swap-free/components/bottom-promotion";
+import { useWindowSize } from "../../../helpers/hooks/use-window-size";
+import { getFeaturesByTradingType } from "../../../helpers/features-products.config";
+import FeaturesProducts from "../../shared/features-products";
 import { setLangParam } from "../../../helpers/services/language-service";
+import ContainerWrapper from "../../../components/shared/container-wrapper";
+import Hero from "../../shared/hero";
+import SwapFreeFreedom from "./swap-free-freedom";
+import HowToTradeSwapFree from "./how-to-trade-swap-free";
+import OurCommunityContent from "../../../components/shared/our-community";
+import {
+  ButtonPrimaryStandard,
+  ButtonSecondaryStandard,
+  ButtonContainer,
+} from "../../shared/reusable-buttons";
 
-const SwapFreeContent = () => {
+const SwapFreeContent = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
+  const { isMobile } = useWindowSize();
   const langParam = setLangParam(); // Get the language parameter
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
 
@@ -26,30 +33,60 @@ const SwapFreeContent = () => {
 
   return (
     <>
-      <TopMarket
-        title={
-          <HighlightedLocalizationText
-            localizationText="swap-free_top-market-title"
-            wordsToHighlight="swap-free_top-market-title-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-white"
+      <Hero
+        className={className}
+        isShowHero={isShowHero}
+        heroType="swap-free"
+        showWarning={false}
+        showHandImage={false}
+        showHeroImage={false}
+        desktopBackground="url(../../assets/images/bg/hero/swap-free/swap-free-desktop.svg)"
+        mobileBackground="url(../../assets/images/bg/hero/swap-free/swap-free-mobile.svg)"
+      />
+
+      {/* Swap-Free Freedom Section */}
+      <ContainerWrapper>
+        <SwapFreeFreedom />
+      </ContainerWrapper>
+
+      {/* How to Trade Swap-Free Section */}
+      <HowToTradeSwapFree />
+
+      <ContainerWrapper>
+        <div className="swap-free-page">
+          {/* Swap-Free Features Products */}
+          <FeaturesProducts
+            tradingType="swap-free"
+            features={getFeaturesByTradingType("swap-free")}
           />
-        }
-        image={topPromo}
-        btn1Title={t("swap-free_top-market-btn")}
-        btnOnClick1={handleShowRegistrationPopup}
-      >
-        <HighlightedLocalizationText
-          localizationText="swap-free_top-market-promo-text"
-          wordsToHighlight="swap-free_top-market-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
-        />
-      </TopMarket>
-      <SwapFreeTopPromotion />
-      <SwapFreeCenterPromotion />
-      <SwapFreeAdvantages advantages={SWAP_FREE_ADVANTAGES} />
-      <SwapFreeBottomPromotion />
+        </div>
+      </ContainerWrapper>
+
+      <div className="swap-free-community">
+        {isMobile ? (
+          <OurCommunityContent
+            customBadgeMessage={t("swap-free_our_community_badge_message")}
+            customTitle={t("swap-free_our_community_title")}
+            customSubtitle={t("swap-free_our_community_subtitle")}
+            customPrimaryButton={t("swap-free_our_community_primary_button")}
+            customSecondaryButton={t(
+              "swap-free_our_community_secondary_button"
+            )}
+          />
+        ) : (
+          <ContainerWrapper>
+            <OurCommunityContent
+              customBadgeMessage={t("swap-free_our_community_badge_message")}
+              customTitle={t("swap-free_our_community_title")}
+              customSubtitle={t("swap-free_our_community_subtitle")}
+              customPrimaryButton={t("swap-free_our_community_primary_button")}
+              customSecondaryButton={t(
+                "swap-free_our_community_secondary_button"
+              )}
+            />
+          </ContainerWrapper>
+        )}
+      </div>
 
       {/* Render the popup */}
       {isPopupOpen && (
@@ -61,6 +98,11 @@ const SwapFreeContent = () => {
       )}
     </>
   );
+};
+
+SwapFreeContent.propTypes = {
+  className: PropTypes.string,
+  isShowHero: PropTypes.bool,
 };
 
 export default SwapFreeContent;

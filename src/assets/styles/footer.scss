@@ -4,53 +4,189 @@
 .footer {
   scroll-snap-align: start;
   position: relative;
-  background-color: map-get($colors, "black");
-  // @include content-alignment(0);
   padding-top: 68px;
   padding-bottom: 40px;
   z-index: 5;
+  background-image: url("../images/bg/footer/footer-desktop.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  @include mobile {
+    background-image: url("../images/bg/footer/footer-mobile.svg");
+    padding-top: 32px;
+    padding-bottom: 24px;
+  }
 
   &__wrapper {
-    @include desktop-xl {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 60px;
+    @include mobile {
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+    @include tablet {
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+    @include desktop-lg {
       display: flex;
+      flex-direction: row;
       align-items: flex-start;
+      justify-content: space-between;
+      gap: 60px;
+    }
+    @include desktop-xl {
+      gap: 60px;
+    }
+    @include desktop-2k {
+      gap: 180px;
+    }
+    @include desktop-5k {
+      gap: 240px;
+    }
+  }
+
+  &__left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 298px;
+    @include mobile {
+      max-width: 100%;
+      width: 100%;
+    }
+
+    @include tablet {
+      max-width: 100%;
+      width: 100%;
+    }
+
+    @include desktop-lg {
+      max-width: 298px;
+    }
+
+    @include desktop-2k {
+      max-width: 650px;
     }
   }
 
   &__logo-wrapper {
     margin: 0 0 35px;
-
     @include desktop-xl {
       max-width: 520px;
-      margin: 0 217px 0 0;
+      margin: 0 0 24px 0;
+    }
+    @include mobile {
+      margin: 0 0 30px 0;
+      display: flex;
+      justify-content: left;
+      width: 100%;
+      max-width: 136px;
     }
   }
 
   &__text {
-    color: map-get($colors, "grey");
-    margin: 0;
-    padding: 30px 0;
+    color: map-get($colors, "white");
+    margin: 0 0 24px 0;
+    padding: 0;
     font-weight: map-get($font-weight, "light");
-    font-size: 12px;
-    line-height: 15px;
+    font-size: 14px;
+    line-height: 20px;
+    opacity: 0.7;
+    letter-spacing: 0.2px;
+    @include mobile {
+      text-align: left;
+      font-size: 12px;
+      line-height: 18px;
+      margin-bottom: 25px;
+    }
+  }
 
-    @include desktop-lg {
-      font-size: 16px;
-      line-height: 20px;
+  &__social-icons {
+    display: flex;
+    flex-direction: row;
+    gap: 18px;
+    margin-bottom: 24px;
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border-radius: 50%;
+      transition: background 0.2s;
+      &:hover {
+        background: rgba(255, 68, 0, 0.08);
+      }
+      img {
+        width: 24px;
+        height: 24px;
+        display: block;
+      }
+    }
+    @include mobile {
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+  }
+
+  &__app-badges {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    margin-bottom: 32px;
+    a {
+      display: flex;
+      align-items: center;
+      img {
+        width: 140px;
+        height: 42px;
+        object-fit: contain;
+        display: block;
+      }
+    }
+    @include mobile {
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      a img {
+        width: 120px;
+        height: 36px;
+      }
+    }
+  }
+
+  &__menu-wrapper {
+    flex: 1;
+    @include mobile {
+      width: 100%;
+      margin-top: 0;
+    }
+    @include tablet {
+      width: 100%;
+      margin-top: 0;
     }
   }
 }
 
 .copy-right-block {
-  background-color: map-get($colors, "black");
-
   .container {
-    border-top: 1px solid map-get($colors, "red");
-    border-bottom: 1px solid map-get($colors, "bg-grey");
     padding-top: 30px;
     padding-bottom: 30px;
 
     @include mobile {
+      padding-bottom: 0;
+    }
+
+    @include tablet {
+      padding-top: 0;
       padding-bottom: 0;
     }
 
@@ -61,13 +197,20 @@
   }
 
   &__text {
-    color: map-get($colors, "grey");
+    color: #fff;
     font-weight: map-get($font-weight, "light");
     font-size: 12px;
-    line-height: 15px;
+    line-height: 20px;
+    opacity: 0.5;
+    letter-spacing: 0.2px;
+
+    @include mobile {
+      font-size: 8px;
+      line-height: 15px;
+    }
 
     @include desktop-xl {
-      font-size: 16px;
+      font-size: 12px;
       line-height: 20px;
     }
 
@@ -86,8 +229,6 @@
 }
 
 .copy-right-block-company {
-  background-color: map-get($colors, "black");
-
   .container {
     padding-top: 10px;
 
@@ -111,34 +252,58 @@
 
 .menu {
   display: block;
-  columns: 2;
+  columns: 4;
 
   &__wrapper {
     break-inside: avoid;
-    padding: 0 0 35px;
+    padding: 0;
+
+    @include mobile {
+      margin: 0 0 50px;
+    }
+
+    @include tablet {
+      margin: 0 0 50px;
+    }
+
+    &--legal {
+      // Legal column (Partners, Privacy Policy, Cookie Policy) - no title
+      .menu__column-title {
+        display: none;
+      }
+    }
   }
 
   @include tablet {
-    columns: unset;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 30px 50px;
+    display: block;
+    columns: 3;
   }
 
-  @include desktop-xl {
-    gap: 30px 85px;
+  @include desktop-lg {
+    display: block;
+    columns: 4;
+    gap: 30px 80px;
   }
 
   &__column-title {
-    color: map-get($colors, "red");
-    font-weight: map-get($font-weight, "black");
+    color: #fff;
+    font-weight: map-get($font-weight, "medium");
     font-size: 12px;
     line-height: 15px;
     margin: 0 0 25px;
 
+    @include mobile {
+      font-size: 14px;
+      line-height: 25.7px;
+    }
+
+    @include tablet {
+      margin: 0 0 10px !important;
+    }
+
     @include desktop-lg {
-      font-size: 16px;
-      line-height: 20px;
+      font-size: 14px;
+      line-height: 25.7px;
       margin: 0 0 20px;
     }
   }
@@ -150,9 +315,60 @@
   &__item {
     margin-bottom: 25px;
 
+    @include mobile {
+      margin-bottom: 10px;
+    }
+
+    @include desktop-lg {
+      font-size: 16px;
+      font-weight: map-get($font-weight, "light");
+      color: #7e7e7e;
+      line-height: 24px;
+      margin-bottom: 10px;
+    }
+  }
+
+  &__group {
+    list-style-type: none;
+    margin-bottom: 20px;
+
+    @include mobile {
+      margin-bottom: 15px;
+    }
+
     @include desktop-lg {
       margin-bottom: 20px;
     }
+  }
+
+  &__group-title {
+    color: #fff;
+    font-weight: map-get($font-weight, "medium");
+    font-size: 12px;
+    line-height: 15px;
+    margin: 0 0 15px;
+
+    @include mobile {
+      font-size: 12px;
+      line-height: 15px;
+      margin-bottom: 10px;
+    }
+
+    @include tablet {
+      margin-bottom: 10px;
+    }
+
+    @include desktop-lg {
+      font-size: 12px;
+      line-height: 15px;
+      margin-bottom: 12px;
+    }
+  }
+
+  &__group-items {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
   }
 
   &__subtitles {
@@ -161,19 +377,57 @@
 
   &__link {
     text-decoration: none;
-    color: map-get($colors, "grey");
+    color: #7e7e7e;
     font-weight: map-get($font-weight, "light");
-    font-size: 12px;
-    line-height: 15px;
-
-    @include desktop-lg {
-      font-size: 16px;
-      line-height: 20px;
-    }
+    font-size: 16px;
+    line-height: 24px;
 
     &--bold {
       font-weight: map-get($font-weight, "black");
       color: map-get($colors, "white");
     }
+  }
+}
+
+/* Fallback: Hide by text content using attribute selector (JS can add data-title if needed) */
+.footer .menu__column-title {
+  /* Hide if text is exactly 'Partners' */
+  &:after {
+    content: attr(data-title);
+    display: none;
+  }
+}
+
+/* Pure CSS (not 100% cross-browser, but works in modern browsers) */
+// .footer .menu__column-title {
+//   /* Hide if text is exactly 'Partners' */
+//   &:is(:where(:not([data-title])):not(:empty)) {
+//     display: none;
+//   }
+// }
+
+// /* Most robust: Use nth-child or JS to add a class, but for now, use this: */
+// .footer .menu__column-title {
+//   /* Hide if text is exactly 'Partners' */
+//   &[data-title="Partners"] {
+//     display: none !important;
+//   }
+// }
+
+@media (max-width: 768px) {
+  .footer__menu-wrapper .menu {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .footer__menu-wrapper .menu__wrapper {
+    width: 50%;
+    box-sizing: border-box;
+    margin-bottom: 24px;
+    padding-right: 8px;
+    padding-left: 8px;
   }
 }

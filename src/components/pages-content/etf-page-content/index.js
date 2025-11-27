@@ -1,131 +1,102 @@
-import React, { useState } from "react";
-import TopMarket from "../../top-market";
-import image from "../../../assets/images/top-markets/etf.svg";
+import React, { useContext, useState } from "react";
+import PropTypes from "prop-types";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
-import HighlightedLocalizationText from "../../shared/highlighted-localization-text";
-import TradingTicker from "../../trading-ticker";
-import TopMarketPromotion from "../../top-market-promotion";
-import etf from "../../../assets/images/top-markets/images/etf.svg";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
-import { ETF_TRADING_SECTION } from "../../../helpers/config";
-import animation from "../../../assets/images/bg/promotions/etf/etf.json";
-import MarketingCircle from "../../marketing-circle";
-import Faq from "../../faq";
-import { FAQ_ETF } from "../../../helpers/faq";
+import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { setLangParam } from "../../../helpers/services/language-service";
+import { getFeaturesByTradingType } from "../../../helpers/features-products.config";
+import { ETF_TRADING_SECTION } from "../../../helpers/config";
+import { FAQ_ETF } from "../../../helpers/faq";
+import BreadcrumbsTab from "../../shared/breadcrumbs-tab";
+import FeaturesProducts from "../../shared/features-products";
+import AccountComparison from "../../shared/account-comparison";
+import OurCommunityContent from "../../shared/our-community";
+import ContainerWrapper from "../../shared/container-wrapper";
+import Hero from "../../shared/hero";
+import GuideContent from "../../shared/guide-content";
+import FaqSection from "../../shared/faq-section";
+import TradingContext from "../../../context/trading-context";
+import TradingTicker from "../../trading-ticker";
+import { useI18next } from "gatsby-plugin-react-i18next";
 
-const ETFContent = () => {
+const ETFContent = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
+  const { isMobile } = useWindowSize();
   const langParam = setLangParam(); // Get the language parameter
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
-
-  const handleShowRegistrationPopup = () => {
-    setIsPopupOpen(true); // Open the popup
-  };
+  const { navigate } = useI18next();
 
   const handleClosePopup = () => {
     setIsPopupOpen(false); // Close the popup
   };
 
+  const handleFaqButtonClick = () => {
+    // Navigate to FAQ page
+    // Use navigate from useI18next to preserve language prefix in browser history
+    navigate("/faq");
+  };
+
   return (
     <>
-      <TopMarket
-        title={t("etf_top-market-title")}
-        image={image}
-        btn1Title={t("etf_top-market-btn1")}
-        btnClassName1={"button-link--lowercase"}
-        btnClassName2={"button-link--lowercase"}
-        btnOnClick1={handleShowRegistrationPopup}
-        btn2Title={t("etf_top-market-btn2")}
-        btnOnClick2={handleShowRegistrationPopup}
-      >
-        <HighlightedLocalizationText
-          localizationText="etf_top-market-promo-text"
-          wordsToHighlight="etf-top-market-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
-        />
-      </TopMarket>
-      <TradingTicker
-        title={t("etf_trading-ticker-title")}
-        pageSpecificSection={ETF_TRADING_SECTION}
+      <Hero
+        className={className}
+        isShowHero={isShowHero}
+        heroType="etf"
+        showWarning={false}
+        showHandImage={false}
+        showHeroImage={false}
+        desktopBackground="url(../images/bg/hero/etf/etf-desktop.svg)"
+        mobileBackground="url(../images/bg/hero/etf/etf-mobile.svg)"
       />
-      <TopMarketPromotion
-        className="etf-promotion"
-        image={etf}
-        btnTitle={t("etf_top-market-promo-btn")}
-        btnClassName={"button-link--lowercase"}
-        btnOnClick={handleShowRegistrationPopup}
-        note={
-          <HighlightedLocalizationText
-            localizationText="etf_top-market-promotion-promo-note"
-            wordsToHighlight="etf_top-market-promotion-promo-note-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-      >
-        <HighlightedLocalizationText
-          localizationText="etf_top-market-promotion-promo-text"
-          wordsToHighlight="etf-top-market-promotion-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-red"
+
+      <div className="etf-content">
+        <TradingTicker
+          title={t("etf_trading-ticker-title")}
+          pageSpecificSection={ETF_TRADING_SECTION}
         />
-      </TopMarketPromotion>
-      <MarketingCircle
-        animation={animation}
-        btnOnClick={handleShowRegistrationPopup}
-        isEtf={true}
-        upper={
-          <HighlightedLocalizationText
-            localizationText="etf_marketing-circle-upper"
-            wordsToHighlight="etf_marketing-circle-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        leftUpper={
-          <HighlightedLocalizationText
-            localizationText="etf_marketing-circle-left-upper"
-            wordsToHighlight="etf_marketing-circle-left-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        rightUpper={
-          <HighlightedLocalizationText
-            localizationText="etf_marketing-circle-right-upper"
-            wordsToHighlight="etf_marketing-circle-right-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        bottom={
-          <HighlightedLocalizationText
-            localizationText="etf_marketing-circle-bottom"
-            wordsToHighlight="etf_marketing-circle-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        leftBottom={
-          <HighlightedLocalizationText
-            localizationText="etf_marketing-circle-left-bottom"
-            wordsToHighlight="etf_marketing-circle-left-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        rightBottom={
-          <HighlightedLocalizationText
-            localizationText="etf_marketing-circle-right-bottom"
-            wordsToHighlight="etf_marketing-circle-right-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-      />
-      <Faq faq={FAQ_ETF} />
+
+        <BreadcrumbsTab currentPage={t("etf-text")} activeTab="etf" />
+      </div>
+
+      <ContainerWrapper>
+        {/* ETF Features Products */}
+        <FeaturesProducts
+          tradingType="etf"
+          features={getFeaturesByTradingType("etf")}
+        />
+      </ContainerWrapper>
+
+      <AccountComparison />
+
+      {/* FAQ Section - ETF Trading Questions */}
+      <ContainerWrapper>
+        <FaqSection
+          faqData={FAQ_ETF}
+          className="faq-section--etf"
+          badgeTextKey="faq-badge-text"
+          titleKey="faq-title"
+          subtitleKey="faq-subtitle"
+          buttonTextKey="faq-button-text"
+          onFaqButtonClick={handleFaqButtonClick}
+        />
+      </ContainerWrapper>
+
+      {/* Guide Content Section */}
+      <ContainerWrapper>
+        <GuideContent
+          titleKey="etf-guide-title"
+          subtitleKey="etf-guide-subtitle"
+          className="guide-content--etf"
+        />
+      </ContainerWrapper>
+
+      {isMobile ? (
+        <OurCommunityContent />
+      ) : (
+        <ContainerWrapper>
+          <OurCommunityContent />
+        </ContainerWrapper>
+      )}
 
       {/* Render the popup */}
       {isPopupOpen && (
@@ -137,6 +108,11 @@ const ETFContent = () => {
       )}
     </>
   );
+};
+
+ETFContent.propTypes = {
+  className: PropTypes.string,
+  isShowHero: PropTypes.bool,
 };
 
 export default ETFContent;

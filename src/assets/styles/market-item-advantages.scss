@@ -3,124 +3,361 @@
 
 .market-item-advantages-list {
   width: 100%;
+  height: 100%;
 
-  @include desktop-lg {
-    width: 460px;
-  }
+  &__container {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+    gap: 32px;
+    isolation: isolate;
+    width: 405px;
+    height: 449px;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 68, 0, 0.15) 100%
+      ),
+      #ffffff;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 12px;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    position: relative;
+    overflow: hidden;
 
-  @include desktop-xl {
-    width: 620px;
-  }
-
-  &__title-wrapper {
-    background-color: map-get($colors, "red");
-    border-radius: 10px 10px 0 0;
-    padding: 6px 20px;
+    @include mobile {
+      width: 100%;
+      height: auto;
+      min-height: 400px;
+      padding: 20px 16px;
+      gap: 24px;
+    }
 
     @include tablet {
-      padding: 7px 43px;
+      width: 100%;
+      max-width: 405px;
+      height: 449px;
+      padding: 16px;
+      gap: 32px;
+    }
+  }
+
+  &__bg-image {
+    position: absolute;
+    width: 797.39px;
+    height: 479px;
+    left: -63.63px;
+    top: -10px;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    z-index: 1;
+    pointer-events: none;
+
+    @include mobile {
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
     }
 
-    @include desktop-lg {
-      padding: 7px 19px 7px 43px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
+  }
 
-    @include desktop-xl {
-      padding: 9px 19px 9px 43px;
+  &__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+    height: 100%;
+
+    @include mobile {
+      gap: 12px;
     }
   }
 
   &__title {
-    text-align: left;
-    color: map-get($colors, "white");
     margin: 0;
-    font-weight: map-get($font-weight, "black");
-    font-size: 16px;
-    line-height: 20px;
+    font-weight: map-get($font-weight, "bold");
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    color: map-get($colors, "black");
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    z-index: 0;
 
-    @include tablet {
-      font-size: 22px;
-      line-height: 27px;
-    }
-
-    @include desktop-xl {
-      font-size: 23px;
-      line-height: 28px;
-    }
-  }
-}
-
-.market-item-advantages {
-  background: map-get($colors, "white") 0 0% no-repeat padding-box;
-  box-shadow: 0 0 10px #0000001a;
-  border-radius: 10px;
-  width: 100%;
-  height: fit-content;
-  padding: 20px;
-  z-index: 2;
-  position: relative;
-
-  @include tablet {
-    padding: 35px 43px 17px 43px;
-  }
-
-  @include desktop-lg {
-    padding: 35px 19px 22px 43px;
-  }
-
-  &__item {
-    display: flex;
-    align-items: center;
-
-    @include tablet {
-      padding-bottom: 18px;
-    }
-
-    @include desktop-lg {
-      padding-bottom: 13px;
-    }
-  }
-
-  &__text {
-    padding-left: 10px;
-    text-align: left;
-    font-size: 14px;
-    line-height: 35px;
-    color: map-get($colors, "red");
-    font-weight: map-get($font-weight, "black");
-
-    @include tablet {
+    @include mobile {
       font-size: 24px;
-      line-height: 35px;
-      padding-left: 20px;
     }
   }
-}
 
-.market-item-btn-wrapper {
-  width: 100%;
-  padding: 20px;
+  &__advantages {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 12px;
+    width: 349px;
+    height: 268px;
+    flex: none;
+    order: 2;
+    align-self: stretch;
+    flex-grow: 0;
+    z-index: 2;
 
-  @include tablet {
-    padding: 35px 43px 17px 43px;
+    @include mobile {
+      width: 100%;
+      height: auto;
+      gap: 10px;
+    }
   }
 
-  @include desktop-lg {
-    padding: 35px 19px 22px 43px;
+  &__advantage-item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 12px;
+    width: 335px;
+    height: auto;
+    min-height: 28px;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      min-height: 28px;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .market-item-advantages__icon {
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
   }
-}
 
-.market-item-advantages-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
+  &__advantage-text {
+    width: fit-content;
+    height: auto;
+    min-height: 28px;
+    font-family: "Sofia Pro";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: 0.2px;
+    color: #000000;
+    opacity: 0.7;
+    flex: 1;
+    order: 1;
+    flex-grow: 1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
 
-.market-item-btn {
-  font-size: 12px;
+    @include mobile {
+      width: 100%;
+      font-size: 16px;
+      line-height: 21.6px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      flex: 1;
+      flex-grow: 1;
+      max-width: calc(100% - 30px);
+    }
 
-  @include desktop-xl {
+    @include tablet {
+      font-size: 15px;
+      line-height: 21.6px;
+    }
+  }
+
+  &__button-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+  }
+
+  &__learn-more-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    margin-top: 40px;
+    order: 2;
+
+    @include mobile {
+      margin-top: 15px;
+    }
+  }
+
+  &__learn-more-btn {
+    // Using the reusable button styling, so we only need minimal overrides if needed
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 14px 24px !important;
+    gap: 10px !important;
+    width: 100% !important;
+    height: 51px !important;
+    border: 1px solid #ff4400 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: #000000 !important;
+    font-family: "Sofia Pro" !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+    line-height: 23px !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    flex: none !important;
+    order: 3 !important;
+    align-self: stretch !important;
+    flex-grow: 0 !important;
+    z-index: 3 !important;
+    cursor: pointer !important;
+    outline: none !important;
+
+    @include mobile {
+      width: 100% !important;
+      height: 48px !important;
+      font-size: 20px !important;
+      line-height: 22px !important;
+      padding: 12px 20px !important;
+    }
+
+    .button-text {
+      width: auto !important;
+      height: 23px !important;
+      font-family: "Sofia Pro" !important;
+      font-style: normal !important;
+      font-weight: map-get($font-weight, "semibold") !important;
+      font-size: 20px !important;
+      color: #000000 !important;
+      flex: none !important;
+      order: 0 !important;
+      flex-grow: 0 !important;
+      transition: color 0.3s !important;
+
+      @include mobile {
+        width: auto !important;
+        height: auto !important;
+        font-size: 16px !important;
+      }
+    }
+
+    .button-arrow {
+      display: none !important;
+      width: 9.33px !important;
+      height: 9.33px !important;
+      opacity: 0 !important;
+      flex: none !important;
+      order: 1 !important;
+      flex-grow: 0 !important;
+      transition: all 0.3s !important;
+      align-self: center !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    &:hover {
+      background: #ff4400 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 19.3px 0 rgba(255, 68, 0, 0.5) !important;
+
+      .button-text {
+        color: #ffffff !important;
+      }
+
+      .button-arrow {
+        display: flex !important;
+        opacity: 1 !important;
+        width: 24px !important;
+        margin-left: 0 !important;
+        border-color: #ffffff !important;
+        color: #ffffff !important;
+      }
+    }
+  }
+
+  &__button {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 24px;
+    gap: 10px;
+    width: 349px;
+    height: 51px;
+    border: 1px solid #ff4400;
+    border-radius: 8px;
+    background: transparent;
+    color: #000000;
+    font-family: "Sofia Pro";
+    font-style: normal;
+    font-weight: 700;
     font-size: 20px;
+    line-height: 23px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    flex: none;
+    order: 3;
+    align-self: stretch;
+    flex-grow: 0;
+    z-index: 3;
+
+    @include mobile {
+      width: 100%;
+      height: 48px;
+      font-size: 18px;
+      line-height: 22px;
+      padding: 12px 20px;
+    }
+
+    &:hover {
+      background: #ff4400;
+      color: #ffffff;
+    }
+
+    .icon {
+      display: none;
+      width: 9.33px;
+      height: 9.33px;
+      border: 1.3333px solid #ff4400;
+    }
   }
 }

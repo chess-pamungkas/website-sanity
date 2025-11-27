@@ -21,11 +21,6 @@ const FOOTER_COPYRIGHT_FSA = {
 
 const FOOTER_COMPANY = { p1: "footer-company-name-text" };
 
-export const FOOTER_FOR_FUNDING = {
-  p1: "footer-funding-1",
-  p2: "footer-funding-2",
-};
-
 // Function to get current year
 const getCurrentYear = () => new Date().getFullYear();
 

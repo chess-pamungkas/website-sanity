@@ -1,0 +1,1833 @@
+@import "vars";
+@import "mixins";
+
+// Header Section
+.spreads-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 32px;
+
+  @include mobile {
+    margin-bottom: 20px;
+  }
+}
+
+.spreads-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 68, 0, 0.1);
+  border-radius: 13px;
+  padding: 6px 16px;
+  margin-bottom: 20px;
+
+  &__icon {
+    font-size: 16px;
+  }
+
+  &__text {
+    font-weight: map-get($font-weight, "medium");
+    font-size: 14px;
+    line-height: 20px;
+    color: map-get($colors, "black");
+  }
+
+  @include mobile {
+    margin-bottom: 17px;
+  }
+}
+
+.spreads-title {
+  width: 100%;
+  font-weight: map-get($font-weight, "semibold");
+  font-size: 52px;
+  text-align: center;
+  letter-spacing: -0.02em;
+  background: linear-gradient(
+      102.31deg,
+      rgba(0, 0, 0, 0) 9.12%,
+      rgba(255, 68, 0, 0.45) 71.6%
+    ),
+    #000000;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 0 auto 16px auto;
+
+  // Remove accent color since gradient handles all text
+  &__accent {
+    // Inherit the same gradient from parent
+    background: inherit;
+    -webkit-background-clip: inherit;
+    -webkit-text-fill-color: inherit;
+    background-clip: inherit;
+  }
+
+  @include mobile {
+    font-size: 40px;
+    margin-bottom: 15px;
+  }
+
+  @include tablet {
+    font-size: 52px;
+  }
+}
+
+.spreads-subtitle {
+  width: 100%;
+  font-weight: map-get($font-weight, "light");
+  font-size: 18px;
+  line-height: 28px;
+  text-align: center;
+  color: #000000;
+  opacity: 0.7;
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 0 auto;
+}
+
+// Desktop Styles
+.metals-spreads-desktop {
+  width: 100%;
+  margin: 0 auto;
+
+  @include desktop-lg {
+    max-width: 1032px;
+  }
+
+  @include desktop-xl {
+    max-width: 1400px;
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    height: 36px;
+    margin-bottom: 32px;
+    margin-left: auto;
+    margin-right: auto;
+
+    @include desktop-lg {
+      max-width: 100%;
+    }
+
+    @include desktop-xl {
+      max-width: 1032px;
+    }
+    .search-frame {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 355px;
+      height: 36px;
+      background: transparent;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 50px;
+      padding: 0 12px;
+      gap: 10px;
+      box-sizing: border-box;
+      position: relative;
+
+      &:focus-within {
+        border-color: rgba(255, 68, 0, 0.4);
+        box-shadow: 0 0 0 2px rgba(255, 68, 0, 0.1);
+      }
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-weight: map-get($font-weight, "medium");
+      font-size: 14px;
+      line-height: 22px;
+      color: #9c9c9c;
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      min-height: 0; // Prevent flex item from expanding
+
+      &::placeholder {
+        color: #9c9c9c;
+        font-size: 14px;
+      }
+
+      &:focus {
+        color: #000000;
+      }
+    }
+
+    .search-icon {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+      opacity: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0; // Reset all margins
+      align-self: center; // Ensure vertical centering
+      position: relative; // For precise positioning
+      top: 0; // Reset any top positioning
+      line-height: 1; // Reset line height for icon
+
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block; // Remove any inline spacing
+        line-height: 1; // Reset line height
+      }
+
+      path {
+        stroke: #a2a2a2;
+        stroke-width: 1.5;
+      }
+    }
+  }
+
+  .spreads-table-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .table-body-scroll-container {
+    width: 100%;
+    max-height: 354px; // 6 rows * 59px = 354px
+    overflow-y: auto;
+    overflow-x: hidden;
+    // border-radius: 0 0 12px 12px;
+    background: transparent;
+
+    // Hide scrollbar but keep functionality
+    scrollbar-width: none; // Firefox
+    -ms-overflow-style: none; // IE and Edge
+
+    &::-webkit-scrollbar {
+      display: none; // Chrome, Safari, Opera
+    }
+  }
+
+  .spreads-table-body {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    border: none;
+    margin: 0;
+
+    @include desktop-lg {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    @include desktop-xl {
+      width: 1032px;
+      margin: 0 auto;
+    }
+
+    .table-body-section {
+      width: 100%;
+      height: auto;
+      display: table-row-group;
+    }
+
+    .table-row {
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+      border-collapse: separate;
+      display: table-row;
+
+      .table-cell {
+        padding: 16px;
+        text-align: center;
+        font-weight: map-get($font-weight, "regular");
+        font-size: 16px;
+        line-height: 22px;
+        color: #000;
+        vertical-align: middle;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+        height: 59px;
+        min-height: 59px;
+        max-height: 59px;
+        box-sizing: border-box;
+
+        &:first-child {
+          text-align: left;
+          padding-left: 16px;
+          width: 25%;
+          font-weight: map-get($font-weight, "bold");
+        }
+
+        &.table-cell__min {
+          width: 18.75%;
+          text-align: center;
+          font-weight: map-get($font-weight, "bold");
+        }
+
+        &.table-cell__avg {
+          width: 18.75%;
+          text-align: center;
+          font-weight: map-get($font-weight, "regular");
+        }
+      }
+    }
+  }
+
+  .spreads-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    // border-radius: 12px;
+    overflow: hidden;
+
+    // Ensure proper table structure
+    display: table;
+    border: none;
+
+    @include desktop-lg {
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    @include desktop-xl {
+      width: 1032px;
+      margin: 0 auto;
+    }
+
+    // Table Header Section (Frame 1000001821)
+    .table-header-section {
+      width: 100%;
+      height: auto;
+      display: table-row-group;
+    }
+
+    // Main Header Row (Frame 10311)
+    .table-main-header {
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+      background: url("../../assets/images/bg/funding-withdrawals/table-head.svg")
+        no-repeat center;
+      background-size: cover;
+      // border-radius: 12px;
+      border: none;
+      overflow: hidden;
+      display: table-row;
+
+      th {
+        padding: 16px;
+        text-align: left;
+        font-weight: map-get($font-weight, "bold");
+        font-size: 16px;
+        line-height: 22px;
+        color: #fff;
+        border: none;
+        vertical-align: middle;
+        height: 59px;
+        box-sizing: border-box;
+
+        &:first-child {
+          width: 25%;
+          padding-left: 16px;
+          border-top-left-radius: 12px;
+          border-bottom-left-radius: 12px;
+        }
+
+        &:last-child {
+          border-top-right-radius: 12px;
+          border-bottom-right-radius: 12px;
+        }
+
+        &.table-header__ecn {
+          width: 37.5%;
+          text-align: center;
+        }
+
+        &.table-header__oqtima {
+          width: 37.5%;
+          text-align: center;
+        }
+      }
+    }
+
+    // Sub Header Row (Frame 10318)
+    .table-sub-header {
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+      background: rgba(255, 68, 0, 0.1);
+      // border-radius: 12px;
+      border: none;
+      overflow: hidden;
+      display: table-row;
+
+      th {
+        padding: 16px;
+        text-align: center;
+        font-weight: map-get($font-weight, "bold");
+        font-size: 16px;
+        line-height: 22px;
+        color: #000;
+        vertical-align: middle;
+        border: none;
+        height: 59px;
+        box-sizing: border-box;
+
+        &:first-child {
+          text-align: left;
+          padding-left: 16px;
+          width: 25%;
+          border-top-left-radius: 12px;
+          border-bottom-left-radius: 12px;
+        }
+
+        &:last-child {
+          border-top-right-radius: 12px;
+          border-bottom-right-radius: 12px;
+        }
+
+        &.table-subheader__min,
+        &.table-subheader__avg {
+          width: 18.75%;
+          text-align: center;
+        }
+      }
+    }
+
+    // Table Body Section - moved to spreads-table-body
+  }
+
+  // Clean and consistent table styling without !important
+  .spreads-table {
+    // Ensure consistent row heights across all sections
+    .table-main-header,
+    .table-sub-header {
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+    }
+
+    // Consistent cell padding and alignment
+    th {
+      padding: 16px;
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+      box-sizing: border-box;
+      vertical-align: middle;
+      line-height: 22px;
+    }
+  }
+
+  .spreads-disclaimer {
+    text-align: center;
+    font-family: "Sofia Pro";
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: #6b7280;
+    margin-bottom: 32px;
+  }
+
+  .spreads-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+  }
+}
+
+// Mobile Styles
+.metals-spreads-mobile {
+  width: 100%;
+  padding: 0;
+
+  .tabs-container {
+    margin-bottom: 17px;
+  }
+
+  .tabs {
+    display: flex;
+    background: #f3f4f6;
+    border-radius: 8px;
+    padding: 4px;
+    max-width: 200px;
+    margin: 0 auto;
+
+    .tab {
+      flex: 1;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-family: "Sofia Pro";
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &--active {
+        background: #ffffff;
+        color: #ff4400;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  .search-container-mobile {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 36px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50px;
+    padding: 0 12px;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .search-input-mobile {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: "Sofia Pro";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 22px;
+      color: rgba(0, 0, 0, 0.6125);
+      padding: 0;
+
+      &::placeholder {
+        color: rgba(0, 0, 0, 0.6125);
+        font-family: "Sofia Pro";
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 10px;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .search-icon-mobile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        opacity: 1;
+        filter: none;
+      }
+    }
+  }
+
+  .spreads-disclaimer-mobile {
+    text-align: center;
+    font-family: "Sofia Pro";
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #6b7280;
+    margin-bottom: 20px;
+  }
+
+  .spreads-cards-scroll-container {
+    width: 100%;
+    max-height: 600px; // Approximate height for 6 cards
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-bottom: 32px;
+
+    // Hide scrollbar but keep functionality
+    scrollbar-width: none; // Firefox
+    -ms-overflow-style: none; // IE and Edge
+
+    &::-webkit-scrollbar {
+      display: none; // Chrome, Safari, Opera
+    }
+  }
+
+  .spreads-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .spread-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px 28px;
+    min-height: 256px;
+    position: relative;
+    overflow: hidden;
+
+    &__header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 16px;
+      width: 100%;
+
+      @include mobile {
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      @include tablet {
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+    }
+
+    &__icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-bottom: 0;
+
+      // Support for emoji icons (fallback)
+      font-size: 24px;
+      line-height: 1;
+
+      // Support for SVG icons
+      img,
+      svg {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      // Ensure proper icon positioning
+      &::before {
+        content: "";
+        display: block;
+        width: 24px;
+        height: 24px;
+        background: transparent;
+      }
+
+      // Combined icons styling
+      &--combined {
+        width: 48px; // Wider to accommodate two icons
+        gap: 2px; // Small gap between icons
+
+        img,
+        svg {
+          width: 22px; // Slightly smaller to fit two icons
+          height: 22px;
+        }
+      }
+    }
+
+    &__symbol {
+      font-weight: map-get($font-weight, "bold");
+      font-size: 32px;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(
+          102.31deg,
+          rgba(0, 0, 0, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #000000;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      width: 100%;
+
+      // Fallback for browsers that don't support gradient text
+      @supports not (-webkit-background-clip: text) {
+        color: #000000;
+        background: none;
+      }
+    }
+
+    &__accounts {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    &__account {
+      flex: 1;
+    }
+
+    &__account-title {
+      font-weight: map-get($font-weight, "light");
+      font-size: 16px;
+      line-height: 22px;
+      color: map-get($colors, "black");
+      margin: 0 0 8px 0;
+    }
+
+    &__values {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__label {
+      font-family: "Sofia Pro";
+      font-weight: map-get($font-weight, "bold");
+      font-size: 16px;
+      line-height: 22px;
+      color: map-get($colors, "black");
+    }
+
+    &__divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 8px 0;
+    }
+  }
+
+  .spreads-cta-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .btn-primary-mobile {
+      background: #ff4400;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 24px;
+      font-family: "Sofia Pro";
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background: #e63900;
+      }
+    }
+
+    .btn-secondary-mobile {
+      background: transparent;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 14px 24px;
+      font-family: "Sofia Pro";
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      color: #374151;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+
+      &:hover {
+        border-color: #ff4400;
+        color: #ff4400;
+      }
+    }
+  }
+
+  // Custom Metals FAQ Styling - Adopting help-center__block-faqs Structure
+  .faq--metals {
+    // Adopt help-center__block-faqs structure exactly
+    background: none;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 16px;
+    position: static;
+    overflow: visible;
+    color: inherit;
+    height: auto;
+    left: auto;
+    right: auto;
+    margin-left: 0;
+    margin-right: 0;
+    z-index: auto;
+
+    @include mobile {
+      padding: 0;
+      margin-bottom: 16px;
+      width: 100%;
+    }
+
+    @include tablet {
+      padding: 0;
+      margin-bottom: 16px;
+      width: 100%;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .faq__wrapper {
+      // Adopt help-center__block-faqs wrapper structure
+      align-items: stretch;
+      max-width: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background: transparent;
+      border-radius: 0;
+      padding: 0;
+      min-height: auto;
+      justify-content: flex-start;
+      position: static;
+      overflow: visible;
+
+      @include mobile {
+        padding: 0;
+        min-height: auto;
+        width: 100%;
+      }
+    }
+
+    // Delimiter styling - Adopt help-center__block-faqs structure
+    .faq__delimiter {
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: #e4e7ec;
+      margin: 0;
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    .faq__content {
+      // Adopt help-center__block-faqs content structure
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .faq__item {
+      // Adopt help-center__block-faqs item structure exactly
+      width: 100%;
+      background: transparent;
+      border-radius: 0;
+      padding: 0;
+      min-height: 53px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      margin-bottom: 20px;
+      transition: all 0.2s ease;
+      position: relative;
+
+      @include mobile {
+        min-height: 53px;
+        margin-bottom: 10px;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &:hover {
+        background: transparent;
+      }
+
+      // Add border for all items except first
+      &:not(:first-child) {
+        border-top: 1px solid #e4e7ec;
+        padding-top: 10px;
+      }
+
+      // Remove divider lines between items
+      &:not(:first-child)::before {
+        content: none;
+      }
+    }
+
+    // Expanded state styling - Adopt help-center__block-faqs structure
+    .faq__item--expanded {
+      background: transparent;
+      border: none;
+      min-height: 84px;
+      padding-bottom: 0;
+
+      @include mobile {
+        min-height: 84px;
+        padding-bottom: 0;
+      }
+    }
+
+    // Adopt help-center__block-faqs accordion structure (if needed)
+    // Note: Most accordion styling is handled by the base FAQ component
+
+    .faq__title {
+      // Adopt help-center__block-faqs title structure
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      width: 100%;
+      margin: 0;
+      padding: 16px 0 16px 0;
+      background: none;
+      -webkit-background-clip: unset;
+      background-clip: unset;
+      font-size: inherit;
+      line-height: inherit;
+      text-align: inherit;
+      color: inherit;
+
+      @include mobile {
+        max-width: 90%;
+        padding: 0;
+        align-items: flex-start;
+      }
+
+      @include tablet {
+        padding: 16px 0 16px 0;
+      }
+
+      @include desktop-lg {
+        padding: 16px 0 16px 0;
+      }
+
+      @include desktop-xl {
+        font-size: inherit;
+        line-height: inherit;
+      }
+    }
+
+    .faq__title-text {
+      // Adopt help-center__block-faqs title-text structure
+      width: 720px;
+      height: 28px;
+      font-family: "Sofia Pro", sans-serif;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 28px;
+      color: #101828;
+      flex: none;
+      order: 0;
+      align-self: stretch;
+      flex-grow: 0;
+      margin: 0;
+      padding: 0;
+      text-align: left;
+      display: block;
+      opacity: 1;
+      visibility: visible;
+      background: none;
+      -webkit-background-clip: unset;
+      background-clip: unset;
+      -webkit-text-fill-color: #101828;
+
+      @include mobile {
+        width: 100%;
+        height: auto;
+        font-size: 16px;
+        line-height: 24px;
+        flex: none;
+        flex-grow: 0;
+      }
+
+      @include tablet {
+        width: 720px;
+        height: 28px;
+        font-size: 18px;
+        line-height: 28px;
+        flex: none;
+        flex-grow: 0;
+      }
+    }
+
+    .faq__expand-btn {
+      // Adopt help-center__block-faqs expand button structure
+      width: 24px;
+      height: 24px;
+      border-radius: 0;
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: opacity 0.2s ease;
+
+      @include mobile {
+        align-self: flex-start;
+        margin-top: 0;
+      }
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    .faq__expand-btn-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .faq__expandable {
+      // Adopt help-center__block-faqs expandable structure
+      width: 100%;
+      padding: 8px 0 0 0;
+      color: #8c8c8c;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: map-get($font-weight, "regular");
+
+      @include mobile {
+        font-size: 14px;
+        line-height: 20px;
+        padding: 8px 0 0 0;
+      }
+
+      @include tablet {
+        font-size: 16px;
+        line-height: 24px;
+        padding: 8px 0 0 0;
+      }
+    }
+
+    .faq__text {
+      // Adopt help-center__block-faqs text structure
+      display: block;
+      margin-bottom: 15px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &--bold {
+        color: #9b9b9b;
+        font-weight: map-get($font-weight, "black");
+      }
+    }
+
+    // Animation handled by base FAQ component
+  }
+}
+
+// TopMarketLayout specific styling for metals spreads
+.top-market-layout--metals-spreads {
+  background: transparent;
+  padding-top: 60px;
+  padding-bottom: 60px;
+
+  @include mobile {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .top-market-layout__wrapper {
+    width: 100%;
+    padding: 0;
+
+    @include mobile {
+      padding: 0;
+    }
+  }
+
+  .top-market-layout__content {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+  }
+}
+
+// Metals FAQ Section Styling - Based on Figma Design
+.metals-faq-section {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: flex-start;
+  margin-bottom: 60px;
+  width: 100%;
+  max-width: 1241px; // Based on Figma container width
+  margin-left: auto;
+  margin-right: auto;
+
+  @include mobile {
+    flex-direction: column;
+    gap: 18px; // Based on Figma mobile spacing
+    margin-bottom: 40px;
+    padding: 0;
+    max-width: 353px; // Based on Figma mobile width
+  }
+
+  @include tablet {
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 50px;
+    padding: 0 20px;
+    max-width: 768px; // Based on Figma tablet width
+  }
+
+  @include desktop-lg {
+    flex-direction: row;
+    gap: 32px;
+    margin-bottom: 150px;
+    padding: 0;
+    max-width: 1241px; // Based on Figma desktop width
+  }
+}
+
+// Left Side - Badge, Title, Subtitle, Button
+.metals-faq-left {
+  flex: 0 0 441px; // Based on Figma desktop width
+  display: flex;
+  flex-direction: column;
+  gap: 20px; // Based on Figma desktop spacing
+
+  @include mobile {
+    flex: none;
+    width: 100%;
+    gap: 18px; // Based on Figma mobile spacing
+    align-items: left;
+    text-align: left;
+    max-width: 353px; // Based on Figma mobile width
+  }
+
+  @include tablet {
+    flex: none;
+    width: 100%;
+    gap: 20px;
+    max-width: 768px; // Based on Figma tablet width
+  }
+
+  @include desktop-lg {
+    flex: 0 0 441px; // Based on Figma desktop width
+    gap: 20px;
+  }
+}
+
+// Badge Styling - Based on Figma Design
+.metals-faq-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 68, 0, 0.15);
+  border: 1px solid rgba(255, 68, 0, 0.15);
+  border-radius: 16px;
+  padding: 4px 10px;
+  width: fit-content;
+
+  @include mobile {
+    gap: 6px;
+    padding: 3px 8px;
+    border-radius: 14px;
+    width: 78px; // Based on Figma mobile badge width
+    height: 26px; // Based on Figma mobile badge height
+  }
+
+  @include tablet {
+    width: fit-content;
+    height: auto;
+  }
+
+  @include desktop-lg {
+    width: fit-content;
+    height: auto;
+  }
+}
+
+.metals-faq-badge-icon {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include mobile {
+    width: 14px; // Based on Figma mobile icon size
+    height: 14px;
+  }
+
+  @include tablet {
+    width: 14px;
+    height: 14px;
+  }
+
+  @include desktop-lg {
+    width: 14px;
+    height: 14px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.metals-faq-badge-text {
+  font-weight: map-get($font-weight, "medium");
+  font-size: 14px;
+  line-height: 20px;
+  color: map-get($colors, "black");
+
+  @include mobile {
+    font-size: 10px; // Based on Figma mobile text size
+    line-height: 14px;
+    color: #000000; // Based on Figma mobile text color
+  }
+
+  @include tablet {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  @include desktop-lg {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+
+// Title Styling with Gradient - Based on Figma Design
+.metals-faq-title {
+  width: 441px;
+  height: 102px;
+  font-family: "Sofia Pro";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 51px;
+  letter-spacing: -0.02em;
+  margin: 0;
+
+  // Gradient Background from Figma
+  background: linear-gradient(
+      102.31deg,
+      rgba(0, 0, 0, 0) 9.12%,
+      rgba(255, 68, 0, 0.45) 71.6%
+    ),
+    #000000;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  // Flexbox Properties from Figma
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+
+  @include mobile {
+    width: 353px; // Based on Figma mobile width
+    height: 96px; // Based on Figma mobile height
+    font-size: 32px; // Based on Figma mobile font size
+    line-height: 38px; // Based on Figma mobile line height
+    text-align: left;
+  }
+
+  @include tablet {
+    width: 100%;
+    height: auto;
+    font-size: 40px;
+    line-height: 46px;
+    text-align: center;
+  }
+
+  @include desktop-lg {
+    width: 441px; // Based on Figma desktop width
+    height: 102px; // Based on Figma desktop height
+    font-size: 44px;
+    line-height: 51px;
+    text-align: left;
+  }
+}
+
+// Subtitle Styling - Based on Figma Design
+.metals-faq-subtitle {
+  font-family: "Sofia Pro", sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 28px;
+  color: #000000;
+  margin: 0;
+  opacity: 0.7;
+
+  @include mobile {
+    font-size: 14px; // Based on Figma mobile font size
+    line-height: 20px; // Based on Figma mobile line height
+    width: 353px; // Based on Figma mobile width
+    height: 56px; // Based on Figma mobile height
+    text-align: left;
+  }
+
+  @include tablet {
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+  }
+
+  @include desktop-lg {
+    font-size: 18px;
+    line-height: 28px;
+    text-align: left;
+  }
+}
+
+// Button styling now handled by ButtonPrimaryStandard component
+// Custom spacing for FAQ button to ensure proper gap between text and arrow
+.faq-section--metals .button-primary-standard {
+  width: 180px !important;
+
+  @include mobile {
+    width: 100% !important;
+    justify-content: center !important; // Center content on mobile
+    padding-left: 0 !important; // Remove left padding on mobile
+    padding-right: 0 !important; // Remove right padding on mobile
+    overflow: hidden !important; // Hide overflow on mobile for proper centering
+  }
+
+  // Hover state styling - now properly shows arrow
+  &:hover {
+    width: 200px !important; // Expand width to accommodate text + arrow + spacing
+
+    @include mobile {
+      width: 100% !important;
+    }
+
+    .button-arrow {
+      opacity: 1 !important;
+      width: 24px !important;
+      margin-left: 0 !important;
+      color: #fff !important;
+    }
+  }
+}
+
+// Main FAQ Section - Ensure proper grid layout
+.faq-section.faq-section--metals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  width: 100%;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @include tablet {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @include desktop-lg {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    display: grid;
+  }
+
+  @include desktop-xl {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    display: grid;
+  }
+
+  @include desktop-2k {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    display: grid;
+  }
+
+  @include desktop-5k {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    display: grid;
+  }
+}
+
+// Left Side - FAQ Content - Ensure proper grid behavior
+.faq-section.faq-section--metals .faq-left {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @include mobile {
+    gap: 20px;
+  }
+}
+
+// Right Side - FAQ Items - Based on Figma Design
+.faq-section.faq-section--metals .faq-right {
+  width: 100%; // Full width on desktop
+  height: auto !important; // Allow height to expand with content
+  display: flex;
+  flex-direction: column;
+  gap: 16px; // Based on Figma itemSpacing
+  min-width: 0; // Allow shrinking
+
+  @include mobile {
+    width: 100%;
+    max-width: 353px; // Based on Figma mobile width
+    height: auto !important;
+    gap: 16px;
+  }
+
+  @include tablet {
+    width: 100%;
+    max-width: 768px; // Based on Figma tablet width
+    height: auto !important; // Allow height to expand with content
+    gap: 16px;
+  }
+
+  @include desktop-lg {
+    width: 100%; // Full width on desktop
+    height: auto !important; // Allow height to expand with content
+    gap: 16px;
+  }
+
+  @include desktop-xl {
+    width: 100%; // Full width on desktop
+    height: auto !important; // Allow height to expand with content
+    gap: 16px;
+  }
+
+  @include desktop-2k {
+    width: 100%; // Full width on desktop
+    height: auto !important; // Allow height to expand with content
+    gap: 16px;
+  }
+
+  @include desktop-5k {
+    width: 100%; // Full width on desktop
+    height: auto !important; // Allow height to expand with content
+    gap: 16px;
+  }
+
+  // FAQ Item Styling - Based on Figma Design
+  .faq__item {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    transition: none;
+
+    // Height and spacing handled by help-center structure
+  }
+
+  // Border styling for FAQ items (except first child)
+  .faq__item:not(:first-child) {
+    border-top: 1px solid #e4e7ec;
+    padding-top: 26px;
+  }
+
+  // FAQ Item Content Layout - Adopt help-center structure
+  .faq__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 16px 0 16px 0;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    font-size: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    color: inherit;
+
+    @include mobile {
+      max-width: 100%;
+      padding: 0;
+      align-items: center;
+    }
+
+    @include tablet {
+      padding: 16px 0 16px 0;
+      align-items: center;
+    }
+
+    @include desktop-lg {
+      padding: 16px 0 16px 0;
+    }
+
+    @include desktop-xl {
+      font-size: inherit;
+      line-height: inherit;
+    }
+  }
+
+  // FAQ Question Text Area - Adopt help-center structure
+  .faq__title-text {
+    width: 720px;
+    height: 28px;
+    font-family: "Sofia Pro", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 28px;
+    color: #101828;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    -webkit-text-fill-color: #101828;
+
+    @include mobile {
+      width: calc(100% - 40px);
+      height: auto;
+      font-size: 16px;
+      line-height: 24px;
+      flex: 1;
+      flex-grow: 1;
+      margin-right: 8px;
+    }
+
+    @include tablet {
+      width: calc(100% - 40px);
+      height: auto;
+      font-size: 18px;
+      line-height: 28px;
+      flex: 1;
+      flex-grow: 1;
+      margin-right: 8px;
+    }
+  }
+
+  // FAQ Expand Button - Adopt help-center structure
+  .faq__expand-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease;
+
+    @include mobile {
+      align-self: center;
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+
+    @include tablet {
+      align-self: center;
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    // Icon styling handled by base FAQ component
+  }
+
+  .faq__expand-btn-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  // FAQ Expandable Content - Adopt help-center structure
+  .faq__expandable {
+    width: 100%;
+    padding: 8px 0 0 0;
+    color: #8c8c8c;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: map-get($font-weight, "regular");
+
+    @include mobile {
+      font-size: 14px;
+      line-height: 20px;
+      padding: 8px 0 0 0;
+    }
+
+    @include tablet {
+      font-size: 16px;
+      line-height: 24px;
+      padding: 8px 0 0 0;
+    }
+  }
+
+  // FAQ Text Styling - Adopt help-center structure
+  .faq__text {
+    display: block;
+    margin-bottom: 15px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &--bold {
+      color: #9b9b9b;
+      font-weight: map-get($font-weight, "black");
+    }
+  }
+
+  // Animation handled by base FAQ component
+}
+
+// Legacy support for old class name
+.metals-faq-right {
+  flex: 1;
+  min-width: 0;
+  width: 768px; // Based on Figma desktop width
+  height: 615px; // Based on Figma desktop height
+  display: flex;
+  flex-direction: column;
+  gap: 16px; // Based on Figma itemSpacing
+
+  @include mobile {
+    width: 100%;
+    max-width: 353px; // Based on Figma mobile width
+    height: auto;
+    gap: 16px;
+  }
+
+  @include tablet {
+    width: 100%;
+    max-width: 768px; // Based on Figma tablet width
+    height: auto;
+    gap: 16px;
+  }
+
+  @include desktop-lg {
+    width: 768px; // Based on Figma desktop width
+    height: 615px; // Based on Figma desktop height
+    gap: 16px;
+  }
+
+  // FAQ Item Styling - Based on Figma Design
+  .faq__item {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    transition: none;
+
+    // Height and spacing handled by help-center structure
+  }
+
+  // FAQ Item Content Layout - Adopt help-center structure
+  .faq__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 16px 0 16px 0;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    font-size: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    color: inherit;
+
+    @include mobile {
+      max-width: 90%;
+      padding: 0;
+      align-items: flex-start;
+    }
+
+    @include tablet {
+      padding: 16px 0 16px 0;
+    }
+
+    @include desktop-lg {
+      padding: 16px 0 16px 0;
+    }
+
+    @include desktop-xl {
+      font-size: inherit;
+      line-height: inherit;
+    }
+  }
+
+  // FAQ Question Text Area - Adopt help-center structure
+  .faq__title-text {
+    width: 720px;
+    height: 28px;
+    font-family: "Sofia Pro", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 28px;
+    color: #101828;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    -webkit-text-fill-color: #101828;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      font-size: 16px;
+      line-height: 24px;
+      flex: none;
+      flex-grow: 0;
+    }
+
+    @include tablet {
+      width: 720px;
+      height: 28px;
+      font-size: 18px;
+      line-height: 28px;
+      flex: none;
+      flex-grow: 0;
+    }
+  }
+
+  // FAQ Expand Button - Adopt help-center structure
+  .faq__expand-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease;
+
+    @include mobile {
+      align-self: flex-start;
+      margin-top: 0;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    // Icon styling handled by base FAQ component
+  }
+
+  .faq__expand-btn-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  // FAQ Expandable Content - Adopt help-center structure
+  .faq__expandable {
+    width: 100%;
+    padding: 8px 0 0 0;
+    color: #8c8c8c;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: map-get($font-weight, "regular");
+
+    @include mobile {
+      font-size: 14px;
+      line-height: 20px;
+      padding: 8px 0 0 0;
+    }
+
+    @include tablet {
+      font-size: 16px;
+      line-height: 24px;
+      padding: 8px 0 0 0;
+    }
+  }
+
+  // FAQ Text Styling - Adopt help-center structure
+  .faq__text {
+    display: block;
+    margin-bottom: 15px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &--bold {
+      color: #9b9b9b;
+      font-weight: map-get($font-weight, "black");
+    }
+  }
+
+  // Animation handled by base FAQ component
+}

@@ -1,13 +1,11 @@
 import {
   CnFlagIcon,
-  DeFlagIcon,
   EnFlagIcon,
   EsFlagIcon,
   FrFlagIcon,
   IdFlagIcon,
   ItFlagIcon,
   JpFlagIcon,
-  PtFlagIcon,
   ThFlagIcon,
   VnFlagIcon,
   BrFlagIcon,
@@ -18,9 +16,7 @@ import { ENTITY_LANGUAGES } from "./lang.config";
 
 const IconComponents = {
   EnFlagIcon: EnFlagIcon,
-  DeFlagIcon: DeFlagIcon,
   FrFlagIcon: FrFlagIcon,
-  PtFlagIcon: PtFlagIcon,
   EsFlagIcon: EsFlagIcon,
   ItFlagIcon: ItFlagIcon,
   CnFlagIcon: CnFlagIcon,
@@ -73,8 +69,6 @@ export const PORTAL_LANGUAGES_MAP = {
   zh: "zh-Hant",
   id: "id",
   jp: "ja",
-  pt: "pt",
-  de: "de",
   my: "ms",
   ar: "ar",
 };

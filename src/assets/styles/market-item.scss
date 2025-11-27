@@ -1,57 +1,102 @@
 @import "vars";
 @import "mixins";
 
+.market-items-list {
+  margin: 25px 0;
+
+  @include mobile {
+    margin: 0;
+  }
+
+  @include tablet {
+    margin: 0;
+  }
+
+  @include desktop-lg {
+    margin: 0;
+  }
+}
+
 .market-item {
   padding: 86px 0 80px;
   display: flex;
   position: relative;
   flex-direction: column;
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  // flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  margin-bottom: 25px;
 
   @include mobile {
-    padding-left: $padding-sm;
-    padding-right: $padding-sm;
+    max-width: calc(100% - 50px);
+    padding: 20px;
   }
 
   @include tablet {
-    padding: 120px 0;
+    max-width: 720px;
+    padding: 20px;
   }
 
   @include desktop-lg {
+    max-width: 980px;
+    padding: 24px;
     flex-direction: row;
     justify-content: space-between;
-    padding: 124px 0;
   }
 
   @include desktop-xl {
-    padding: 210px 0 216px 0;
+    max-width: 1280px;
+    padding: 24px;
   }
 
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    width: 100vw;
-    height: 100%;
-    background: url("../../assets/images/all-markets/top-bg-sm.svg") no-repeat
-      right top;
-    background-size: 95px 114px;
-    z-index: 1;
-    pointer-events: none;
+  @include desktop-2k {
+    max-width: 1440px;
+    padding: 24px;
+  }
+
+  @include desktop-5k {
+    max-width: 1920px;
+    padding: 24px;
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    gap: 40px;
+
+    @include mobile {
+      gap: 20px;
+    }
 
     @include tablet {
-      background: url("../../assets/images/all-markets/top-bg-md.svg") no-repeat
-        right top;
-      background-size: 219px 263px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    @include desktop-lg {
+      gap: 5px;
     }
 
     @include desktop-xl {
-      background: url("../../assets/images/all-markets/top-bg-lg.svg") no-repeat
-        right top;
-      background-size: 332px 398px;
+      gap: 15px;
+    }
+
+    @include desktop-2k {
+      gap: 15px;
+    }
+
+    @include desktop-5k {
+      gap: 15px;
     }
   }
 
@@ -73,6 +118,28 @@
     }
   }
 
+  &__description {
+    @include tablet {
+      width: 48%;
+    }
+
+    @include desktop-lg {
+      width: 55%;
+    }
+
+    @include desktop-xl {
+      width: 65%;
+    }
+
+    @include desktop-2k {
+      width: 70%;
+    }
+
+    @include desktop-5k {
+      width: 75%;
+    }
+  }
+
   &__advantages {
     position: relative;
     z-index: 2;
@@ -81,63 +148,155 @@
     padding-top: 30px;
 
     @include tablet {
-      padding-top: 57px;
-      padding-right: 9px;
+      padding-top: 0;
+      width: 48%;
     }
 
     @include desktop-lg {
-      padding-left: 44px;
-      padding-top: unset;
-      padding-right: unset;
-      padding-top: 30px;
+      padding-top: 0;
+      width: auto;
     }
 
     @include desktop-xl {
-      padding-left: 74px;
-      padding-top: 50px;
+      padding-top: 0;
+      width: auto;
     }
   }
 
   &__title {
     margin: 0;
-    font-weight: map-get($font-weight, "black");
-    font-size: 36px;
-    line-height: 45px;
-    color: map-get($colors, "black-secondary");
-
-    @include tablet {
-      font-size: 54px;
-      line-height: 67px;
-    }
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    // line-height: 1.5;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   &__text {
-    font-weight: map-get($font-weight, "regular");
-    font-size: 12px;
-    line-height: 20px;
-    color: map-get($colors, "black-secondary");
-    padding-top: 30px;
-    padding-bottom: 30px;
+    font-weight: map-get($font-weight, "light");
+    font-size: 18px;
+    line-height: 28px;
+    color: map-get($colors, "black");
+    padding-top: 20px;
+    padding-bottom: 20px;
 
     @include tablet {
-      font-size: 28px;
-      line-height: 45px;
-      padding-top: 39px;
-      padding-bottom: 40px;
+      font-size: 16px;
     }
 
     @include desktop-lg {
-      font-size: 24px;
-      line-height: 35px;
-    }
-
-    @include desktop-xl {
-      font-size: 28px;
-      line-height: 45px;
+      font-size: 18px;
     }
 
     span {
       display: block;
+    }
+  }
+
+  &__trade-button {
+    margin-top: 0 !important;
+    width: auto !important; // Dynamic width based on content
+    min-width: 120px !important; // Minimum width for short text
+    height: 51px !important;
+    background: #ff4400 !important;
+    color: #fff !important;
+    // box-shadow: 0px 0px 19.3px rgba(255, 68, 0, 0.5) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    overflow: visible !important; // Allow expansion on hover
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important; // Left align for proper text positioning
+    position: relative !important;
+    cursor: pointer !important;
+    border: none !important;
+    outline: none !important;
+    padding: 0 24px !important; // Add padding for proper text positioning
+
+    @include mobile {
+      width: 100% !important;
+      height: 48px !important;
+      justify-content: center !important; // Center content on mobile
+      padding: 0 20px !important; // Adjust mobile padding
+    }
+
+    .button-text {
+      position: relative !important;
+      left: auto !important;
+      top: auto !important;
+      transform: none !important;
+      color: #fff !important;
+      font-family: "Sofia Pro" !important;
+      font-weight: map-get($font-weight, "medium") !important;
+      font-size: 16px !important;
+      white-space: nowrap !important;
+      z-index: 2 !important;
+      margin-left: 0 !important; // Reset margin for proper positioning
+
+      @include mobile {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+      }
+    }
+
+    .button-arrow {
+      opacity: 0 !important;
+      width: 0 !important;
+      margin-left: 0 !important;
+      transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s !important;
+      overflow: hidden !important;
+      position: relative !important;
+      right: auto !important;
+      top: auto !important;
+      transform: none !important;
+      color: #fff !important;
+      flex-shrink: 0 !important; // Prevent arrow from shrinking
+
+      @include mobile {
+        position: relative !important;
+        right: auto !important;
+        top: auto !important;
+        transform: none !important;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      width: auto !important; // Dynamic width based on content + arrow
+      min-width: 160px !important; // Ensure minimum width for hover state
+      background: #ff4400 !important;
+      color: #fff !important;
+      box-shadow: 0 0 19.3px 0 rgba(255, 68, 0, 0.5) !important;
+      padding-right: 24px !important; // Add right padding for arrow space
+
+      @include mobile {
+        width: 100% !important;
+        padding-right: 24px !important;
+      }
+
+      .button-arrow {
+        opacity: 1 !important;
+        width: 24px !important; // Standard arrow width
+        margin-left: 8px !important; // Proper spacing between text and arrow
+        color: #fff !important;
+      }
+
+      .button-text {
+        color: #fff !important;
+      }
     }
   }
 
@@ -181,10 +340,46 @@
   }
 
   &__icon {
-    width: 51px;
+    width: 64px;
+    height: 64px;
 
     @include tablet {
       width: 71px;
+    }
+  }
+
+  &__trading-ticker-wrapper {
+    max-width: 2000px;
+    width: 100%;
+    margin-top: 30px;
+    overflow: hidden;
+    position: relative;
+
+    @include mobile {
+      margin-top: 20px;
+    }
+
+    @include tablet {
+      margin-top: 0;
+      width: 100%;
+      flex-basis: 100%;
+      order: 3;
+    }
+
+    // Ensure TradingTicker stays within wrapper bounds
+    .trading-ticker {
+      max-width: 100% !important;
+      width: 100% !important;
+      overflow: hidden !important;
+    }
+
+    // Override any TradingTicker internal styling that might break out
+    > * {
+      max-width: 100% !important;
+      width: 100% !important;
+      overflow: hidden !important;
+      margin-top: 30px !important;
+      margin-bottom: 20px !important;
     }
   }
 }

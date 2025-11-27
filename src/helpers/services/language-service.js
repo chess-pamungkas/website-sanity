@@ -60,8 +60,10 @@ export const detectInitialLanguage = (recommendedLanguage) => {
   );
 };
 
-export const setLangParam = () => {
-  const { selectedLanguage } = useContext(LanguageContext);
+export const setLangParam = (selectedLanguage) => {
+  if (!selectedLanguage || !selectedLanguage.id) {
+    return "";
+  }
   const languageCode = PORTAL_LANGUAGES_MAP[selectedLanguage.id];
 
   // Old version: Used 'lang' as the query parameter name
@@ -69,4 +71,10 @@ export const setLangParam = () => {
 
   // New version: Uses 'language' as the query parameter name
   return `?language=${languageCode}`;
+};
+
+// Hook version for components that have access to LanguageContext
+export const useLangParam = () => {
+  const { selectedLanguage } = useContext(LanguageContext);
+  return setLangParam(selectedLanguage);
 };

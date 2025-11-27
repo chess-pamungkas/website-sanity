@@ -1,0 +1,243 @@
+import React, { useState, useContext } from "react";
+import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
+import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
+import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
+import { ShowRegistrationPopup } from "../../../../helpers/constants";
+import { ChevronDownIcon } from "../../../shared/icons";
+import LanguageContext from "../../../../context/language-context";
+import ReusableButtons from "../../../shared/reusable-buttons";
+
+const { ArrowIcon } = ReusableButtons;
+import desktopBgSVG from "../../../../assets/images/bg/trading-tools/bg-feature-ideas-desktop.svg";
+import mobileBgSVG from "../../../../assets/images/bg/trading-tools/bg-feature-ideas-mobile.svg";
+import badgeIcon from "../../../../assets/images/icons/badge-market-sentiment.svg";
+import featuredIdeasCustomizableFiltersImage from "../../../../assets/images/trading-tools/featured-ideas-customizable-filters.png";
+import featuredIdeasEducationalImage from "../../../../assets/images/trading-tools/featured-ideas-educational.png";
+import featuredIdeasRealTimeOnLiveChartsImage from "../../../../assets/images/trading-tools/featured-ideas-real-time-on-live-charts.png";
+import { setLangParam } from "../../../../helpers/services/language-service";
+
+const FeaturedIdeas = ({ className }) => {
+  const { isMobile } = useWindowSize();
+  const isRTL = useRtlDirection();
+  const { t } = useTranslationWithVariables();
+  const { selectedLanguage } = useContext(LanguageContext);
+  const [activeTab, setActiveTab] = useState("customizable-filters");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  // Registration popup handlers
+  const handleShowRegistrationPopup = () => {
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  };
+
+  const langParam = setLangParam();
+
+  // Tab configuration
+  const tabs = [
+    {
+      id: "customizable-filters",
+      label: t("featured-ideas_tab_customizable_filters"),
+      icon: featuredIdeasCustomizableFiltersImage,
+    },
+    {
+      id: "educational",
+      label: t("featured-ideas_tab_educational"),
+      icon: featuredIdeasEducationalImage,
+    },
+    {
+      id: "real-time-charts",
+      label: t("featured-ideas_tab_real_time_charts"),
+      icon: featuredIdeasRealTimeOnLiveChartsImage,
+    },
+  ];
+
+  const getTabContent = () => {
+    switch (activeTab) {
+      case "customizable-filters":
+        return {
+          icon: featuredIdeasCustomizableFiltersImage,
+          title: t("featured-ideas_tab_customizable_filters_title"),
+          description: t("featured-ideas_tab_customizable_filters_description"),
+        };
+      case "educational":
+        return {
+          icon: featuredIdeasEducationalImage,
+          title: t("featured-ideas_tab_educational_title"),
+          description: t("featured-ideas_tab_educational_description"),
+        };
+      case "real-time-charts":
+        return {
+          icon: featuredIdeasRealTimeOnLiveChartsImage,
+          title: t("featured-ideas_tab_real_time_charts_title"),
+          description: t("featured-ideas_tab_real_time_charts_description"),
+        };
+      default:
+        return {
+          icon: featuredIdeasCustomizableFiltersImage,
+          title: t("featured-ideas_tab_customizable_filters_title"),
+          description: t("featured-ideas_tab_customizable_filters_description"),
+        };
+    }
+  };
+
+  const currentContent = getTabContent();
+
+  const backgroundSrc = isMobile ? mobileBgSVG : desktopBgSVG;
+
+  return (
+    <div id="featured-ideas" className={`featured-ideas ${className || ""}`}>
+      {/* Background */}
+      <div className="featured-ideas__background">
+        <img
+          src={backgroundSrc}
+          alt="Featured Ideas Background"
+          className="featured-ideas__background-image"
+        />
+      </div>
+
+      <div className="featured-ideas__container container">
+        {/* Header */}
+        <div className="featured-ideas__header">
+          <div className="featured-ideas__badge">
+            <img
+              src={badgeIcon}
+              alt="Featured Ideas"
+              className="featured-ideas__badge-icon"
+            />
+            <span className="featured-ideas__badge-text">
+              {t("featured-ideas_badge-text")}
+            </span>
+          </div>
+
+          <h2 className="featured-ideas__title">{t("featured-ideas_title")}</h2>
+
+          <p className="featured-ideas__description">
+            {t("featured-ideas_description")}
+          </p>
+        </div>
+
+        {/* Desktop Tabs */}
+        <div className="featured-ideas__tabs">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`featured-ideas__tab ${
+                activeTab === tab.id ? "featured-ideas__tab--active" : ""
+              }`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Mobile Dropdown */}
+        <div
+          className="featured-ideas__dropdown"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        >
+          <span className="featured-ideas__dropdown-label">
+            {tabs.find((tab) => tab.id === activeTab)?.label}
+          </span>
+          <div
+            className={`featured-ideas__dropdown-icon ${
+              isDropdownOpen ? "featured-ideas__dropdown-icon--active" : ""
+            }`}
+          >
+            <ChevronDownIcon
+              className={`featured-ideas__chevron-icon ${
+                isDropdownOpen ? "rotated" : ""
+              }`}
+              color="#ffffff"
+            />
+          </div>
+
+          {/* Dropdown Options */}
+          <div
+            className={`featured-ideas__dropdown-options ${
+              isDropdownOpen ? "featured-ideas__dropdown-options--open" : ""
+            }`}
+          >
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                className={`featured-ideas__dropdown-option ${
+                  activeTab === tab.id
+                    ? "featured-ideas__dropdown-option--active"
+                    : ""
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveTab(tab.id);
+                  setIsDropdownOpen(false);
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <div className="featured-ideas__content">
+          <div className="featured-ideas__content-left">
+            {/* Show the appropriate image based on selected tab */}
+            <img
+              src={currentContent.icon}
+              alt={currentContent.title}
+              className="featured-ideas__content-image"
+            />
+          </div>
+
+          <div className="featured-ideas__content-right">
+            <div className="featured-ideas__content-header">
+              <h3 className="featured-ideas__content-title">
+                {currentContent.title}
+              </h3>
+              <p className="featured-ideas__content-description">
+                {currentContent.description}
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="featured-ideas__actions">
+              <button
+                className="featured-ideas__btn featured-ideas__btn--primary"
+                onClick={handleShowRegistrationPopup}
+              >
+                <span className="button-text">{t("button-open-account")}</span>
+                <span className="button-arrow">
+                  <ArrowIcon isRTL={isRTL} />
+                </span>
+              </button>
+              <button
+                className="featured-ideas__btn featured-ideas__btn--secondary"
+                onClick={handleShowRegistrationPopup}
+              >
+                <span className="button-text">{t("button-try-demo")}</span>
+                <span className="button-arrow">
+                  <ArrowIcon isRTL={isRTL} />
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Registration Popup */}
+      {isPopupOpen && (
+        <ShowRegistrationPopup
+          isOpen={isPopupOpen}
+          onClose={handleClosePopup}
+          langParam={selectedLanguage.id}
+        />
+      )}
+    </div>
+  );
+};
+
+export default FeaturedIdeas;

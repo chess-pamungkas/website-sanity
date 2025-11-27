@@ -15,9 +15,14 @@ exports.onRenderBody = ({ setHtmlAttributes }) => {
 module.exports = {
   siteMetadata: {
     title: `website`,
-
     siteUrl: `https://www.yourdomain.tld`,
     indexedLocaleData,
+  },
+  // Optimize query performance
+  flags: {
+    FAST_DEV: true,
+    PRESERVE_FILE_DOWNLOAD_CACHE: true,
+    PARALLEL_SOURCING: true,
   },
   plugins: [
     "gatsby-plugin-sass",
@@ -46,13 +51,22 @@ module.exports = {
         path: `${__dirname}/src/locales/`,
       },
     },
-    {
-      resolve: "gatsby-plugin-google-tagmanager",
-      options: {
-        id: process.env.GATSBY_GOOGLE_TAG_MANAGER,
-        defaultDataLayer: { platform: "gatsby" },
-      },
-    },
+    ...(process.env.GATSBY_GOOGLE_TAG_MANAGER
+      ? [
+          {
+            resolve: "gatsby-plugin-google-tagmanager",
+            options: {
+              id: process.env.GATSBY_GOOGLE_TAG_MANAGER,
+              defaultDataLayer: { platform: "gatsby" },
+              // Enable GTM in development for testing
+              includeInDevelopment:
+                process.env.GATSBY_ENABLE_GTM_DEV === "true",
+              // Route change event name
+              routeChangeEventName: "gatsby-route-change",
+            },
+          },
+        ]
+      : []),
     {
       resolve: "gatsby-plugin-react-i18next",
       options: {

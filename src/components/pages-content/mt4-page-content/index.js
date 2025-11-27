@@ -1,8 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
+import PropTypes from "prop-types";
 import cn from "classnames";
-import TopMarketPromotion from "../../top-market-promotion";
-import animation from "../../../assets/images/animations/aggregator_MT4.json";
-import HighlightedLocalizationText from "../../shared/highlighted-localization-text";
+// import animation from "../../../assets/images/animations/aggregator_MT4.json";
 import MtPromotion from "../../mt-promotion";
 import {
   getMT4Advantages,
@@ -10,7 +9,7 @@ import {
   getMT4DownloadLink,
   getAnimationStyle,
 } from "../../../helpers/platforms.config";
-import image from "../../../assets/images/mt4/MT4andMT5.png";
+import image from "../../../assets/images/mt4/mt4.svg";
 import icon from "../../../assets/images/icon--white.svg";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
 import { useWindowSize } from "../../../helpers/hooks/use-window-size";
@@ -18,8 +17,12 @@ import { useTranslationWithVariables } from "../../../helpers/hooks/use-translat
 import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
 import { isIOS, isAndroid, isWindows, isMacOs } from "react-device-detect";
 import { setLangParam } from "../../../helpers/services/language-service";
+import Hero from "../../shared/hero";
+import ContainerWrapper from "../../shared/container-wrapper";
+import AccountComparison from "../../shared/account-comparison";
+import OurCommunityContent from "../../shared/our-community";
 
-const Mt4PageContent = () => {
+const Mt4PageContent = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
   const { isMobile, isTablet, isLG, isXL } = useWindowSize();
   const isRTL = useRtlDirection();
@@ -56,71 +59,37 @@ const Mt4PageContent = () => {
 
   return (
     <>
-      <TopMarketPromotion
-        className={cn("mt4-page-promotion", {
-          "split-bg--rtl": isRTL,
-          "mt-page-promotion--rtl": isRTL,
-        })}
-        image={animation}
-        isLottieImage
-        lottieStyle={getAnimationStyles()}
-        btnClassName={cn({
-          "button-link--ghost": isLG || isXL,
-        })}
-        btnTitle={t("mt4_top-market-promo-btn")}
-        btnOnClick={scrollToTarget}
-        link={getMT4DownloadLinkByDevice()}
-        isDocumentLink
-        note={
-          <HighlightedLocalizationText
-            localizationText="mt4_top-market-promo-note"
-            wordsToHighlight="mt4_top-market-promo-note-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-white"
-          />
-        }
-      >
-        <HighlightedLocalizationText
-          localizationText="mt4_top-market-promo-text"
-          wordsToHighlight="mt4_top-market-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
-        />
-      </TopMarketPromotion>
-
-      <MtPromotion
-        title={
-          <HighlightedLocalizationText
-            localizationText="mt4_top-market-promo-text2"
-            wordsToHighlight="mt4_top-market-promo-text-accent2"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        advantagesTitle={t("mt4_market-items-list_title")}
-        advantages={mt4Advantages}
-        downloadTitle={t("mt4_download-title")}
-        image={image}
-        tabs={mt4DownloadTabs()}
-        ref={downloadRef}
+      <Hero
+        className={className}
+        isShowHero={isShowHero}
+        heroType="mt4"
+        showWarning={false}
+        showHandImage={false}
+        showHeroImage={false}
+        desktopBackground="url(../../assets/images/bg/hero/mt4/mt4-desktop.svg)"
+        mobileBackground="url(../../assets/images/bg/hero/mt4/mt4-mobile.svg)"
       />
-      {isXL && (
-        <TopMarketPromotion
-          className={cn("bottom-promotion", {
-            "bottom-promotion--rtl": isRTL,
-          })}
-          image={icon}
-          btnClassName="button-link--red"
-          btnTitle={t("mt4_top-market-promo-btn3")}
-          btnOnClick={handleShowRegistrationPopup}
-        >
-          <HighlightedLocalizationText
-            localizationText="mt4_top-market-promo-text3"
-            wordsToHighlight="mt4_top-market-promo-text-accent3"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-white"
-          />
-        </TopMarketPromotion>
+
+      <ContainerWrapper>
+        <MtPromotion
+          title={t("mt4_top-market-promo-text2")}
+          advantagesTitle={t("mt4_market-items-list_title")}
+          advantages={mt4Advantages}
+          downloadTitle={t("mt4_download-title")}
+          image={image}
+          platformType="mt4"
+          ref={downloadRef}
+        />
+      </ContainerWrapper>
+      <div className="mt4-page-content">
+        <AccountComparison />
+      </div>
+      {isMobile ? (
+        <OurCommunityContent />
+      ) : (
+        <ContainerWrapper>
+          <OurCommunityContent />
+        </ContainerWrapper>
       )}
 
       {/* Render the popup */}
@@ -133,6 +102,11 @@ const Mt4PageContent = () => {
       )}
     </>
   );
+};
+
+Mt4PageContent.propTypes = {
+  className: PropTypes.string,
+  isShowHero: PropTypes.bool,
 };
 
 export default Mt4PageContent;

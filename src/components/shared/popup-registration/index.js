@@ -9,7 +9,10 @@ import { currentEntity } from "../../../helpers/entity-resolver";
 import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import bulletImage from "../../../assets/images/icons/bullet.png";
 import closemage from "../../../assets/images/icons/close-icon.svg";
+import badgeSecurityIcon from "../../../assets/images/icons/badge-security.svg";
+import popupRegistrationBg from "../../../assets/images/bg/popup-registration/bg-popup-registration.svg";
 import PopupRegistrationForm from "./components/popup-registration-form";
+import BackgroundPreloader from "./components/background-preloader";
 
 const RTL_LANGUAGES = ["ar"];
 
@@ -221,10 +224,132 @@ const LoadingSpinner = () => (
 const PopupRegistration = ({ isOpen, onClose, className, params }) => {
   const { t } = useTranslationWithVariables();
   const isRTL = useRtlDirection();
-  const { isMobile } = useWindowSize();
+  const { isMobile, isDesktop } = useWindowSize();
   const [isLoading, setIsLoading] = useState(true);
   const [isContentReady, setIsContentReady] = useState(false);
+  const [isBackgroundLoaded, setIsBackgroundLoaded] = useState(false);
   const [isExternalLoad] = useState(isLoadedFromExternalScript());
+  const popupRootRef = React.useRef(null);
+
+  useEffect(() => {
+    if (!isExternalLoad || typeof document === "undefined") {
+      return undefined;
+    }
+
+    const style = document.createElement("style");
+    style.setAttribute("data-oqtima-hide-recaptcha", "true");
+    style.textContent = `
+      .grecaptcha-badge,
+      div[style*="grecaptcha"],
+      iframe[src*="recaptcha"],
+      iframe[title*="reCAPTCHA"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+    `;
+
+    document.head.appendChild(style);
+
+    return () => {
+      style.parentNode?.removeChild(style);
+    };
+  }, [isExternalLoad]);
+
+  useEffect(() => {
+    if (!isExternalLoad || typeof document === "undefined") return;
+
+    const target = popupRootRef.current;
+    if (!target) return;
+
+    const hiddenElements = [];
+
+    const hideSiblings = (element) => {
+      if (!element || element === document.body) return;
+
+      const parent = element.parentElement;
+      if (!parent) return;
+
+      Array.from(parent.children).forEach((child) => {
+        if (child === element) return;
+
+        const alreadyHidden = hiddenElements.find(
+          ({ element: hiddenElement }) => hiddenElement === child
+        );
+
+        if (alreadyHidden) return;
+
+        hiddenElements.push({
+          element: child,
+          display: child.style.getPropertyValue("display"),
+          priority: child.style.getPropertyPriority("display"),
+        });
+
+        child.style.setProperty("display", "none", "important");
+      });
+
+      hideSiblings(parent);
+    };
+
+    hideSiblings(target);
+
+    const html = document.documentElement;
+    const body = document.body;
+
+    const styleSnapshots = [
+      {
+        element: html,
+        property: "overflow",
+        value: html.style.getPropertyValue("overflow"),
+        priority: html.style.getPropertyPriority("overflow"),
+        newValue: "hidden",
+      },
+      {
+        element: body,
+        property: "overflow",
+        value: body.style.getPropertyValue("overflow"),
+        priority: body.style.getPropertyPriority("overflow"),
+        newValue: "hidden",
+      },
+      {
+        element: html,
+        property: "background-color",
+        value: html.style.getPropertyValue("background-color"),
+        priority: html.style.getPropertyPriority("background-color"),
+        newValue: "transparent",
+      },
+      {
+        element: body,
+        property: "background-color",
+        value: body.style.getPropertyValue("background-color"),
+        priority: body.style.getPropertyPriority("background-color"),
+        newValue: "transparent",
+      },
+    ];
+
+    styleSnapshots.forEach(({ element, property, newValue }) => {
+      element.style.setProperty(property, newValue, "important");
+    });
+
+    return () => {
+      hiddenElements.forEach(({ element, display, priority }) => {
+        if (display) {
+          element.style.setProperty("display", display, priority || "");
+        } else {
+          element.style.removeProperty("display");
+        }
+      });
+
+      styleSnapshots.forEach(({ element, property, value, priority }) => {
+        if (value) {
+          element.style.setProperty(property, value, priority || "");
+        } else {
+          element.style.removeProperty(property);
+        }
+      });
+    };
+  }, [isExternalLoad]);
 
   // FIRST EFFECT: Handle reset state after a forced reload
   useEffect(() => {
@@ -289,6 +414,10 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
       return {};
     }
   });
+
+  const forcedSidebarPreference = parsedParams?.forceSidebar;
+  const isSidebarForcedDesktop = forcedSidebarPreference === true;
+  const isSidebarForcedHidden = forcedSidebarPreference === false;
 
   // Clear any existing RTL settings on initial mount
   useEffect(() => {
@@ -687,7 +816,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
         right: 0;
         bottom: 0;
         z-index: 2147483647;
-        background: rgba(0, 0, 0, 0.7);
+        background: transparent;
         display: flex;
         justify-content: center;
         align-items: flex-start;
@@ -711,10 +840,6 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
 
       /* Mobile styles */
       @media screen and (max-width: 767px) {
-        .popup-registration {
-          background: #fff;
-        }
-
         .popup-registration__wrapper {
           padding: 0;
         }
@@ -772,7 +897,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
         opacity: 0;
         transform: scale(0.98);
         transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        background: white;
+        background: transparent;
         border-radius: 8px;
         overflow: hidden;
         position: relative;
@@ -784,15 +909,43 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
       }
 
       /* Hide content until fully loaded */
-      .popup-registration__content,
-      .popup-registration__sidebar {
+      .popup-registration__content {
         opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+      }
+      
+      /* Sidebar should be visible on desktop even before styles loaded */
+      .popup-registration__sidebar {
+        opacity: 0.5;
         transition: opacity 0.3s ease-in-out;
       }
 
       .styles-loaded .popup-registration__content,
       .styles-loaded .popup-registration__sidebar {
         opacity: 1;
+      }
+      
+      /* Desktop: Always show sidebar */
+      @media (min-width: 1024px) {
+        .popup-registration__sidebar {
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          width: 331px !important;
+          flex-shrink: 0 !important;
+        }
+      }
+      
+      /* Mobile/Tablet: Hide sidebar */
+      @media (max-width: 1023px) {
+        .popup-registration__sidebar {
+          display: none !important;
+        }
+        
+        .popup-registration__content {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
       }
     `;
     document.head.appendChild(preloadStyle);
@@ -821,6 +974,35 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
 
     return () => clearTimeout(timer);
   }, [isOpen, isExternalLoad]);
+
+  // Background loading effect - show content when background is ready
+  useEffect(() => {
+    if (!isOpen || isMobile) return;
+
+    // For desktop, wait for background to load before showing content
+    if (isBackgroundLoaded) {
+      setIsContentReady(true);
+    }
+  }, [isBackgroundLoaded, isOpen, isMobile]);
+
+  // Preload background image when popup opens
+  useEffect(() => {
+    if (!isOpen || isMobile) return;
+
+    // Preload the background image
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = popupRegistrationBg;
+    document.head.appendChild(link);
+
+    // Clean up
+    return () => {
+      if (link.parentNode) {
+        link.parentNode.removeChild(link);
+      }
+    };
+  }, [isOpen, isMobile]);
 
   // Separate effect for initial setup
   useEffect(() => {
@@ -1268,6 +1450,123 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     return () => clearTimeout(checkTimeout);
   }, []);
 
+  // Effect to hide/show live chat on mobile when popup opens/closes
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const manageLivechatVisibility = () => {
+      try {
+        const livechatElements = document.querySelectorAll(
+          '[id*="convrs"], [class*="convrs"]'
+        );
+
+        if (livechatElements.length === 0) {
+          return; // No livechat elements yet
+        }
+
+        // Check if we're on mobile
+        const isMobileDevice = isMobile || window.innerWidth <= 767;
+
+        livechatElements.forEach((el) => {
+          if (el && el.style) {
+            // Check if registration popup is open
+            if (isOpen && isMobileDevice) {
+              // Hide livechat when registration popup is open on mobile
+              el.style.setProperty("display", "none", "important");
+              el.style.setProperty("visibility", "hidden", "important");
+              el.style.setProperty("pointer-events", "none", "important");
+              el.setAttribute("data-registration-popup-hidden", "true");
+            } else {
+              // Show livechat when popup is closed or not on mobile
+              // Only restore if it wasn't hidden by burger menu or other reasons
+              const isBurgerMenuHidden =
+                el.getAttribute("data-burger-menu-hidden") === "true";
+              const isWebtraderPage =
+                window.location.pathname.includes("webtrader");
+
+              if (!isBurgerMenuHidden && !isWebtraderPage) {
+                el.style.removeProperty("display");
+                el.style.removeProperty("visibility");
+                el.style.removeProperty("pointer-events");
+                el.removeAttribute("data-registration-popup-hidden");
+              }
+            }
+          }
+        });
+      } catch (error) {
+        // Silent fail
+      }
+    };
+
+    // Run immediately
+    manageLivechatVisibility();
+
+    // Also set up a MutationObserver to catch dynamically added livechat elements
+    let observer;
+    try {
+      observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.type === "childList") {
+            mutation.addedNodes.forEach(function (node) {
+              if (
+                node.nodeType === 1 &&
+                ((node.id && node.id.includes("convrs")) ||
+                  (node.className &&
+                    typeof node.className === "string" &&
+                    node.className.includes("convrs")))
+              ) {
+                setTimeout(manageLivechatVisibility, 100);
+              }
+            });
+          }
+        });
+      });
+
+      if (document.body) {
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+      }
+    } catch (error) {
+      // Silent fail
+    }
+
+    // Clean up observer on unmount
+    return () => {
+      if (observer) {
+        observer.disconnect();
+      }
+      // Restore livechat visibility when component unmounts
+      try {
+        const livechatElements = document.querySelectorAll(
+          '[id*="convrs"], [class*="convrs"]'
+        );
+        livechatElements.forEach((el) => {
+          if (
+            el &&
+            el.style &&
+            el.getAttribute("data-registration-popup-hidden") === "true"
+          ) {
+            const isBurgerMenuHidden =
+              el.getAttribute("data-burger-menu-hidden") === "true";
+            const isWebtraderPage =
+              window.location.pathname.includes("webtrader");
+
+            if (!isBurgerMenuHidden && !isWebtraderPage) {
+              el.style.removeProperty("display");
+              el.style.removeProperty("visibility");
+              el.style.removeProperty("pointer-events");
+              el.removeAttribute("data-registration-popup-hidden");
+            }
+          }
+        });
+      } catch (error) {
+        // Silent fail
+      }
+    };
+  }, [isOpen, isMobile]);
+
   // NEW: Check for cookies containing referral parameters on page load
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1526,6 +1825,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     <>
       {isLoading && isExternalLoad && <LoadingSpinner />}
       <div
+        ref={popupRootRef}
         key={isRTLMode ? "rtl" : "ltr"}
         className={cn("popup-registration", {
           "popup-registration--rtl": isRTLMode,
@@ -1547,7 +1847,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                backgroundColor: "transparent",
                 zIndex: 9999,
               }
             : {
@@ -1567,58 +1867,67 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
         >
           <div
             key={isRTLMode ? "rtl-container" : "ltr-container"}
-            className={cn("popup-registration__container", className, {
-              "popup-registration__container--rtl": isRTLMode,
-            })}
-            dir={isRTLMode ? "rtl" : "ltr"}
-            style={
-              isRTLMode
-                ? {
-                    flexDirection: "row-reverse !important",
-                    display: "flex !important",
+            className={cn(
+              "popup-registration__container",
+              className,
+              {
+                "popup-registration__container--rtl": isRTLMode,
+              },
+              parsedParams?.forceSidebar === undefined
+                ? {}
+                : {
+                    "popup-registration__container--forced-sidebar":
+                      parsedParams?.forceSidebar === true,
                   }
-                : {}
+            )}
+            dir={isRTLMode ? "rtl" : "ltr"}
+            data-force-sidebar={
+              parsedParams?.forceSidebar === true ? "true" : undefined
             }
+            style={{
+              ...(isRTLMode
+                ? {
+                    flexDirection: "row-reverse",
+                  }
+                : {}),
+            }}
             data-rtl={isRTLMode.toString()}
           >
-            <div
-              className={cn("popup-registration__sidebar", {
-                "popup-registration__sidebar--rtl": isRTLMode,
-              })}
-              data-rtl={isRTLMode ? "true" : "false"}
-              style={isRTLMode ? { order: "2 !important" } : {}}
-            >
-              {(isRTLMode ||
-                isMobile ||
-                window.matchMedia("(orientation: landscape)").matches) && (
-                <img
-                  src={closemage}
-                  alt="Close"
-                  className={cn(
-                    isRTLMode
-                      ? "popup-registration__sidebar--rtl__close--rtl"
-                      : "popup-registration__sidebar__close-mobile",
-                    className
-                  )}
-                  onClick={handleClose}
-                />
-              )}
-              <div className="sidebar-area">
+            {/* Sidebar - Always render on desktop, CSS will handle visibility based on screen size */}
+            {(() => {
+              // Always render sidebar; responsive CSS handles visibility on tablet/mobile
+              return true;
+            })() && (
+              <BackgroundPreloader
+                onBackgroundLoaded={() => setIsBackgroundLoaded(true)}
+              >
                 <div
-                  className={cn("popup-registration__sidebar__title", {
-                    "popup-registration__sidebar--rtl__title--rtl": isRTLMode,
+                  className={cn("popup-registration__sidebar", {
+                    "popup-registration__sidebar--rtl": isRTLMode,
+                    "background-loaded": isBackgroundLoaded,
+                    "popup-registration__sidebar--forced-hidden":
+                      parsedParams?.forceSidebar === false,
                   })}
-                >
-                  <Trans i18nKey="popup-registration-title" ns="index">
-                    <span className="normal-text">Embark on the</span>
-                    <span className="highlighted">
-                      <span className="white-text">OQTIMA Trading</span>
-                      <span className="journey">Journey</span>
-                    </span>
-                  </Trans>
-                </div>
-              </div>
-            </div>
+                  data-rtl={isRTLMode ? "true" : "false"}
+                  style={{
+                    ...(isRTLMode ? { order: 2 } : {}),
+                    display:
+                      parsedParams?.forceSidebar === false ? "none" : "block",
+                    visibility: "visible",
+                    opacity: isBackgroundLoaded ? 1 : 0.5,
+                    width: "331px",
+                    flexShrink: 0,
+                    minWidth: "331px",
+                    height: "100%",
+                    backgroundImage: `url(${popupRegistrationBg})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center center",
+                    backgroundColor: "#f8f9fa",
+                  }}
+                ></div>
+              </BackgroundPreloader>
+            )}
             <div
               className={cn("popup-registration__content", {
                 "popup-registration__content--rtl": isRTLMode,
@@ -1626,28 +1935,35 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
               data-rtl={isRTLMode ? "true" : "false"}
               style={isRTLMode ? { order: "1 !important" } : {}}
             >
-              {!isRTLMode && !isMobile && (
-                <img
-                  src={closemage}
-                  alt="Close"
-                  className="popup-registration__close"
-                  onClick={handleClose}
-                />
-              )}
-              <h1
-                className={cn("popup-registration-register", {
-                  "popup-registration-register--rtl": isRTLMode,
-                })}
-              >
+              {/* Close button for all modes */}
+              <img
+                src={closemage}
+                alt="Close"
+                className="popup-registration__close"
+                onClick={handleClose}
+              />
+
+              {/* Badge */}
+              <div className="popup-registration__content__badge">
+                <div className="popup-registration__content__badge-icon">
+                  <img
+                    src={badgeSecurityIcon}
+                    alt={t("popup-registration-badge")}
+                  />
+                </div>
+                <span className="popup-registration__content__badge-text">
+                  {t("popup-registration-badge")}
+                </span>
+              </div>
+
+              {/* Title */}
+              <h1 className="popup-registration__content__title">
                 {t("popup-registration-register")}
               </h1>
-              <PopupRegistrationForm params={JSON.stringify(parsedParams)} />
-              <div className="risk-warning-container">
-                <div className="risk-warning-content">
-                  <p className="risk-warning-text">
-                    {t("popup-registration-riskWarning")}
-                  </p>
-                </div>
+
+              {/* Form */}
+              <div className="popup-registration__content__form">
+                <PopupRegistrationForm params={JSON.stringify(parsedParams)} />
               </div>
             </div>
           </div>

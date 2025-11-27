@@ -1,0 +1,453 @@
+@import "vars";
+@import "mixins";
+
+// Desktop Styles
+.cookie-table-desktop {
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 50px;
+
+  @include desktop-lg {
+    max-width: 100%;
+  }
+
+  @include desktop-xl {
+    max-width: 1400px;
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    height: 36px;
+    margin-bottom: 32px;
+    margin-left: auto;
+    margin-right: auto;
+
+    @include desktop-lg {
+      max-width: 1032px;
+    }
+
+    .search-frame {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 355px;
+      height: 36px;
+      background: transparent;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 50px;
+      padding: 0 12px;
+      gap: 10px;
+      box-sizing: border-box;
+      position: relative;
+
+      &:focus-within {
+        border-color: rgba(255, 68, 0, 0.4);
+        box-shadow: 0 0 0 2px rgba(255, 68, 0, 0.1);
+      }
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-weight: map-get($font-weight, "medium");
+      font-size: 14px;
+      line-height: 22px;
+      color: #9c9c9c;
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      min-height: 0;
+
+      &::placeholder {
+        color: #9c9c9c;
+        font-size: 14px;
+      }
+
+      &:focus {
+        color: #000000;
+      }
+    }
+
+    .search-icon {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+      opacity: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      align-self: center;
+      position: relative;
+      top: 0;
+      line-height: 1;
+
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        line-height: 1;
+      }
+
+      path {
+        stroke: #a2a2a2;
+        stroke-width: 1.5;
+      }
+    }
+  }
+
+  .cookie-table-container {
+    width: 100%;
+    height: auto;
+    margin: 0 auto 24px auto;
+    overflow: hidden;
+    border-radius: 12px;
+    background: transparent;
+    border: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cookie-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    border-radius: 12px;
+    overflow: hidden;
+    display: table;
+    border: none;
+
+    @include desktop-lg {
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    @include desktop-xl {
+      width: 1032px;
+      margin: 0 auto;
+    }
+
+    .table-header-section {
+      width: 100%;
+      height: auto;
+      display: table-row-group;
+    }
+
+    .table-main-header {
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+      background: url("../../assets/images/bg/funding-withdrawals/table-head.svg")
+        no-repeat center;
+      background-size: cover;
+      border-radius: 12px;
+      border: none;
+      overflow: hidden;
+      display: table-row;
+
+      th {
+        padding: 16px;
+        text-align: left;
+        font-weight: map-get($font-weight, "bold");
+        font-size: 16px;
+        line-height: 22px;
+        color: #fff;
+        border: none;
+        vertical-align: middle;
+        height: 59px;
+        box-sizing: border-box;
+
+        &:first-child {
+          width: 25%;
+          padding-left: 16px;
+          border-top-left-radius: 12px;
+          border-bottom-left-radius: 12px;
+          text-align: center;
+        }
+
+        &:last-child {
+          border-top-right-radius: 12px;
+          border-bottom-right-radius: 12px;
+        }
+
+        &:nth-child(2) {
+          width: 50%;
+          text-align: center;
+        }
+
+        &:nth-child(3) {
+          width: 25%;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .table-body-scroll-container {
+    width: 100%;
+    max-height: 385px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 0 0 12px 12px;
+    background: transparent;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @include tablet {
+      max-height: 500px;
+    }
+  }
+
+  .cookie-table-body {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    border: none;
+    margin: 0;
+
+    @include desktop-lg {
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    @include desktop-xl {
+      width: 1032px;
+      margin: 0 auto;
+    }
+
+    .table-body-section {
+      width: 100%;
+      height: auto;
+      display: table-row-group;
+    }
+
+    .table-row {
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+      border-collapse: separate;
+      display: table-row;
+
+      .table-cell {
+        padding: 16px;
+        text-align: left;
+        font-weight: map-get($font-weight, "regular");
+        font-size: 16px;
+        line-height: 22px;
+        color: #000;
+        vertical-align: middle;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+        height: 59px;
+        min-height: 59px;
+        max-height: 59px;
+        box-sizing: border-box;
+
+        &:first-child {
+          width: 25%;
+          padding-left: 16px;
+          font-weight: map-get($font-weight, "bold");
+          text-align: center;
+        }
+
+        &:nth-child(2) {
+          width: 50%;
+          text-align: center;
+        }
+
+        &:nth-child(3) {
+          width: 25%;
+          text-align: center;
+        }
+      }
+
+      &:last-child {
+        .table-cell {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
+
+// Mobile Styles
+.cookie-table-mobile {
+  width: 100%;
+  padding: 0;
+
+  .search-container-mobile {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 36px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50px;
+    padding: 0 12px;
+    gap: 10px;
+    margin-top: 50px;
+    margin-bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+
+    .search-input-mobile {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: "Sofia Pro";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 22px;
+      color: rgba(0, 0, 0, 0.6125);
+      padding: 0;
+
+      &::placeholder {
+        color: rgba(0, 0, 0, 0.6125);
+        font-family: "Sofia Pro";
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 10px;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .search-icon-mobile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        opacity: 1;
+        filter: none;
+      }
+    }
+  }
+
+  .cookie-cards-scroll-container {
+    width: 100%;
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-bottom: 32px;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .cookie-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .cookie-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px 28px;
+    min-height: 200px;
+    position: relative;
+    overflow: hidden;
+
+    &__header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 16px;
+      width: 100%;
+
+      @include mobile {
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      @include tablet {
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+    }
+
+    &__company {
+      font-family: "Sofia Pro";
+      font-style: normal;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 24px;
+      color: #000000;
+      margin: 0;
+      padding: 0;
+    }
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+    }
+
+    &__section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    &__section-title {
+      font-family: "Sofia Pro";
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 20px;
+      color: #ff4400;
+      margin: 0;
+      padding: 0;
+    }
+
+    &__section-text {
+      font-family: "Sofia Pro";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      color: #6b7280;
+      margin: 0;
+      padding: 0;
+    }
+
+    &__divider {
+      width: 100%;
+      height: 1px;
+      background: #e5e7eb;
+      margin: 0;
+    }
+  }
+}

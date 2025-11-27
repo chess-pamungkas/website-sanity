@@ -4,18 +4,19 @@ import { useTranslationWithVariables } from "../helpers/hooks/use-translation-wi
 import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import VPSContent from "../components/pages-content/vps-page-content";
+import PageBackground from "../components/shared/page-background";
 
 const VPSPage = () => {
   const { t } = useTranslationWithVariables();
 
   return (
-    <>
+    <PageBackground backgroundType="homepage-bg-2">
       <Seo
         fsaTitle={t("page-vps-title")}
         fsaDescription={t("page-vps-description")}
       />
       <VPSContent />
-    </>
+    </PageBackground>
   );
 };
 

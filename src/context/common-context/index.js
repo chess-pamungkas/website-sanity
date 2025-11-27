@@ -15,7 +15,7 @@ const CommonContext = createContext({});
 export const CommonProvider = ({ children }) => {
   const { width } = useWindowSize();
   const [sectionOptions, setSectionOptions] = useState(null);
-  const [headerRef, setHeaderRef] = useState(useRef());
+  const headerRef = useRef();
   const [isSearchBarAttached, setIsSearchBarAttached] = useState(true);
   const [heightOffset, setHeightOffset] = useState(0);
   const [dropdownHeightOffset, setDropdownHeightOffset] = useState(0);
@@ -80,7 +80,6 @@ export const CommonProvider = ({ children }) => {
         sectionOptions,
         setSectionOptions,
         headerRef,
-        setHeaderRef,
         isSearchBarAttached,
         setIsSearchBarAttached,
         heightOffset,

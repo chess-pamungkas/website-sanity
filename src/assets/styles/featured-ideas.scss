@@ -1,0 +1,790 @@
+@import "vars";
+@import "mixins";
+
+.featured-ideas {
+  position: relative;
+  width: 100%;
+  min-height: 807px; // Match SVG height exactly
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  border-radius: 24px; // Add border radius for desktop
+  margin-top: 50px;
+
+  @include mobile {
+    min-height: 100vh; // Use viewport height to cover full screen
+    padding: 40px 0; // Add bottom padding to ensure content is covered
+    align-items: flex-start; // Start from top on mobile
+    margin-top: 40px;
+    padding-top: 60px; // Add top padding for mobile
+    border-radius: 24px; // Add border radius for mobile
+    -webkit-border-radius: 24px; // WebKit prefix for better mobile support
+    -moz-border-radius: 24px; // Mozilla prefix
+  }
+
+  // Background
+  &__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &-image {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      object-fit: fill;
+      display: block;
+      opacity: 1;
+      mix-blend-mode: color-dodge;
+
+      @include mobile {
+        object-fit: cover;
+        object-position: center;
+      }
+
+      @include tablet {
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  // Main container
+  &__container {
+    position: relative;
+    z-index: 4;
+    max-width: 1280px;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; // Left alignment for desktop
+    text-align: left; // Left text alignment for desktop
+
+    @include mobile {
+      align-items: flex-start; // Keep left alignment on mobile
+      text-align: left; // Keep left text alignment on mobile
+      max-width: 100%;
+      padding-left: $padding-sm;
+      padding-right: $padding-sm;
+      height: auto;
+      min-height: auto;
+    }
+  }
+
+  // Header section
+  &__header {
+    margin-bottom: 48px;
+
+    @include mobile {
+      margin-bottom: 32px;
+    }
+  }
+
+  &__badge {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 10px;
+    gap: 12px;
+    width: fit-content;
+    background: #0f0f0f;
+    mix-blend-mode: normal;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin-bottom: 16px;
+
+    @include mobile {
+      width: fit-content;
+      height: 24px;
+      padding: 4px 10px;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    &-icon {
+      width: 16px;
+      height: 16px;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+
+      @include mobile {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    &-text {
+      width: fit-content;
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: map-get($font-weight, "medium");
+      font-size: 14px;
+      line-height: 20px;
+      text-align: left;
+      color: #ffffff;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+
+      @include mobile {
+        width: fit-content;
+        height: 18px;
+        font-size: 12px;
+        line-height: 18px;
+      }
+    }
+  }
+
+  &__title {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    text-align: left;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        102.31deg,
+        rgba(255, 255, 255, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #ffffff;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0 0 20px 0;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      font-size: 42px;
+      margin-bottom: 16px;
+    }
+  }
+
+  &__description {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "regular");
+    font-size: 18px;
+    line-height: 28px;
+    color: #ffffff;
+    max-width: 625px;
+    margin: 0 0 0 0;
+    opacity: 0.7;
+  }
+
+  // Tabs section
+  &__tabs {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2px;
+    width: 758px;
+    height: 45px;
+    background: rgba(255, 68, 0, 0.1);
+    border: 0.5px solid rgba(255, 68, 0, 0.15);
+    border-radius: 8px;
+    margin-bottom: 48px;
+    align-self: flex-start;
+
+    @include mobile {
+      display: none; // Hide desktop tabs on mobile
+    }
+
+    @include tablet {
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    @include desktop-lg {
+      width: 100%;
+      margin-bottom: 48px;
+    }
+  }
+
+  &__tab {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 10px;
+    width: 150px;
+    height: 45px;
+    border-radius: 8px;
+    flex: none;
+    flex-grow: 1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    // Tab text styling
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: 0.2px;
+    color: #ffffff;
+    opacity: 0.7;
+    border: none;
+    background: transparent;
+
+    @include mobile {
+      font-size: 20px;
+    }
+
+    @include tablet {
+      font-size: 16px;
+    }
+
+    @include desktop-lg {
+      font-size: 18px;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &--active {
+      background: rgba(255, 68, 0, 0.8);
+      border: 1px solid #ff4400;
+      opacity: 1;
+    }
+  }
+
+  // Mobile Dropdown
+  &__dropdown {
+    display: none;
+    position: relative;
+
+    @include mobile {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      gap: 10px;
+      width: 100%;
+      height: 51px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      margin-bottom: 32px;
+      align-self: center;
+      cursor: pointer;
+      background: transparent;
+    }
+  }
+
+  &__dropdown-label {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 27px;
+    color: #ffffff;
+    opacity: 0.75;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    @include mobile {
+      font-size: 13.5px;
+    }
+  }
+
+  &__dropdown-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    transition: transform 0.2s ease-in-out; // Smooth transition like lang-select
+  }
+
+  &__chevron-icon {
+    width: 12px;
+    height: 8px;
+    transition: transform 0.2s ease-in-out; // Smooth icon transition
+    transform: rotate(0deg); // Initial position
+
+    &.rotated {
+      transform: rotate(
+        180deg
+      ); // Rotated when dropdown is open (ChevronDown becomes ChevronUp)
+    }
+  }
+
+  // Mobile dropdown options (can be expanded later)
+  &__dropdown-options {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    margin-top: 4px;
+    z-index: 10;
+    backdrop-filter: blur(10px); // Add blur effect for better visibility
+    -webkit-backdrop-filter: blur(10px); // Safari support
+
+    @include mobile {
+      // Increase opacity on mobile for better visibility - make it more solid
+      background: rgba(
+        15,
+        15,
+        15,
+        0.98
+      ); // Use darker base color with higher opacity
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); // Add shadow for depth
+    }
+
+    &--open {
+      display: block;
+    }
+  }
+
+  &__dropdown-option {
+    padding: 14px 24px;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-size: 20px;
+    line-height: 27px;
+    color: #ffffff;
+    opacity: 0.75;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+
+    @include mobile {
+      font-size: 16px;
+    }
+
+    &:hover {
+      opacity: 1;
+      background: rgba(255, 68, 0, 0.1);
+    }
+
+    &--active {
+      opacity: 1;
+      background: rgba(255, 68, 0, 0.2);
+      color: #ff4400;
+    }
+  }
+
+  // Content Section
+  &__content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 20px;
+    order: 1;
+
+    @include mobile {
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    @include tablet {
+      flex-direction: column;
+      gap: 32px;
+      margin-top: 12px;
+    }
+
+    @include desktop-lg {
+      flex-direction: row;
+      gap: 20px;
+      margin-top: 20px;
+    }
+  }
+
+  &__content-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0px;
+    gap: 0px;
+    width: 50%;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    @include mobile {
+      width: 100%;
+    }
+
+    @include tablet {
+      width: 100%;
+    }
+
+    @include desktop-lg {
+      width: 35%;
+    }
+
+    @include desktop-xl {
+      width: 50%;
+    }
+  }
+
+  &__content-image {
+    width: 100%;
+    max-width: 589px;
+    height: 335px;
+    object-fit: contain;
+    object-position: top; // Align image to top
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    align-self: flex-start; // Ensure image stays at top
+
+    @include mobile {
+      max-width: 100%;
+      height: 200.77px;
+      object-position: top; // Align image to top on mobile too
+    }
+  }
+
+  &__content-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 18px;
+    width: 625px;
+    height: auto;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  &__content-title {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 44px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        102.31deg,
+        rgba(255, 255, 255, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #ffffff;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0;
+
+    @include mobile {
+      width: 100%;
+      font-size: 28px;
+      line-height: 36px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(
+        102.31deg,
+        rgba(255, 68, 0, 0.45) 9.12%,
+        rgba(255, 68, 0, 0.8) 71.6%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  &__content-description {
+    width: 625px;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, "light");
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: 0.2px;
+    color: #ffffff;
+    opacity: 0.7;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    margin: 0;
+
+    @include mobile {
+      width: 100%;
+      max-width: 309px;
+      height: auto;
+      font-weight: map-get($font-weight, "regular");
+    }
+  }
+
+  // Right Content Section
+  &__content-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start; // Ensure content starts from top
+    padding: 0px;
+    gap: 24px;
+    width: 625px;
+    height: 311px;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      justify-content: flex-start; // Ensure content starts from top on mobile
+    }
+  }
+
+  // Action Buttons
+  &__actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 12px;
+    width: 466.33px;
+    height: 55px;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      flex-direction: column;
+      gap: 16px;
+    }
+  }
+
+  &__btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 24px;
+    gap: 10px;
+    height: 51px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 23px;
+    cursor: pointer;
+    position: relative;
+    outline: none;
+    box-sizing: border-box;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    text-decoration: none;
+
+    @include mobile {
+      width: 100%;
+      align-self: stretch;
+      height: 51px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    // Button text styles
+    .button-text {
+      transition: color 0.3s;
+      z-index: 1;
+      white-space: nowrap;
+      color: inherit;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+
+    // Button arrow styles
+    .button-arrow {
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+      color: currentColor;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+    }
+
+    &--primary {
+      box-shadow: 0px 0px 19.3px rgba(255, 68, 0, 0.5);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        width 0.3s cubic-bezier(0.4, 0, 0.2, 1); // Same transitions as button-primary-hero
+      overflow: visible; // Allow expansion
+      position: relative;
+      transform-origin: left center;
+      justify-content: flex-start; // Left aligned like button-primary-hero
+      padding-left: 24px; // Left padding to position text correctly
+      padding-right: 14px; // Reset right padding initially
+      padding-top: 14px;
+      padding-bottom: 14px;
+
+      @include mobile {
+        width: 100%;
+        justify-content: center;
+        padding-left: 0; // Remove left padding on mobile for centering
+        padding-right: 0; // Reset right padding on mobile
+        overflow: hidden; // Hide overflow on mobile for proper centering
+      }
+
+      .button-text {
+        position: relative;
+        white-space: nowrap;
+        z-index: 2;
+        transition: none; // Text should NOT move
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+        margin-left: 0; // Remove margin since we're using padding on the button
+
+        @include mobile {
+          position: relative;
+          transform: none;
+          margin-left: 0;
+        }
+      }
+
+      .button-arrow {
+        opacity: 0;
+        width: 0;
+        margin-left: 0; // Add spacing between text and arrow
+        transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+        overflow: hidden;
+        z-index: 1;
+        position: relative; // Use relative positioning for proper flexbox flow
+        color: #000;
+
+        @include mobile {
+          position: relative;
+          transform: none;
+          margin-left: 0;
+          width: 0; // Ensure arrow takes no space on mobile before hover
+          opacity: 0; // Ensure arrow is completely hidden on mobile before hover
+        }
+      }
+
+      &:hover,
+      &:focus {
+        width: fit-content; // Increased to accommodate: 24px left padding + text + 24px arrow + 24px right padding
+        background: #ff4400;
+        color: #000 !important;
+        box-shadow: 0 0 19.3px 0 rgba(255, 68, 0, 0.5);
+        padding-right: 8px; // Add right padding to balance the left padding
+
+        @include mobile {
+          width: 100%;
+          padding-right: 0;
+          overflow: hidden; // Hide overflow on mobile for proper centering
+        }
+
+        .button-arrow {
+          opacity: 1;
+          width: 24px;
+          margin-left: 0; // Add spacing between text and arrow
+          color: #000;
+
+          @include mobile {
+            position: relative;
+            transform: none;
+            margin-left: 0;
+          }
+        }
+
+        .button-text {
+          color: #000 !important;
+          // NO position change - text stays exactly where it is
+        }
+      }
+    }
+
+    &--secondary {
+      width: fit-content;
+      background: transparent;
+      color: #fff;
+      transition: color 0.3s, border 0.3s, text-decoration 0.3s;
+      text-decoration: none;
+
+      @include mobile {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .button-text {
+        position: relative;
+        transition: color 0.3s, text-decoration 0.3s;
+      }
+
+      .button-arrow {
+        margin-left: 0;
+        color: currentColor;
+      }
+
+      &:hover,
+      &:focus {
+        text-decoration: underline;
+        border: none;
+
+        .button-arrow {
+          color: #ff4400;
+        }
+      }
+    }
+  }
+
+  // Chevron icon styles
+  &__chevron-icon {
+    transition: transform 0.3s ease;
+
+    &.rotated {
+      transform: rotate(180deg);
+    }
+  }
+}

@@ -1,18 +1,20 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
-import TopMarket from "../../top-market";
-import topPromo from "../../../assets/images/vps/top-promo.svg";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
-import HighlightedLocalizationText from "../../shared/highlighted-localization-text";
-import VPSTopPromotion from "../../vps/components/vps-top-promotion";
-import VPSCenterPromotion from "../../vps/components/vps-center-promotion";
-import VPSBottomPromotion from "../../vps/components/bottom-promotion";
-import VPSAdvantages from "../../vps/components/vps-advantages";
-import { VPS_ADVANTAGES } from "../../../helpers/vps.config";
+import { useWindowSize } from "../../../helpers/hooks/use-window-size";
+import { getFeaturesByTradingType } from "../../../helpers/features-products.config";
+import FeaturesProducts from "../../shared/features-products";
 import { setLangParam } from "../../../helpers/services/language-service";
+import ContainerWrapper from "../../../components/shared/container-wrapper";
+import Hero from "../../shared/hero";
+import OurCommunityContent from "../../../components/shared/our-community";
+import KeepYourVPS from "./keep-your-vps";
+import GetComplimentaryVPS from "./get-complimentary-vps";
 
-const VPSContent = () => {
+const VPSContent = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
+  const { isMobile } = useWindowSize();
   const langParam = setLangParam(); // Get the language parameter
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
 
@@ -25,31 +27,56 @@ const VPSContent = () => {
   };
 
   return (
-    <>
-      <TopMarket
-        title={
-          <HighlightedLocalizationText
-            localizationText="vps_top-market-title"
-            wordsToHighlight="vps_top-market-title-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-white"
+    <div className="vps-page">
+      <Hero
+        className={className}
+        isShowHero={isShowHero}
+        heroType="vps"
+        showWarning={false}
+        showHandImage={false}
+        showHeroImage={false}
+        showTrustPilot={true}
+        desktopBackground="url(../../assets/images/bg/hero/vps/vps-desktop.svg)"
+        mobileBackground="url(../../assets/images/bg/hero/vps/vps-mobile.svg)"
+      />
+
+      {/* Get Complimentary VPS Section */}
+      <ContainerWrapper>
+        <GetComplimentaryVPS />
+      </ContainerWrapper>
+
+      {/* Keep Your VPS Section */}
+      <KeepYourVPS />
+
+      <ContainerWrapper>
+        <div className="vps-page">
+          {/* VPS Features Products */}
+          <FeaturesProducts
+            tradingType="vps"
+            features={getFeaturesByTradingType("vps")}
           />
-        }
-        image={topPromo}
-        btn1Title={t("vps_top-market-btn")}
-        btnOnClick1={handleShowRegistrationPopup}
-      >
-        <HighlightedLocalizationText
-          localizationText="vps_top-market-promo-text"
-          wordsToHighlight="vps_top-market-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
+        </div>
+      </ContainerWrapper>
+
+      {isMobile ? (
+        <OurCommunityContent
+          customBadgeMessage={t("vps_our_community_badge_message")}
+          customTitle={t("vps_our_community_title")}
+          customSubtitle={t("vps_our_community_subtitle")}
+          customPrimaryButton={t("vps_our_community_primary_button")}
+          customSecondaryButton={t("vps_our_community_secondary_button")}
         />
-      </TopMarket>
-      <VPSTopPromotion />
-      <VPSCenterPromotion />
-      <VPSAdvantages advantages={VPS_ADVANTAGES} />
-      <VPSBottomPromotion />
+      ) : (
+        <ContainerWrapper>
+          <OurCommunityContent
+            customBadgeMessage={t("vps_our_community_badge_message")}
+            customTitle={t("vps_our_community_title")}
+            customSubtitle={t("vps_our_community_subtitle")}
+            customPrimaryButton={t("vps_our_community_primary_button")}
+            customSecondaryButton={t("vps_our_community_secondary_button")}
+          />
+        </ContainerWrapper>
+      )}
 
       {/* Render the popup */}
       {isPopupOpen && (
@@ -59,8 +86,13 @@ const VPSContent = () => {
           langParam={langParam} // Pass langParam if needed
         />
       )}
-    </>
+    </div>
   );
+};
+
+VPSContent.propTypes = {
+  className: PropTypes.string,
+  isShowHero: PropTypes.bool,
 };
 
 export default VPSContent;

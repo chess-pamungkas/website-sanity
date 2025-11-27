@@ -1,0 +1,282 @@
+@import "vars";
+@import "mixins";
+
+// Navbar Dropdown Highlight
+.navbar-dropdown-highlight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 45%;
+  height: 100%;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
+  justify-content: stretch;
+
+  // Responsive
+  @include desktop-lg {
+    min-width: 180px;
+    // max-width: 220px;
+    padding: 14px 0;
+  }
+
+  // Responsive
+  @include desktop-xl {
+    width: 45%;
+    min-width: 180px;
+    // max-width: 220px;
+    padding: 14px 0;
+  }
+
+  // Inner wrapper
+  &__inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+  }
+
+  // Badge
+  &__badge {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: 26px;
+    background: rgba(255, 68, 0, 0.1) !important;
+    border: 1px solid rgba(255, 68, 0, 0.15) !important;
+    border-radius: 16px !important;
+    padding: 6px 10px !important;
+    box-sizing: border-box;
+    margin-bottom: 16px;
+    margin-top: 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    gap: 8px;
+    white-space: nowrap;
+  }
+  &__badge-icon {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    margin: 0;
+    vertical-align: middle;
+    fill: #ff4400;
+  }
+  &__badge-text {
+    color: map-get($colors, "black");
+    font-size: 14px;
+    font-weight: map-get($font-weight, "medium");
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+  }
+
+  // Link
+  &__link {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-decoration: none;
+    width: 100%;
+    padding: 0;
+  }
+
+  // Icon
+  &__icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    margin-right: 0;
+    flex-shrink: 0;
+  }
+
+  // Content
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  // Title
+  &__title {
+    font-weight: map-get($font-weight, "semibold");
+    color: map-get($colors, "black");
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    margin-top: 0;
+  }
+
+  // Subtitle
+  &__subtitle {
+    font-weight: map-get($font-weight, "regular");
+    color: map-get($colors, "navbar-item-grey");
+    font-size: 16px;
+    line-height: 28px;
+    margin: 16px 0;
+    opacity: 0.7;
+  }
+
+  // Description
+  &__description {
+    color: #6a6a6a;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  // Button group
+  &__button-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    order: 4;
+    @include mobile {
+      margin-top: 0;
+      width: 100%;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0;
+    }
+  }
+
+  // Button
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: map-get($font-weight, "medium");
+    font-size: 18px;
+    line-height: 1.2;
+    border-radius: 8px;
+    height: 49px;
+    padding: 0 20px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    box-sizing: border-box;
+    white-space: nowrap;
+    // min-width: 167px;
+
+    @include desktop-lg {
+      font-size: 16px;
+    }
+
+    @include desktop-xl {
+      font-size: 18px;
+    }
+
+    .navbar-dropdown-highlight__button-text {
+      white-space: nowrap;
+    }
+
+    &--primary {
+      background: #ff4400;
+      color: #fff;
+      border: none;
+      box-shadow: 0 1px 4px rgba(255, 68, 0, 0.08);
+      width: fit-content;
+      height: 51px;
+      padding: 0 24px;
+      position: relative;
+      overflow: visible; // Changed from hidden to visible to allow expansion
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+
+      .navbar-dropdown-highlight__button-text {
+        transition: color 0.3s;
+        z-index: 1;
+        position: relative;
+        margin-left: 0; // Remove margin since we're using padding on the button
+      }
+      .navbar-dropdown-highlight__button-arrow {
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        width: 0;
+        margin-left: 0;
+        transition: opacity 0.2s, width 0.3s, margin-left 0.3s;
+        overflow: hidden;
+        z-index: 1;
+        position: relative;
+        flex-shrink: 0;
+      }
+      @include mobile {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-left: 0; // Remove left padding on mobile for centering
+        padding-right: 0;
+      }
+    }
+    &--primary:hover,
+    &--primary:focus {
+      width: fit-content; // Increased to accommodate: 24px left padding + text + 24px arrow + 24px right padding
+      background: #ff4400;
+      color: #fff;
+      box-shadow: 0 0 19.3px 0 rgba(255, 68, 0, 0.5);
+      padding-right: 8px; // Add right padding to balance the left padding
+
+      .navbar-dropdown-highlight__button-text {
+        color: #fff !important;
+        // NO position change - text stays exactly where it is
+      }
+
+      .navbar-dropdown-highlight__button-arrow {
+        opacity: 1;
+        width: 24px;
+        margin-left: 8px; // Add spacing between text and arrow
+      }
+
+      @include mobile {
+        width: 100%;
+        padding-right: 0;
+      }
+    }
+    &--secondary {
+      background: transparent;
+      color: map-get($colors, "black");
+      border: none;
+      min-width: 0;
+      padding: 0 20px;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      .navbar-dropdown-highlight__button-arrow {
+        display: flex;
+        align-items: center;
+        margin-left: 8px;
+        transition: color 0.2s;
+        color: currentColor;
+      }
+      @include mobile {
+        width: 100%;
+      }
+    }
+    &--secondary:hover,
+    &--secondary:focus {
+      text-decoration: underline;
+      color: map-get($colors, "black");
+      .navbar-dropdown-highlight__button-arrow {
+        color: #ff4400;
+      }
+    }
+  }
+}

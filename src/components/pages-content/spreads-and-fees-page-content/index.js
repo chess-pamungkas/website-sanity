@@ -1,11 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
+import PropTypes from "prop-types";
 import cn from "classnames";
-import TopMarket from "../../top-market";
-import promotion from "../../../assets/images/spreads-and-fees/promotion.svg";
-import HighlightedLocalizationText from "../../shared/highlighted-localization-text";
-import TopMarketLayout from "../../top-market-layout";
-import Tabs from "../../shared/tabs";
 import TableComponent from "../../shared/table";
 import {
   ColumnsSpreadTable2,
@@ -15,10 +11,10 @@ import {
   DATA_SPREADS_TABLE_FOREX,
   DATA_SPREADS_TABLE_INDICES,
 } from "../../../helpers/spreads-and-fees.config";
-import TopMarketPromotion from "../../top-market-promotion";
 import icon from "../../../assets/images/icon--white.svg";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
 import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
+import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { updateTableDataWithLiveColumn } from "../../../helpers/services/update-table-data-with-live-column";
 import {
   FOREX_TRADING_SECTION,
@@ -29,9 +25,16 @@ import {
 import TradingContext from "../../../context/trading-context";
 import { GeneralTableColumns } from "../../../helpers/top-market-tables";
 import { setLangParam } from "../../../helpers/services/language-service";
+import ContainerWrapper from "../../../components/shared/container-wrapper";
+import Hero from "../../shared/hero";
+import CostSwapRate from "./cost-swap-rate";
+import SpreadsFeesCommission from "./spreads-fees-commission";
+import OurSpreads from "./our-spreads";
+import OurCommunityContent from "../../../components/shared/our-community";
 
-const SpreadsAndFeesPageContent = () => {
+const SpreadsAndFeesPageContent = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
+  const { isMobile } = useWindowSize();
   const isRTL = useRtlDirection();
   const { tradingSymbols, setSelectedSection, setNeedToLoadSymbols } =
     useContext(TradingContext);
@@ -152,86 +155,50 @@ const SpreadsAndFeesPageContent = () => {
 
   return (
     <>
-      <TopMarket
-        className={cn("top-market--spreads-page")}
-        image={promotion}
-        title={
-          <HighlightedLocalizationText
-            localizationText="spreads_top-market-promo-text"
-            wordsToHighlight="spreads_top-market-promo-text-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-white"
+      <Hero
+        className={className}
+        isShowHero={isShowHero}
+        heroType="spreads-fees"
+        showWarning={false}
+        showHandImage={false}
+        showHeroImage={false}
+        desktopBackground="url(../../assets/images/bg/hero/spreads-fees/spreads-fees-desktop.svg)"
+        mobileBackground="url(../../assets/images/bg/hero/spreads-fees/spreads-fees-mobile.svg)"
+      />
+
+      <ContainerWrapper>
+        <OurSpreads />
+      </ContainerWrapper>
+
+      <SpreadsFeesCommission />
+
+      <ContainerWrapper>
+        <CostSwapRate />
+      </ContainerWrapper>
+
+      {isMobile ? (
+        <OurCommunityContent
+          customBadgeMessage={t("spreads-fees_our_community_badge_message")}
+          customTitle={t("spreads-fees_our_community_title")}
+          customSubtitle={t("spreads-fees_our_community_subtitle")}
+          customPrimaryButton={t("spreads-fees_our_community_primary_button")}
+          customSecondaryButton={t(
+            "spreads-fees_our_community_secondary_button"
+          )}
+        />
+      ) : (
+        <ContainerWrapper>
+          <OurCommunityContent
+            customBadgeMessage={t("spreads-fees_our_community_badge_message")}
+            customTitle={t("spreads-fees_our_community_title")}
+            customSubtitle={t("spreads-fees_our_community_subtitle")}
+            customPrimaryButton={t("spreads-fees_our_community_primary_button")}
+            customSecondaryButton={t(
+              "spreads-fees_our_community_secondary_button"
+            )}
           />
-        }
-      >
-        <HighlightedLocalizationText
-          localizationText="spreads_top-market-promo-note"
-          wordsToHighlight="spreads_top-market-promo-note-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
-        />
-      </TopMarket>
-
-      <TopMarketLayout
-        className="top-market-layout--spreads"
-        title={t("spreads_first-table-title")}
-      >
-        <Tabs tabList={tabs} isMobileDropdown />
-      </TopMarketLayout>
-
-      <TopMarketLayout
-        className="top-market-layout--spreads top-market-layout--spreads-second"
-        headerTemplate={
-          <div className={cn("top-market-layout__header")}>
-            <h2 className={cn("top-market-layout__title")}>
-              {t("spreads_second-table-title")}
-            </h2>
-            <p className={cn("top-market-layout__subtitle")}>
-              {t("spreads_second-table-subtitle")}
-            </p>
-          </div>
-        }
-      >
-        <TableComponent
-          data={DataSpreadTable2()}
-          columns={ColumnsSpreadTable2()}
-          className={cn("spreads--common-table", "spreads--second-table")}
-        />
-      </TopMarketLayout>
-
-      <section className={cn("swap-rate", { "swap-rate--rtl": isRTL })}>
-        <div className="swap-rate__wrapper">
-          <h2 className="swap-rate__title">{t("spreads_faq-title")}</h2>
-          <div className="swap-rate__subtitle">
-            <span className="swap-rate__subtitle-text">
-              {t("spreads_faq-subtitle1")}
-            </span>
-            <span className="swap-rate__subtitle-text">
-              {t("spreads_faq-subtitle2")}
-            </span>
-            <span className="swap-rate__subtitle-text swap-rate__subtitle-text--bold">
-              {t("spreads_faq-subtitle3")}
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <TopMarketPromotion
-        className={cn("bottom-promotion", {
-          "bottom-promotion--rtl": isRTL,
-        })}
-        image={icon}
-        btnClassName="button-link--red"
-        btnTitle={t("spreads_top-market-promo-btn3")}
-        btnOnClick={handleShowRegistrationPopup}
-      >
-        <HighlightedLocalizationText
-          localizationText="spreads_top-market-promo-text3"
-          wordsToHighlight="spreads_top-market-promo-text-accent3"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
-        />
-      </TopMarketPromotion>
+        </ContainerWrapper>
+      )}
 
       {/* Render the popup */}
       {isPopupOpen && (
@@ -243,6 +210,11 @@ const SpreadsAndFeesPageContent = () => {
       )}
     </>
   );
+};
+
+SpreadsAndFeesPageContent.propTypes = {
+  className: PropTypes.string,
+  isShowHero: PropTypes.bool,
 };
 
 export default SpreadsAndFeesPageContent;

@@ -21,4 +21,5 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-self.addEventListener("fetch", () => {});
+// Fetch event handler removed to avoid "no-op fetch handler" warning
+// If caching is needed in the future, implement proper fetch handling here

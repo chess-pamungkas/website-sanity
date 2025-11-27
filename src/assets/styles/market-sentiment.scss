@@ -1,0 +1,1121 @@
+@import "vars";
+@import "mixins";
+
+.market-sentiment {
+  position: relative;
+  width: 100%;
+  min-height: 807px; // Match SVG height exactly
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  border-radius: 24px; // Add border radius for desktop
+
+  @include mobile {
+    min-height: 100vh; // Increase height to cover more content
+    padding: 0; // Remove padding to ensure full coverage
+    align-items: flex-start; // Start from top on mobile
+    padding-top: 60px; // Add top padding for mobile
+    padding-bottom: 60px; // Add bottom padding for mobile
+    width: 100vw; // Ensure full viewport width
+    left: 0;
+    right: 0;
+    position: relative;
+    overflow: hidden; // Ensure background doesn't overflow outside container
+    border-radius: 24px; // Add border radius for mobile
+    -webkit-border-radius: 24px; // WebKit prefix for better mobile support
+    -moz-border-radius: 24px; // Mozilla prefix
+  }
+
+  // Background
+  &__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &-image {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      object-fit: fill;
+      display: block;
+      opacity: 1;
+
+      @include mobile {
+        object-fit: cover;
+        object-position: center;
+      }
+
+      @include tablet {
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      @include desktop-lg {
+        object-fit: cover;
+        object-position: center;
+      }
+
+      @include desktop-xl {
+        object-fit: cover;
+        object-position: bottom center;
+      }
+    }
+
+    @include mobile {
+      // Ensure background covers full container including bottom padding
+      height: 100%;
+      min-height: 100vh; // Match container height
+      width: 100%;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      position: absolute;
+    }
+  }
+
+  // Content container
+  > *:not(.market-sentiment__background) {
+    position: relative;
+    z-index: 4;
+  }
+
+  // Main container
+  &__container {
+    position: relative;
+    z-index: 4;
+    max-width: 1280px;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; // Left alignment for desktop
+    text-align: left; // Left text alignment for desktop
+
+    @include mobile {
+      align-items: center;
+      text-align: center;
+      max-width: 100%;
+      padding-left: $padding-sm;
+      padding-right: $padding-sm;
+      height: auto;
+      min-height: auto;
+    }
+
+    @include tablet {
+      max-width: 720px;
+    }
+
+    @include desktop-lg {
+      max-width: 980px;
+    }
+
+    @include desktop-xl {
+      max-width: 1280px;
+    }
+
+    @include desktop-2k {
+      max-width: 1440px;
+    }
+
+    @include desktop-5k {
+      max-width: 1920px;
+    }
+  }
+
+  // Header section
+  &__header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+    gap: 16px;
+    text-align: left;
+    margin-bottom: 48px;
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 10px;
+      background: rgba(15, 15, 15, 1);
+      border: 1px solid rgba(255, 68, 0, 0.15);
+      border-radius: 16px;
+      width: fit-content;
+      img {
+        width: 14px;
+        height: 14px;
+      }
+      .badge-label {
+        font-family: "Sofia Pro", Arial, sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 20px;
+        color: #fff;
+      }
+    }
+    @include mobile {
+      margin: 0 auto;
+    }
+
+    &-icon {
+      width: 16.39px;
+      height: 16px;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+
+      @include mobile {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    &-text {
+      width: 115px;
+      height: 20px;
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 20px;
+      color: #ffffff;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+
+      @include mobile {
+        width: 134px;
+      }
+    }
+
+    @include mobile {
+      width: 100%;
+      gap: 4px; // Mobile specific gap
+    }
+  }
+
+  &__title {
+    width: fit-content;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: map-get($font-weight, semibold);
+    font-size: 52px;
+    line-height: 1.3;
+    text-align: left;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        102.31deg,
+        rgba(255, 255, 255, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #fff;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+
+    @include mobile {
+      width: 100%;
+      font-size: 42px;
+      text-align: center;
+    }
+  }
+
+  &__description {
+    width: 625px;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: 0.2px;
+    color: #ffffff;
+    opacity: 0.7;
+    flex: none;
+    order: 2;
+    flex-grow: 0;
+    margin: 0;
+    text-align: left;
+
+    @include mobile {
+      width: 100%;
+      text-align: center;
+      font-size: 16px;
+      align-self: stretch;
+      margin-top: 20px;
+    }
+  }
+
+  // Tabs
+  &__tabs {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2px;
+    width: 604px;
+    height: 36px;
+    background: rgba(255, 68, 0, 0.1);
+    border: 0.5px solid rgba(255, 68, 0, 0.15);
+    border-radius: 8px;
+    margin-bottom: 48px;
+    align-self: flex-start;
+
+    @include mobile {
+      display: none; // Hide desktop tabs on mobile
+    }
+  }
+
+  &__tab {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 10px;
+    width: fit-content;
+    height: 36px;
+    border-radius: 8px;
+    flex: none;
+    flex-grow: 1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    // Tab text styling
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: 0.2px;
+    color: #ffffff;
+    opacity: 0.7;
+    border: none;
+    background: transparent;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &--active {
+      background: rgba(255, 68, 0, 0.8);
+      border: 1px solid #ff4400;
+      opacity: 1;
+    }
+  }
+
+  // Mobile Dropdown
+  &__dropdown {
+    display: none;
+    position: relative;
+
+    @include mobile {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      gap: 10px;
+      width: 172px;
+      height: 51px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      margin-bottom: 32px;
+      align-self: center;
+      cursor: pointer;
+      background: transparent;
+    }
+  }
+
+  &__dropdown-label {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 27px;
+    color: #ffffff;
+    opacity: 0.75;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    @include mobile {
+      font-size: 16px;
+    }
+  }
+
+  &__dropdown-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    transition: transform 0.2s ease-in-out; // Smooth transition like lang-select
+  }
+
+  &__chevron-icon {
+    width: 12px;
+    height: 8px;
+    transition: transform 0.2s ease-in-out; // Smooth icon transition
+    transform: rotate(0deg); // Initial position
+
+    &.rotated {
+      transform: rotate(
+        180deg
+      ); // Rotated when dropdown is open (ChevronDown becomes ChevronUp)
+    }
+  }
+
+  // Mobile dropdown options (can be expanded later)
+  &__dropdown-options {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    margin-top: 4px;
+    z-index: 10;
+
+    &--open {
+      display: block;
+    }
+  }
+
+  &__dropdown-option {
+    padding: 14px 24px;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-size: 20px;
+    line-height: 27px;
+    color: #ffffff;
+    opacity: 0.75;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+
+    &:hover {
+      opacity: 1;
+      background: rgba(255, 68, 0, 0.1);
+    }
+
+    &--active {
+      opacity: 1;
+      background: rgba(255, 68, 0, 0.2);
+    }
+  }
+
+  // Trading symbols grid
+  &__symbols-grid {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 15px;
+    width: 100%;
+    height: 238.36px;
+    align-self: flex-start; // Left align grid on desktop
+    overflow-x: scroll;
+    scroll-snap-type: unset;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    // Hide scrollbar
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @include mobile {
+      gap: 10px;
+      height: auto;
+      align-self: center; // Center on mobile
+    }
+  }
+
+  &__symbol-card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    gap: 42px;
+    isolation: isolate;
+    width: 297px;
+    min-width: 297px; // Ensure cards don't shrink during scroll
+    height: 238.36px;
+    flex-shrink: 0; // Prevent shrinking in flex container
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(255, 68, 0, 0.36) 100%
+      ),
+      #000000;
+    border: 1px solid rgba(255, 68, 0, 0.2);
+    border-radius: 12px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    // Background SVG overlay
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0.14px;
+      width: 358.56px;
+      height: 322px;
+      background-image: url("../images/bg/main-page/bg-card-market-sentiment.svg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.5;
+      border-radius: 14.0611px;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 68, 0, 0.4);
+    }
+
+    // Ensure all child elements are above the background
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  &__symbol-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 10px;
+    width: 143px;
+    height: 24px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    z-index: 1;
+  }
+
+  &__symbol-flags {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 2px;
+    width: 50px;
+    height: 24px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  &__symbol-flag {
+    width: 24px;
+    height: 24px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    object-fit: contain;
+  }
+
+  &__symbol-flags-combined {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+
+    .market-sentiment__symbol-flag {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  // Loading state styles
+  &__loading-placeholder {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+
+    &.market-sentiment__symbol-flag {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+    }
+
+    &.market-sentiment__symbol-name {
+      width: 60px;
+      height: 16px;
+    }
+
+    &.market-sentiment__symbol-percentage {
+      width: 50px;
+      height: 24px;
+    }
+
+    &.market-sentiment__symbol-status {
+      width: 80px;
+      height: 16px;
+    }
+
+    &.market-sentiment__symbol-recommendation {
+      width: 100px;
+      height: 16px;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  &__symbol-name {
+    width: 79px;
+    height: 20px;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: 0.2px;
+    color: #ffffff;
+    opacity: 0.7;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+
+  &__symbol-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0px;
+    gap: 10px;
+    width: 249px;
+    height: 60px;
+    flex: none;
+    order: 2;
+    align-self: stretch;
+    flex-grow: 0;
+    z-index: 2;
+  }
+
+  &__symbol-percentage {
+    margin: 0;
+    padding: 0;
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 72px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        102.31deg,
+        rgba(255, 255, 255, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #ffffff;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    // Different gradients for different types
+    &--forex {
+      background: linear-gradient(
+          102.31deg,
+          rgba(255, 255, 255, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #ffffff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    &--gold {
+      background: linear-gradient(
+          102.31deg,
+          rgba(255, 255, 255, 0) 9.12%,
+          rgba(255, 153, 0, 0.45) 71.6%
+        ),
+        #ffffff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    &--gbp {
+      background: linear-gradient(
+          102.31deg,
+          rgba(255, 255, 255, 0) 9.12%,
+          rgba(115, 175, 0, 0.45) 71.6%
+        ),
+        #ffffff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    &--silver {
+      background: linear-gradient(
+          102.31deg,
+          rgba(255, 255, 255, 0) 9.12%,
+          rgba(255, 153, 0, 0.45) 71.6%
+        ),
+        #ffffff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  &__symbol-direction {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    align-items: center;
+    padding: 3px 7.5px;
+    gap: 7.5px;
+    margin: 0;
+    width: fit-content;
+    height: 24px;
+    background: #d80027;
+    border: 0.75px solid #d80027;
+    border-radius: 6px;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+
+    &--short {
+      background: #d80027;
+      border-color: #d80027;
+    }
+
+    &--long {
+      background: #73af00;
+      border-color: #73af00;
+    }
+  }
+
+  &__symbol-direction-text {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13.5px;
+    line-height: 15px;
+    text-align: center;
+    letter-spacing: 0.15px;
+    color: #000000;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  &__symbol-direction-icon {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--up {
+      background-color: #73af00; // Green for LONG sentiment
+    }
+
+    &--down {
+      background-color: #d80027; // Red for SHORT sentiment
+    }
+  }
+
+  &__arrow-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  &__symbol-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px;
+    gap: 14px;
+    width: 249px;
+    height: 22.36px;
+    flex: none;
+    order: 3;
+    align-self: stretch;
+    flex-grow: 0;
+    z-index: 3;
+  }
+
+  &__symbol-sentiment {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    padding: 3.17757px 6.35514px;
+    gap: 7.94px;
+    margin: 0;
+    width: 85.71px;
+    height: 22.36px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 0.397196px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4.76636px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  &__symbol-sentiment-text {
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14.3px;
+    line-height: 15.9px;
+    text-align: center;
+    letter-spacing: 0.158879px;
+    color: #ffffff;
+    opacity: 0.7;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  &__symbol-recommendation {
+    margin: 0;
+
+    font-family: "Sofia Pro", Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: right;
+    letter-spacing: 0.2px;
+    color: #ffffff;
+    opacity: 0.7;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+
+  // Action buttons
+  &__actions {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: relative;
+    margin-top: 48px;
+
+    @include mobile {
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0px;
+      width: 100%;
+      height: 114px;
+      flex: none;
+      order: 0;
+      align-self: stretch;
+      flex-grow: 0;
+      gap: 16px;
+      margin-top: 0;
+    }
+  }
+
+  &__btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 14px 24px;
+    gap: 10px;
+    height: 51px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 23px;
+    cursor: pointer;
+    position: relative;
+    outline: none;
+    box-sizing: border-box;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    text-decoration: none;
+
+    @include mobile {
+      width: 100%;
+      align-self: stretch;
+      height: 51px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    // Button text styles
+    .button-text {
+      transition: color 0.3s;
+      z-index: 1;
+      white-space: nowrap;
+      color: inherit;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+
+    // Button arrow styles
+    .button-arrow {
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+      color: currentColor;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+    }
+
+    &--primary {
+      width: fit-content; // Same as button-primary-hero
+      background: #fff;
+      color: #000;
+      box-shadow: 0px 0px 19.3px rgba(255, 68, 0, 0.5);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        width 0.3s cubic-bezier(0.4, 0, 0.2, 1); // Same transitions as button-primary-hero
+      overflow: visible; // Allow expansion
+      position: relative;
+      transform-origin: left center;
+      justify-content: flex-start; // Left aligned like button-primary-hero
+      padding-left: 24px; // Left padding to position text correctly
+      padding-right: 14px; // Reset right padding initially
+      padding-top: 14px;
+      padding-bottom: 14px;
+
+      @include mobile {
+        width: 100%;
+        justify-content: center;
+        padding-left: 0; // Remove left padding on mobile for centering
+        padding-right: 0; // Reset right padding on mobile
+        overflow: hidden; // Hide overflow on mobile for proper centering
+      }
+
+      .button-text {
+        position: relative;
+        white-space: nowrap;
+        z-index: 2;
+        transition: none; // Text should NOT move
+        flex: none;
+        order: 0;
+        flex-grow: 0;
+        margin-left: 0; // Remove margin since we're using padding on the button
+
+        @include mobile {
+          position: relative;
+          transform: none;
+          margin-left: 0;
+        }
+      }
+
+      .button-arrow {
+        opacity: 0;
+        width: 0;
+        margin-left: 0; // Add spacing between text and arrow
+        margin-top: 8px;
+        transition: opacity 0.2s, width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s;
+        overflow: hidden;
+        z-index: 1;
+        position: relative; // Use relative positioning for proper flexbox flow
+        color: #000;
+
+        @include mobile {
+          position: relative;
+          transform: none;
+          margin-left: 0;
+          width: 0; // Ensure arrow takes no space on mobile before hover
+          opacity: 0; // Ensure arrow is completely hidden on mobile before hover
+        }
+      }
+
+      &:hover,
+      &:focus {
+        width: fit-content; // Increased to accommodate: 24px left padding + text + 24px arrow + 24px right padding
+        background: #ff4400;
+        color: #000 !important;
+        box-shadow: 0 0 19.3px 0 rgba(255, 68, 0, 0.5);
+        padding-right: 8px; // Add right padding to balance the left padding
+
+        @include mobile {
+          width: 100%;
+          padding-right: 0;
+          overflow: hidden; // Hide overflow on mobile for proper centering
+        }
+
+        .button-arrow {
+          opacity: 1;
+          width: 24px;
+          margin-left: 0; // Add spacing between text and arrow
+          color: #000;
+        }
+
+        .button-text {
+          color: #000 !important;
+          // NO position change - text stays exactly where it is
+        }
+      }
+    }
+
+    &--secondary {
+      width: fit-content;
+      background: transparent;
+      color: #fff;
+      transition: color 0.3s, border 0.3s, text-decoration 0.3s;
+      text-decoration: none;
+
+      @include mobile {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .button-text {
+        position: relative;
+        transition: color 0.3s, text-decoration 0.3s;
+      }
+
+      .button-arrow {
+        margin-left: 0;
+        margin-top: 8px;
+        color: currentColor;
+      }
+
+      &:hover,
+      &:focus {
+        text-decoration: underline;
+        border: none;
+
+        .button-arrow {
+          color: #ff4400;
+        }
+      }
+    }
+  }
+
+  // Mobile specific adjustments
+  @include mobile {
+    &__header {
+      padding: 0;
+      margin-bottom: 24px;
+
+      .badge-row {
+        margin: 0 auto;
+      }
+    }
+
+    &__tabs {
+      margin-bottom: 32px;
+    }
+
+    &__symbols-grid {
+      margin-bottom: 32px;
+    }
+
+    &__symbol-card {
+      width: 100%;
+      max-width: 297px;
+      height: auto;
+      min-height: 238.36px;
+      padding: 24px;
+      gap: 32px;
+
+      &::before {
+        width: 100%;
+        height: 100%;
+        left: 0;
+        background-size: cover;
+      }
+    }
+
+    &__symbol-header {
+      width: 100%;
+      height: auto;
+    }
+
+    &__symbol-content {
+      width: 100%;
+      height: auto;
+    }
+
+    &__symbol-bottom {
+      width: 100%;
+      height: auto;
+    }
+
+    &__symbol-percentage {
+      font-size: 72px;
+      width: auto;
+      height: auto;
+    }
+
+    &__symbol-name {
+      width: auto;
+      height: auto;
+    }
+
+    &__symbol-recommendation {
+      width: auto;
+      height: auto;
+    }
+  }
+}

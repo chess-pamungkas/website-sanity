@@ -3,8 +3,8 @@ import cn from "classnames";
 import PropTypes from "prop-types";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
-import upArrow from "../../../../assets/images/trading-ticker/up-arrow.svg";
-import downArrow from "../../../../assets/images/trading-ticker/down-arrow.svg";
+import arrowUp from "../../../../assets/images/trading-ticker/arrow-up.svg";
+import arrowDown from "../../../../assets/images/trading-ticker/arrow-down.svg";
 import ButtonPopup from "../../../shared/button-popup";
 import { ShowRegistrationPopup } from "../../../../helpers/constants";
 import { setLangParam } from "../../../../helpers/services/language-service";
@@ -33,7 +33,7 @@ const TradingSymbol = ({ className, symbol, direction, bid, ask, spread }) => {
         <div className="trading-symbol__title-wrapper">
           <p className="trading-symbol__title">{symbol}</p>
           <img
-            src={direction === "up" ? upArrow : downArrow}
+            src={direction === "up" ? arrowUp : arrowDown}
             className="trading-symbol__arrow"
           />
         </div>

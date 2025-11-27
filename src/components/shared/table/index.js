@@ -1,20 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
 import "regenerator-runtime";
-import {
-  useFilters,
-  useGlobalFilter,
-  usePagination,
-  useSortBy,
-  useTable,
-} from "react-table";
 import TableSearch from "./components/search";
 import TablePagination from "./components/pagination";
 import { TABLE_PAGE_SIZES } from "../../../helpers/constants";
 import TableShowByDropdown from "./components/dropdown";
 import { TableTip, TableTitle } from "./components/title";
 import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
+
+// Lazy load react-table to reduce initial JavaScript bundle size
+let reactTableHooks = null;
+const loadReactTable = async () => {
+  if (!reactTableHooks) {
+    const reactTable = await import("react-table");
+    reactTableHooks = {
+      useFilters: reactTable.useFilters,
+      useGlobalFilter: reactTable.useGlobalFilter,
+      usePagination: reactTable.usePagination,
+      useSortBy: reactTable.useSortBy,
+      useTable: reactTable.useTable,
+    };
+  }
+  return reactTableHooks;
+};
 
 const TableComponent = ({
   className,
@@ -31,6 +40,34 @@ const TableComponent = ({
   tip,
 }) => {
   const isRTL = useRtlDirection();
+  const [tableHooks, setTableHooks] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load react-table on component mount
+  useEffect(() => {
+    loadReactTable().then((hooks) => {
+      setTableHooks(hooks);
+      setIsLoading(false);
+    });
+  }, []);
+
+  // Show loading state while react-table is loading
+  if (isLoading || !tableHooks) {
+    return (
+      <div className={cn("table-wrapper", className)}>
+        <div
+          style={{
+            minHeight: "200px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div>Loading table...</div>
+        </div>
+      </div>
+    );
+  }
 
   const {
     getTableProps,
@@ -47,7 +84,7 @@ const TableComponent = ({
     rows,
     setPageSize,
     state,
-  } = useTable(
+  } = tableHooks.useTable(
     {
       columns,
       data,
@@ -66,10 +103,10 @@ const TableComponent = ({
           : {}),
       },
     },
-    useFilters,
-    useGlobalFilter,
-    useSortBy,
-    usePagination
+    tableHooks.useFilters,
+    tableHooks.useGlobalFilter,
+    tableHooks.useSortBy,
+    tableHooks.usePagination
   );
 
   const isGroupedHeader = () => Object.keys(headerGroups).length > 1;

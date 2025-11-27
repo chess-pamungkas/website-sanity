@@ -1,23 +1,6 @@
-const EXCLUDE_INDICES = ["USIDX", "NETH25"];
-const EXCLUDE_FOREX = [
-  "AUDNZD",
-  "AUDCAD",
-  "AUDCHF",
-  "AUDCNH",
-  "AUDSGD",
-  "AUDZAR",
-  "CADCHF",
-  "CADJPY",
-  "CHFJPY",
-  "EURAUD",
-  "EURCAD",
-  "EURCHF",
-  "EURNZD",
-  "GBPAUD",
-  "GBPCHF",
-  "USDSGD",
-];
-const EXCLUDE_CRYPTO = ["MATUSD"];
+const EXCLUDE_INDICES = ["NETH25"];
+const EXCLUDE_FOREX = [];
+const EXCLUDE_CRYPTO = [];
 const EXCLUDE_DEFAULT = [];
 
 export const filterSymbols = (symbols, section) => {

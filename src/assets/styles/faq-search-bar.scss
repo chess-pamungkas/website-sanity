@@ -1,0 +1,89 @@
+@import "vars";
+@import "mixins";
+
+.faq-search-bar {
+  width: 100%;
+  max-width: 644px;
+  margin: 0 auto;
+
+  &__input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 644px;
+    height: 54px;
+    background: #ffffff;
+    border: 2px solid #ff9900; // Increased border width for better visibility
+    // border-image: linear-gradient(135deg, #ff4400 0%, #ff9900 100%) 1;
+    border-radius: 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(255, 153, 0, 0.15); // Added subtle shadow
+
+    @include mobile {
+      width: 100%;
+      max-width: 353px;
+      height: 54px;
+    }
+
+    &:focus-within {
+      border-color: #ff4400; // Darker orange when input is focused
+      box-shadow: 0 4px 16px rgba(255, 68, 0, 0.25); // Enhanced shadow when focused
+    }
+  }
+
+  &__icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    margin-left: 22px;
+    margin-right: 28px;
+    flex-shrink: 0;
+    z-index: 1; // Ensure icon is above input
+  }
+
+  &__icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+  }
+
+  &__input {
+    flex: 1;
+    height: 100%;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    font-size: 18px !important;
+    font-weight: 600 !important; // Increased from regular to make text more visible
+    line-height: 28px !important;
+    color: #333333 !important; // Changed from #a7a7a7 to darker color for better visibility
+    padding: 0 !important;
+    margin: 0 !important;
+    opacity: 1 !important; // Increased from 0.7 to make text fully visible
+    font-family: "Sofia Pro", sans-serif !important; // Ensure consistent font family
+    text-rendering: optimizeLegibility !important; // Better text rendering
+    -webkit-font-smoothing: antialiased !important; // Smooth text on webkit browsers
+    -moz-osx-font-smoothing: grayscale !important; // Smooth text on Firefox
+
+    &::placeholder {
+      color: #666666 !important; // Darker placeholder color
+      opacity: 1 !important;
+      font-weight: 500 !important; // Medium weight for placeholder
+    }
+
+    &:focus {
+      color: #000000 !important; // Black color when focused for maximum visibility
+      font-weight: 700 !important; // Bold weight when focused
+      // outline: 2px solid #ff9900 !important; // Orange outline when focused
+      outline-offset: 2px !important;
+    }
+
+    @include mobile {
+      font-size: 16px !important;
+      line-height: 24px !important;
+    }
+  }
+}

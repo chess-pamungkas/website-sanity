@@ -23,7 +23,7 @@ const Seo = ({ title, description, fsaTitle, fsaDescription, fsaRobots }) => {
       <meta name="description" content={description || fsaDescription} />
       <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+        content="width=device-width, initial-scale=1.0, maximum-scale=5.0"
       />
       <meta name="robots" content={noIndex ? "noindex" : fsaRobots} />
       {microsoftAds && <meta name="msvalidate.01" content={microsoftAds} />}

@@ -1,0 +1,1269 @@
+@import "vars";
+@import "mixins";
+
+// Header Section
+.spreads-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 32px;
+
+  @include mobile {
+    margin-bottom: 20px;
+  }
+}
+
+.spreads-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 68, 0, 0.1);
+  border-radius: 13px;
+  padding: 6px 16px;
+  margin-bottom: 20px;
+
+  &__icon {
+    font-size: 16px;
+  }
+
+  &__text {
+    font-weight: map-get($font-weight, "medium");
+    font-size: 14px;
+    line-height: 20px;
+    color: map-get($colors, "black");
+  }
+
+  @include mobile {
+    margin-bottom: 17px;
+  }
+}
+
+.spreads-title {
+  width: 100%;
+  font-weight: map-get($font-weight, "semibold");
+  font-size: 52px;
+  text-align: center;
+  letter-spacing: -0.02em;
+  background: linear-gradient(
+      102.31deg,
+      rgba(0, 0, 0, 0) 9.12%,
+      rgba(255, 68, 0, 0.45) 71.6%
+    ),
+    #000000;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 0 auto 16px auto;
+
+  // Remove accent color since gradient handles all text
+  &__accent {
+    // Inherit the same gradient from parent
+    background: inherit;
+    -webkit-background-clip: inherit;
+    -webkit-text-fill-color: inherit;
+    background-clip: inherit;
+  }
+
+  @include mobile {
+    font-size: 40px;
+    margin-bottom: 15px;
+  }
+
+  @include tablet {
+    font-size: 52px;
+  }
+}
+
+.spreads-subtitle {
+  width: 100%;
+  font-weight: map-get($font-weight, "light");
+  font-size: 18px;
+  line-height: 28px;
+  text-align: center;
+  color: #000000;
+  opacity: 0.7;
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 0 auto;
+}
+
+// Desktop Styles
+.forex-spreads-desktop {
+  width: 100%;
+  margin: 0 auto;
+
+  @include desktop-lg {
+    max-width: 100%;
+  }
+
+  @include desktop-xl {
+    max-width: 1400px;
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 36px;
+    margin-bottom: 32px;
+    margin-left: auto;
+    margin-right: auto;
+
+    @include desktop-lg {
+      max-width: 100%;
+    }
+
+    @include desktop-xl {
+      max-width: 1032px;
+    }
+
+    // Tabs Container
+    .tabs-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .tabs {
+      display: flex;
+      border-radius: 5.19px;
+      padding: 0;
+      gap: 20.76px;
+      height: 30.17px;
+
+      .tab {
+        background: transparent;
+        border: none;
+        border-radius: 5.19px;
+        padding: 9.08px 11.68px;
+        font-family: "Sofia Pro";
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 12px;
+        color: #525252;
+        cursor: pointer;
+        transition: all 0.2s;
+        height: 30.17px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &--active {
+          background: #ff4400;
+          color: #ffffff;
+        }
+
+        &:hover:not(&--active) {
+          background: rgba(0, 0, 0, 0.05);
+        }
+      }
+    }
+
+    // Explanatory Text
+    .explanation-text {
+      font-family: "Sofia Pro";
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 11px;
+      color: #525252;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .search-frame {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 355px;
+      height: 36px;
+      background: transparent;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 50px;
+      padding: 0 12px;
+      gap: 10px;
+      box-sizing: border-box;
+      position: relative;
+
+      &:focus-within {
+        border-color: rgba(255, 68, 0, 0.4);
+        box-shadow: 0 0 0 2px rgba(255, 68, 0, 0.1);
+      }
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-weight: map-get($font-weight, "medium");
+      font-size: 14px;
+      line-height: 22px;
+      color: #9c9c9c;
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      min-height: 0; // Prevent flex item from expanding
+
+      &::placeholder {
+        color: #9c9c9c;
+        font-size: 14px;
+      }
+
+      &:focus {
+        color: #000000;
+      }
+    }
+
+    .search-icon {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+      opacity: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0; // Reset all margins
+      align-self: center; // Ensure vertical centering
+      position: relative; // For precise positioning
+      top: 0; // Reset any top positioning
+      line-height: 1; // Reset line height for icon
+
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block; // Remove any inline spacing
+        line-height: 1; // Reset line height
+      }
+
+      path {
+        stroke: #a2a2a2;
+        stroke-width: 1.5;
+      }
+    }
+  }
+
+  .spreads-table-container {
+    width: 100%;
+    height: auto;
+    margin: 0 auto 24px auto;
+    overflow: hidden;
+    // border-radius: 12px;
+    background: transparent;
+    border: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .spreads-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    // border-radius: 12px;
+    overflow: hidden;
+
+    // Ensure proper table structure
+    display: table;
+    border: none;
+
+    @include desktop-lg {
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    @include desktop-xl {
+      width: 1032px;
+      margin: 0 auto;
+    }
+
+    // Table Header Section (Frame 1000001821)
+    .table-header-section {
+      width: 100%;
+      height: auto;
+      display: table-row-group;
+    }
+
+    // Main Header Row (Frame 10311)
+    .table-main-header {
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+      background: url("../../assets/images/bg/funding-withdrawals/table-head.svg")
+        no-repeat center;
+      background-size: cover;
+      // border-radius: 12px;
+      border: none;
+      overflow: hidden;
+      display: table-row;
+
+      th {
+        padding: 16px;
+        text-align: left;
+        font-weight: map-get($font-weight, "bold");
+        font-size: 16px;
+        line-height: 22px;
+        color: #fff;
+        border: none;
+        vertical-align: middle;
+        height: 59px;
+        box-sizing: border-box;
+
+        &:first-child {
+          width: 25%;
+          padding-left: 16px;
+          border-top-left-radius: 12px;
+          border-bottom-left-radius: 12px;
+        }
+
+        &:last-child {
+          border-top-right-radius: 12px;
+          border-bottom-right-radius: 12px;
+        }
+
+        &.table-header__ecn {
+          width: 37.5%;
+          text-align: center;
+        }
+
+        &.table-header__oqtima {
+          width: 37.5%;
+          text-align: center;
+        }
+      }
+    }
+
+    // Sub Header Row (Frame 10318)
+    .table-sub-header {
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+      background: rgba(255, 68, 0, 0.1);
+      // border-radius: 12px;
+      border: none;
+      overflow: hidden;
+      display: table-row;
+
+      th {
+        padding: 16px;
+        text-align: center;
+        font-weight: map-get($font-weight, "bold");
+        font-size: 16px;
+        line-height: 22px;
+        color: #000;
+        vertical-align: middle;
+        border: none;
+        height: 59px;
+        box-sizing: border-box;
+
+        &:first-child {
+          text-align: left;
+          padding-left: 16px;
+          width: 25%;
+          border-top-left-radius: 12px;
+          border-bottom-left-radius: 12px;
+        }
+
+        &:nth-child(2) {
+          width: 18.75%;
+          text-align: center;
+        }
+
+        &:nth-child(3) {
+          width: 18.75%;
+          text-align: center;
+        }
+
+        &:nth-child(4) {
+          width: 18.75%;
+          text-align: center;
+        }
+
+        &:nth-child(5) {
+          width: 18.75%;
+          text-align: center;
+        }
+
+        &:last-child {
+          border-top-right-radius: 12px;
+          border-bottom-right-radius: 12px;
+        }
+      }
+    }
+
+    // Table Body Section (Frame 1000001822)
+    .table-body-section {
+      width: 100%;
+      height: auto;
+      display: table-row-group;
+    }
+  }
+
+  // Scrollable Body Container
+  .table-body-scroll-container {
+    width: 100%;
+    max-height: 354px; // 6 rows * 59px = 354px
+    overflow-y: auto;
+    overflow-x: hidden;
+    // border-radius: 0 0 12px 12px;
+    background: transparent;
+
+    // Hide scrollbar but keep functionality
+    scrollbar-width: none; // Firefox
+    -ms-overflow-style: none; // IE and Edge
+
+    &::-webkit-scrollbar {
+      display: none; // Chrome, Safari, Opera
+    }
+  }
+
+  // Table Body (separate from header)
+  .spreads-table-body {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    border: none;
+    margin: 0;
+
+    @include desktop-lg {
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    @include desktop-xl {
+      width: 1032px;
+      margin: 0 auto;
+    }
+
+    // Table Body Section
+    .table-body-section {
+      width: 100%;
+      height: auto;
+      display: table-row-group;
+    }
+
+    // Data Rows
+    .table-row {
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+      border-collapse: separate;
+      display: table-row;
+
+      .table-cell {
+        padding: 16px;
+        text-align: center;
+        font-weight: map-get($font-weight, "regular");
+        font-size: 16px;
+        line-height: 22px;
+        color: #000;
+        vertical-align: middle;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+        height: 59px;
+        min-height: 59px;
+        max-height: 59px;
+        box-sizing: border-box;
+
+        &:first-child {
+          text-align: left;
+          padding-left: 16px;
+          width: 25%;
+          font-weight: map-get($font-weight, "bold");
+        }
+
+        &.table-cell__min {
+          width: 18.75%;
+          text-align: center;
+          font-weight: map-get($font-weight, "bold");
+        }
+
+        &.table-cell__avg {
+          width: 18.75%;
+          text-align: center;
+          font-weight: map-get($font-weight, "regular");
+        }
+      }
+    }
+  }
+
+  // Clean and consistent table styling for header only
+  .spreads-table {
+    // Ensure consistent row heights for header sections only
+    .table-main-header,
+    .table-sub-header {
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+    }
+
+    // Consistent cell padding and alignment for header
+    th {
+      padding: 16px;
+      height: 59px;
+      min-height: 59px;
+      max-height: 59px;
+      box-sizing: border-box;
+      vertical-align: middle;
+      line-height: 22px;
+    }
+
+    // Additional styling for better consistency
+    .table-header-section {
+      height: auto;
+      min-height: auto;
+    }
+  }
+
+  .spreads-disclaimer {
+    text-align: center;
+    font-family: "Sofia Pro";
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: #6b7280;
+    margin-bottom: 32px;
+  }
+
+  .spreads-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .btn-primary {
+      background: #ff4400;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 24px;
+      font-family: "Sofia Pro";
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background: #e63900;
+      }
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 14px 24px;
+      font-family: "Sofia Pro";
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      color: #374151;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+
+      &:hover {
+        border-color: #ff4400;
+        color: #ff4400;
+      }
+    }
+  }
+}
+
+// Mobile Styles
+.forex-spreads-mobile {
+  width: 100%;
+  padding: 0;
+
+  .tabs-search-container-mobile {
+    display: flex;
+    align-items: center;
+    gap: 8px; // Small gap for mobile
+    margin-bottom: 20px;
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: space-between; // Distribute space evenly
+
+    @include mobile {
+      gap: 6px; // Smaller gap on very small screens
+    }
+  }
+
+  .tabs {
+    display: flex;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    gap: 8px; // Much smaller gap for mobile
+    flex-shrink: 0;
+    width: 50%; // Fixed 50% width
+    justify-content: flex-start; // Align tabs to start
+
+    .tab {
+      padding: 6px 10px; // Standard padding for mobile
+      border: none;
+      background: transparent;
+      border-radius: 0;
+      font-family: "Sofia Pro";
+      font-weight: 500;
+      font-size: 12px; // Standard font size for mobile
+      line-height: 1.2; // Better line height
+      color: #525252; // From Figma inactive color
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      white-space: nowrap; // Prevent text wrapping
+      flex: 1; // Equal width for both tabs
+
+      &:hover {
+        background: transparent;
+        color: #ff4400;
+      }
+
+      &.tab--active {
+        background: #ff4400;
+        color: #ffffff;
+        border-radius: 4px; // Standard border radius for mobile
+        padding: 6px 10px; // Consistent padding
+        box-shadow: none;
+      }
+    }
+  }
+
+  .search-container-mobile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 50%; // Fixed 50% width
+    height: 32px; // Standard height for mobile
+    border: 1px solid rgba(0, 0, 0, 0.2); // From Figma stroke opacity
+    border-radius: 16px; // Standard border radius for mobile
+    padding: 0 8px; // Standard padding for mobile
+    gap: 6px; // Standard gap for mobile
+    flex-shrink: 0; // Don't shrink
+    background: #ffffff; // Ensure background is visible
+    justify-content: flex-start; // Align content to start
+
+    @include mobile {
+      height: 30px; // Slightly smaller on very small screens
+      padding: 0 6px;
+
+      .search-input-mobile {
+        padding: 0 18px 0 0; // Adjust right padding for smaller screens
+      }
+
+      .search-icon-mobile {
+        right: 6px; // Adjust icon position for smaller padding
+      }
+    }
+
+    .search-input-mobile {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: "Sofia Pro";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 12px; // Standard font size for mobile
+      line-height: 1.2; // Better line height
+      color: rgba(0, 0, 0, 0.6125); // From Figma text color
+      padding: 0 20px 0 0; // Add right padding for icon space
+
+      &::placeholder {
+        color: rgba(0, 0, 0, 0.6125); // From Figma placeholder color
+        font-family: "Sofia Pro";
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px; // Standard font size for mobile
+        line-height: 1.2; // Better line height
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .search-icon-mobile {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px; // Standard icon size for mobile
+      height: 12px; // Standard icon size for mobile
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        opacity: 1;
+        filter: none;
+      }
+    }
+  }
+
+  // Debug: Ensure search container is visible
+  .search-container-mobile {
+    position: relative;
+    z-index: 1;
+
+    // Add a subtle shadow to make it more visible
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .spreads-disclaimer-mobile {
+    text-align: center;
+    font-family: "Sofia Pro";
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #6b7280;
+    margin-bottom: 20px;
+  }
+
+  .spreads-cards-scroll-container {
+    width: 100%;
+    max-height: 600px; // Approximate height for 6 cards
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-bottom: 32px;
+
+    // Hide scrollbar but keep functionality
+    scrollbar-width: none; // Firefox
+    -ms-overflow-style: none; // IE and Edge
+
+    &::-webkit-scrollbar {
+      display: none; // Chrome, Safari, Opera
+    }
+  }
+
+  .spreads-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .spread-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px 28px;
+    min-height: 256px;
+    position: relative;
+    overflow: hidden;
+
+    &__header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 16px;
+      width: 100%;
+
+      @include mobile {
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      @include tablet {
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+    }
+
+    &__icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-bottom: 0;
+
+      // Support for emoji icons (fallback)
+      font-size: 24px;
+      line-height: 1;
+
+      // Support for SVG icons
+      img,
+      svg {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      // Combined icons styling (overlapping flags)
+      &--combined {
+        width: 48px; // Wider to accommodate two icons
+        gap: 2px; // Small gap between icons
+
+        img,
+        svg {
+          width: 22px; // Slightly smaller to fit two icons
+          height: 22px;
+        }
+      }
+
+      // Ensure proper icon positioning
+      &::before {
+        content: "";
+        display: block;
+        width: 24px;
+        height: 24px;
+        background: transparent;
+      }
+    }
+
+    &__symbol {
+      font-weight: map-get($font-weight, "bold");
+      font-size: 32px;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(
+          102.31deg,
+          rgba(0, 0, 0, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #000000;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      width: 100%;
+
+      // Fallback for browsers that don't support gradient text
+      @supports not (-webkit-background-clip: text) {
+        color: #000000;
+        background: none;
+      }
+    }
+
+    &__description {
+      font-weight: map-get($font-weight, "light");
+      font-size: 14px;
+      line-height: 20px;
+      color: #6b7280;
+      margin: 0;
+      padding: 0;
+    }
+
+    &__accounts {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    &__account {
+      flex: 1;
+    }
+
+    &__account-title {
+      font-weight: map-get($font-weight, "light");
+      font-size: 16px;
+      line-height: 22px;
+      color: map-get($colors, "black");
+      margin: 0 0 8px 0;
+    }
+
+    &__values {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__label {
+      font-family: "Sofia Pro";
+      font-weight: map-get($font-weight, "bold");
+      font-size: 16px;
+      line-height: 22px;
+      color: map-get($colors, "black");
+    }
+
+    &__divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 8px 0;
+    }
+  }
+
+  .spreads-cta-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .btn-primary-mobile {
+      background: #ff4400;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 24px;
+      font-family: "Sofia Pro";
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background: #e63900;
+      }
+    }
+
+    .btn-secondary-mobile {
+      background: transparent;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 14px 24px;
+      font-family: "Sofia Pro";
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      color: #374151;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+
+      &:hover {
+        border-color: #ff4400;
+        color: #ff4400;
+      }
+    }
+  }
+}
+
+// TopMarketLayout specific styling for forex spreads
+.top-market-layout--forex-spreads {
+  background: transparent;
+  padding-top: 60px;
+  padding-bottom: 60px;
+
+  @include mobile {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .top-market-layout__wrapper {
+    width: 100%;
+    padding: 0;
+
+    @include mobile {
+      padding: 0;
+    }
+  }
+
+  .top-market-layout__content {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+  }
+}
+
+// Main FAQ Section - Ensure proper grid layout
+.faq-section.faq-section--forex {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  width: 100%;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @include tablet {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @include desktop-lg {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    display: grid;
+  }
+
+  @include desktop-xl {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    display: grid;
+  }
+
+  @include desktop-2k {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    display: grid;
+  }
+
+  @include desktop-5k {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    display: grid;
+  }
+}
+
+// Left Side - FAQ Content - Ensure proper grid behavior
+.faq-section.faq-section--forex .faq-left {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @include mobile {
+    gap: 20px;
+  }
+}
+
+// Right Side - FAQ Items - Based on Figma Design
+.faq-section.faq-section--forex .faq-right {
+  width: 100%; // Full width on desktop
+  height: auto !important; // Allow height to expand with content
+  display: flex;
+  flex-direction: column;
+  gap: 16px; // Based on Figma itemSpacing
+  min-width: 0; // Allow shrinking
+
+  @include mobile {
+    width: 100%;
+    max-width: 353px; // Based on Figma mobile width
+    height: auto !important;
+    gap: 16px;
+  }
+
+  @include tablet {
+    width: 100%;
+    max-width: 768px; // Based on Figma tablet width
+    height: auto !important; // Allow height to expand with content
+    gap: 16px;
+  }
+
+  @include desktop-lg {
+    width: 100%; // Full width on desktop
+    height: auto !important; // Allow height to expand with content
+    gap: 16px;
+  }
+
+  @include desktop-xl {
+    width: 100%; // Full width on desktop
+    height: auto !important; // Allow height to expand with content
+    gap: 16px;
+  }
+
+  @include desktop-2k {
+    width: 100%; // Full width on desktop
+    height: auto !important; // Allow height to expand with content
+    gap: 16px;
+  }
+
+  @include desktop-5k {
+    width: 100%; // Full width on desktop
+    height: auto !important; // Allow height to expand with content
+    gap: 16px;
+  }
+
+  // FAQ Item Styling - Based on Figma Design
+  .faq__item {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    transition: none;
+
+    // Height and spacing handled by help-center structure
+  }
+
+  // Border styling for FAQ items (except first child)
+  .faq__item:not(:first-child) {
+    border-top: 1px solid #e4e7ec;
+    padding-top: 26px;
+  }
+
+  // FAQ Item Content Layout - Adopt help-center structure
+  .faq__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 16px 0 16px 0;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    font-size: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    color: inherit;
+
+    @include mobile {
+      max-width: 100%;
+      padding: 0;
+      align-items: center;
+    }
+
+    @include tablet {
+      padding: 16px 0 16px 0;
+      align-items: center;
+    }
+
+    @include desktop-lg {
+      padding: 16px 0 16px 0;
+    }
+
+    @include desktop-xl {
+      font-size: inherit;
+      line-height: inherit;
+    }
+  }
+
+  // FAQ Question Text Area - Adopt help-center structure
+  .faq__title-text {
+    width: 720px;
+    height: 28px;
+    font-family: "Sofia Pro", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 28px;
+    color: #101828;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    -webkit-text-fill-color: #101828;
+
+    @include mobile {
+      width: calc(100% - 40px);
+      height: auto;
+      font-size: 16px;
+      line-height: 24px;
+      flex: 1;
+      flex-grow: 1;
+      margin-right: 8px;
+    }
+
+    @include tablet {
+      width: calc(100% - 40px);
+      height: auto;
+      font-size: 18px;
+      line-height: 28px;
+      flex: 1;
+      flex-grow: 1;
+      margin-right: 8px;
+    }
+  }
+
+  // FAQ Expand Button - Adopt help-center structure
+  .faq__expand-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease;
+
+    @include mobile {
+      align-self: center;
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+
+    @include tablet {
+      align-self: center;
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    // Icon styling handled by base FAQ component
+  }
+
+  .faq__expand-btn-icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  // FAQ Expandable Content - Adopt help-center structure
+  .faq__expandable {
+    width: 100%;
+    padding: 8px 0 0 0;
+    color: #8c8c8c;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: map-get($font-weight, "regular");
+
+    @include mobile {
+      font-size: 14px;
+      line-height: 20px;
+      padding: 8px 0 0 0;
+    }
+
+    @include tablet {
+      font-size: 16px;
+      line-height: 24px;
+      padding: 8px 0 0 0;
+    }
+  }
+
+  // FAQ Text Styling - Adopt help-center structure
+  .faq__text {
+    display: block;
+    margin-bottom: 15px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &--bold {
+      color: #9b9b9b;
+      font-weight: map-get($font-weight, "black");
+    }
+  }
+
+  // Animation handled by base FAQ component
+}

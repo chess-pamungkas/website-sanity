@@ -1,16 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import cn from "classnames";
 import { useTranslationWithVariables } from "../../helpers/hooks/use-translation-with-vars";
-import Accordion from "../shared/accordion";
-import { AccordionActiveIcon, AccordionIcon } from "../shared/icons";
-import ButtonLink from "../shared/button-link";
 import { DIR_LTR, DIR_RTL, FAQ_PAGE_LINK } from "../../helpers/constants";
 import { useRtlDirection } from "../../helpers/hooks/use-rtl-direction";
+import ButtonLink from "../shared/button-link";
+import minusCircleIcon from "../../assets/images/icons/faq/minus-circle.svg";
+import plusCircleIcon from "../../assets/images/icons/faq/plus-circle.svg";
 
 const Faq = ({ className, title, faq, isFaqBtnHidden, subTitleTemplate }) => {
   const { t } = useTranslationWithVariables();
   const isRTL = useRtlDirection();
+  const [expandedItems, setExpandedItems] = useState(new Set());
+
+  const toggleItem = (index) => {
+    const newExpandedItems = new Set(expandedItems);
+    if (newExpandedItems.has(index)) {
+      newExpandedItems.delete(index);
+    } else {
+      newExpandedItems.add(index);
+    }
+    setExpandedItems(newExpandedItems);
+  };
 
   return (
     <section
@@ -20,30 +31,53 @@ const Faq = ({ className, title, faq, isFaqBtnHidden, subTitleTemplate }) => {
       dir={isRTL ? DIR_RTL : DIR_LTR}
     >
       <div className="faq__wrapper">
-        <div className="faq__delimiter" />
-        <h2 className="faq__title">{title || t("faq-title")}</h2>
         {subTitleTemplate && subTitleTemplate}
-        <div className="faq__accordion-wrapper">
+        <div className="faq__content">
           {faq.length > 0 &&
             faq.map((item, i) => (
-              <Accordion
-                key={`faq-accordion-${i}`}
-                className="faq__accordion"
-                icon={AccordionIcon}
-                iconForActive={AccordionActiveIcon}
-                title={item.question}
+              <div
+                key={`faq-item-${i}`}
+                className={cn("faq__item", {
+                  "faq__item--expanded": expandedItems.has(i),
+                })}
               >
-                {item.answer.map((content, i) => (
-                  <span
-                    key={`faq-answer-${i}`}
-                    className={cn("faq__text", {
-                      "faq__text--bold": item.bold?.includes(i),
-                    })}
+                <div className="faq__title">
+                  <span className="faq__title-text">{t(item.question)}</span>
+                  <button
+                    className="faq__expand-btn"
+                    onClick={() => toggleItem(i)}
+                    aria-label={expandedItems.has(i) ? "Collapse" : "Expand"}
                   >
-                    {t(content)}
-                  </span>
-                ))}
-              </Accordion>
+                    {expandedItems.has(i) ? (
+                      <img
+                        src={minusCircleIcon}
+                        alt="Collapse"
+                        className="faq__expand-btn-icon"
+                      />
+                    ) : (
+                      <img
+                        src={plusCircleIcon}
+                        alt="Expand"
+                        className="faq__expand-btn-icon"
+                      />
+                    )}
+                  </button>
+                </div>
+                {expandedItems.has(i) && (
+                  <div className="faq__expandable">
+                    {item.answer.map((content, j) => (
+                      <span
+                        key={`faq-answer-${j}`}
+                        className={cn("faq__text", {
+                          "faq__text--bold": item.bold?.includes(j),
+                        })}
+                      >
+                        {t(content)}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
         </div>
         {!isFaqBtnHidden && (

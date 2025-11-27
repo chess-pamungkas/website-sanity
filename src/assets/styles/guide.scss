@@ -1,0 +1,930 @@
+@import "vars";
+@import "mixins";
+
+.guide-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  &__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    gap: 62px;
+  }
+
+  // Left Section
+  &__left {
+    width: 554px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  // Badge
+  &__badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    height: 26px;
+    padding: 6px 10px;
+    background: linear-gradient(
+        0deg,
+        rgba(255, 68, 0, 0.15),
+        rgba(255, 68, 0, 0.15)
+      ),
+      #fff;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    font-weight: map-get($font-weight, "medium");
+    font-size: 14px;
+    line-height: 20px;
+    color: map-get($colors, "black");
+
+    &-icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    &-text {
+      font-weight: map-get($font-weight, "medium");
+      font-size: 14px;
+      line-height: 20px;
+      color: map-get($colors, "black");
+    }
+  }
+
+  // Title
+  &__title {
+    width: 554px;
+    height: auto;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 52px;
+    // line-height: 60px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    padding: 0;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+
+    &-highlight {
+      background: linear-gradient(
+          102.31deg,
+          rgba(0, 0, 0, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #000000;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  // Subtitle
+  &__subtitle {
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 28px;
+    color: map-get($colors, "light");
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  // Right Section
+  &__right {
+    width: 624px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  // Step Cards
+  &__step-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &__step-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  &__step-circle {
+    flex-shrink: 0;
+    width: 35.25px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ff4400;
+    border-radius: 50%;
+
+    &-icon {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__step-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__step-title {
+    font-weight: map-get($font-weight, "bold");
+    font-size: 24px;
+    line-height: 1;
+    color: map-get($colors, "black");
+    margin: 0;
+  }
+
+  &__step-description {
+    font-weight: map-get($font-weight, "light");
+    font-size: 16px;
+    line-height: 26px;
+    color: map-get($colors, "black");
+    opacity: 0.8;
+    margin: 0;
+  }
+
+  // Button Group - Using navbar-dropdown-highlight styles
+  .navbar-dropdown-highlight__button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    width: 429.33px;
+  }
+
+  // Mobile Styles (max-width: 767px)
+  @include mobile {
+    margin: 50px 0;
+    padding: 0;
+
+    &__container {
+      flex-direction: column;
+      gap: 32px;
+      padding: 0;
+    }
+
+    &__left {
+      width: 100%;
+      gap: 16px;
+    }
+
+    &__badge {
+      height: 24px;
+      padding: 4px 8px;
+      font-size: 14px;
+      line-height: 20px;
+
+      &-icon {
+        width: 14px;
+        height: 14px;
+      }
+
+      &-text {
+        font-size: 14px;
+        line-height: 20px;
+      }
+    }
+
+    &__title {
+      width: 100%;
+      height: auto;
+      font-size: 42px;
+      line-height: 1.2;
+      padding: 0;
+    }
+
+    &__subtitle {
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    &__right {
+      width: 100%;
+      gap: 12px;
+    }
+
+    &__step-card {
+      padding: 16px;
+      border-radius: 16px;
+    }
+
+    &__step-content {
+      gap: 12px;
+    }
+
+    &__step-circle {
+      width: 27px;
+      height: 27px;
+    }
+
+    &__step-title {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    &__step-description {
+      font-size: 16px;
+      line-height: 16px;
+    }
+
+    .navbar-dropdown-highlight__button-group {
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+      width: 100%;
+    }
+  }
+
+  // Tablet Styles (768px - 1023px)
+  @include tablet {
+    padding: 75px 0 20px;
+
+    &__container {
+      flex-direction: column;
+      gap: 32px;
+      padding: 0;
+    }
+
+    &__left {
+      width: 100%;
+      gap: 12px;
+    }
+
+    &__badge {
+      height: 24px;
+      padding: 4px 8px;
+      font-size: 12px;
+      line-height: 16px;
+
+      &-icon {
+        width: 12px;
+        height: 12px;
+      }
+
+      &-text {
+        font-size: 12px;
+        line-height: 16px;
+      }
+    }
+
+    &__title {
+      width: 100%;
+      height: auto;
+      font-size: 42px;
+      // line-height: 40px;
+      padding: 0;
+    }
+
+    &__subtitle {
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    &__right {
+      width: 100%;
+      gap: 12px;
+    }
+
+    &__step-card {
+      padding: 16px;
+      border-radius: 16px;
+    }
+
+    &__step-content {
+      gap: 12px;
+    }
+
+    &__step-circle {
+      width: 32px;
+      height: 32px;
+    }
+
+    &__step-title {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    &__step-description {
+      font-size: 16px;
+      line-height: 26px;
+    }
+
+    .navbar-dropdown-highlight__button-group {
+      flex-direction: row;
+      gap: 12px;
+      margin-top: 16px;
+    }
+  }
+
+  // Desktop Large Styles (1024px and up)
+  @include desktop-lg {
+    padding: 75px 0 0;
+    &__container {
+      flex-direction: row !important;
+      padding: 0;
+      gap: 20px;
+    }
+
+    &__left {
+      width: 48% !important;
+      flex-shrink: 0;
+    }
+
+    &__badge {
+      height: 26px;
+      padding: 6px 10px;
+      font-size: 14px;
+      line-height: 20px;
+
+      &-icon {
+        width: 14px;
+        height: 14px;
+      }
+
+      &-text {
+        font-size: 14px;
+        line-height: 20px;
+      }
+    }
+
+    &__right {
+      width: 48% !important;
+      flex-shrink: 0;
+    }
+
+    &__title {
+      width: 400px !important;
+      height: auto;
+      font-size: 42px;
+      // line-height: 50px;
+      padding: 0;
+    }
+
+    &__subtitle {
+      font-size: 18px;
+    }
+
+    &__step-card {
+      padding: 18px;
+    }
+
+    &__step-title {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    &__step-description {
+      font-size: 16px;
+      line-height: 26px;
+    }
+
+    .navbar-dropdown-highlight__button-group {
+      flex-direction: row !important;
+      width: 429.33px !important;
+    }
+  }
+
+  // Desktop XL Styles (1200px and up)
+  @include desktop-xl {
+    padding: 75px 0 50px;
+
+    &__container {
+      flex-direction: row !important;
+      padding: 0;
+      gap: 42px;
+    }
+
+    &__left {
+      flex-shrink: 0;
+    }
+
+    &__right {
+      flex-shrink: 0;
+    }
+
+    &__title {
+      width: 354px;
+      height: auto;
+      font-size: 52px;
+      // line-height: 60px;
+      padding: 0;
+    }
+
+    &__subtitle {
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    &__step-card {
+      padding: 20px;
+    }
+
+    &__step-title {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    &__step-description {
+      font-size: 16px;
+      line-height: 26px;
+    }
+
+    .navbar-dropdown-highlight__button-group {
+      flex-direction: row !important;
+      width: 429.33px !important;
+    }
+  }
+
+  @include desktop-2k {
+    padding: 75px 0 0;
+  }
+
+  // Partners Variant Styles
+  &--partners {
+    padding: 0;
+
+    .guide-content__container {
+      flex-direction: column !important;
+      align-items: flex-start;
+      text-align: left;
+      gap: 62px;
+    }
+
+    .guide-content__header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+      width: 554px;
+    }
+
+    .guide-content__badge {
+      align-self: flex-start;
+    }
+
+    .guide-content__title {
+      width: 100%;
+      height: auto;
+      text-align: left;
+    }
+
+    .guide-content__subtitle {
+      text-align: left;
+    }
+
+    .guide-content__steps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+      max-width: 100%;
+      align-self: flex-start;
+    }
+
+    .guide-content__step-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      height: 102px;
+    }
+
+    .guide-content__step-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      height: 100%;
+    }
+
+    .guide-content__step-circle {
+      flex-shrink: 0;
+      width: 35.25px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ff4400;
+      border-radius: 50%;
+      margin-top: 0;
+    }
+
+    .guide-content__step-number {
+      font-weight: map-get($font-weight, "bold");
+      font-size: 18px;
+      line-height: 21px;
+      color: #fff;
+    }
+
+    .guide-content__step-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .guide-content__step-title {
+      font-weight: map-get($font-weight, "bold");
+      font-size: 24px;
+      line-height: 1;
+      color: map-get($colors, "black");
+      margin: 0;
+    }
+
+    .guide-content__step-description {
+      font-weight: map-get($font-weight, "light");
+      font-size: 16px;
+      line-height: 26px;
+      color: map-get($colors, "black");
+      opacity: 0.8;
+      margin: 0;
+    }
+
+    .navbar-dropdown-highlight__button-group {
+      justify-content: flex-start;
+      align-self: flex-start;
+    }
+
+    // Mobile styles for partners
+    @include mobile {
+      padding: 0;
+      margin-bottom: 50px;
+
+      .guide-content__container {
+        flex-direction: column !important;
+        align-items: flex-start;
+        gap: 32px;
+        padding: 0;
+      }
+
+      .guide-content__header {
+        width: 100%;
+        gap: 16px;
+      }
+
+      .guide-content__title {
+        font-size: 42px;
+        line-height: 1.2;
+      }
+
+      .guide-content__subtitle {
+        font-size: 18px;
+        line-height: 28px;
+      }
+
+      .guide-content__steps-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        width: 100%;
+      }
+
+      .guide-content__step-card {
+        padding: 16px;
+        border-radius: 16px;
+        height: auto;
+        min-height: 90px;
+      }
+
+      .guide-content__step-content {
+        gap: 12px;
+      }
+
+      .guide-content__step-circle {
+        width: 32px;
+        height: 32px;
+      }
+
+      .guide-content__step-number {
+        font-size: 16px;
+        line-height: 19px;
+      }
+
+      .guide-content__step-title {
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      .guide-content__step-description {
+        font-size: 16px;
+        line-height: 26px;
+      }
+
+      .navbar-dropdown-highlight__button-group {
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 16px;
+        width: 100%;
+      }
+    }
+
+    // Tablet styles for partners
+    @include tablet {
+      padding: 0;
+
+      .guide-content__container {
+        flex-direction: column !important;
+        align-items: flex-start;
+        gap: 40px;
+        padding: 0 20px;
+      }
+
+      .guide-content__header {
+        width: 100%;
+        gap: 18px;
+      }
+
+      .guide-content__title {
+        font-size: 40px;
+        // line-height: 48px;
+      }
+
+      .guide-content__subtitle {
+        font-size: 18px;
+        line-height: 28px;
+      }
+
+      .guide-content__steps-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        width: 100%;
+        // max-width: 800px;
+      }
+
+      .guide-content__step-card {
+        padding: 18px;
+        border-radius: 18px;
+        height: 95px;
+      }
+
+      .guide-content__step-content {
+        gap: 14px;
+      }
+
+      .guide-content__step-circle {
+        width: 34px;
+        height: 34px;
+      }
+
+      .guide-content__step-number {
+        font-size: 17px;
+        line-height: 20px;
+      }
+
+      .guide-content__step-title {
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      .guide-content__step-description {
+        font-size: 16px;
+        line-height: 26px;
+      }
+
+      .navbar-dropdown-highlight__button-group {
+        flex-direction: row;
+        gap: 12px;
+        margin-top: 18px;
+      }
+    }
+
+    // Desktop Large styles for partners
+    @include desktop-lg {
+      padding: 0;
+
+      .guide-content__container {
+        flex-direction: column !important;
+        align-items: flex-start;
+        gap: 62px;
+        padding: 0;
+      }
+
+      .guide-content__header {
+        width: 554px;
+        gap: 20px;
+      }
+
+      .guide-content__title {
+        font-size: 48px;
+        // line-height: 60px;
+      }
+
+      .guide-content__subtitle {
+        font-size: 18px;
+        line-height: 28px;
+      }
+
+      .guide-content__steps-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        width: 100%;
+      }
+
+      .guide-content__step-card {
+        padding: 20px;
+        border-radius: 20px;
+        height: 120px;
+      }
+
+      .guide-content__step-content {
+        gap: 16px;
+      }
+
+      .guide-content__step-circle {
+        width: 35.25px;
+        height: 36px;
+      }
+
+      .guide-content__step-number {
+        font-size: 18px;
+        line-height: 21px;
+      }
+
+      .guide-content__step-title {
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      .guide-content__step-description {
+        font-size: 16px;
+        line-height: 26px;
+      }
+
+      .navbar-dropdown-highlight__button-group {
+        flex-direction: row;
+        width: 429.33px;
+      }
+    }
+
+    // Desktop XL styles for partners
+    @include desktop-xl {
+      .guide-content__container {
+        flex-direction: column !important;
+        align-items: flex-start;
+        gap: 62px;
+        padding: 0;
+      }
+
+      .guide-content__steps-grid {
+        width: 100%;
+      }
+    }
+
+    // .button-primary-standard {
+    //   width: 150px;
+
+    //   @include mobile {
+    //     width: 100%;
+    //   }
+
+    //   &:hover {
+    //     width: 167px;
+
+    //     @include mobile {
+    //       width: 100%;
+    //     }
+    //   }
+    // }
+  }
+
+  // Trading Type Variant Styles Mixin
+  @mixin trading-type-variant($type) {
+    .guide-content__title {
+      width: auto !important;
+      max-width: none !important;
+    }
+
+    .guide-content__left {
+      gap: 12px; // Reduce gap from default 20px to 12px
+    }
+
+    .guide-content__subtitle {
+      margin-top: 0; // Reduce top margin to bring subtitle closer to title
+    }
+
+    // Mobile styles
+    @include mobile {
+      .guide-content__left {
+        gap: 16px; // Even smaller gap on mobile
+      }
+
+      .guide-content__title {
+        width: 100% !important;
+        font-size: 42px;
+        line-height: 1.2;
+      }
+
+      .guide-content__subtitle {
+        margin-top: 0; // More reduction on mobile
+      }
+    }
+
+    // Tablet styles
+    @include tablet {
+      .guide-content__left {
+        gap: 10px; // Medium gap on tablet
+      }
+
+      .guide-content__title {
+        width: 100% !important;
+        font-size: 52px;
+      }
+
+      .guide-content__subtitle {
+        margin-top: -5px; // Medium reduction on tablet
+      }
+    }
+
+    // Desktop Large styles
+    @include desktop-lg {
+      .guide-content__left {
+        gap: 12px; // Consistent with base variant
+      }
+
+      .guide-content__title {
+        width: auto !important;
+        font-size: 48px;
+      }
+
+      .guide-content__subtitle {
+        margin-top: 0; // Consistent reduction
+      }
+    }
+
+    // Desktop XL styles
+    @include desktop-xl {
+      .guide-content__left {
+        gap: 12px; // Consistent with base variant
+      }
+
+      .guide-content__title {
+        width: auto !important;
+        font-size: 52px;
+      }
+
+      .guide-content__subtitle {
+        margin-top: 0; // Consistent reduction
+      }
+    }
+  }
+
+  // Crypto Variant Styles
+  &--crypto {
+    @include trading-type-variant("crypto");
+  }
+
+  // Indices Variant Styles
+  &--indices {
+    @include trading-type-variant("indices");
+  }
+
+  // Forex Variant Styles
+  &--forex {
+    @include trading-type-variant("forex");
+  }
+
+  // Metals Variant Styles
+  &--metals {
+    @include trading-type-variant("metals");
+  }
+
+  // Shares Variant Styles
+  &--shares {
+    @include trading-type-variant("shares");
+  }
+
+  // Energies Variant Styles
+  &--energies {
+    @include trading-type-variant("energies");
+  }
+
+  // ETF Variant Styles
+  &--etf {
+    @include trading-type-variant("etf");
+  }
+}

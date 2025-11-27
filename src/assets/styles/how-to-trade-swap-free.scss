@@ -1,0 +1,483 @@
+@import "vars";
+@import "mixins";
+
+.how-to-trade-swap-free {
+  position: relative;
+  width: 100%;
+  min-height: 659px;
+  background: transparent;
+  border-radius: 24px;
+  overflow: hidden;
+  margin: 48px 0 0 0;
+
+  @include tablet {
+    padding-bottom: 75px;
+  }
+
+  .how-to-trade-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__image {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      object-fit: fill;
+      display: block;
+      opacity: 1;
+      mix-blend-mode: color-dodge;
+
+      @include mobile {
+        object-fit: cover;
+        object-position: center;
+      }
+
+      @include tablet {
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      @include desktop-lg {
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      @include desktop-xl {
+        object-fit: cover;
+        object-position: bottom center;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  // Content container
+  > *:not(.how-to-trade-bg) {
+    position: relative;
+    z-index: 4;
+  }
+
+  .how-to-trade-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 65px 20px 0;
+    gap: 16px;
+    text-align: center;
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 10px;
+      background: rgba(15, 15, 15, 1);
+      border: 1px solid rgba(255, 68, 0, 0.15);
+      border-radius: 16px;
+      width: fit-content;
+
+      img {
+        width: 14px;
+        height: 14px;
+      }
+
+      .badge-label {
+        font-family: "Sofia Pro", Arial, sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 20px;
+        color: #fff;
+      }
+    }
+
+    .how-to-trade-title {
+      width: 758px;
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-style: normal;
+      font-weight: map-get($font-weight, semibold);
+      font-size: 52px;
+      text-align: center;
+      letter-spacing: -0.02em;
+      background: linear-gradient(
+          102.31deg,
+          rgba(255, 255, 255, 0) 9.12%,
+          rgba(255, 68, 0, 0.45) 71.6%
+        ),
+        #fff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+    }
+
+    .how-to-trade-subtitle {
+      font-weight: map-get($font-weight, regular);
+      font-size: 18px;
+      line-height: 28px;
+      color: #fff;
+      margin: 0;
+      max-width: 625px;
+      opacity: 0.7;
+      order: 2;
+    }
+  }
+
+  .how-to-trade-cards {
+    display: flex;
+    gap: 27px;
+    padding: 42px 203px 0;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
+
+    .how-to-trade-card {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 24px 28px;
+      gap: 32px;
+      isolation: isolate;
+      width: 604.5px;
+      height: 345px;
+      // background: linear-gradient(
+      //     180deg,
+      //     rgba(0, 0, 0, 0) 0%,
+      //     rgba(255, 68, 0, 0.36) 100%
+      //   ),
+      //   rgba(0, 0, 0, 0.6);
+      // border: 1px solid rgba(255, 68, 0, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 12px;
+      flex: none;
+      order: 0;
+      flex-grow: 1;
+      position: relative;
+      background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-desktop.svg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      overflow: visible;
+      text-align: left;
+
+      .card-icon {
+        width: 72px;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        order: 1;
+        flex-grow: 0;
+        z-index: 1;
+        position: relative;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+
+      .card-title {
+        font-family: "Sofia Pro", Arial, sans-serif;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 24px;
+        letter-spacing: -0.02em;
+        background: linear-gradient(
+            102.31deg,
+            rgba(0, 0, 0, 0) 9.12%,
+            rgba(255, 68, 0, 0.45) 71.6%
+          ),
+          #ffffff;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0;
+        flex: none;
+        order: 2;
+        flex-grow: 0;
+        z-index: 2;
+        position: relative;
+      }
+
+      .card-description {
+        width: 520px;
+        height: 56px;
+        font-family: "Sofia Pro", Arial, sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 18px;
+        letter-spacing: 0.2px;
+        color: #ffffff;
+        opacity: 0.7;
+        margin: 0;
+        flex: none;
+        order: 3;
+        flex-grow: 0;
+        z-index: 3;
+        position: relative;
+      }
+    }
+  }
+
+  @include mobile {
+    min-height: auto;
+    margin: 0 0 50px 0;
+
+    .how-to-trade-header {
+      padding: 52px 18px 0;
+
+      .how-to-trade-title {
+        width: 100%;
+        max-width: 100%;
+        font-size: 42px;
+      }
+
+      .how-to-trade-subtitle {
+        font-size: 18px;
+        max-width: 100%;
+      }
+    }
+
+    .how-to-trade-cards {
+      flex-direction: column;
+      padding: 24px 18px 18px;
+      gap: 24px;
+
+      .how-to-trade-card {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px;
+        gap: 10px;
+        isolation: isolate;
+        width: 100%;
+        height: 400px;
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(255, 68, 0, 0.36) 100%
+          ),
+          rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 68, 0, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 12px;
+        flex: none;
+        order: 0;
+        align-self: stretch;
+        flex-grow: 0;
+        position: relative;
+        background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-mobile.svg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        .card-title {
+          font-size: 24px;
+        }
+
+        .card-description {
+          width: 100%;
+          font-size: 18px;
+          line-height: 28px;
+        }
+      }
+    }
+  }
+
+  @include small-mobile {
+    min-height: auto;
+    margin: 0 0 50px 0;
+
+    .how-to-trade-header {
+      padding: 52px 18px 0;
+
+      .how-to-trade-title {
+        width: 100%;
+        max-width: 100%;
+        font-size: 42px;
+      }
+
+      .how-to-trade-subtitle {
+        font-size: 18px;
+        max-width: 100%;
+      }
+    }
+
+    .how-to-trade-cards {
+      flex-direction: column;
+      padding: 24px 18px 18px;
+      gap: 24px;
+
+      .how-to-trade-card {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px;
+        gap: 10px;
+        isolation: isolate;
+        width: 100%;
+        height: 425px;
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(255, 68, 0, 0.36) 100%
+          ),
+          rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 68, 0, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 12px;
+        flex: none;
+        order: 0;
+        align-self: stretch;
+        flex-grow: 0;
+        position: relative;
+        background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-mobile.svg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        .card-title {
+          font-size: 24px;
+        }
+
+        .card-description {
+          width: 100%;
+          font-size: 18px;
+          line-height: 28px;
+        }
+      }
+    }
+  }
+
+  @include tablet {
+    .how-to-trade-cards {
+      flex-direction: column;
+      padding: 24px 18px 18px;
+      gap: 24px;
+      align-items: center;
+
+      .how-to-trade-card {
+        width: 100%;
+        padding: 24px;
+        gap: 24px;
+        background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-mobile.svg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        .card-title {
+          font-size: 22px;
+        }
+
+        .card-description {
+          font-size: 16px;
+          line-height: 16px;
+        }
+      }
+    }
+  }
+
+  @include desktop-lg {
+    .how-to-trade-cards {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      padding: 42px 0 0 0 !important;
+      justify-content: center;
+      align-items: stretch;
+      margin: 0 auto;
+
+      .how-to-trade-card {
+        width: 100% !important;
+        max-width: 49% !important;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 24px 20px !important;
+        background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-desktop.svg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        .card-title {
+          font-size: 24px !important;
+        }
+
+        .card-description {
+          width: 100%;
+          font-size: 18px !important;
+          line-height: 18px !important;
+        }
+      }
+    }
+  }
+
+  @include desktop-xl {
+    .how-to-trade-cards {
+      .how-to-trade-card {
+        width: 510px !important;
+        margin-left: 0;
+        margin-right: 0;
+        background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-desktop.svg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        .card-title {
+          font-size: 26px !important;
+        }
+
+        .card-description {
+          font-size: 18px !important;
+          line-height: 18px !important;
+        }
+      }
+    }
+  }
+
+  .card-button {
+    order: 4;
+
+    @include mobile {
+      margin-top: 60px !important;
+    }
+
+    @include small-mobile {
+      margin-top: 100px !important;
+    }
+
+    button {
+      width: fit-content !important;
+
+      &:hover {
+        width: fit-content !important;
+      }
+
+      // @include mobile {
+      //   margin-top: 35px !important;
+      // }
+    }
+  }
+}

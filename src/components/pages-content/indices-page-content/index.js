@@ -1,160 +1,122 @@
 import React, { useContext, useState } from "react";
-import TopMarket from "../../top-market";
-import indicesSvg from "../../../assets/images/top-markets/indices.svg";
+import PropTypes from "prop-types";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
-import HighlightedLocalizationText from "../../shared/highlighted-localization-text";
-import TradingTicker from "../../trading-ticker";
-import TopMarketPromotion from "../../top-market-promotion";
-import indices from "../../../assets/images/top-markets/images/indices.svg";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
-import { INDICES_TRADING_SECTION } from "../../../helpers/config";
-import animation from "../../../assets/images/bg/promotions/indices/indices.json";
-import MarketingCircle from "../../marketing-circle";
-import TopMarketLayout from "../../top-market-layout";
-import Faq from "../../faq";
-import { FAQ_INDICES } from "../../../helpers/faq";
-import TableComponent from "../../shared/table";
-import {
-  DATA_INDICES,
-  GeneralTableColumns,
-} from "../../../helpers/top-market-tables";
-import { updateTableDataWithLiveColumn } from "../../../helpers/services/update-table-data-with-live-column";
-import TradingContext from "../../../context/trading-context";
+import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { setLangParam } from "../../../helpers/services/language-service";
+import { updateTableDataWithLiveColumn } from "../../../helpers/services/update-table-data-with-live-column";
+import { getFeaturesByTradingType } from "../../../helpers/features-products.config";
+import { INDICES_TRADING_SECTION } from "../../../helpers/config";
+import { DATA_INDICES } from "../../../helpers/top-market-tables";
+import { FAQ_INDICES } from "../../../helpers/faq";
+import BreadcrumbsTab from "../../shared/breadcrumbs-tab";
+import FeaturesProducts from "../../shared/features-products";
+import AccountComparison from "../../shared/account-comparison";
+import OurCommunityContent from "../../shared/our-community";
+import ContainerWrapper from "../../shared/container-wrapper";
+import Hero from "../../shared/hero";
+import GuideContent from "../../shared/guide-content";
+import SpreadsHeader from "../../shared/spreads-header";
+import FaqSection from "../../shared/faq-section";
+import TradingContext from "../../../context/trading-context";
+import TradingTicker from "../../trading-ticker";
+import TopMarketLayout from "../../top-market-layout";
+import IndicesSpreadsDesktop from "./indices-spreads-desktop";
+import IndicesSpreadsMobile from "./indices-spreads-mobile";
+import { useI18next } from "gatsby-plugin-react-i18next";
 
-const IndicesContent = () => {
+const IndicesContent = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
+  const { isMobile } = useWindowSize();
   const { tradingSymbols } = useContext(TradingContext);
   const langParam = setLangParam(); // Get the language parameter
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
-
-  const handleShowRegistrationPopup = () => {
-    setIsPopupOpen(true); // Open the popup
-  };
+  const { navigate } = useI18next();
 
   const handleClosePopup = () => {
     setIsPopupOpen(false); // Close the popup
+  };
+
+  const handleFaqButtonClick = () => {
+    // Navigate to FAQ page
+    // Use navigate from useI18next to preserve language prefix in browser history
+    navigate("/faq");
   };
 
   updateTableDataWithLiveColumn(DATA_INDICES, tradingSymbols);
 
   return (
     <>
-      <TopMarket
-        title={
-          <HighlightedLocalizationText
-            localizationText="indices_top-market-title"
-            wordsToHighlight="indices-top-market-title-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-white"
-          />
-        }
-        isChildrenHasSmallSize
-        image={indicesSvg}
-        btn1Title={t("indices_top-market-btn1")}
-        btnOnClick1={handleShowRegistrationPopup}
-        btn2Title={t("indices_top-market-btn2")}
-        btnOnClick2={handleShowRegistrationPopup}
-      >
-        <HighlightedLocalizationText
-          localizationText="indices_top-market-promo-text"
-          wordsToHighlight="indices-top-market-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
-        />
-      </TopMarket>
-      <TradingTicker
-        title={t("indices_trading-ticker-title")}
-        pageSpecificSection={INDICES_TRADING_SECTION}
+      <Hero
+        className={className}
+        isShowHero={isShowHero}
+        heroType="indices"
+        showWarning={false}
+        showHandImage={false}
+        showHeroImage={false}
+        desktopBackground="url(../images/bg/hero/indices/indices-desktop.svg)"
+        mobileBackground="url(../images/bg/hero/indices/indices-mobile.svg)"
       />
-      <TopMarketPromotion
-        className="indices-promotion"
-        image={indices}
-        btnTitle={t("indices_top-market-promo-btn")}
-        btnOnClick={handleShowRegistrationPopup}
-        note={t("indices_top-market-promotion-promo-note")}
-      >
-        <HighlightedLocalizationText
-          localizationText="indices_top-market-promotion-promo-text"
-          wordsToHighlight="indices-top-market-promotion-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-red"
+
+      <div className="indices-content">
+        <TradingTicker
+          title={t("indices_trading-ticker-title")}
+          pageSpecificSection={INDICES_TRADING_SECTION}
         />
-      </TopMarketPromotion>
-      <MarketingCircle
-        animation={animation}
-        btnOnClick={handleShowRegistrationPopup}
-        isIndices={true}
-        upper={
-          <HighlightedLocalizationText
-            localizationText="indices_marketing-circle-upper"
-            wordsToHighlight="indices_marketing-circle-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        leftUpper={
-          <HighlightedLocalizationText
-            localizationText="indices_marketing-circle-left-upper"
-            wordsToHighlight="indices_marketing-circle-left-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        rightUpper={
-          <HighlightedLocalizationText
-            localizationText="indices_marketing-circle-right-upper"
-            wordsToHighlight="indices_marketing-circle-right-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        bottom={
-          <HighlightedLocalizationText
-            localizationText="indices_marketing-circle-bottom"
-            wordsToHighlight="indices_marketing-circle-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        leftBottom={
-          <HighlightedLocalizationText
-            localizationText="indices_marketing-circle-left-bottom"
-            wordsToHighlight="indices_marketing-circle-left-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        rightBottom={
-          <HighlightedLocalizationText
-            localizationText="indices_marketing-circle-right-bottom"
-            wordsToHighlight="indices_marketing-circle-right-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-      />
+
+        <BreadcrumbsTab currentPage={t("indices-text")} activeTab="indices" />
+      </div>
+
+      <ContainerWrapper>
+        {/* Indices Features Products */}
+        <FeaturesProducts
+          tradingType="indices"
+          features={getFeaturesByTradingType("indices")}
+        />
+      </ContainerWrapper>
+
+      <AccountComparison />
+
       <TopMarketLayout
-        title={t("indices_top-market-layout-title")}
-        btnTitle={t("indices_top-market-layout-btn")}
-        btnOnClick={handleShowRegistrationPopup}
+        className="top-market-layout--indices-spreads container"
+        headerTemplate={<SpreadsHeader tradingType="indices" />}
       >
-        <TableComponent
-          data={DATA_INDICES}
-          columns={GeneralTableColumns()}
-          isWrapperPadding
-          tip={
-            <span>
-              <span className="bold">*MIN</span>&nbsp;-&nbsp;{t("table-tip1")}
-              &nbsp;
-              <span className="bold">AVG</span>&nbsp;-&nbsp;{t("table-tip2")}
-              &nbsp;
-            </span>
-          }
-          isSearch
-        />
+        {isMobile ? (
+          <IndicesSpreadsMobile data={DATA_INDICES} />
+        ) : (
+          <IndicesSpreadsDesktop data={DATA_INDICES} />
+        )}
       </TopMarketLayout>
-      <Faq faq={FAQ_INDICES} />
+
+      {/* FAQ Section - Indices Trading Questions */}
+      <ContainerWrapper>
+        <FaqSection
+          faqData={FAQ_INDICES}
+          className="faq-section--indices"
+          badgeTextKey="faq-badge-text"
+          titleKey="faq-title"
+          subtitleKey="faq-subtitle"
+          buttonTextKey="faq-button-text"
+          onFaqButtonClick={handleFaqButtonClick}
+        />
+      </ContainerWrapper>
+
+      {/* Guide Content Section */}
+      <ContainerWrapper>
+        <GuideContent
+          titleKey="indices-guide-title"
+          subtitleKey="indices-guide-subtitle"
+          className="guide-content--indices"
+        />
+      </ContainerWrapper>
+
+      {isMobile ? (
+        <OurCommunityContent />
+      ) : (
+        <ContainerWrapper>
+          <OurCommunityContent />
+        </ContainerWrapper>
+      )}
 
       {/* Render the popup */}
       {isPopupOpen && (
@@ -166,6 +128,11 @@ const IndicesContent = () => {
       )}
     </>
   );
+};
+
+IndicesContent.propTypes = {
+  className: PropTypes.string,
+  isShowHero: PropTypes.bool,
 };
 
 export default IndicesContent;

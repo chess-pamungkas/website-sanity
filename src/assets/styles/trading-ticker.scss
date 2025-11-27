@@ -3,46 +3,123 @@
 @import "dropdown";
 
 .trading-ticker-wrapper {
-  scroll-snap-align: start;
-  margin: 0;
-  padding: 11px 0 0;
-  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  margin-top: 15px;
+  gap: 0;
   position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  overflow: hidden;
-  z-index: 99;
-  background-color: map-get($colors, "white");
-  position: relative;
+  width: 100%;
+  height: auto;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+  z-index: 2;
   isolation: isolate;
+
+  @include mobile {
+    margin-top: 100px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0;
+  }
+
+  @include tablet {
+    margin-top: 100px;
+    margin-bottom: 50px;
+  }
+
+  @include desktop-lg {
+    margin-top: 0;
+    margin-bottom: 25px;
+  }
+
+  @include desktop-xl {
+    margin-top: 100px;
+    margin-bottom: 0;
+  }
+
+  @include desktop-2k {
+    margin-top: 100px;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @include desktop-5k {
+    margin-top: 100px;
+    max-width: 2000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .trading-sections-wrapper {
   margin: 0;
+  width: 100%;
+  order: 1; /* Ensure sections appear first */
 }
 
 .trading-sections {
   display: flex;
+  gap: 20px;
+  align-items: center;
   padding: 15px 15px 13px;
-  justify-content: space-around;
-  box-shadow: 0 5px 10px #0000001a;
-  border-radius: 10px 10px 0 0;
-  border-bottom: 1px solid map-get($colors, "red");
+  justify-content: center;
   position: relative;
   z-index: 5;
-  background-color: map-get($colors, "white");
   isolation: isolate;
+
+  @include mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    // background: #ff4400;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 20.5px 24px;
+    width: 100%;
+    height: 47px;
+    margin: 0 auto;
+    cursor: pointer;
+    position: relative;
+    z-index: 999;
+  }
 
   @include tablet {
     flex-wrap: nowrap;
-    padding: 7px 31px;
+    padding: 7px 15px;
     overflow-x: scroll;
+    gap: 16px;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+
+    // Ensure first and last items are fully visible when scrolled
+    scroll-padding: 0 15px;
 
     &::-webkit-scrollbar {
       display: none;
     }
+
+    // Add padding to first and last child for better scroll experience
+    > *:first-child {
+      margin-left: 0;
+    }
+
+    > *:last-child {
+      margin-right: 0;
+    }
+  }
+
+  @include desktop-lg {
+    display: flex;
+    gap: 20px;
+    padding: 14px;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    justify-content: center;
   }
 
   @include desktop-xl {
@@ -78,41 +155,198 @@
 }
 
 .trading-section-title {
-  display: inline-block;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  padding: 4px 28px;
-  border-radius: 16px;
-  transition: 0.2s;
-  font-size: 18px;
-  font-family: $font;
-  line-height: 22px;
-  letter-spacing: 0;
-  color: map-get($colors, "black");
+  padding: 12px 20px;
+  gap: 10px;
+  width: auto;
+  min-width: 84px;
+  height: 34px;
+  background: #ffffff;
+  border-radius: 8px;
+  color: #000000;
+  text-decoration: none;
+  font-family: "Sofia Pro", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex: none;
+  order: 0;
+  flex-grow: 0;
 
   &__active {
+    color: #fff;
+    border-color: map-get($colors, "red");
     background: map-get($colors, "red");
-    box-shadow: 0 3px 24px #00000029;
-    color: map-get($colors, "white");
+    box-shadow: 0 2px 6px rgba(map-get($colors, "red"), 0.2);
+
+    &:hover {
+      border-color: map-get($colors, "red");
+      background: map-get($colors, "red");
+      color: #fff !important;
+    }
+  }
+
+  &:hover {
+    color: map-get($colors, "black");
+    background: rgba(map-get($colors, "red"), 0.15);
+    border: 1px solid rgba(map-get($colors, "red"), 0.15);
+    box-shadow: none;
+    transition: background 0.2s, border 0.2s, color 0.2s;
   }
 
   @include tablet {
-    padding: 4px 30px 7px;
+    padding: 11px 18px;
+    font-size: 13px;
+    line-height: 22px;
+    width: auto;
+    min-width: 80px;
+    height: 33px;
     flex-shrink: 0;
+  }
+
+  @include desktop-lg {
+    padding: 12px 20px;
+    font-size: 14px;
+    line-height: 24px;
+    width: auto;
+    min-width: 84px;
+    height: 34px;
+  }
+}
+
+// Custom mobile dropdown for trading-sections
+.trading-sections-mobile-dropdown {
+  @include mobile {
+    position: relative;
+    width: 100%;
+    z-index: 999;
+
+    &__button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: transparent;
+      // background: #ff4400;
+      // border: 1px solid rgba(255, 255, 255, 0.15);
+      border: none;
+      border-radius: 8px;
+      // padding: 20.5px 24px;
+      height: 47px;
+      cursor: pointer;
+      position: relative;
+      z-index: 999;
+    }
+
+    &__text {
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-size: 20px;
+      font-weight: map-get($font-weight, "medium");
+      line-height: auto;
+      color: map-get($colors, "black");
+      text-align: left;
+      white-space: nowrap;
+      text-transform: none;
+      letter-spacing: 0;
+      opacity: 0.7;
+    }
+
+    &__icon {
+      width: 16px;
+      height: 16px;
+      color: #000;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+
+      &--open {
+        transform: rotate(180deg);
+      }
+    }
+
+    &__content {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      margin-top: 4px;
+      z-index: 1000;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      min-height: 100px;
+      overflow-y: auto;
+    }
+
+    &__option {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      padding: 14px 16px;
+      background: #ffffff;
+      border: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      font-family: "Sofia Pro", Arial, sans-serif;
+      font-size: 18px;
+      font-weight: map-get($font-weight, "semibold");
+      color: #000000;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      position: relative;
+      z-index: 1001;
+
+      &:hover {
+        background: rgba(map-get($colors, "red"), 0.08);
+        color: map-get($colors, "red");
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &--active {
+        background: rgba(map-get($colors, "red"), 0.08);
+        color: map-get($colors, "red");
+        font-weight: map-get($font-weight, "bold");
+      }
+    }
   }
 }
 
 .trading-symbols-wrapper {
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   justify-content: center;
   position: relative;
-  height: 177px;
-  z-index: 4;
-  background-color: map-get($colors, "white");
+  height: auto;
+  z-index: 2;
+  background: transparent;
   isolation: isolate;
+  width: 100%;
+  order: 2; /* Ensure symbols appear second */
 
   @include tablet {
-    height: 99px;
+    height: auto;
+  }
+
+  @include desktop-2k {
+    overflow: hidden;
+  }
+
+  @include desktop-5k {
+    overflow: hidden;
   }
 
   &--infinite-auto-scroll {
@@ -141,9 +375,9 @@
 
 .trading-symbols {
   scroll-snap-type: unset;
-  margin-right: 14px;
-  margin-left: 14px;
-  padding-bottom: 6px;
+  // margin-right: 14px;
+  // margin-left: 14px;
+  padding: 16px 0;
   width: 100vw;
   overflow-x: scroll;
   display: flex;
@@ -151,7 +385,12 @@
   scrollbar-width: none;
   position: relative;
   z-index: 5;
-  background-color: map-get($colors, "white");
+  background: transparent;
+
+  @include mobile {
+    margin-right: 0;
+    margin-left: 0;
+  }
 
   &::-webkit-scrollbar {
     display: none;
@@ -189,16 +428,6 @@
 
     @include tablet {
       top: 19px;
-    }
-  }
-
-  @include tablet {
-    &:first-child {
-      border-radius: 0 0 0 10px;
-    }
-
-    &:last-child {
-      border-radius: 0 0 10px 0;
     }
   }
 }

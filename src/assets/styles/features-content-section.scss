@@ -1,0 +1,885 @@
+@import "vars";
+@import "mixins";
+
+.features-content-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 100px 0 75px;
+  box-sizing: border-box;
+
+  @include mobile {
+    margin: 0 0 40px;
+  }
+
+  @include tablet {
+    margin: 20px 0 40px;
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1280px;
+    overflow: hidden;
+    padding: 0;
+    box-sizing: border-box;
+
+    @include mobile {
+      padding: 0;
+    }
+  }
+
+  // Header Section
+  &__header {
+    text-align: center;
+    margin-bottom: 60px;
+    width: 100%;
+
+    @include mobile {
+      margin-bottom: 40px;
+    }
+  }
+
+  &__badge {
+    box-sizing: border-box;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    gap: 8px;
+    width: auto;
+    min-width: 98px;
+    height: 26px;
+    background: linear-gradient(
+        0deg,
+        rgba(255, 68, 0, 0.15),
+        rgba(255, 68, 0, 0.15)
+      ),
+      #ffffff;
+    mix-blend-mode: normal;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    border-radius: 16px;
+    margin: 0 auto 24px auto;
+    position: relative;
+    z-index: 1;
+
+    @include mobile {
+      padding: 6px 10px;
+      gap: 8px;
+      min-width: 98px;
+      height: 26px;
+      margin: 0 auto 20px auto;
+    }
+
+    @include tablet {
+      padding: 6px 10px;
+      gap: 8px;
+      min-width: 98px;
+      height: 26px;
+    }
+  }
+
+  &__badge-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    display: block;
+    object-fit: contain;
+
+    @include mobile {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &__badge-text {
+    font-family: "Sofia Pro", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    color: #000000;
+    white-space: nowrap;
+    display: block;
+
+    @include mobile {
+      font-size: 14px;
+      line-height: 20px;
+    }
+  }
+
+  &__title {
+    font-size: 48px;
+    font-weight: map-get($font-weight, "bold");
+    color: map-get($colors, "black");
+    margin: 0 0 16px 0;
+    line-height: 1.2;
+
+    @include mobile {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    @include tablet {
+      font-size: 40px;
+    }
+  }
+
+  &__subtitle {
+    font-size: 18px;
+    color: #666666;
+    margin: 0;
+    line-height: 1.4;
+
+    @include mobile {
+      font-size: 16px;
+    }
+  }
+
+  // Features Grid
+  &__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+    align-items: center;
+
+    @include mobile {
+      gap: 24px;
+    }
+  }
+
+  // Big Cards Row
+  &__big-cards {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+    max-width: 1280px;
+
+    @include mobile {
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      overflow-x: auto;
+      padding: 0;
+      justify-content: flex-start;
+    }
+
+    @include tablet {
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      align-items: center;
+    }
+
+    @include desktop-lg {
+      flex-direction: row;
+      gap: 20px;
+      width: 100%;
+      align-items: center;
+    }
+  }
+
+  // Small Cards Row
+  &__small-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 1228px;
+
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @include tablet {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+  }
+
+  // Card Styles
+  &__card {
+    position: relative;
+    border-radius: 28px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: transparent;
+
+    &:hover {
+      transform: translateY(-4px);
+      // box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    &--big {
+      width: 100%;
+      max-width: 604px;
+      height: 357px;
+      flex-shrink: 0;
+      background: #ffffff;
+      overflow: hidden;
+      position: relative;
+
+      @include mobile {
+        width: 100%;
+        height: auto;
+        min-height: auto;
+      }
+
+      @include tablet {
+        width: 100%;
+        height: 357px;
+      }
+
+      @include desktop-lg {
+        width: 100%;
+        max-width: 468px;
+        height: 357px;
+      }
+
+      @include desktop-xl {
+        width: 100%;
+        max-width: 604px;
+        height: 357px;
+      }
+    }
+
+    &--small {
+      min-height: 512px;
+      width: 100%;
+      max-width: 396px;
+      flex-shrink: 0;
+      background: #ffffff;
+
+      @include mobile {
+        min-height: 523px;
+        max-width: none;
+      }
+
+      .features-content-section__card-content {
+        width: 100%;
+        padding: 32px 32px 0 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        background: transparent;
+        position: relative;
+        z-index: 1;
+        box-sizing: border-box;
+        border-radius: 28px 28px 0 0;
+        justify-content: flex-start;
+        align-items: flex-start;
+
+        @include mobile {
+          padding: 24px 24px 0 24px;
+          gap: 16px;
+          justify-content: flex-start;
+          align-items: flex-start;
+        }
+
+        @include tablet {
+          width: 100%;
+          padding: 32px 32px 0 32px;
+          gap: 20px;
+          justify-content: flex-start;
+          align-items: flex-start;
+          background: #ffffff;
+          border-radius: 28px 28px 0 0;
+        }
+
+        @include desktop-lg {
+          width: 100%;
+          padding: 24px 24px 0 24px;
+          gap: 20px;
+          justify-content: flex-start;
+          align-items: flex-start;
+          background: #ffffff;
+          border-radius: 28px 28px 0 0;
+        }
+
+        @include desktop-xl {
+          width: 100%;
+          padding: 32px 32px 0 32px;
+          gap: 20px;
+          justify-content: flex-start;
+          align-items: flex-start;
+          background: #ffffff;
+          border-radius: 28px 28px 0 0;
+        }
+      }
+
+      .features-content-section__card-graphic {
+        position: relative;
+        width: 100%;
+        height: auto;
+        margin-top: auto;
+        z-index: 1;
+
+        @include mobile {
+          margin-top: 16px;
+        }
+      }
+
+      // Card Visual Elements
+      .features-content-section__card-visual {
+        width: 100% !important;
+        height: 200px !important;
+        z-index: 10 !important;
+        border-radius: 0 0 28px 28px;
+        overflow: hidden;
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        min-height: 200px;
+        display: block !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        margin: 0 auto !important;
+
+        @include mobile {
+          height: 225px !important;
+          min-height: 225px !important;
+        }
+
+        &--payments {
+          @include mobile {
+            width: 100% !important;
+            background-size: 100% auto !important;
+            background-position: bottom center !important;
+          }
+
+          @include tablet {
+            width: 100% !important;
+            background-size: 100% auto !important;
+            background-position: bottom center !important;
+          }
+
+          @include desktop-lg {
+            width: 100% !important;
+            background-size: 100% auto !important;
+            background-position: bottom center !important;
+          }
+
+          @include desktop-xl {
+            width: 396px !important;
+          }
+        }
+
+        &--trading {
+          @include mobile {
+            width: 100% !important;
+            background-size: 100% auto !important;
+            background-position: bottom center !important;
+          }
+
+          @include tablet {
+            width: 100% !important;
+            background-size: cover !important;
+            background-position: top right !important;
+          }
+
+          @include desktop-lg {
+            width: 100% !important;
+            background-size: cover !important;
+            background-position: bottom center !important;
+          }
+
+          @include desktop-xl {
+            width: 100% !important;
+            background-size: cover !important;
+            background-position: top center !important;
+          }
+        }
+
+        &--demo {
+          @include mobile {
+            width: 100% !important;
+            background-size: 100% auto !important;
+            background-position: bottom center !important;
+          }
+
+          @include tablet {
+            width: 100% !important;
+            background-size: 100% auto !important;
+            background-position: bottom center !important;
+          }
+
+          @include desktop-lg {
+            width: 100% !important;
+            background-size: 100% auto !important;
+            background-position: bottom center !important;
+          }
+
+          @include desktop-xl {
+            width: 100% !important;
+            background-size: 100% 100% !important;
+            background-position: top center !important;
+          }
+        }
+      }
+
+      // Card Visual Image - removed since we're using background images
+
+      // Payment Logos
+      .features-content-section__payment-logos {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+      }
+
+      .features-content-section__payment-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .features-content-section__payment-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        border: 1px solid rgba(255, 68, 0, 0.2);
+        min-width: 60px;
+        height: 32px;
+      }
+
+      .features-content-section__payment-text {
+        font-size: 12px;
+        font-weight: 500;
+        color: #ffffff;
+        white-space: nowrap;
+      }
+
+      // Trading Chart
+      .features-content-section__trading-chart {
+        width: 100%;
+        height: 120px;
+        position: relative;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .features-content-section__chart-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .features-content-section__chart-line {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ff4400 0%, #ff8800 100%);
+        border-radius: 2px;
+        transform: translateY(-50%);
+      }
+
+      .features-content-section__chart-point {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #ffffff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .features-content-section__chart-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #000000;
+      }
+
+      .features-content-section__chart-percentage {
+        font-size: 12px;
+        font-weight: 500;
+        color: #ff4400;
+      }
+
+      // Demo Balance
+      .features-content-section__demo-balance {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+      }
+
+      .features-content-section__balance-container {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+      }
+
+      .features-content-section__balance-label {
+        font-size: 12px;
+        color: #666666;
+        font-weight: 500;
+      }
+
+      .features-content-section__balance-amount {
+        font-size: 24px;
+        font-weight: 700;
+        color: #000000;
+      }
+
+      .features-content-section__balance-actions {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .features-content-section__balance-btn {
+        width: 32px;
+        height: 32px;
+        background: #ff4400;
+        border: none;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background: #e63d00;
+        }
+      }
+
+      .features-content-section__balance-plus {
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .features-content-section__balance-returns {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #666666;
+      }
+
+      .features-content-section__returns-text {
+        font-weight: 500;
+      }
+
+      .features-content-section__returns-arrow {
+        color: #00c851;
+        font-size: 14px;
+      }
+
+      .features-content-section__balance-buttons {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .features-content-section__action-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border: 1px solid rgba(255, 68, 0, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 12px;
+        font-weight: 500;
+
+        &:hover {
+          background: rgba(255, 68, 0, 0.1);
+          border-color: #ff4400;
+        }
+
+        &--deposit {
+          color: #0066cc;
+        }
+
+        &--withdraw {
+          color: #ff4400;
+        }
+      }
+
+      .features-content-section__action-icon {
+        font-size: 14px;
+      }
+
+      .features-content-section__action-text {
+        font-weight: 500;
+      }
+    }
+  }
+
+  &__card-bg {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+
+    .features-content-section__card--big & {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+
+      @include mobile {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    .features-content-section__card--small & {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      padding: 0;
+      box-sizing: border-box;
+      border-radius: 28px;
+      overflow: visible;
+      position: relative;
+      height: 100%;
+      min-height: 512px;
+
+      @include mobile {
+        padding: 0;
+        border-radius: 28px;
+        min-height: 523px;
+      }
+
+      @include tablet {
+        background-image: none;
+        background-size: unset;
+        background-position: unset;
+        background-repeat: unset;
+        padding: 0;
+        border-radius: 28px;
+        overflow: visible;
+        min-height: 650px;
+      }
+
+      @include desktop-lg {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        padding: 0;
+        box-sizing: border-box;
+        border-radius: 28px;
+        overflow: visible;
+        min-height: 512px;
+      }
+
+      @include desktop-xl {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        padding: 0;
+        box-sizing: border-box;
+        border-radius: 28px;
+        overflow: visible;
+        min-height: 512px;
+      }
+    }
+  }
+
+  // Left Content Container (302px width)
+  &__card-left {
+    width: 60%;
+    height: 100%;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    background: #ffffff;
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+
+    @include mobile {
+      width: 100%;
+      padding: 24px 24px 0 24px;
+      gap: 20px;
+      height: auto;
+      flex: 1;
+    }
+
+    @include desktop-lg {
+      padding: 16px;
+    }
+
+    @include desktop-xl {
+      padding: 24px;
+    }
+  }
+
+  // Right Illustration Container (302px width)
+  &__card-right {
+    width: 50%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      max-height: 218px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &__card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin: 0;
+
+    @include mobile {
+      gap: 12px;
+    }
+  }
+
+  &__card-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  &__card-title {
+    font-size: 24px;
+    font-weight: map-get($font-weight, "bold");
+    margin: 0;
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+
+    @include mobile {
+      font-size: 24px;
+    }
+
+    @include tablet {
+      font-size: 24px;
+    }
+
+    @include desktop-lg {
+      font-size: 20px;
+    }
+
+    @include desktop-xl {
+      font-size: 24px;
+    }
+  }
+
+  &__card-description {
+    font-size: 16px;
+    font-weight: map-get($font-weight, "regular");
+    color: map-get($colors, "black");
+    line-height: 24px;
+    margin: 0;
+    letter-spacing: 0.2px;
+    opacity: 0.7;
+    flex: 1;
+
+    // .features-content-section__card--big & {
+    //   max-width: 238px;
+    // }
+
+    @include mobile {
+      max-width: 100% !important;
+      flex: none; // Remove flex: 1 on mobile to reduce height
+    }
+  }
+
+  // Card Graphics
+  &__card-graphic {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include mobile {
+      margin-top: 0;
+    }
+  }
+
+  &__card-graphic-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+
+    // Tier 1 Banks image - larger size
+    &.tier1-banks-img {
+      width: 304px;
+      height: 304px;
+    }
+
+    // Choose Your Language image - smaller size
+    &.choose-language-img {
+      width: 226.46px;
+      height: 230.46px;
+    }
+
+    @include mobile {
+      width: 100%;
+      height: auto;
+      max-height: 200px;
+    }
+  }
+}

@@ -1,152 +1,122 @@
 import React, { useContext, useState } from "react";
-import TopMarket from "../../top-market";
-import image from "../../../assets/images/top-markets/energies.svg";
+import PropTypes from "prop-types";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
-import HighlightedLocalizationText from "../../shared/highlighted-localization-text";
-import TradingTicker from "../../trading-ticker";
-import TopMarketPromotion from "../../top-market-promotion";
-import energies from "../../../assets/images/top-markets/images/energies.svg";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
-import { ENERGIES_TRADING_SECTION } from "../../../helpers/config";
-import animation from "../../../assets/images/bg/promotions/indices/indices.json";
-import MarketingCircle from "../../marketing-circle";
-import TopMarketLayout from "../../top-market-layout";
-import Faq from "../../faq";
-import { FAQ_ENERGIES } from "../../../helpers/faq";
-import TableComponent from "../../shared/table";
-import {
-  DATA_ENERGIES,
-  GeneralTableColumns,
-} from "../../../helpers/top-market-tables";
-import { updateTableDataWithLiveColumn } from "../../../helpers/services/update-table-data-with-live-column";
-import TradingContext from "../../../context/trading-context";
+import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { setLangParam } from "../../../helpers/services/language-service";
+import { updateTableDataWithLiveColumn } from "../../../helpers/services/update-table-data-with-live-column";
+import { getFeaturesByTradingType } from "../../../helpers/features-products.config";
+import { ENERGIES_TRADING_SECTION } from "../../../helpers/config";
+import { DATA_ENERGIES } from "../../../helpers/top-market-tables";
+import { FAQ_ENERGIES } from "../../../helpers/faq";
+import BreadcrumbsTab from "../../shared/breadcrumbs-tab";
+import FeaturesProducts from "../../shared/features-products";
+import AccountComparison from "../../shared/account-comparison";
+import OurCommunityContent from "../../shared/our-community";
+import ContainerWrapper from "../../shared/container-wrapper";
+import Hero from "../../shared/hero";
+import GuideContent from "../../shared/guide-content";
+import SpreadsHeader from "../../shared/spreads-header";
+import FaqSection from "../../shared/faq-section";
+import TradingContext from "../../../context/trading-context";
+import TradingTicker from "../../trading-ticker";
+import TopMarketLayout from "../../top-market-layout";
+import EnergiesSpreadsDesktop from "./energies-spreads-desktop";
+import EnergiesSpreadsMobile from "./energies-spreads-mobile";
+import { useI18next } from "gatsby-plugin-react-i18next";
 
-const EnergiesContent = () => {
+const EnergiesContent = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
+  const { isMobile } = useWindowSize();
   const { tradingSymbols } = useContext(TradingContext);
   const langParam = setLangParam(); // Get the language parameter
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
-
-  const handleShowRegistrationPopup = () => {
-    setIsPopupOpen(true); // Open the popup
-  };
+  const { navigate } = useI18next();
 
   const handleClosePopup = () => {
     setIsPopupOpen(false); // Close the popup
+  };
+
+  const handleFaqButtonClick = () => {
+    // Navigate to FAQ page
+    // Use navigate from useI18next to preserve language prefix in browser history
+    navigate("/faq");
   };
 
   updateTableDataWithLiveColumn(DATA_ENERGIES, tradingSymbols);
 
   return (
     <>
-      <TopMarket
-        title={t("energies_top-market-title")}
-        image={image}
-        btn1Title={t("energies_top-market-btn1")}
-        btnOnClick1={handleShowRegistrationPopup}
-        btn2Title={t("energies_top-market-btn2")}
-        btnOnClick2={handleShowRegistrationPopup}
-        isChildrenHasSmallSize
-      >
-        <HighlightedLocalizationText
-          localizationText="energies_top-market-promo-text"
-          wordsToHighlight="energies-top-market-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-white"
-        />
-      </TopMarket>
-      <TradingTicker
-        title={t("energies_trading-ticker-title")}
-        pageSpecificSection={ENERGIES_TRADING_SECTION}
+      <Hero
+        className={className}
+        isShowHero={isShowHero}
+        heroType="energies"
+        showWarning={false}
+        showHandImage={false}
+        showHeroImage={false}
+        desktopBackground="url(../images/bg/hero/energies/energies-desktop.svg)"
+        mobileBackground="url(../images/bg/hero/energies/energies-mobile.svg)"
       />
-      <TopMarketPromotion
-        className="energies-promotion"
-        image={energies}
-        btnTitle={t("energies_top-market-promo-btn")}
-        btnOnClick={handleShowRegistrationPopup}
-      >
-        <HighlightedLocalizationText
-          localizationText="energies_top-market-promotion-promo-text"
-          wordsToHighlight="energies-top-market-promotion-promo-text-accent"
-          primaryClassName="highlighted-in-black"
-          accentClassName="highlighted-in-red"
+
+      <div className="energies-content">
+        <TradingTicker
+          title={t("energies_trading-ticker-title")}
+          pageSpecificSection={ENERGIES_TRADING_SECTION}
         />
-      </TopMarketPromotion>
-      <MarketingCircle
-        animation={animation}
-        btnOnClick={handleShowRegistrationPopup}
-        isEnergies={true}
-        upper={
-          <HighlightedLocalizationText
-            localizationText="energies_marketing-circle-upper"
-            wordsToHighlight="energies_marketing-circle-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        leftUpper={
-          <HighlightedLocalizationText
-            localizationText="energies_marketing-circle-left-upper"
-            wordsToHighlight="energies_marketing-circle-left-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        rightUpper={
-          <HighlightedLocalizationText
-            localizationText="energies_marketing-circle-right-upper"
-            wordsToHighlight="energies_marketing-circle-right-upper-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        bottom={
-          <HighlightedLocalizationText
-            localizationText="energies_marketing-circle-bottom"
-            wordsToHighlight="energies_marketing-circle-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        leftBottom={
-          <HighlightedLocalizationText
-            localizationText="energies_marketing-circle-left-bottom"
-            wordsToHighlight="energies_marketing-circle-left-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-        rightBottom={
-          <HighlightedLocalizationText
-            localizationText="energies_marketing-circle-right-bottom"
-            wordsToHighlight="energies_marketing-circle-right-bottom-accent"
-            primaryClassName="highlighted-in-black"
-            accentClassName="highlighted-in-red"
-          />
-        }
-      />
+
+        <BreadcrumbsTab currentPage={t("energies-text")} activeTab="energies" />
+      </div>
+
+      <ContainerWrapper>
+        {/* Energies Features Products */}
+        <FeaturesProducts
+          tradingType="energies"
+          features={getFeaturesByTradingType("energies")}
+        />
+      </ContainerWrapper>
+
+      <AccountComparison />
+
       <TopMarketLayout
-        title={t("energies_top-market-layout-title")}
-        btnTitle={t("energies_top-market-layout-btn")}
-        btnOnClick={handleShowRegistrationPopup}
+        className="top-market-layout--energies-spreads container"
+        headerTemplate={<SpreadsHeader tradingType="energies" />}
       >
-        <TableComponent
-          data={DATA_ENERGIES}
-          columns={GeneralTableColumns()}
-          isWrapperPadding
-          tip={
-            <span>
-              <span className="bold">*MIN</span>&nbsp;-&nbsp;{t("table-tip1")}
-              &nbsp;
-              <span className="bold">AVG</span>&nbsp;-&nbsp;{t("table-tip2")}
-              &nbsp;
-            </span>
-          }
-          isSearch
-        />
+        {isMobile ? (
+          <EnergiesSpreadsMobile data={DATA_ENERGIES} />
+        ) : (
+          <EnergiesSpreadsDesktop data={DATA_ENERGIES} />
+        )}
       </TopMarketLayout>
-      <Faq faq={FAQ_ENERGIES} />
+
+      {/* FAQ Section - Indices Trading Questions */}
+      <ContainerWrapper>
+        <FaqSection
+          faqData={FAQ_ENERGIES}
+          className="faq-section--energies"
+          badgeTextKey="faq-badge-text"
+          titleKey="faq-title"
+          subtitleKey="faq-subtitle"
+          buttonTextKey="faq-button-text"
+          onFaqButtonClick={handleFaqButtonClick}
+        />
+      </ContainerWrapper>
+
+      {/* Guide Content Section */}
+      <ContainerWrapper>
+        <GuideContent
+          titleKey="energies-guide-title"
+          subtitleKey="energies-guide-subtitle"
+          className="guide-content--energies"
+        />
+      </ContainerWrapper>
+
+      {isMobile ? (
+        <OurCommunityContent />
+      ) : (
+        <ContainerWrapper>
+          <OurCommunityContent />
+        </ContainerWrapper>
+      )}
 
       {/* Render the popup */}
       {isPopupOpen && (
@@ -158,6 +128,11 @@ const EnergiesContent = () => {
       )}
     </>
   );
+};
+
+EnergiesContent.propTypes = {
+  className: PropTypes.string,
+  isShowHero: PropTypes.bool,
 };
 
 export default EnergiesContent;

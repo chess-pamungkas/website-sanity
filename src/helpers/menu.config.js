@@ -1,34 +1,26 @@
 import {
-  AboutIcon,
+  AccountTypesIcon,
   AllMarketsOverviewIcon,
-  //  No used vars for the 2nd release, please, don't remove them
-  CareerIcon,
-  CollaborationPartnershipIcon,
-  CommoditiesIcon,
-  ContactIcon,
-  CopyTradingIcon,
+  ContactUsIcon,
   CryptoIcon,
-  EducationIcon,
   EnergiesIcon,
   ForexIcon,
   FundingWithdrawalsIcon,
   HelpCenterIcon,
   IndicesIcon,
+  IntroducingBrokersIcon,
   LegalIcon,
   Logo,
-  PlatformsIcon,
+  MetalsIcon,
   PressAndNewsIcon,
-  ProfessionalQualificationIcon,
+  PrivateVPSIcon,
   SharesIcon,
+  SwapFreeAccountIcon,
   TradingToolsIcon,
   ETFIcon,
   MT4Icon,
   MT5Icon,
-  AccountsIcon,
   SpreadAndFeesIcon,
-  CTraderIcon,
-  VPSIcon,
-  SwapFreeIcon,
 } from "../components/shared/icons";
 import {
   ACCOUNTS_TYPE_PAGE_LINK,
@@ -45,7 +37,6 @@ import {
   MT4_PAGE_LINK,
   MT5_PAGE_LINK,
   PARTNERS_PAGE_LINK,
-  PROFESSIONAL_QUALIFICATION_PAGE_LINK,
   SHARES_PAGE_LINK,
   SPREADS_AND_FEES_PAGE_LINK,
   WITHDRAWAL_PAGE_LINK,
@@ -61,6 +52,12 @@ import {
 const FSA_TOP_MARKETS_TAB = {
   title: "header-nav-tab-top-markets",
   subItems: [
+    {
+      title: "header-nav-tab-top-markets-allmarkets-title",
+      link: ALL_MARKETS_PAGE_LINK,
+      icon: AllMarketsOverviewIcon,
+      description: "header-nav-tab-top-markets-allmarkets-desc",
+    },
     {
       title: "header-nav-tab-top-markets-crypto-title-fsa",
       link: CRYPTO_PAGE_LINK,
@@ -80,10 +77,10 @@ const FSA_TOP_MARKETS_TAB = {
       description: "header-nav-tab-top-markets-forex-desc",
     },
     {
-      title: "header-nav-tab-top-markets-commodities-title",
+      title: "header-nav-tab-top-markets-metals-title",
       link: METALS_PAGE_LINK,
-      icon: CommoditiesIcon,
-      description: "header-nav-tab-top-markets-commodities-desc",
+      icon: MetalsIcon,
+      description: "header-nav-tab-top-markets-metals-desc",
     },
     {
       title: "header-nav-tab-top-markets-shares-title",
@@ -102,12 +99,6 @@ const FSA_TOP_MARKETS_TAB = {
       link: ETF_PAGE_LINK,
       icon: ETFIcon,
       description: "header-nav-tab-top-markets-etf-desc",
-    },
-    {
-      title: "header-nav-tab-top-markets-allmarkets-title",
-      link: ALL_MARKETS_PAGE_LINK,
-      icon: AllMarketsOverviewIcon,
-      description: "header-nav-tab-top-markets-allmarkets-desc",
     },
   ],
 };
@@ -136,7 +127,7 @@ const FSA_TRADING_TAB = {
     {
       title: "header-nav-tab-trading-funding-withdrawals-accounts-title",
       link: ACCOUNTS_TYPE_PAGE_LINK,
-      icon: AccountsIcon,
+      icon: AccountTypesIcon,
       description: "header-nav-tab-trading-funding-withdrawals-accounts-desc",
     },
     {
@@ -160,13 +151,13 @@ const FSA_TRADING_TAB = {
     {
       title: "header-nav-tab-trading-vps-title",
       link: VPS_PAGE_LINK,
-      icon: VPSIcon,
+      icon: PrivateVPSIcon,
       description: "header-nav-tab-trading-vps-desc",
     },
     {
       title: "header-nav-tab-trading-swap-free-title",
       link: SWAP_FREE_PAGE_LINK,
-      icon: SwapFreeIcon,
+      icon: SwapFreeAccountIcon,
       description: "header-nav-tab-trading-swap-free-desc",
     },
   ],
@@ -175,36 +166,107 @@ const FSA_TRADING_TAB = {
 const FSA_COMPANY_TAB = {
   title: "header-nav-tab-company",
   subItems: [
+    // Learn Column - Hidden (commented out)
+    // {
+    //   groupTitle: "header-nav-tab-trading-hub-learn-title",
+    //   groupItems: [
+    //     {
+    //       title: "header-nav-tab-trading-hub-trading-academy-title",
+    //       link: "/trading-academy",
+    //       description: "header-nav-tab-trading-hub-trading-academy-desc",
+    //     },
+    //     {
+    //       title: "header-nav-tab-trading-hub-beginners-guide-title",
+    //       link: "/beginners-guide",
+    //       description: "header-nav-tab-trading-hub-beginners-guide-desc",
+    //     },
+    //     {
+    //       title: "header-nav-tab-trading-hub-intermediate-lessons-title",
+    //       link: "/intermediate-lessons",
+    //       description: "header-nav-tab-trading-hub-intermediate-lessons-desc",
+    //     },
+    //     {
+    //       title: "header-nav-tab-trading-hub-advanced-playbook-title",
+    //       link: "/advanced-playbook",
+    //       description: "header-nav-tab-trading-hub-advanced-playbook-desc",
+    //     },
+    //   ],
+    // },
+    // Help Center Column
     {
-      title: "header-nav-tab-company-about-title",
-      link: COMPANY_PAGE_LINK,
-      icon: AboutIcon,
-      description: "header-nav-tab-company-about-desc",
+      groupTitle: "header-nav-tab-trading-hub-help-center-title",
+      groupItems: [
+        // Hidden items - commented out
+        // {
+        //   title: "header-nav-tab-trading-hub-client-portal-assistance-title",
+        //   link: "/client-portal-assistance",
+        //   icon: HelpCenterIcon,
+        //   description:
+        //     "header-nav-tab-trading-hub-client-portal-assistance-desc",
+        // },
+        // {
+        //   title: "header-nav-tab-trading-hub-platform-setup-guides-title",
+        //   link: "/platform-setup-guides",
+        //   icon: HelpCenterIcon,
+        //   description: "header-nav-tab-trading-hub-platform-setup-guides-desc",
+        // },
+        {
+          title: "header-nav-tab-company-help-center-title",
+          link: FAQ_PAGE_LINK,
+          icon: HelpCenterIcon,
+          description: "header-nav-tab-company-help-center-desc",
+        },
+        {
+          title: "header-nav-tab-trading-hub-newsroom-title",
+          link: BLOG_URL,
+          icon: PressAndNewsIcon,
+          description: "header-nav-tab-trading-hub-newsroom-desc",
+        },
+        {
+          title: "header-nav-tab-company-legal-title",
+          link: LEGAL_PAGE_LINK,
+          icon: LegalIcon,
+          description: "header-nav-tab-company-legal-desc",
+        },
+      ],
     },
+    // Contact Support Column
     {
-      title: "header-nav-tab-company-contact-title",
-      link: CONTACT_US_PAGE_LINK,
-      icon: ContactIcon,
-      description: "header-nav-tab-company-contact-desc",
+      groupTitle: "header-nav-tab-trading-hub-contact-support-title",
+      groupItems: [
+        {
+          title: "header-nav-tab-trading-hub-live-chat-title",
+          link: CONTACT_US_PAGE_LINK,
+          icon: ContactUsIcon,
+          description: "header-nav-tab-trading-hub-live-chat-desc",
+        },
+        {
+          title: "header-nav-tab-trading-hub-send-message-title",
+          link: CONTACT_US_PAGE_LINK,
+          icon: ContactUsIcon,
+          description: "header-nav-tab-trading-hub-send-message-desc",
+        },
+        // Hidden item - commented out
+        // {
+        //   title: "header-nav-tab-trading-hub-support-hours-title",
+        //   link: CONTACT_US_PAGE_LINK,
+        //   icon: ContactUsIcon,
+        //   description: "header-nav-tab-trading-hub-support-hours-desc",
+        // },
+      ],
     },
-    {
-      title: "header-nav-tab-company-legal-title",
-      link: LEGAL_PAGE_LINK,
-      icon: LegalIcon,
-      description: "header-nav-tab-company-legal-desc",
-    },
-    {
-      title: "header-nav-tab-company-help-center-title",
-      link: FAQ_PAGE_LINK,
-      icon: HelpCenterIcon,
-      description: "header-nav-tab-company-help-center-desc",
-    },
+    // Legacy items for backward compatibility
     {
       desktopOnly: true,
       title: "header-nav-tab-partners-collaboration-partnership-title-fsa",
       link: PARTNERS_PAGE_LINK,
-      icon: CollaborationPartnershipIcon,
+      icon: IntroducingBrokersIcon,
       description: "header-nav-tab-partners-collaboration-partnership-desc-fsa",
+    },
+    {
+      footerOnly: true,
+      title: "header-nav-tab-partners-fsa", // Use "Partners" title for footer
+      link: PARTNERS_PAGE_LINK,
     },
     {
       footerOnly: true,
@@ -220,16 +282,9 @@ const FSA_COMPANY_TAB = {
 };
 
 const FSA_PARTNERS_TAB = {
-  mobileOnly: true,
   title: "header-nav-tab-partners-fsa",
-  subItems: [
-    {
-      title: "header-nav-tab-partners-collaboration-partnership-title-fsa",
-      link: PARTNERS_PAGE_LINK,
-      icon: CollaborationPartnershipIcon,
-      description: "header-nav-tab-partners-collaboration-partnership-desc-fsa",
-    },
-  ],
+  link: PARTNERS_PAGE_LINK,
+  isPartners: true,
 };
 
 const FSA_MENU_ITEMS = [
@@ -241,18 +296,3 @@ const FSA_MENU_ITEMS = [
 ];
 
 export const getMenuItems = () => FSA_MENU_ITEMS;
-
-export const getCornerItems = () => [
-  {
-    link: BLOG_URL,
-    title: "Newsroom", // no need to translate it for now
-  },
-  {
-    link: PARTNERS_PAGE_LINK,
-    title: "header-nav-tab-partners-fsa",
-  },
-  {
-    link: CONTACT_US_PAGE_LINK,
-    title: "header-nav-tab-company-contact-title",
-  },
-];
