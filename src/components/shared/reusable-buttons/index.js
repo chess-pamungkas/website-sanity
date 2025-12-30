@@ -790,9 +790,9 @@ export const ButtonSecondaryComparison = ({
   </BaseButton>
 );
 
-// Zero+ specific button (transparent background)
+// OQtimaOne specific button (transparent background)
 export const ButtonPrimaryComparisonZero = ({
-  text = "Start Zero+",
+  text = "Start OQtimaOne",
   onClick,
   disabled = false,
   showArrow = true,
@@ -928,7 +928,7 @@ export const AccountComparisonButtons = ({
     {/* </ButtonContainer>
     <ButtonContainer> */}
     <ButtonPrimaryComparisonZero
-      text="Start Zero+"
+      text="Start OQtimaOne+"
       onClick={zeroOnClick}
       disabled={disabled}
     />

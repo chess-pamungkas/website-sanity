@@ -210,12 +210,7 @@ const TrustContent = () => {
           </div>
 
           {/* Main Title */}
-          <h2 className="trust-content__title">
-            {t("trust-content_title")}{" "}
-            <span className="trust-content__title-highlight">
-              {t("trust-content_title-highlight")}
-            </span>
-          </h2>
+          <h2 className="trust-content__title">{t("trust-content_title")}</h2>
 
           {/* Subtitle */}
           <p className="trust-content__subtitle">

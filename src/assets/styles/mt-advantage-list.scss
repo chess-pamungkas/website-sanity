@@ -142,6 +142,7 @@
     flex: none;
     order: 0;
     flex-grow: 0;
+    white-space: pre-line;
   }
 
   &__features {
@@ -168,6 +169,8 @@
     width: 16px;
     height: 16px;
     flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 8px;
   }
 
   &__feature-text {
@@ -231,6 +234,10 @@
       max-width: 100%;
       margin: 0 auto;
       // justify-items: center;
+    }
+
+    &__feature-icon {
+      margin-top: 6px;
     }
 
     &__feature-text {

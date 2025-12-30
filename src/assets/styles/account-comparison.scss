@@ -206,8 +206,8 @@
         position: absolute;
         width: 109.46px;
         height: 116px;
-        right: 18.54px;
-        top: 14px;
+        right: -5px;
+        top: -5px;
         z-index: 5;
         flex: none;
         order: 4;
@@ -216,6 +216,10 @@
         img {
           width: 109.46px;
           height: 116px;
+        }
+
+        @include mobile {
+          right: -15px;
         }
       }
       &.ecn-card {
@@ -300,6 +304,11 @@
       &.zero-card {
         position: relative;
         transition: all 0.3s ease;
+        background: rgba(255, 68, 0, 0.34);
+        border: 1px solid rgba(255, 68, 0, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        background-image: none;
 
         .card-header .card-badge {
           width: fit-content;
@@ -309,6 +318,29 @@
           span {
             color: #fff;
           }
+        }
+
+        .card-title {
+          font-family: "Sofia Pro", Arial, sans-serif;
+          font-style: normal;
+          font-weight: 300;
+          font-size: 72px;
+          line-height: 72px;
+          letter-spacing: -0.02em;
+          background: linear-gradient(
+              102.31deg,
+              rgba(255, 255, 255, 0) 9.12%,
+              rgba(255, 68, 0, 0.45) 71.6%
+            ),
+            #ffffff;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .card-stars img {
+          width: 92px;
+          height: 112px;
         }
 
         // Hover state for zero card
@@ -347,7 +379,7 @@
             right: -15px;
             width: 155px;
             height: 164.25px;
-            background-image: url("../../assets/images/icons/account-comparison/star-beginner-choice-hover.svg");
+            background-image: url("/images/star-beginner-choice-hover.webp");
             background-size: contain;
             background-repeat: no-repeat;
             background-position: top right;
@@ -374,7 +406,7 @@
         font-style: normal;
         font-weight: 900;
         font-size: 72px;
-        line-height: 83px;
+        line-height: 72px;
         letter-spacing: -0.02em;
         background: linear-gradient(
             102.31deg,
@@ -391,6 +423,7 @@
         flex-grow: 0;
         z-index: 2;
         position: relative;
+        white-space: pre-line;
       }
       .card-description {
         font-family: "Sofia Pro", Arial, sans-serif;
@@ -409,6 +442,7 @@
         z-index: 2;
         position: relative;
         min-height: 78px;
+        white-space: pre-line;
       }
       .card-features {
         width: 100%;
@@ -459,7 +493,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 4px;
+            align-self: flex-start;
+            margin-top: 7px;
             img {
               width: 16px;
               height: 16px;
@@ -755,22 +790,27 @@
         padding: 20px;
         gap: 12px;
         .card-title {
-          font-size: 62px;
+          font-size: 62px !important;
           height: fit-content;
         }
         .card-description {
-          font-size: 16px;
+          font-size: 13.75px;
           line-height: 26px;
         }
-        .card-features .feature-item span {
-          font-size: 14px;
-          line-height: 20px;
-          flex: 1;
-          flex-grow: 1;
-          max-width: 100%;
-          word-wrap: break-word;
-          overflow-wrap: break-word;
-          hyphens: auto;
+        .card-features .feature-item {
+          .feature-icon {
+            margin-top: 4px;
+          }
+          span {
+            font-size: 14px;
+            line-height: 20px;
+            flex: 1;
+            flex-grow: 1;
+            max-width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+          }
         }
         .card-buttons {
           flex-direction: column !important;
@@ -906,7 +946,7 @@
         margin-left: 0;
         margin-right: 0;
         .card-features .feature-item span {
-          font-size: 18px !important;
+          font-size: 16px !important;
           line-height: 28px !important;
           flex: 1 !important;
           flex-grow: 1 !important;

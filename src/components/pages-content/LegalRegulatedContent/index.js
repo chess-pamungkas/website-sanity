@@ -109,25 +109,6 @@ const LegalRegulatedContentx = ({ className }) => {
               </p>
             </div>
           </div>
-
-          <div className="legal-regulated-content__image-container">
-            {/* Desktop Image */}
-            <div className="legal-regulated-content__image--desktop">
-              <img
-                src={cysecRegulatedDesktop}
-                alt="CySEC Regulated Desktop"
-                className="legal-regulated-content__image"
-              />
-            </div>
-            {/* Mobile Image */}
-            <div className="legal-regulated-content__image--mobile">
-              <img
-                src={cysecRegulatedMobile}
-                alt="CySEC Regulated Mobile"
-                className="legal-regulated-content__image"
-              />
-            </div>
-          </div>
         </div>
 
         {/* Bottom Section: Authorized by Seychelles FSA */}

@@ -66,7 +66,7 @@ const NavbarDropdownHighlight = ({
       more: {
         badgeText: t("navbar-dropdown-highlight_more_badge-text"),
         title: t("navbar-dropdown-highlight_more_title"),
-        subtitle: t("navbar-dropdown-highlight_more_subtitle"),
+        subtitle: t("navbar-dropdown-highlight_products_subtitle"),
         primaryButton: {
           text: t("navbar-dropdown-highlight_more_primary-button"),
         },

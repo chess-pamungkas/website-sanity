@@ -2266,11 +2266,6 @@ html[dir="rtl"] {
     }
   }
 
-  .main-promotion__hand-img {
-    // Flip hand image horizontally for RTL
-    transform: scaleX(-1);
-  }
-
   .main-promotion__warning-container {
     padding-right: 0;
   }

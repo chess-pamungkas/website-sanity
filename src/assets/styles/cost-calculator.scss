@@ -683,7 +683,6 @@
     gap: 32px;
     position: relative;
     z-index: 1;
-    transition: all 0.3s ease;
 
     @include tablet {
       padding: 20px 7px;
@@ -737,11 +736,6 @@
     //   min-height: 140px;
     // }
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 68, 0, 0.1);
-    }
-
     &--oqtima {
       background: linear-gradient(
           78.79deg,
@@ -750,10 +744,6 @@
         ),
         #ffffff;
       border: 1px solid rgba(255, 68, 0, 0.15);
-
-      &:hover {
-        box-shadow: 0 4px 12px rgba(255, 68, 0, 0.15);
-      }
     }
   }
 
@@ -783,7 +773,7 @@
       width: fit-content;
       min-width: 105.01px;
       height: 19.5px;
-      font-size: 10.5px;
+      font-size: 6.75px;
       line-height: 16px;
       gap: 4px;
 
@@ -988,6 +978,7 @@
     transition: all 0.3s ease;
     position: relative;
     z-index: 1;
+    white-space: pre-line;
 
     // Mobile styles
     @include mobile {
@@ -1001,7 +992,7 @@
 
     // Tablet styles
     @include tablet {
-      padding: 16px;
+      padding: 6px 16px;
       gap: 28px;
       height: 103px;
       font-size: 14px;
@@ -1013,13 +1004,13 @@
       padding: 16px;
       gap: 30px;
       height: 110px;
-      font-size: 15px;
+      font-size: 13.25px;
       line-height: 24px;
     }
 
     // Desktop styles
     @include desktop-xl {
-      padding: 16px;
+      padding: 6px 16px;
       gap: 25px;
       height: 96px;
       font-size: 15px;
@@ -1118,7 +1109,7 @@
     }
 
     &__title {
-      font-size: 32px;
+      font-size: 36px;
       line-height: 40px;
     }
 

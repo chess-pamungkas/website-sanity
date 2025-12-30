@@ -348,7 +348,7 @@
       font-style: normal;
       font-weight: 700; // Bold (not Semi Bold)
       font-size: 72px;
-      line-height: 83px; // Exact pixel value from Figma
+      line-height: 72px; // Exact pixel value from Figma
       letter-spacing: -0.02em; // -2%
       width: 758px;
       height: 166px;
@@ -384,7 +384,7 @@
 
       @include desktop-lg {
         font-size: 72px;
-        line-height: 83px;
+        line-height: 72px;
         letter-spacing: -0.02em;
         width: 100%;
         height: auto;
@@ -392,7 +392,7 @@
 
       @include desktop-xl {
         font-size: 72px;
-        line-height: 83px;
+        line-height: 72px;
         letter-spacing: -0.02em;
         width: 758px;
         height: 166px;
