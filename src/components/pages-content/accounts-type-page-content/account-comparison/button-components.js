@@ -82,7 +82,7 @@ export const ButtonSecondaryComparisonAccountsType = ({
 };
 
 export const ButtonPrimaryComparisonZeroAccountsType = ({
-  text = "Start Zero+",
+  text = "OQtimaOne",
   onClick,
   disabled = false,
   showArrow = true,

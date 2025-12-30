@@ -100,6 +100,58 @@ const AccountComparison = () => {
 
       {/* Account Cards */}
       <div className="account-cards container">
+        {/* OQtimaOne Card */}
+        <div className="account-card zero-card">
+          <div className="card-header">
+            <div className="card-badge">
+              <img
+                src={BadgeBeginnerChoiceIcon}
+                alt={t("account-comparison-zero-badge-alt")}
+              />
+              <span>{t("account-comparison-zero-badge-text")}</span>
+            </div>
+          </div>
+          <div className="card-stars">
+            <img
+              src={StarBeginnerChoiceIcon}
+              alt={t("account-comparison-zero-stars-alt")}
+            />
+          </div>
+
+          <h3 className="card-title">{t("account-comparison-zero-title")}</h3>
+
+          <p className="card-description">
+            {t("account-comparison-zero-description")}
+          </p>
+
+          <ul className="card-features">
+            {zeroFeatures.map((feature, index) => (
+              <li key={index} className="feature-item">
+                <div className="feature-icon">
+                  <img
+                    src={CircleMarkIcon}
+                    alt={t("account-comparison_feature-icon-alt")}
+                  />
+                </div>
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="card-buttons">
+            {/* <ButtonContainer> */}
+            <ButtonPrimaryComparisonZero
+              text={t("account-comparison-zero-button-primary")}
+              onClick={handleShowRegistrationPopup}
+            />
+            <ButtonSecondaryComparison
+              text={t("account-comparison-zero-button-secondary")}
+              onClick={handleShowRegistrationPopup}
+            />
+            {/* </ButtonContainer> */}
+          </div>
+        </div>
+
         {/* ECN+ Card */}
         <div className="account-card ecn-card">
           <div className="card-header">
@@ -146,58 +198,6 @@ const AccountComparison = () => {
             />
             <ButtonSecondaryComparison
               text={t("account-comparison-ecn-button-secondary")}
-              onClick={handleShowRegistrationPopup}
-            />
-            {/* </ButtonContainer> */}
-          </div>
-        </div>
-
-        {/* Zero+ Card */}
-        <div className="account-card zero-card">
-          <div className="card-header">
-            <div className="card-badge">
-              <img
-                src={BadgeBeginnerChoiceIcon}
-                alt={t("account-comparison-zero-badge-alt")}
-              />
-              <span>{t("account-comparison-zero-badge-text")}</span>
-            </div>
-          </div>
-          <div className="card-stars">
-            <img
-              src={StarBeginnerChoiceIcon}
-              alt={t("account-comparison-zero-stars-alt")}
-            />
-          </div>
-
-          <h3 className="card-title">{t("account-comparison-zero-title")}</h3>
-
-          <p className="card-description">
-            {t("account-comparison-zero-description")}
-          </p>
-
-          <ul className="card-features">
-            {zeroFeatures.map((feature, index) => (
-              <li key={index} className="feature-item">
-                <div className="feature-icon">
-                  <img
-                    src={CircleMarkIcon}
-                    alt={t("account-comparison_feature-icon-alt")}
-                  />
-                </div>
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="card-buttons">
-            {/* <ButtonContainer> */}
-            <ButtonPrimaryComparisonZero
-              text={t("account-comparison-zero-button-primary")}
-              onClick={handleShowRegistrationPopup}
-            />
-            <ButtonSecondaryComparison
-              text={t("account-comparison-zero-button-secondary")}
               onClick={handleShowRegistrationPopup}
             />
             {/* </ButtonContainer> */}

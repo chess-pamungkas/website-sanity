@@ -1049,7 +1049,7 @@
     .faq__expandable {
       // Adopt help-center__block-faqs expandable structure
       width: 100%;
-      padding: 8px 0 0 0;
+      padding: 8px 0 24px 0;
       color: #8c8c8c;
       font-size: 16px;
       line-height: 24px;
@@ -1058,13 +1058,13 @@
       @include mobile {
         font-size: 14px;
         line-height: 20px;
-        padding: 8px 0 0 0;
+        padding: 8px 0 20px 0;
       }
 
       @include tablet {
         font-size: 16px;
         line-height: 24px;
-        padding: 8px 0 0 0;
+        padding: 8px 0 24px 0;
       }
     }
 
@@ -1499,7 +1499,7 @@
   // Border styling for FAQ items (except first child)
   .faq__item:not(:first-child) {
     border-top: 1px solid #e4e7ec;
-    padding-top: 26px;
+    // padding-top: 26px;
   }
 
   // FAQ Item Content Layout - Adopt help-center structure

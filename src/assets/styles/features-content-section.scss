@@ -122,7 +122,7 @@
     line-height: 1.2;
 
     @include mobile {
-      font-size: 32px;
+      font-size: 36px;
       margin-bottom: 12px;
     }
 
@@ -213,13 +213,7 @@
     position: relative;
     border-radius: 28px;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     background: transparent;
-
-    &:hover {
-      transform: translateY(-4px);
-      // box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    }
 
     &--big {
       width: 100%;
@@ -770,6 +764,10 @@
       align-items: center;
       justify-content: center;
     }
+
+    @include desktop-lg {
+      overflow: visible;
+    }
   }
 
   &__card-header {
@@ -804,6 +802,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     letter-spacing: -0.02em;
+    white-space: pre-line;
 
     @include mobile {
       font-size: 24px;
@@ -831,6 +830,7 @@
     letter-spacing: 0.2px;
     opacity: 0.7;
     flex: 1;
+    white-space: pre-line;
 
     // .features-content-section__card--big & {
     //   max-width: 238px;
@@ -851,6 +851,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: visible;
 
     @include mobile {
       margin-top: 0;
@@ -868,12 +869,28 @@
     &.tier1-banks-img {
       width: 304px;
       height: 304px;
+
+      @include desktop-lg {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: 100%;
+        object-fit: contain;
+      }
     }
 
     // Choose Your Language image - smaller size
     &.choose-language-img {
       width: 226.46px;
       height: 230.46px;
+
+      @include desktop-lg {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: 100%;
+        object-fit: contain;
+      }
     }
 
     @include mobile {

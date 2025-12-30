@@ -154,6 +154,7 @@
             padding-left: 16px;
             width: 25%;
             font-weight: map-get($font-weight, "bold");
+            white-space: pre-line;
           }
 
           &:nth-child(2) {
@@ -690,6 +691,7 @@
   font-weight: map-get($font-weight, "regular");
   font-size: 32px;
   margin: 0;
+  white-space: pre-line;
 
   @include mobile {
     font-family: "Sofia Pro", Arial, sans-serif;
