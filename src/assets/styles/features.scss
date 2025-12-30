@@ -31,7 +31,7 @@
     padding: 0;
     gap: 17px;
     width: 100%;
-    max-width: 619px;
+    // max-width: 619px;
 
     @include mobile {
       width: 100%;
@@ -89,6 +89,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin: 0;
+    white-space: pre-line;
 
     @include mobile {
       font-size: 36px;
@@ -103,7 +104,7 @@
     width: 100%;
     max-width: 625px;
     font-weight: map-get($font-weight, "light");
-    font-size: 18px;
+    font-size: 16px;
     line-height: 28px;
     letter-spacing: 0.2px;
     color: map-get($colors, "black");

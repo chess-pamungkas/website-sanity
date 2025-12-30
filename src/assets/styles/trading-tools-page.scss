@@ -520,6 +520,7 @@
     align-self: stretch;
     flex-grow: 0;
     margin: 0;
+    white-space: pre-line;
 
     @include mobile {
       width: 100%;

@@ -204,7 +204,8 @@ const CostCalculatorContent = () => {
             <br />
             {t("cost-calculator_monthly-saved")}{" "}
             <span>${monthlySavings.toLocaleString()}</span>{" "}
-            {t("cost-calculator_saved-text")},
+            {t("cost-calculator_saved-text")}
+            <br />
             {t("cost-calculator_annual-saved")}{" "}
             <span>${annualSavings.toLocaleString()}</span>{" "}
             {t("cost-calculator_saved-text")}

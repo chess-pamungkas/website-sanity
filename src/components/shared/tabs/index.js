@@ -339,7 +339,7 @@ const Tabs = ({
                     className="platform-selection__card"
                     style={{
                       backgroundImage: `url(${platform.icon})`,
-                      backgroundSize: "contain",
+                      backgroundSize: "cover",
                       backgroundPosition: "center",
                       backgroundRepeat: "no-repeat",
                     }}
@@ -359,7 +359,7 @@ const Tabs = ({
                     className="platform-selection__card"
                     style={{
                       backgroundImage: `url(${platform.icon})`,
-                      backgroundSize: "contain",
+                      backgroundSize: "cover",
                       backgroundPosition: "center",
                       backgroundRepeat: "no-repeat",
                     }}
@@ -379,7 +379,7 @@ const Tabs = ({
                     className="platform-selection__card"
                     style={{
                       backgroundImage: `url(${platform.icon})`,
-                      backgroundSize: "contain",
+                      backgroundSize: "cover",
                       backgroundPosition: "center",
                       backgroundRepeat: "no-repeat",
                     }}

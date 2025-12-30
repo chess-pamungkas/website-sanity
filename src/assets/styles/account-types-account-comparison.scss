@@ -200,8 +200,8 @@
         position: absolute;
         width: 109.46px;
         height: 116px;
-        right: 18.54px;
-        top: 14px;
+        right: -5px;
+        top: -5px;
         z-index: 5;
         flex: none;
         order: 4;
@@ -212,7 +212,7 @@
         }
 
         @include mobile {
-          right: 0;
+          right: -15px;
         }
       }
       &.ecn-card {
@@ -297,15 +297,35 @@
       &.zero-card {
         position: relative;
         transition: all 0.3s ease;
+        background: rgba(144, 144, 144, 0.26);
+        border: 1px solid rgba(255, 68, 0, 0.2);
+        backdrop-filter: blur(10px);
+        /* Note: backdrop-filter has minimal browser support */
+        -webkit-backdrop-filter: blur(10px);
 
         .card-header .card-badge {
           width: fit-content;
           height: 26px;
           mix-blend-mode: normal;
-          border: 1px solid rgba(255, 255, 255, 0.25);
+          border: 1px solid #000;
           span {
             color: #000;
           }
+        }
+
+        .card-stars img {
+          width: 92px;
+          height: 112px;
+        }
+
+        .card-title {
+          font-family: "Sofia Pro", Arial, sans-serif;
+          font-style: normal;
+          font-weight: 300;
+          font-size: 72px;
+          line-height: 72px;
+          letter-spacing: -0.02em;
+          color: #000000;
         }
 
         // Hover state for zero card
@@ -344,7 +364,7 @@
             right: -15px;
             width: 155px;
             height: 164.25px;
-            background-image: url("../../assets/images/icons/account-comparison/star-beginner-choice-hover.svg");
+            background-image: url("/images/star-beginner-choice-hover.webp");
             background-size: contain;
             background-repeat: no-repeat;
             background-position: top right;
@@ -391,6 +411,7 @@
         flex-grow: 0;
         z-index: 2;
         position: relative;
+        white-space: pre-line;
       }
       .card-description {
         // width: 462px;
@@ -411,6 +432,7 @@
         flex-grow: 0;
         z-index: 2;
         position: relative;
+        white-space: pre-line;
       }
       .card-features {
         width: 100%;
@@ -717,14 +739,14 @@
       margin-top: 24px;
       .account-card {
         width: 100%;
-        padding: 24px;
+        padding: 16px;
         gap: 12px;
         .card-title {
-          font-size: 62px;
+          font-size: 62px !important;
           height: fit-content;
         }
         .card-description {
-          font-size: 16px;
+          font-size: 13.75px;
           line-height: 26px;
         }
         .card-features .feature-item span {
@@ -869,7 +891,7 @@
         margin-left: 0;
         margin-right: 0;
         .card-features .feature-item span {
-          font-size: 18px !important;
+          font-size: 16px !important;
           line-height: 28px !important;
           flex: 1 !important;
           flex-grow: 1 !important;
@@ -961,7 +983,7 @@
   }
 }
 
-// Zero+ specific button (transparent background)
+// OQtimaOne specific button (transparent background)
 .button-primary-comparison-zero-accounts-type {
   @extend .button-primary-comparison-accounts-type;
   background: transparent;

@@ -84,6 +84,7 @@
     order: 0;
     align-self: stretch;
     flex-grow: 0;
+    white-space: pre-line;
 
     &-highlight {
       background: linear-gradient(
@@ -215,13 +216,13 @@
     &__title {
       width: 100%;
       height: auto;
-      font-size: 42px;
+      font-size: 36px;
       line-height: 1.2;
       padding: 0;
     }
 
     &__subtitle {
-      font-size: 18px;
+      font-size: 16px;
       line-height: 28px;
     }
 
@@ -380,7 +381,7 @@
     }
 
     &__title {
-      width: 400px !important;
+      width: 450px !important;
       height: auto;
       font-size: 42px;
       // line-height: 50px;
@@ -725,7 +726,7 @@
       }
 
       .guide-content__header {
-        width: 554px;
+        width: 100%;
         gap: 20px;
       }
 

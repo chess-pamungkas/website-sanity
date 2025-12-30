@@ -358,7 +358,7 @@
       font-family: "Sofia Pro", Arial, sans-serif;
       font-style: normal;
       font-weight: 700; // Figma: font-weight: 700
-      font-size: 30px; // Figma: font-size: 42px
+      font-size: 28px; // Figma: font-size: 42px
       line-height: 1.25; // Figma: line-height: 48px
       letter-spacing: -0.02em; // Figma: letter-spacing: -0.02em
       text-align: left;
@@ -475,7 +475,7 @@
     &__left {
       width: 100%;
       gap: 0;
-      margin-top: 40px;
+      padding-top: 40px;
       align-items: flex-start;
     }
 
@@ -614,7 +614,7 @@
 
     &__container {
       flex-direction: column;
-      padding: 0 40px;
+      padding: 60px;
       gap: 0;
       border-radius: 24px;
     }
@@ -625,7 +625,7 @@
       flex-shrink: 0;
       align-items: flex-start;
       padding-top: 60px;
-      padding-bottom: 40px;
+      // padding-bottom: 40px;
     }
 
     &__right {
@@ -740,7 +740,7 @@
 
     &__container {
       flex-direction: row !important;
-      padding: 0 80px;
+      padding: 80px;
       gap: 62px;
       border-radius: 24px;
       width: 100%;
@@ -858,7 +858,7 @@
 
     &__container {
       flex-direction: row !important;
-      padding: 0 80px;
+      padding: 100px 80px;
       gap: 80px;
       border-radius: 24px;
       width: 100%;
@@ -869,7 +869,7 @@
       gap: 20px;
       flex-shrink: 0;
       align-items: flex-start;
-      padding-top: 110px;
+      padding-top: 50px;
     }
 
     &__right {
@@ -878,7 +878,7 @@
     }
 
     &__title {
-      width: 850px;
+      width: 800px;
       height: auto;
       font-size: 38px;
       line-height: 1.25;
@@ -981,7 +981,7 @@
 
     &__container {
       flex-direction: row !important;
-      padding: 98px 80px;
+      padding: 180px 80px;
       gap: 100px;
       border-radius: 24px;
       width: 100%;
@@ -1001,7 +1001,7 @@
     }
 
     &__title {
-      width: 1000px;
+      width: 1100px;
       height: auto;
       font-size: 42px;
       line-height: 1.25;
@@ -1106,6 +1106,7 @@
   @include mobile {
     width: 100%;
     justify-content: center;
+    margin-left: 0;
   }
 
   @include tablet {
