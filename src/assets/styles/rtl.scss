@@ -1680,6 +1680,7 @@ body[dir="rtl"] .phone-number-container,
     margin: auto;
     display: flex;
     flex-direction: row-reverse !important; // Reverse the flex direction for RTL
+    align-items: stretch !important; // Ensure sidebar and content have same height
     -webkit-overflow-scrolling: touch;
 
     input[type="text"],
@@ -1704,11 +1705,26 @@ body[dir="rtl"] .phone-number-container,
     @include desktop-lg {
       max-width: 966px;
       gap: 20px;
+      max-height: 850px;
+      height: 850px; // Set fixed height to ensure sidebar and content have same height
     }
 
     @include desktop-xl {
       max-width: 966px;
       max-height: 850px;
+      height: 850px; // Set fixed height to ensure sidebar and content have same height
+    }
+
+    @include desktop-2k {
+      max-width: 966px;
+      max-height: 850px;
+      height: 850px; // Set fixed height to ensure sidebar and content have same height
+    }
+
+    @include desktop-5k {
+      max-width: 966px;
+      max-height: 850px;
+      height: 850px; // Set fixed height to ensure sidebar and content have same height
     }
   }
 
@@ -1756,6 +1772,9 @@ body[dir="rtl"] .phone-number-container,
     border-radius: 32px !important; // Rounded on left for RTL
     order: 1 !important; // Position on left side in RTL
     text-align: right !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    align-self: stretch !important; // Ensure content stretches to match container height
 
     @include mobile {
       border-radius: 20px !important;
@@ -1768,6 +1787,23 @@ body[dir="rtl"] .phone-number-container,
 
     @include desktop-lg {
       padding: 3.5rem 3.125rem;
+      height: 100% !important;
+      min-height: 100% !important;
+    }
+
+    @include desktop-xl {
+      height: 100% !important;
+      min-height: 100% !important;
+    }
+
+    @include desktop-2k {
+      height: 100% !important;
+      min-height: 100% !important;
+    }
+
+    @include desktop-5k {
+      height: 100% !important;
+      min-height: 100% !important;
     }
   }
 
@@ -1782,11 +1818,13 @@ body[dir="rtl"] .phone-number-container,
     background-size: cover;
     width: 331px;
     height: 100%;
+    min-height: 100%;
     border-radius: 32px !important; // Rounded on right for RTL
     position: relative;
     overflow: hidden;
     background-color: #f8f9fa;
     order: 2 !important; // Position on right side in RTL
+    align-self: stretch; // Ensure sidebar stretches to match container height
 
     @include mobile {
       display: none;
@@ -1798,21 +1836,29 @@ body[dir="rtl"] .phone-number-container,
 
     @include desktop-lg {
       display: block;
+      height: 100%;
+      min-height: 100%;
     }
 
     @include desktop-xl {
       background-size: cover;
       background-position: center center;
+      height: 100%;
+      min-height: 100%;
     }
 
     @include desktop-2k {
       background-size: cover;
       background-position: center center;
+      height: 100%;
+      min-height: 100%;
     }
 
     @include desktop-5k {
       background-size: cover;
       background-position: center center;
+      height: 100%;
+      min-height: 100%;
     }
   }
 
@@ -1822,6 +1868,9 @@ body[dir="rtl"] .phone-number-container,
   body[dir="rtl"] &__content,
   [dir="rtl"] &__content {
     text-align: right !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    align-self: stretch !important; // Ensure content stretches to match container height
 
     // Badge text alignment
     &__badge {

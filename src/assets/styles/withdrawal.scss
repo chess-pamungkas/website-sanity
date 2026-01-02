@@ -44,18 +44,14 @@
 
   // Ensure tabs content is stable
   .tabs-content {
-    min-height: 600px;
+    height: auto; // Display all content
     position: relative;
-
-    @include desktop-lg {
-      min-height: 500px;
-    }
   }
 }
 
 // New Withdrawal Table Styling based on Figma Design
 .table-container-wrapper {
-  min-height: 700px; // Increased height to accommodate both layouts
+  height: auto; // Display all content
   position: relative;
   width: 100%;
   display: flex;
@@ -64,7 +60,7 @@
   align-items: center;
 
   @include desktop-lg {
-    min-height: 600px; // Increased height for desktop
+    height: auto; // Display all content
   }
 }
 
@@ -87,19 +83,9 @@
 
     .table-body-scroll-container {
       width: 100%;
-      max-height: 575px;
-      overflow-y: auto;
-      overflow-x: hidden;
-      border-radius: 0 0 12px 12px;
+      height: auto; // Allow full height to display all data
+      overflow: visible; // Remove scrolling
       background: transparent;
-
-      // Hide scrollbar but keep functionality
-      scrollbar-width: none; // Firefox
-      -ms-overflow-style: none; // IE and Edge
-
-      &::-webkit-scrollbar {
-        display: none; // Chrome, Safari, Opera
-      }
     }
 
     .withdrawal-table-body {
@@ -128,8 +114,7 @@
 
       .table-row {
         height: 59px;
-        min-height: 59px;
-        max-height: 59px;
+        height: auto;
         border-bottom: 1px solid rgba(0, 0, 0, 0.15);
         border-collapse: separate;
         display: table-row;
@@ -145,8 +130,7 @@
           border: none;
           border-bottom: 1px solid rgba(0, 0, 0, 0.15);
           height: 59px;
-          min-height: 59px;
-          max-height: 59px;
+          height: auto;
           box-sizing: border-box;
 
           &:first-child {
@@ -217,7 +201,7 @@
       width: 100%;
       height: 59px;
       min-height: 59px;
-      max-height: 59px;
+      height: auto;
       background: url("../../assets/images/bg/funding-withdrawals/table-head.svg")
         no-repeat center;
       background-size: cover;
@@ -594,9 +578,8 @@
 }
 
 .withdrawal-cards-scroll-container {
-  max-height: 800px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  height: auto; // Display all content
+  overflow: visible;
   margin-bottom: 32px;
 
   // Hide scrollbar but keep functionality

@@ -206,19 +206,9 @@
 
   .table-body-scroll-container {
     width: 100%;
-    max-height: 354px; // 6 rows * 59px = 354px
-    overflow-y: auto;
-    overflow-x: hidden;
-    // border-radius: 0 0 12px 12px;
+    height: auto; // Allow full height to display all data
+    overflow: visible; // Remove scrolling
     background: transparent;
-
-    // Hide scrollbar but keep functionality
-    scrollbar-width: none; // Firefox
-    -ms-overflow-style: none; // IE and Edge
-
-    &::-webkit-scrollbar {
-      display: none; // Chrome, Safari, Opera
-    }
   }
 
   .spreads-table-body {
@@ -247,8 +237,7 @@
 
     .table-row {
       height: 59px;
-      min-height: 59px;
-      max-height: 59px;
+      height: auto;
       border-bottom: 1px solid rgba(0, 0, 0, 0.15);
       border-collapse: separate;
       display: table-row;
@@ -264,8 +253,7 @@
         border: none;
         border-bottom: 1px solid rgba(0, 0, 0, 0.15);
         height: 59px;
-        min-height: 59px;
-        max-height: 59px;
+        height: auto;
         box-sizing: border-box;
 
         &:first-child {
@@ -322,8 +310,7 @@
     // Main Header Row (Frame 10311)
     .table-main-header {
       height: 59px;
-      min-height: 59px;
-      max-height: 59px;
+      height: auto;
       background: url("../../assets/images/bg/funding-withdrawals/table-head.svg")
         no-repeat center;
       background-size: cover;
@@ -371,8 +358,7 @@
     // Sub Header Row (Frame 10318)
     .table-sub-header {
       height: 59px;
-      min-height: 59px;
-      max-height: 59px;
+      height: auto;
       background: rgba(255, 68, 0, 0.1);
       // border-radius: 12px;
       border: none;
@@ -421,16 +407,14 @@
     .table-main-header,
     .table-sub-header {
       height: 59px;
-      min-height: 59px;
-      max-height: 59px;
+      height: auto;
     }
 
     // Consistent cell padding and alignment
     th {
       padding: 16px;
       height: 59px;
-      min-height: 59px;
-      max-height: 59px;
+      height: auto;
       box-sizing: border-box;
       vertical-align: middle;
       line-height: 22px;
@@ -568,9 +552,8 @@
 
   .spreads-cards-scroll-container {
     width: 100%;
-    max-height: 600px; // Approximate height for 6 cards
-    overflow-y: auto;
-    overflow-x: hidden;
+    height: auto; // Display all cards
+    overflow: visible;
     margin-bottom: 32px;
 
     // Hide scrollbar but keep functionality
