@@ -428,6 +428,7 @@
     margin: 0;
     max-width: 602px;
     opacity: 0.7;
+    white-space: pre-line; // Allow line breaks to be displayed
 
     @include mobile {
       font-size: 15px;
@@ -437,7 +438,7 @@
     }
 
     @include tablet {
-      font-size: 18px;
+      font-size: 16px;
       line-height: 28px;
       max-width: 475px;
     }
@@ -824,7 +825,7 @@
   }
 
   @include desktop-xl {
-    width: 1034px;
+    width: 100%;
     padding: 170px 0 80px;
   }
 
@@ -974,16 +975,47 @@
 
     @include desktop-lg {
       width: 100%;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 24px 142px;
+      max-width: 100%;
     }
 
     @include desktop-xl {
       width: 100%;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 24px 142px;
+      max-width: 100%;
+    }
+
+    @include desktop-2k {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 24px 142px;
+      max-width: 100%;
+    }
+
+    @include desktop-5k {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 24px 142px;
+      max-width: 100%;
     }
   }
 
   &__icon-container {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 
     @include mobile {
       margin-bottom: 0;
@@ -991,6 +1023,53 @@
 
     @include tablet {
       margin-bottom: 0;
+    }
+
+    @include desktop-lg {
+      margin-bottom: 0;
+    }
+
+    @include desktop-xl {
+      margin-bottom: 0;
+    }
+  }
+
+  &__text-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 16px;
+
+    @include mobile {
+      gap: 8px;
+    }
+
+    @include tablet {
+      gap: 16px;
+    }
+
+    @include desktop-lg {
+      flex: 1;
+      gap: 16px;
+      max-width: calc(100% - 151px - 24px); // 127px icon + 24px gap
+    }
+
+    @include desktop-xl {
+      flex: 1;
+      gap: 16px;
+      max-width: calc(100% - 151px - 24px); // 127px icon + 24px gap
+    }
+
+    @include desktop-2k {
+      flex: 1;
+      gap: 16px;
+      max-width: calc(100% - 151px - 24px); // 127px icon + 24px gap
+    }
+
+    @include desktop-5k {
+      flex: 1;
+      gap: 16px;
+      max-width: calc(100% - 151px - 24px); // 127px icon + 24px gap
     }
   }
 
@@ -1011,6 +1090,16 @@
     @include mobile {
       margin-bottom: 0;
     }
+
+    @include desktop-lg {
+      margin-bottom: 0;
+      text-align: left;
+    }
+
+    @include desktop-xl {
+      margin-bottom: 0;
+      text-align: left;
+    }
   }
 
   &__title {
@@ -1023,93 +1112,47 @@
     order: 2;
     flex-grow: 0;
     z-index: 2;
-
-    // Highlighted text styling
-    .highlighted-in-black {
-      color: map-get($colors, "black");
-    }
-
-    .highlighted-in-mixed {
-      background: linear-gradient(
-          102.31deg,
-          rgba(0, 0, 0, 0) 9.12%,
-          rgba(255, 68, 0, 0.45) 71.6%
-        ),
-        #000000;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-size: 0.9em;
-      font-weight: 600;
-      display: inline-block;
-      margin-left: 8px;
-      padding: 0;
-      border-radius: 0;
-    }
+    display: inline-block; // Required for gradient text to work properly
+    background: linear-gradient(
+        102.31deg,
+        rgba(0, 0, 0, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #000000;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent !important; // Ensure gradient is visible, override any other color
+    background-size: 100% 100%; // Ensure gradient covers full text
+    background-repeat: no-repeat; // Prevent gradient repetition
 
     @include mobile {
       font-size: 14px;
       width: 100%;
       height: auto;
-
-      .highlighted-in-mixed {
-        background: linear-gradient(
-            102.31deg,
-            rgba(0, 0, 0, 0) 9.12%,
-            rgba(255, 68, 0, 0.45) 71.6%
-          ),
-          #000000;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-size: 0.85em;
-        margin-left: 6px;
-        padding: 0;
-        border-radius: 0;
-      }
     }
 
     @include tablet {
       font-size: 22px;
       width: 100%;
       height: auto;
-
-      .highlighted-in-mixed {
-        background: linear-gradient(
-            102.31deg,
-            rgba(0, 0, 0, 0) 9.12%,
-            rgba(255, 68, 0, 0.45) 71.6%
-          ),
-          #000000;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-size: 0.9em;
-        margin-left: 7px;
-        padding: 0;
-        border-radius: 0;
-      }
     }
 
     @include desktop-lg {
       font-size: 22px;
+      text-align: left;
+    }
 
-      .highlighted-in-mixed {
-        background: linear-gradient(
-            102.31deg,
-            rgba(0, 0, 0, 0) 9.12%,
-            rgba(255, 68, 0, 0.45) 71.6%
-          ),
-          #000000;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-size: 0.9em;
-        font-weight: 600;
-        margin-left: 8px;
-        padding: 0;
-        border-radius: 0;
-      }
+    @include desktop-xl {
+      text-align: left;
+    }
+
+    @include desktop-2k {
+      text-align: left;
+    }
+
+    @include desktop-5k {
+      text-align: left;
     }
   }
 
@@ -1119,6 +1162,16 @@
 
     @include mobile {
       padding-bottom: 10px;
+    }
+
+    @include desktop-lg {
+      padding-bottom: 0;
+      text-align: left;
+    }
+
+    @include desktop-xl {
+      padding-bottom: 0;
+      text-align: left;
     }
   }
 
@@ -1138,6 +1191,22 @@
     @include tablet {
       font-size: 16px;
       line-height: 28px;
+    }
+
+    @include desktop-lg {
+      text-align: left;
+    }
+
+    @include desktop-xl {
+      text-align: left;
+    }
+
+    @include desktop-2k {
+      text-align: left;
+    }
+
+    @include desktop-5k {
+      text-align: left;
     }
   }
 
@@ -1476,6 +1545,7 @@
     margin: 0;
     max-width: 450px;
     opacity: 0.7;
+    white-space: pre-line; // Allow line breaks to be displayed
 
     @include mobile {
       font-size: 16px;
