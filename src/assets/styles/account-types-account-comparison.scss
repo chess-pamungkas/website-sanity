@@ -213,6 +213,12 @@
 
         @include mobile {
           right: -15px;
+          width: 70px;
+          height: 75px;
+          img {
+            width: 70px;
+            height: 75px;
+          }
         }
       }
       &.ecn-card {
@@ -277,6 +283,13 @@
             background-position: top right;
             z-index: 10;
             pointer-events: none;
+
+            @include mobile {
+              width: 100px;
+              height: 106px;
+              top: -20px;
+              right: -10px;
+            }
           }
 
           // Button hover effect when card is hovered - using correct class name
@@ -316,6 +329,11 @@
         .card-stars img {
           width: 92px;
           height: 112px;
+
+          @include mobile {
+            width: 60px;
+            height: 73px;
+          }
         }
 
         .card-title {
@@ -370,6 +388,13 @@
             background-position: top right;
             z-index: 10;
             pointer-events: none;
+
+            @include mobile {
+              width: 100px;
+              height: 106px;
+              top: -20px;
+              right: -10px;
+            }
           }
 
           // Button hover effect when card is hovered - using correct class name
@@ -454,7 +479,7 @@
         min-height: 78px;
 
         @include mobile {
-          margin: 80px 0 20px 0;
+          margin: 20px 0;
         }
         .feature-item {
           display: flex;

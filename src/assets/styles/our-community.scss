@@ -109,6 +109,7 @@
     height: 120px; // Figma: height: 120px
     margin-top: 8px; // ✅ Reduced space between badge and title
     margin-bottom: 8px; // ✅ Reduced space between badge and title
+    white-space: pre-line; // Allow line breaks to be displayed
 
     background: linear-gradient(
         102.31deg,
@@ -364,6 +365,7 @@
       text-align: left;
       margin-top: 6px; // ✅ Reduced space between badge and title for mobile
       margin-bottom: 6px; // ✅ Reduced space between badge and title for mobile
+      white-space: pre-line; // Allow line breaks to be displayed
 
       background: linear-gradient(
           102.31deg,
@@ -495,6 +497,7 @@
       font-size: 20px;
       line-height: 1.25;
       text-align: left;
+      white-space: pre-line; // Allow line breaks to be displayed
       background: linear-gradient(
           102.31deg,
           rgba(255, 255, 255, 0) 9.12%,
@@ -638,6 +641,7 @@
       height: auto;
       font-size: 27px;
       line-height: 1.25;
+      white-space: pre-line; // Allow line breaks to be displayed
       background: linear-gradient(
           102.31deg,
           rgba(255, 255, 255, 0) 9.12%,
@@ -764,6 +768,7 @@
       height: auto;
       font-size: 34px;
       line-height: 1.25;
+      white-space: pre-line; // Allow line breaks to be displayed
       background: linear-gradient(
           102.31deg,
           rgba(255, 255, 255, 0) 9.12%,
@@ -882,6 +887,7 @@
       height: auto;
       font-size: 38px;
       line-height: 1.25;
+      white-space: pre-line; // Allow line breaks to be displayed
       background: linear-gradient(
           102.31deg,
           rgba(255, 255, 255, 0) 9.12%,
@@ -1005,6 +1011,7 @@
       height: auto;
       font-size: 42px;
       line-height: 1.25;
+      white-space: pre-line; // Allow line breaks to be displayed
       background: linear-gradient(
           102.31deg,
           rgba(255, 255, 255, 0) 9.12%,

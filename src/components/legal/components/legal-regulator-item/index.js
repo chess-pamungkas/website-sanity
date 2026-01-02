@@ -43,17 +43,19 @@ const LegalRegulatorItem = ({
           <img src={icon} alt="" className="legal-regulator-item__icon" />
         </div>
 
-        {/* Title */}
-        <div className="legal-regulator-item__title-container">
-          <h3 className="legal-regulator-item__title">
-            {t(title)}{" "}
-            <span className="highlighted-in-mixed">{t(titleAccent)}</span>
-          </h3>
-        </div>
+        {/* Text Content Wrapper */}
+        <div className="legal-regulator-item__text-content-wrapper">
+          {/* Title */}
+          <div className="legal-regulator-item__title-container">
+            <h3 className="legal-regulator-item__title">
+              {t(title)} {t(titleAccent)}
+            </h3>
+          </div>
 
-        {/* Description Text */}
-        <div className="legal-regulator-item__text-container">
-          <p className="legal-regulator-item__text">{t(text)}</p>
+          {/* Description Text */}
+          <div className="legal-regulator-item__text-container">
+            <p className="legal-regulator-item__text">{t(text)}</p>
+          </div>
         </div>
 
         {/* Read More Link */}

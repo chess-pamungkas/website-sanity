@@ -22,11 +22,11 @@
 .table-scroll {
   // box-shadow: 4px 3px 15px #00000029;
   width: 100%;
-  overflow-x: auto;
+  overflow: visible; // Remove scrolling to display all data
 
   &--vertical {
-    max-height: 510px;
-    overflow-y: auto;
+    height: auto; // Display all content
+    overflow: visible;
   }
 
   &::-webkit-scrollbar {

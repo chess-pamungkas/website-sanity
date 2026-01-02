@@ -390,6 +390,74 @@ const PopupRegistrationPage = ({ location, data }) => {
     };
   }, []);
 
+  // Hide live chat widget when in iframe (popup registration)
+  useEffect(() => {
+    const hideLiveChat = () => {
+      // Select all possible live chat elements
+      const liveChatSelectors = [
+        "#convrs-shadow-host",
+        '[id*="convrs-shadow-host"]',
+        "#convrs-chat-channel-container",
+        ".convrs-chat-channel-container",
+        '[id*="convrs-chat-channel-container"]',
+        '[class*="convrs-chat-channel-container"]',
+        '[id*="convrs"]',
+        '[class*="convrs"]',
+      ];
+
+      liveChatSelectors.forEach((selector) => {
+        try {
+          const elements = document.querySelectorAll(selector);
+          elements.forEach((el) => {
+            if (el && el.style) {
+              el.style.setProperty("display", "none", "important");
+              el.style.setProperty("visibility", "hidden", "important");
+              el.style.setProperty("opacity", "0", "important");
+              el.style.setProperty("height", "0", "important");
+              el.style.setProperty("width", "0", "important");
+              el.style.setProperty("position", "absolute", "important");
+              el.style.setProperty("top", "-9999px", "important");
+              el.style.setProperty("left", "-9999px", "important");
+              el.style.setProperty("z-index", "-9999", "important");
+              el.style.setProperty("pointer-events", "none", "important");
+            }
+          });
+        } catch (e) {
+          // Ignore errors
+        }
+      });
+    };
+
+    // Hide immediately
+    hideLiveChat();
+
+    // Also hide after a short delay to catch elements that load later
+    const timeout1 = setTimeout(hideLiveChat, 100);
+    const timeout2 = setTimeout(hideLiveChat, 500);
+    const timeout3 = setTimeout(hideLiveChat, 1000);
+    const timeout4 = setTimeout(hideLiveChat, 2000);
+
+    // Use MutationObserver to hide any live chat elements that appear later
+    const observer = new MutationObserver(() => {
+      hideLiveChat();
+    });
+
+    if (typeof document !== "undefined") {
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+    }
+
+    return () => {
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
+      clearTimeout(timeout3);
+      clearTimeout(timeout4);
+      observer.disconnect();
+    };
+  }, []);
+
   // Prevent language routing redirects for popup
   useEffect(() => {
     // Disable routing redirects for popup pages
@@ -1063,6 +1131,27 @@ const PopupRegistrationPage = ({ location, data }) => {
             width: 100% !important;
             height: 100% !important;
             overflow: hidden !important;
+          }
+          
+          /* Hide live chat widget in popup registration iframe */
+          #convrs-shadow-host,
+          [id*="convrs-shadow-host"],
+          #convrs-chat-channel-container,
+          .convrs-chat-channel-container,
+          [id*="convrs-chat-channel-container"],
+          [class*="convrs-chat-channel-container"],
+          [id*="convrs"],
+          [class*="convrs"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            height: 0 !important;
+            width: 0 !important;
+            position: absolute !important;
+            top: -9999px !important;
+            left: -9999px !important;
+            z-index: -9999 !important;
+            pointer-events: none !important;
           }
         `}</style>
       </Helmet>
