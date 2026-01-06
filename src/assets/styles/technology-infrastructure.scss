@@ -241,11 +241,11 @@
   }
 
   // Responsive Design
-  @include mobile {
-    padding: 200px 0 50px;
+  @include small-mobile {
+    padding: 160px 0 50px;
 
     &__container {
-      gap: 63px;
+      gap: 30px;
     }
 
     &__header {
@@ -294,14 +294,9 @@
     }
 
     &__badge-message {
-      font-size: 14px;
-      line-height: 20px;
+      font-size: 12px;
+      line-height: 18px;
       white-space: nowrap;
-
-      @include mobile {
-        font-size: 12px;
-        line-height: 18px;
-      }
     }
 
     &__title {
@@ -311,6 +306,7 @@
     &__subtitle {
       font-size: 18px;
       line-height: 28px;
+      white-space: pre-line;
     }
 
     &__cards {
@@ -320,7 +316,7 @@
 
     &__card {
       max-width: 100%;
-      padding: 24px 28px;
+      padding: 20px;
       gap: 24px;
     }
 
@@ -330,7 +326,7 @@
     }
 
     &__card-title {
-      font-size: 32px;
+      font-size: 30px;
     }
 
     &__card-features {
@@ -343,7 +339,109 @@
     }
 
     &__feature-text {
-      font-size: 16px;
+      font-size: 14px !important;
+    }
+  }
+
+  @include mobile {
+    padding: 160px 0 50px;
+
+    &__container {
+      gap: 30px;
+    }
+
+    &__header {
+      gap: 16px;
+    }
+
+    &__badge-group {
+      width: fit-content;
+      height: 26px;
+      padding: 6px 10px;
+      margin: 0 auto;
+    }
+
+    &__badge {
+      width: 80px;
+      height: 20px;
+    }
+
+    &__badge-base {
+      width: 80px;
+      height: 20px;
+      padding: 2px 8px;
+    }
+
+    &__badge-text {
+      font-size: 10px;
+      line-height: 14px;
+      white-space: nowrap;
+    }
+
+    &__badge-content {
+      width: fit-content;
+      height: 12px;
+      padding: 0 4px;
+      gap: 4px;
+    }
+
+    &__badge-icon-wrapper {
+      width: 14px;
+      height: 14px;
+    }
+
+    &__badge-icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    &__badge-message {
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    &__title {
+      font-size: 36px;
+    }
+
+    &__subtitle {
+      font-size: 18px;
+      line-height: 28px;
+      white-space: pre-line;
+    }
+
+    &__cards {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    &__card {
+      max-width: 100%;
+      padding: 20px;
+      gap: 24px;
+    }
+
+    &__card-icon {
+      width: 60px;
+      height: 60px;
+    }
+
+    &__card-title {
+      font-size: 30px;
+    }
+
+    &__card-features {
+      gap: 12px;
+    }
+
+    &__feature-icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    &__feature-text {
+      font-size: 15px;
     }
   }
 

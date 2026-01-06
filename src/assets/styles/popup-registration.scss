@@ -299,7 +299,7 @@
       background-clip: text;
 
       @include mobile {
-        font-size: 36px;
+        font-size: 34px;
       }
     }
 
@@ -384,10 +384,14 @@
         align-items: center;
         justify-content: flex-start; // Left justify for left alignment
 
+        @include small-mobile {
+          font-size: 10px !important; // Slightly smaller on mobile
+        }
+
         @include mobile {
-          font-size: 9px; // Slightly smaller on mobile
-          line-height: 16px; // Adjusted line height for mobile
-          height: 22px; // Slightly smaller height on mobile
+          font-size: 10.5px; // Slightly smaller on mobile
+          // line-height: 16px; // Adjusted line height for mobile
+          // height: 22px; // Slightly smaller height on mobile
         }
       }
     }
@@ -730,7 +734,7 @@
     }
 
     @include mobile {
-      font-size: 0.6875rem;
+      font-size: 0.656rem;
       gap: 10px; // Slightly smaller gap on mobile
 
       .toggle-switch {
@@ -1226,7 +1230,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         max-width: 25rem;
-        font-size: 0.6875rem;
+        font-size: 0.625rem;
         line-height: 1.2;
         background-color: rgba(26, 26, 26, 0.95);
         border-radius: 0.625rem;
@@ -1472,7 +1476,7 @@
 
 .risk-warning-content {
   color: #9b9b9b;
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
 }
 
 .risk-warning-text {

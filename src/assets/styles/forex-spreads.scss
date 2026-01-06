@@ -71,7 +71,7 @@
   }
 
   @include mobile {
-    font-size: 40px;
+    font-size: 36px;
     margin-bottom: 15px;
   }
 
@@ -93,6 +93,14 @@
   align-self: stretch;
   flex-grow: 0;
   margin: 0 auto;
+
+  @include small-mobile {
+    font-size: 15px !important;
+  }
+
+  @include mobile {
+    font-size: 16px;
+  }
 }
 
 // Desktop Styles
@@ -1030,7 +1038,7 @@
 
   @include mobile {
     width: 100%;
-    max-width: 353px; // Based on Figma mobile width
+    // max-width: 353px; // Based on Figma mobile width
     height: auto !important;
     gap: 16px;
   }
@@ -1105,7 +1113,7 @@
 
     @include mobile {
       max-width: 100%;
-      padding: 0;
+      padding: 16px 0 16px 0;
       align-items: center;
     }
 
@@ -1152,7 +1160,7 @@
     @include mobile {
       width: calc(100% - 40px);
       height: auto;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 24px;
       flex: 1;
       flex-grow: 1;
@@ -1221,7 +1229,7 @@
     font-weight: map-get($font-weight, "regular");
 
     @include mobile {
-      font-size: 14px;
+      font-size: 13px;
       line-height: 20px;
       padding: 8px 0 20px 0;
     }

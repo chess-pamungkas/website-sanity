@@ -101,6 +101,9 @@
     opacity: 0.7;
     letter-spacing: 0.2px;
     white-space: pre-line;
+    @include small-mobile {
+      font-size: 11px !important;
+    }
     @include mobile {
       text-align: left;
       font-size: 12px;
@@ -382,6 +385,10 @@
     font-weight: map-get($font-weight, "light");
     font-size: 16px;
     line-height: 24px;
+
+    @include mobile {
+      font-size: 15px;
+    }
 
     &--bold {
       font-weight: map-get($font-weight, "black");
