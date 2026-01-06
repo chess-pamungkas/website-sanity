@@ -111,6 +111,10 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
 
+    @include small-mobile {
+      font-size: 32px !important;
+    }
+
     @include mobile {
       font-weight: 700; // Bold for mobile as per Figma
       font-size: 36px; // Reduced for better mobile fit
@@ -120,13 +124,6 @@
       word-wrap: break-word;
       overflow-wrap: break-word;
       hyphens: auto;
-      // Keep same gradient for mobile
-      // background: linear-gradient(
-      //     102.31deg,
-      //     rgba(0, 0, 0, 0) 9.12%,
-      //     rgba(255, 68, 0, 0.45) 71.6%
-      //   ),
-      //   #000000;
     }
   }
 
@@ -143,7 +140,7 @@
     opacity: 0.7;
 
     @include mobile {
-      font-size: 18px;
+      font-size: 15px;
       line-height: 28px;
       max-width: 100%;
     }

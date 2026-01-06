@@ -942,6 +942,10 @@
       align-self: stretch;
       flex-grow: 0;
       margin: 0;
+
+      @include small-mobile {
+        font-size: 13px !important;
+      }
     }
 
     // Image container

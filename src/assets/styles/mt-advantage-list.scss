@@ -189,6 +189,10 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
+
+    @include small-mobile {
+      font-size: 13px !important;
+    }
   }
 
   &__platform-section {
@@ -241,7 +245,7 @@
     }
 
     &__feature-text {
-      font-size: 16px;
+      font-size: 14px;
       line-height: 24px;
       flex: 1;
       flex-grow: 1;

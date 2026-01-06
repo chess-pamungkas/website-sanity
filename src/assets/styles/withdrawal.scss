@@ -676,6 +676,10 @@
   margin: 0;
   white-space: pre-line;
 
+  @include small-mobile {
+    font-size: 26px !important;
+  }
+
   @include mobile {
     font-family: "Sofia Pro", Arial, sans-serif;
     font-weight: map-get($font-weight, "bold"); // ✅ Figma weight
@@ -841,7 +845,7 @@
     font-family: "Sofia Pro", Arial, sans-serif;
     font-style: normal;
     font-weight: 800;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 22px;
     letter-spacing: -0.02em;
     color: #000000;

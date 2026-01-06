@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
+import { I18nextContext } from "gatsby-plugin-react-i18next";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
 
@@ -10,10 +11,13 @@ import bgCardSwapRateDesktop from "../../../../assets/images/bg/spreads-fees/bg-
 import bgCardSwapRateMobile from "../../../../assets/images/bg/spreads-fees/bg-card-swap-rate-mobile.svg";
 import bgContainerSwapRateDesktop from "../../../../assets/images/bg/spreads-fees/bg-container-swap-rate-desktop.svg";
 import bgContainerSwapRateMobile from "../../../../assets/images/bg/spreads-fees/bg-container-swap-rate-mobile.svg";
+import formulaImage from "../../../../assets/images/spreads-and-fees/jp-formula.png";
 
 const CostSwapRate = ({ className = "" }) => {
   const { t } = useTranslationWithVariables();
   const isRTL = useRtlDirection();
+  const { language } = useContext(I18nextContext);
+  const isJapanese = language === "jp";
 
   return (
     <div className={`cost-swap-rate ${className}`}>
@@ -93,8 +97,19 @@ const CostSwapRate = ({ className = "" }) => {
 
           {/* Right Section - Formula */}
           <div className="cost-swap-rate__card-right">
-            <div className="cost-swap-rate__formula">
-              {t("spreads-fees_swap_rate_formula")}
+            <div
+              className={`cost-swap-rate__formula ${
+                isJapanese ? "cost-swap-rate__formula--image" : ""
+              }`}
+            >
+              {isJapanese ? (
+                <img
+                  src={formulaImage}
+                  alt={t("spreads-fees_swap_rate_formula")}
+                />
+              ) : (
+                t("spreads-fees_swap_rate_formula")
+              )}
             </div>
           </div>
         </div>
