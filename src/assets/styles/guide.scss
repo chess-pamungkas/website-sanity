@@ -97,6 +97,10 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+
+    @include small-mobile {
+      font-size: 32px !important;
+    }
   }
 
   // Subtitle
@@ -222,7 +226,7 @@
     }
 
     &__subtitle {
-      font-size: 16px;
+      font-size: 14px;
       line-height: 28px;
     }
 

@@ -277,11 +277,11 @@ $hand-image: url("/images/hand.webp");
     @include mobile {
       display: block;
       position: absolute;
-      width: 504px;
+      width: 100%;
       // max-width: 400px;
       height: 488px;
       // max-height: 380px;
-      left: -30px;
+      // left: -30px;
       right: auto;
       top: auto;
       bottom: -225px;
@@ -403,7 +403,7 @@ $hand-image: url("/images/hand.webp");
       flex: none;
       order: 0;
       flex-grow: 0;
-      margin-top: 11px;
+      margin-top: 3px;
     }
   }
 
@@ -425,6 +425,7 @@ $hand-image: url("/images/hand.webp");
       max-width: 100%;
       box-sizing: border-box;
       word-break: break-word;
+      white-space: pre-line;
     }
 
     @include tablet {
@@ -559,6 +560,10 @@ $hand-image: url("/images/hand.webp");
     background-clip: text;
     white-space: pre-line;
 
+    @include small-mobile {
+      font-size: 26px !important;
+    }
+
     @include mobile {
       font-size: 32px;
       width: 100%;
@@ -662,6 +667,10 @@ $hand-image: url("/images/hand.webp");
     max-width: 615px;
     opacity: 0.7;
     white-space: pre-line;
+
+    @include small-mobile {
+      font-size: 13.5px !important;
+    }
 
     @include mobile {
       font-size: 16px;

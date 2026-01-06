@@ -459,6 +459,7 @@
       opacity: 0.75;
 
       @include mobile {
+        font-size: 14px;
         text-align: left;
       }
     }

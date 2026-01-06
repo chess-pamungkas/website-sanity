@@ -338,7 +338,6 @@
           font-style: normal;
           font-weight: 300;
           font-size: 72px;
-          line-height: 72px;
           letter-spacing: -0.02em;
           background: linear-gradient(
               102.31deg,
@@ -431,7 +430,6 @@
         font-style: normal;
         font-weight: 900;
         font-size: 72px;
-        line-height: 72px;
         letter-spacing: -0.02em;
         background: linear-gradient(
             102.31deg,
@@ -455,7 +453,6 @@
         font-style: normal;
         font-weight: map-get($font-weight, regular);
         font-size: 16px;
-        line-height: 26px;
         letter-spacing: 0.2px;
         color: #fff;
         opacity: 0.7;
@@ -466,7 +463,7 @@
         flex-grow: 0;
         z-index: 2;
         position: relative;
-        min-height: 78px;
+        min-height: auto;
         white-space: pre-line;
       }
       .card-features {
@@ -486,6 +483,10 @@
         visibility: visible;
         opacity: 1;
         box-sizing: border-box;
+
+        @include mobile {
+          margin: 10px 0;
+        }
         .feature-item {
           display: flex;
           flex-direction: row;
@@ -790,7 +791,7 @@
     }
   }
 
-  @include mobile {
+  @include small-mobile {
     min-height: auto;
     margin: 30px 0;
     padding-bottom: 60px;
@@ -798,11 +799,11 @@
       padding: 52px 18px 0;
       .account-comparison-title {
         width: fit-content;
-        font-size: 42px;
-        max-width: 358px;
+        font-size: 34px !important;
+        max-width: fit-content;
       }
       .account-comparison-subtitle {
-        font-size: 16px;
+        font-size: 14px !important;
         max-width: fit-content;
       }
     }
@@ -815,19 +816,18 @@
         padding: 20px;
         gap: 12px;
         .card-title {
-          font-size: 62px !important;
+          font-size: 42px !important;
           height: fit-content;
         }
         .card-description {
-          font-size: 13.75px;
-          line-height: 26px;
+          font-size: 10.75px !important;
         }
         .card-features .feature-item {
           .feature-icon {
             margin-top: 4px;
           }
           span {
-            font-size: 14px;
+            font-size: 11px !important;
             line-height: 20px;
             flex: 1;
             flex-grow: 1;
@@ -835,6 +835,98 @@
             word-wrap: break-word;
             overflow-wrap: break-word;
             hyphens: auto;
+            white-space: pre-line;
+          }
+        }
+        .card-buttons {
+          flex-direction: column !important;
+          width: 100% !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 12px !important;
+          margin: 0 auto !important;
+          padding: 0 !important;
+
+          .button-primary-hero,
+          .button-secondary-primary,
+          .button-secondary-hero {
+            width: 100% !important;
+            max-width: 100% !important;
+            justify-content: center;
+            margin: 0 !important;
+          }
+        }
+      }
+    }
+    .shared-features {
+      margin-top: 20px;
+      padding: 0;
+      width: calc(100% - 36px);
+      height: 122px;
+      display: none !important;
+      display: none !important;
+      align-items: center;
+      justify-content: center;
+      .shared-features-content {
+        margin-top: 55px;
+        padding: 0 24px 16.46px;
+        font-size: 14px;
+        line-height: 28px;
+        white-space: normal;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+    }
+  }
+
+  @include mobile {
+    min-height: auto;
+    margin: 30px 0;
+    padding-bottom: 60px;
+    .account-comparison-header {
+      padding: 52px 18px 0;
+      .account-comparison-title {
+        width: fit-content;
+        font-size: 36px;
+        max-width: fit-content;
+      }
+      .account-comparison-subtitle {
+        font-size: 15px;
+        max-width: fit-content;
+      }
+    }
+    .account-cards {
+      flex-direction: column;
+      padding: 24px 18px 18px;
+      gap: 24px;
+      .account-card {
+        width: 100%;
+        padding: 20px;
+        gap: 12px;
+        .card-title {
+          font-size: 42px !important;
+          height: fit-content;
+        }
+        .card-description {
+          font-size: 13.5px;
+        }
+        .card-features .feature-item {
+          .feature-icon {
+            margin-top: 4px;
+          }
+          span {
+            font-size: 13px;
+            line-height: 20px;
+            flex: 1;
+            flex-grow: 1;
+            max-width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            white-space: pre-line;
           }
         }
         .card-buttons {
@@ -901,7 +993,6 @@
         }
         .card-description {
           font-size: 16px;
-          line-height: 26px;
         }
         .card-features .feature-item span {
           font-size: 18px;

@@ -425,6 +425,10 @@
     max-width: 680px;
     opacity: 0.7;
 
+    @include small-mobile {
+      font-size: 15px !important;
+    }
+
     @include mobile {
       font-size: 16px;
       font-weight: map-get($font-weight, "light");
@@ -995,6 +999,10 @@
       align-self: stretch;
       flex-grow: 0;
       margin: 0;
+
+      @include small-mobile {
+        font-size: 13px !important;
+      }
     }
 
     // Image container
@@ -1233,7 +1241,7 @@
       &__subtitle {
         width: 333px;
         height: 56px;
-        font-size: 18px;
+        font-size: 16px;
         line-height: 28px;
         letter-spacing: 0.2px;
         color: #ffffff;
@@ -1557,7 +1565,7 @@
     &__card-title {
       display: block !important;
       visibility: visible !important;
-      font-size: 24px !important;
+      font-size: 22px !important;
       margin: 0 0 12px 0 !important;
       line-height: 1.2;
     }
@@ -1565,7 +1573,7 @@
     &__card-description {
       display: block !important;
       visibility: visible !important;
-      font-size: 16px !important;
+      font-size: 15px !important;
       max-width: none !important;
       line-height: 1.5;
     }

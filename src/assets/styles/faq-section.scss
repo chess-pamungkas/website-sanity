@@ -106,6 +106,14 @@
       opacity: 0.7;
       margin-top: -5px;
       margin-bottom: 0;
+
+      @include small-mobile {
+        font-size: 15px !important;
+      }
+
+      @include mobile {
+        font-size: 16px;
+      }
     }
 
     // Button styling for FAQ section
@@ -161,7 +169,7 @@
 
     @include mobile {
       width: 100%;
-      max-width: 353px; // Based on Figma mobile width
+      // max-width: 353px; // Based on Figma mobile width
       height: auto;
       gap: 16px;
     }
@@ -247,7 +255,7 @@
 
       @include mobile {
         // max-width: 90%;
-        padding: 0;
+        padding: 16px 0 16px 0;
         align-items: center;
       }
 
@@ -294,7 +302,7 @@
       @include mobile {
         width: calc(100% - 40px);
         height: auto;
-        font-size: 16px;
+        font-size: 15px;
         line-height: 24px;
         flex: none;
         flex-grow: 0;
@@ -363,7 +371,7 @@
       font-weight: map-get($font-weight, "regular");
 
       @include mobile {
-        font-size: 14px;
+        font-size: 13px;
         line-height: 20px;
         padding: 8px 0 20px 0;
       }

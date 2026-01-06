@@ -168,7 +168,7 @@
 
     @include mobile {
       width: 100%;
-      font-size: 42px;
+      font-size: 36px;
       text-align: left;
     }
   }
@@ -191,6 +191,7 @@
 
     @include mobile {
       width: 100%;
+      font-size: 16px;
       height: fit-content;
       text-align: left;
       align-self: stretch;
@@ -522,11 +523,15 @@
     margin: 0;
     white-space: pre-line;
 
+    @include small-mobile {
+      font-size: 24px !important;
+    }
+
     @include mobile {
       width: 100%;
       max-width: 314px;
       line-height: 1.2;
-      font-size: 26px;
+      font-size: 28px;
       font-weight: map-get($font-weight, "bold");
     }
   }
@@ -1496,6 +1501,7 @@
     margin: 0 auto 20px auto;
 
     @include mobile {
+      font-size: 36px;
       width: 100%;
       height: auto;
     }

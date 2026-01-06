@@ -179,6 +179,10 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+
+    @include mobile {
+      font-size: 36px;
+    }
   }
 
   &__text {
