@@ -9,7 +9,7 @@ export const getFooterText = () => FOOTER_TEXT_FSA;
 const FOOTER_COPYRIGHT_FSA = {
   p1: "footer-copyright-paragraph1-fsa",
   p1_2: "footer-copyright-paragraph1_2-fsa",
-  p1_3: "footer-copyright-paragraph1_3-fsa",
+  // p1_3: "footer-copyright-paragraph1_3-fsa",
   p2: "footer-copyright-paragraph2-fsa",
   p3_1: "footer-copyright-paragraph3-part1-fsa",
   p3_2: "footer-copyright-paragraph3-part2-fsa",
