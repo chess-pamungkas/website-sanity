@@ -1,5 +1,6 @@
 const handleClient = (clientConfig, setIsPopupShown) => {
-  if (clientConfig.banned || clientConfig.recommendedRedirect) {
+  // Only show popup for banned (restricted) countries; EU redirect popup removed from oqtima.com
+  if (clientConfig.banned) {
     setIsPopupShown(true);
   }
 };

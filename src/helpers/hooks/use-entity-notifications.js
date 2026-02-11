@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import ClientResolverContext from "../../context/client-resolver-context";
 import { isBrowser } from "../services/is-browser";
 import { REDIRECT_OR_BANNED_POPUP_SHOWN_KEY } from "../gdpr-cookie.config";
+import { redirectToOppositeEntity } from "../services/redirect-to-opposite-entity";
 
 export const useEntityNotifications = (handlePopupOpen) => {
   const { clientConfig } = useContext(ClientResolverContext);
@@ -18,31 +19,25 @@ export const useEntityNotifications = (handlePopupOpen) => {
     // Set risk warning notification to false as default (FSA context)
     setIsRiskWarningNotification(false);
 
-    if (
-      clientConfig &&
-      Object.keys(clientConfig).length &&
-      clientConfig.recommendedRedirect &&
-      isBrowser() &&
-      !window.sessionStorage.getItem(REDIRECT_OR_BANNED_POPUP_SHOWN_KEY)
-    ) {
-      setIsRecommendedRedirectNotification(true);
-    }
+    // EU redirect popup removed from oqtima.com: no recommendedRedirect notification or popup
 
     if (
       clientConfig &&
       Object.keys(clientConfig).length &&
-      (clientConfig.banned || clientConfig.forceRedirectPopup) &&
       isBrowser() &&
       !window.sessionStorage.getItem(REDIRECT_OR_BANNED_POPUP_SHOWN_KEY)
     ) {
-      if (handlePopupOpen) {
-        handlePopupOpen();
+      if (clientConfig.forceRedirectPopup && !clientConfig.banned) {
+        // Cyprus: auto-redirect to .eu without showing popup (behaviour unchanged)
+        redirectToOppositeEntity();
+        return;
       }
-      setIsBannedPopup(
-        clientConfig.banned &&
-          !clientConfig.recommendedRedirect &&
-          !clientConfig.forceRedirectPopup
-      );
+      if (clientConfig.banned) {
+        if (handlePopupOpen) {
+          handlePopupOpen();
+        }
+        setIsBannedPopup(true);
+      }
     }
   }, [clientConfig]);
 
