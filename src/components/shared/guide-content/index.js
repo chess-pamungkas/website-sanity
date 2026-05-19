@@ -157,6 +157,8 @@ const GuideContent = ({
                   src={BadgeGuideIcon}
                   alt={t("guide-content_badge-icon-alt")}
                   className="guide-content__badge-icon"
+                  width={24}
+                  height={24}
                 />
                 <span className="guide-content__badge-text">
                   {t("guide-badge-text")}
@@ -196,6 +198,8 @@ const GuideContent = ({
                             step.number
                           }`}
                           className="guide-content__step-circle-icon"
+                          width={24}
+                          height={24}
                         />
                       </span>
                     </div>
@@ -223,6 +227,8 @@ const GuideContent = ({
                   src={BadgeGuideIcon}
                   alt={t("guide-content_badge-icon-alt")}
                   className="guide-content__badge-icon"
+                  width={24}
+                  height={24}
                 />
                 <span className="guide-content__badge-text">
                   {t("guide-badge-text")}
@@ -261,6 +267,8 @@ const GuideContent = ({
                           step.number
                         }`}
                         className="guide-content__step-circle-icon"
+                        width={24}
+                        height={24}
                       />
                     </div>
                     <div className="guide-content__step-text">

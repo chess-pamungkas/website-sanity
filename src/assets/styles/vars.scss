@@ -11,6 +11,18 @@ $xxxl: 5120px;
 
 $xl-height: 1080px;
 
+/* Homepage: stacked features + testimonials (viewport < $lg ~1024px). Reserve min-height reduces CLS before HomeDeferredApp mounts. */
+$below-hero-first-block-min-height-mobile: 1240px;
+/* TradingTicker: margin-top 100px + strip on mobile (trading-ticker.scss). Placeholder must mirror or #main-container CLS ~0.13. */
+$homepage-ticker-margin-top-mobile: 100px;
+$homepage-ticker-body-height-mobile: 250px;
+$homepage-ticker-block-height-mobile: (
+  $homepage-ticker-margin-top-mobile + $homepage-ticker-body-height-mobile
+);
+$below-hero-first-block-inner-min-height-mobile: (
+  $below-hero-first-block-min-height-mobile - $homepage-ticker-block-height-mobile
+);
+
 $font: "Sofia Pro", sans-serif;
 $font-secondary: "Lato", sans-serif;
 $fontJP: "Noto Sans JP", sans-serif;

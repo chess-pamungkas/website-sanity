@@ -19,24 +19,31 @@ const FeaturesProducts = ({
   const [currentSlide, setCurrentSlide] = useState(0);
   const sliderRef = useRef(null);
 
-  // Handle mouse drag for mobile sliding
+  // Handle mouse drag for mobile sliding (refs avoid forced reflow from reading layout in same frame as React updates)
   const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const dragStartRef = useRef({ startPageX: 0, startScrollLeft: 0 });
 
   const handleMouseDown = (e) => {
     if (!isMobile) return;
+    const slider = sliderRef.current;
+    if (!slider) return;
     setIsDragging(true);
-    setStartX(e.pageX - sliderRef.current.offsetLeft);
-    setScrollLeft(sliderRef.current.scrollLeft);
+    requestAnimationFrame(() => {
+      dragStartRef.current = {
+        startPageX: e.pageX,
+        startScrollLeft: slider.scrollLeft,
+      };
+    });
   };
 
   const handleMouseMove = (e) => {
     if (!isDragging || !isMobile) return;
     e.preventDefault();
-    const x = e.pageX - sliderRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    sliderRef.current.scrollLeft = scrollLeft - walk;
+    const slider = sliderRef.current;
+    if (!slider) return;
+    const { startPageX, startScrollLeft } = dragStartRef.current;
+    const walk = (e.pageX - startPageX) * 2;
+    slider.scrollLeft = startScrollLeft - walk;
   };
 
   const handleMouseUp = () => {
@@ -147,6 +154,8 @@ const FeaturesProducts = ({
             src={featuresIcon}
             alt={t("features-products_badge-icon-alt")}
             className="features-products__badge-icon"
+            width={24}
+            height={24}
           />
           <span className="features-products__badge-text">
             {t(`features-products_${tradingType}_badge-text`)}
@@ -182,7 +191,7 @@ const FeaturesProducts = ({
                 })}
               >
                 <div className="features-products__card-icon">
-                  <img src={feature.icon} alt={feature.title} />
+                  <img src={feature.icon} alt={feature.title} width={64} height={64} />
                 </div>
                 <h3 className="features-products__card-title">
                   {t(feature.title)}
@@ -203,7 +212,7 @@ const FeaturesProducts = ({
             {features.map((feature, index) => (
               <div key={`feature-${index}`} className="features-products__card">
                 <div className="features-products__card-icon">
-                  <img src={feature.icon} alt={feature.title} />
+                  <img src={feature.icon} alt={feature.title} width={64} height={64} />
                 </div>
                 <h3 className="features-products__card-title">
                   {t(feature.title)}

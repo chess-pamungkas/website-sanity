@@ -1,0 +1,35 @@
+/**
+ * Deferred styles for HOMEPAGE only. Loaded on interaction/load.
+ * Keeps "Reduce unused CSS" lower on Lighthouse (homepage audit) without PurgeCSS.
+ */
+@import "vars";
+@import "mixins";
+
+/* Popup can appear on homepage */
+@import "popup-registration";
+
+/* Hero Trustpilot widget (filter for white text on dark hero – must be in home bundle) */
+@import "trust-pilot";
+
+/* Below-hero: must be in first deferred chunk (deferred-styles.css) so layout is correct when ticker/features/testimonials mount */
+@import "trading-symbols";
+@import "trading-ticker";
+@import "features";
+@import "testimonials-content";
+@import "security-content";
+@import "testimonials-security-content";
+
+/* tabs → index.scss (shared with inner routes) */
+@import "table";
+@import "lang-options";
+@import "navbar-dropdown-highlight";
+@import "account-comparison";
+@import "cost-calculator";
+@import "technology-infrastructure";
+@import "market-sentiment";
+/*
+ * Above three were in deferred-styles-2-only; sequential load + mobile quick-reveal (280ms) vs
+ * deferred CSS (~1s) left HTML mounted before rules applied — broken layout/spinners. Keep them
+ * in the first deferred chunk alongside account-comparison.
+ * Chunk 2 (trust, guide, our-community, form, …) → index-deferred-home-2.scss
+ */

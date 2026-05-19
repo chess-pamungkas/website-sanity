@@ -10,8 +10,12 @@ const LIVE_CHAT_TITLE = "header-nav-tab-trading-hub-live-chat-title";
 const handleLiveChatClick = (event, title) => {
   if (title === LIVE_CHAT_TITLE) {
     event.preventDefault();
-    if (typeof window !== "undefined" && window.ConvrsChat) {
-      window.ConvrsChat.ShowWebChat();
+    if (typeof window !== "undefined") {
+      if (typeof window.loadConvrsWebchatAndOpen === "function") {
+        window.loadConvrsWebchatAndOpen();
+      } else if (window.ConvrsChat) {
+        window.ConvrsChat.ShowWebChat();
+      }
     }
   }
 };
@@ -32,11 +36,7 @@ const MenuColumn = ({ className, items }) => {
                 )}`}
                 className="menu-column__group"
               >
-                <div
-                  className="menu-column__group-title"
-                  role="heading"
-                  aria-level={4}
-                >
+                <div className="menu-column__group-title">
                   {t(item.groupTitle)}
                 </div>
                 <ul className="menu-column__group-items">

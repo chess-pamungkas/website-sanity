@@ -1,107 +1,138 @@
 @import "vars";
 @import "mixins";
 @import "container";
-@import "typography";
+/* Sofia Pro @font-face: /css/fonts-critical.css (loaded async via media=print — avoids render-blocking TBT on mobile). */
 
 @import "button-link";
 @import "reusable-buttons";
 @import "main-promotion";
-@import "trading-tools";
-@import "faq";
-@import "top-market-layout";
-@import "metals-spreads";
-@import "forex-spreads";
-@import "indices-spreads";
-@import "faq-section";
-@import "crypto-spreads";
-@import "cookie-policy-table";
-@import "energies-spreads";
 @import "header";
 @import "footer";
 @import "navbar-item";
-@import "lang-select";
-@import "burger-menu";
-@import "accordion";
-@import "search-bar";
 @import "dropdown-item";
 @import "dropdown";
-@import "trading-symbols";
-@import "trading-ticker";
-@import "features";
-@import "tabs";
-@import "table";
-@import "popup";
-@import "lang-options";
-@import "search-page";
-@import "cookies-popup";
-@import "gdpr-popup";
-@import "notification-stripe";
-@import "energies";
-@import "all-markets";
-@import "market-item";
-@import "market-item-advantages";
-@import "legal";
-@import "documents";
-@import "system-info";
-@import "mt4";
-@import "mt5";
-
-@import "mt-promotion";
-@import "withdrawal";
-@import "spreads-and-fees";
-@import "help-center";
-@import "partners";
-@import "accounts-type";
-@import "contact-us";
-@import "form";
-@import "trading-tools-page";
-@import "privacy-policy";
-@import "vps";
-@import "keep-your-vps";
-@import "get-complimentary-vps";
-@import "swap-free";
-@import "swap-free-freedom";
-@import "popup-registration";
-@import "webtrader";
 @import "navbar-dropdown-highlight";
-@import "testimonials-content";
-@import "security-content";
-@import "testimonials-security-content";
-@import "account-comparison";
-@import "account-types-account-comparison";
-@import "cost-calculator";
-@import "technology-infrastructure";
-@import "market-sentiment";
-@import "featured-ideas";
-@import "trading-calendar";
-@import "tab-trading-tools";
-@import "trust";
-@import "features-content-section";
-@import "guide";
-@import "our-community";
-@import "breadcrumbs-tab";
+@import "lang-select";
+@import "lang-options";
+@import "burger-menu";
+@import "search-bar";
+@import "popup";
+@import "gdpr-popup";
+/* Cookie banner: must ship with main CSS. Deferred-only caused in-flow unstyled block on inner routes (e.g. /id/all-markets/) before deferred chunk — SSR inline hides .cookies-popup only on homepage. */
+@import "cookies-popup";
+/* All-markets hero: must be in main CSS — deferred-only caused ~0.47 CLS (section reflow when deferred-pages.css applies). */
+@import "all-markets";
+/* Same pattern: other trading-product heroes were deferred-only → ~0.47 CLS on routes like /id/crypto/ when deferred-pages.css loads. */
 @import "crypto";
-@import "indices";
+@import "energies";
+@import "etf";
 @import "forex";
+@import "indices";
 @import "metals";
 @import "shares";
-@import "etf";
-@import "hero";
-@import "features-products";
+/* Account types (/accounts-type): was deferred-pages-only → ~0.35 CLS on comparison section when sheet applied after first paint */
+@import "accounts-type";
+@import "account-types-account-comparison";
+/* Funding (/funding/): deferred hero CSS caused ~1 CLS + late LCP bg discovery (same as accounts-type). */
 @import "funding-withdrawals";
-@import "fastin-fastout-section";
-@import "payment-systems-section";
-@import "mt-advantage-list";
-@import "company";
-@import "faq-hero";
-@import "faq-search-bar";
-@import "trust-pilot";
+/* Funding withdrawal table: .top-market-layout + withdrawal.scss were deferred-only → ~0.83 CLS on section.top-market-layout--withdrawal when deferred chunk applied. */
+@import "top-market-layout";
+@import "withdrawal";
+/* Spreads & fees (/spreads-and-fees/): CLS + undiscoverable LCP when hero was CSS-bg-only + deferred sheet + 100vh. */
+@import "spreads-and-fees";
+/* Trading tools (/trading-tools/): same pattern — avoid 100vh snap + hero LCP <img> needs early layout rules. */
+@import "trading-tools";
+/* VPS (/vps/): was deferred-only → ~0.25 CLS on .vps__hero-container when deferred-styles.css applied after first paint. */
+@import "vps";
+/* Swap-free (/swap-free/): deferred-only → ~1 CLS on #main-container when deferred-styles.css applied (desktop lab). */
+@import "swap-free";
+@import "swap-free-freedom";
 @import "how-to-trade-swap-free";
-@import "cost-swap-rate";
+/* MT4/MT5 hero: LCP <img> + layout must be in main CSS (was deferred-only). */
+@import "mt4";
+@import "mt5";
+/* Komisi block (.commission on /spreads-and-fees/): deferred-only → ~1 CLS when fixed height layout applies after first paint. */
 @import "commission";
-@import "our-spreads";
-@import "client-portal-assistance";
-@import "simplify-your-setup";
+/* Tabs (/funding/ Deposit ↔ Penarikan): deferred-styles-only `.tabs__tab` left taps ~21px tall in Lighthouse — target-size + roving tabindex. */
+@import "tabs";
+/* FAQ + guide: were deferred-pages-only → first paint unstyled then full rules load → ~0.14+ CLS on trading routes (e.g. /id/etf/). Base layout must ship with main CSS. */
+@import "faq";
+@import "faq-section";
+@import "guide";
+/* Below-fold all-markets page: was in deferred-pages only → ~0.10 CLS when CSS flipped after LCP defer. */
+@import "trading-symbols";
+@import "trading-ticker";
+@import "breadcrumbs-tab";
+@import "market-item";
+@import "market-item-advantages";
+/* Below-hero (ticker on home-only chunks, features, testimonials) in index-deferred.scss */
+/* Placeholder for deferred header: same space and look as .header so no visible "reload" when Header mounts. */
+.header-placeholder {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  min-height: $header-height-small-mobile;
+  @include tablet {
+    min-height: $header-height-small;
+  }
+  pointer-events: none;
+  background-color: rgba(247, 245, 243, 0.98);
+}
+
+/* Reserved height: ~760px desktop keeps main-container CLS low when content mounts (Lighthouse DevTools). Less gap than 880px; PSI/GTmetrix headless 90+. */
+/* Below-lg: stacked features + testimonials (mobile + tablet). Must match preload placeholder or short shell → CLS (Lighthouse layout-shifts on .below-hero-first-block-wrapper). */
+.below-hero-placeholder {
+  min-height: 420px;
+  @include desktop-lg {
+    min-height: 760px;
+  }
+}
+.below-hero-placeholder--first-block {
+  min-height: 420px;
+  @media screen and (max-width: $max-lg) {
+    display: flex;
+    flex-direction: column;
+    min-height: $below-hero-first-block-min-height-mobile;
+  }
+  @include desktop-lg {
+    min-height: 760px;
+  }
+}
+.below-hero-placeholder__ticker-slot {
+  @media screen and (max-width: $max-lg) {
+    flex-shrink: 0;
+    margin-top: $homepage-ticker-margin-top-mobile;
+    min-height: $homepage-ticker-body-height-mobile;
+  }
+}
+.below-hero-placeholder__content-slot {
+  @media screen and (max-width: $max-lg) {
+    flex: 1 0 auto;
+    min-height: $below-hero-first-block-inner-min-height-mobile;
+  }
+}
+.below-hero-first-block-wrapper {
+  min-height: 420px;
+  @media screen and (max-width: $max-lg) {
+    min-height: $below-hero-first-block-inner-min-height-mobile;
+  }
+  @include desktop-lg {
+    min-height: 760px;
+  }
+}
+body.homepage-bg-1 #main-container {
+  min-height: 420px;
+  @media screen and (max-width: $max-lg) {
+    min-height: $below-hero-first-block-inner-min-height-mobile;
+  }
+  @include desktop-lg {
+    min-height: 760px;
+  }
+  contain: layout;
+}
+/* All other section/page styles → index-deferred.scss (load on first interaction; reduces "Reduce unused CSS" ~135 KiB without PurgeCSS) */
 
 // rtl should import last
 @import "rtl";
@@ -238,9 +269,7 @@ a {
   display: list-item;
 }
 
-#default-nojs {
-  display: none;
-}
+// Do NOT hide #default-nojs here: it is the static LCP hero (visible on first paint, hidden by layout useEffect after 600ms). Hiding it in CSS would make LCP fall to the header lang selector.
 
 .jp-font {
   font-family: $fontJP;

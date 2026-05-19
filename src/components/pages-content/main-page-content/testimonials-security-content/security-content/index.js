@@ -1,6 +1,8 @@
 import React, { useState, useContext } from "react";
-import BadgeSecurityIcon from "../../../../../assets/images/icons/main-page/badge-security.svg";
-import CircleMarkIcon from "../../../../../assets/images/icons/circle-mark.svg";
+import {
+  BadgeSecurityIcon,
+  CircleMarkIcon,
+} from "../../../../shared/shared-icons";
 import { ShowRegistrationPopup } from "../../../../../helpers/constants";
 import LanguageContext from "../../../../../context/language-context";
 import { StandardButtons } from "../../../../shared/reusable-buttons";
@@ -43,6 +45,8 @@ const SecurityContent = () => {
         <img
           src={BadgeSecurityIcon}
           alt={t("security-content_badge-icon-alt")}
+          width={24}
+          height={24}
         />
         <span className="badge-label">{t("security-content_badge-text")}</span>
       </div>
@@ -54,6 +58,8 @@ const SecurityContent = () => {
               src={item.icon}
               alt={t("security-content_point-icon-alt")}
               className="point-icon"
+              width={24}
+              height={24}
             />
             <span>{item.text}</span>
           </li>

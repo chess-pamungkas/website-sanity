@@ -1,5 +1,6 @@
 @import "vars";
 @import "mixins";
+@import "trading-product-hero-bg-lcp";
 
 .vps {
   position: relative;
@@ -20,9 +21,11 @@
   align-items: center;
 
   @include mobile {
-    height: 953px;
+    min-height: 953px;
+    height: auto;
     border-radius: 20px;
     padding-top: 73px;
+    padding-bottom: 20px;
     margin-top: 0;
     margin-bottom: 0;
     overflow: visible;
@@ -73,13 +76,15 @@
     @include mobile {
       width: 100%;
       max-width: 100%;
-      height: 953px;
+      min-height: 953px;
+      height: auto;
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
       top: 73px;
       margin: 0 auto;
       border-radius: 20px;
+      contain: layout;
     }
 
     @include tablet {
@@ -140,67 +145,30 @@
     }
   }
 
-  &__hero-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    border-radius: 24px;
-    z-index: 1;
-    overflow: hidden;
-    background-position: center center;
-    background-repeat: no-repeat;
+  @include trading-product-hero-bg-lcp;
 
-    @include mobile {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 0;
-      top: 0;
-      border-radius: 20px;
-      background: url("../../assets/images/bg/hero/vps/vps-mobile.svg")
-        no-repeat center center;
-      background-size: cover;
-      overflow: hidden;
-      border-radius: 20px;
-      background-color: transparent;
-    }
-
+  &__hero-bg-lcp {
     @include tablet {
-      background: url("../../assets/images/bg/hero/vps/vps-desktop.svg")
-        no-repeat 86% 100%;
-      background-size: cover;
-      background-color: transparent;
+      object-position: 86% 100%;
     }
 
     @include desktop-lg {
-      background: url("../../assets/images/bg/hero/vps/vps-desktop.svg")
-        no-repeat 86% 100%;
-      background-size: cover;
-      background-color: transparent;
+      object-position: 86% 100%;
     }
 
     @include desktop-xl {
-      background: url("../../assets/images/bg/hero/vps/vps-desktop.svg")
-        no-repeat center;
-      background-size: 100% auto;
-      background-color: transparent;
+      object-fit: contain;
+      object-position: center center;
     }
 
     @include desktop-2k {
-      background: url("../../assets/images/bg/hero/vps/vps-desktop.svg")
-        no-repeat center;
-      background-size: 100% auto;
-      background-color: transparent;
+      object-fit: contain;
+      object-position: center center;
     }
 
     @include desktop-5k {
-      background: url("../../assets/images/bg/hero/vps/vps-desktop.svg")
-        no-repeat center;
-      background-size: 100% auto;
-      background-color: transparent;
+      object-fit: contain;
+      object-position: center center;
     }
   }
 
@@ -710,7 +678,12 @@
       justify-content: center;
       align-content: center;
       width: 100%;
+      min-height: 52px;
       margin-top: 65px;
+
+      .trustpilot-widget {
+        min-height: 24px;
+      }
     }
     @include tablet {
       width: 100%;
@@ -859,23 +832,6 @@
     border-radius: 24px;
     margin: 50px 0;
     min-height: 583px; // Add minimum height to ensure proper background display
-    background-image: none !important; // Hide inline background-image, use ::before instead
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url("../../assets/images/bg/vps/join-our-community-vps-desktop-1.webp")
-        no-repeat center center;
-      background-size: cover; // Changed from 100% auto to cover
-      width: 100%;
-      height: 100%;
-      border-radius: 24px;
-      pointer-events: none;
-    }
 
     &__container {
       position: relative;
@@ -1176,20 +1132,6 @@
       border-radius: 20px;
       width: 100%;
       min-height: 817px; // Changed from height to min-height
-
-      &::before {
-        background: url("../../assets/images/bg/vps/join-our-community-vps-mobile.svg")
-          no-repeat center center;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 24px;
-        background-size: cover;
-        background-position: center center;
-        width: 100%;
-        height: 100%;
-      }
 
       &__container {
         flex-direction: column;
@@ -1550,7 +1492,7 @@
       background: #ffffff !important; // Temporary background for debugging
 
       &::before {
-        background-image: url("../../assets/images/bg/features-products/features-products-mobile.svg") !important;
+        background-image: url("/images/bg/features-products/features-products-mobile.svg") !important;
       }
     }
 

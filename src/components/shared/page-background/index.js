@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useLayoutEffect } from "react";
 
 const PageBackground = ({ backgroundType = "homepage-bg-1", children }) => {
-  useEffect(() => {
-    // Add background class to body
+  // useLayoutEffect: apply before paint so first frame matches homepage layout rules
+  // (useEffect runs after paint → extra style flush + forced reflow when JS reads geometry).
+  useLayoutEffect(() => {
     document.body.classList.add(backgroundType);
-
-    // Cleanup function to remove background class when component unmounts
     return () => {
       document.body.classList.remove(backgroundType);
     };

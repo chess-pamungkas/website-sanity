@@ -156,7 +156,7 @@
       height: 100%;
       left: 0;
       top: 0;
-      background: url("../../assets/images/bg/hero/legal/legal-mobile.svg")
+      background: url("/images/bg/hero/legal/legal-mobile.svg")
         no-repeat center center;
       background-size: cover;
       background-color: transparent;
@@ -164,7 +164,7 @@
     }
 
     @include tablet {
-      background: url("../../assets/images/bg/hero/legal/legal-desktop.svg")
+      background: url("/images/bg/hero/legal/legal-desktop.svg")
         no-repeat 65% 50%;
       background-size: cover;
       background-color: transparent;
@@ -172,7 +172,7 @@
     }
 
     @include desktop-lg {
-      background: url("../../assets/images/bg/hero/legal/legal-desktop.svg")
+      background: url("/images/bg/hero/legal/legal-desktop.svg")
         no-repeat 35% 50%;
       background-size: cover;
       background-color: transparent;
@@ -180,21 +180,21 @@
     }
 
     @include desktop-xl {
-      background: url("../../assets/images/bg/hero/legal/legal-desktop.svg")
+      background: url("/images/bg/hero/legal/legal-desktop.svg")
         no-repeat center center;
       background-size: cover;
       background-color: transparent;
     }
 
     @include desktop-2k {
-      background: url("../../assets/images/bg/hero/legal/legal-desktop.svg")
+      background: url("/images/bg/hero/legal/legal-desktop.svg")
         no-repeat center center;
       background-size: cover;
       background-color: transparent;
     }
 
     @include desktop-5k {
-      background: url("../../assets/images/bg/hero/legal/legal-desktop.svg")
+      background: url("/images/bg/hero/legal/legal-desktop.svg")
         no-repeat center center;
       background-size: cover;
       background-color: transparent;

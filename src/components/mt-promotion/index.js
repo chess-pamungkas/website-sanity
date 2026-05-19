@@ -4,6 +4,7 @@ import cn from "classnames";
 import MtItemAdvantageList from "../shared/mt-advantage-list";
 import { useRtlDirection } from "../../helpers/hooks/use-rtl-direction";
 import { DIR_LTR, DIR_RTL } from "../../helpers/constants";
+import { MT_PLATFORM_PROMO_DIMENSIONS } from "../../helpers/mt-platform-static-images";
 
 const MtPromotion = forwardRef(
   (
@@ -14,6 +15,7 @@ const MtPromotion = forwardRef(
       advantagesTitle,
       downloadTitle,
       image,
+      imageMobile,
       platformType = "mt4",
     },
     ref
@@ -31,11 +33,34 @@ const MtPromotion = forwardRef(
           <div
             className={cn("mt-promotion__block", "mt-promotion__block--flexed")}
           >
-            <img
-              src={image}
-              alt={advantagesTitle}
-              className="mt-promotion__img"
-            />
+            {imageMobile ? (
+              <picture>
+                <source
+                  media="(max-width: 768px)"
+                  type="image/webp"
+                  srcSet={imageMobile}
+                />
+                <img
+                  src={image}
+                  alt={advantagesTitle}
+                  className="mt-promotion__img"
+                  width={MT_PLATFORM_PROMO_DIMENSIONS.width}
+                  height={MT_PLATFORM_PROMO_DIMENSIONS.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <img
+                src={image}
+                alt={advantagesTitle}
+                className="mt-promotion__img"
+                width={MT_PLATFORM_PROMO_DIMENSIONS.width}
+                height={MT_PLATFORM_PROMO_DIMENSIONS.height}
+                loading="lazy"
+                decoding="async"
+              />
+            )}
           </div>
           <div className="mt-promotion__block">
             <div className="mt-promotion__description">
@@ -75,6 +100,7 @@ MtPromotion.propTypes = {
   advantagesTitle: PropTypes.string.isRequired,
   downloadTitle: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
+  imageMobile: PropTypes.string,
   platformType: PropTypes.oneOf(["mt4", "mt5"]),
 };
 

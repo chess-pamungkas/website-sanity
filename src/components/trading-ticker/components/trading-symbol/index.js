@@ -35,6 +35,8 @@ const TradingSymbol = ({ className, symbol, direction, bid, ask, spread }) => {
           <img
             src={direction === "up" ? arrowUp : arrowDown}
             className="trading-symbol__arrow"
+            width={20}
+            height={20}
           />
         </div>
         <div className="trading-symbol__data">

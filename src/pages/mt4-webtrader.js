@@ -1,6 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { graphql } from "gatsby";
 import "../assets/styles/index.scss";
+import "../assets/styles/webtrader.scss";
+import "../assets/styles/mt4.scss";
 import Seo from "../components/shared/seo";
 import Mt4WebTraderLink from "../components/mt4-webtrader";
 import CommonContext from "../context/common-context";

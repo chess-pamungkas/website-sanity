@@ -239,14 +239,15 @@
       }
 
       &.minimum-deposit-card {
-        background-image: url("../../assets/images/bg/vps/bg-card-minimum-$3000-deposit-desktop.svg");
+        /* Root-relative + %24: webpack/deferred CSS breaks ../../assets; $ confuses Sass */
+        background-image: url("/images/bg/vps/bg-card-minimum-%243000-deposit-desktop.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         flex-direction: column;
 
         @include mobile {
-          background-image: url("../../assets/images/bg/vps/bg-card-minimum-$3000-deposit-mobile.svg");
+          background-image: url("/images/bg/vps/bg-card-minimum-%243000-deposit-mobile.svg");
         }
 
         @include tablet {
@@ -264,13 +265,13 @@
       }
 
       &.minimum-trading-card {
-        background-image: url("../../assets/images/bg/vps/bg-card-minimum-trading-volume-desktop.svg");
+        background-image: url("/images/bg/vps/bg-card-minimum-trading-volume-desktop.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
 
         @include mobile {
-          background-image: url("../../assets/images/bg/vps/bg-card-minimum-trading-volume-mobile.svg");
+          background-image: url("/images/bg/vps/bg-card-minimum-trading-volume-mobile.svg");
         }
 
         // Desktop layout: side-by-side content and image

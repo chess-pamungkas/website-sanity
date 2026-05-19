@@ -26,7 +26,7 @@ const Mt4WebTraderLink = () => {
         // Simple script availability check
         if (typeof window.MetaTraderWebTerminal !== "function") {
           console.warn("MetaTraderWebTerminal not available, retrying...");
-          setTimeout(initializeWebTrader, 1000);
+          setTimeout(initializeWebTrader, 250);
           return;
         }
 
@@ -51,10 +51,25 @@ const Mt4WebTraderLink = () => {
           colorScheme: "green_on_black",
         });
 
-        // Set loading to false after a delay to allow initialization
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 3000);
+        // Reveal quickly once terminal node exists, but keep a tiny settle buffer
+        // so users don't see temporary intermediate widget state.
+        const startedAt = Date.now();
+        const waitForTerminalReady = () => {
+          const root = document.getElementById("webterminal");
+          const hasChildren = !!(root && root.childElementCount > 0);
+          const hasIframe = !!(root && root.querySelector("iframe"));
+          if (hasChildren || hasIframe) {
+            setTimeout(() => setIsLoading(false), 120);
+            return;
+          }
+          if (Date.now() - startedAt > 3500) {
+            // Fallback: never keep loader forever.
+            setIsLoading(false);
+            return;
+          }
+          setTimeout(waitForTerminalReady, 150);
+        };
+        setTimeout(waitForTerminalReady, 100);
 
         isIFrameAdded.current = true;
       } catch (error) {
@@ -96,7 +111,7 @@ const Mt4WebTraderLink = () => {
 
   return (
     <div
-      className="mt4-webtrader"
+      className={`mt4-webtrader ${isLoading ? "mt4-webtrader--loading" : ""}`}
       ref={containerRef}
       style={{
         paddingTop: isDesktop

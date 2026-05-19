@@ -161,7 +161,7 @@
       left: 0;
       top: 0;
       border-radius: 20px;
-      background: url("../../assets/images/bg/hero/client-portal-assistance/client-portal-assistance-mobile.svg")
+      background: url("/images/bg/hero/client-portal-assistance/client-portal-assistance-mobile.svg")
         no-repeat left center;
       background-size: cover;
       overflow: hidden;
@@ -170,35 +170,35 @@
     }
 
     @include tablet {
-      background: url("../../assets/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
+      background: url("/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
         no-repeat 86% 100%;
       background-size: cover;
       background-color: transparent;
     }
 
     @include desktop-lg {
-      background: url("../../assets/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
+      background: url("/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
         no-repeat right center;
       background-size: cover;
       background-color: transparent;
     }
 
     @include desktop-xl {
-      background: url("../../assets/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
+      background: url("/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
         no-repeat center center;
       background-size: cover;
       background-color: transparent;
     }
 
     @include desktop-2k {
-      background: url("../../assets/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
+      background: url("/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
         no-repeat center center;
       background-size: cover;
       background-color: transparent;
     }
 
     @include desktop-5k {
-      background: url("../../assets/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
+      background: url("/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
         no-repeat center center;
       background-size: cover;
       background-color: transparent;

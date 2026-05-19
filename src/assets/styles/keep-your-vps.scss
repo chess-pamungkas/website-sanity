@@ -340,24 +340,24 @@
       }
 
       &.maintain-balance-card {
-        background-image: url("../../assets/images/bg/vps/bg-card-maintain-a-$500-balance-desktop.svg");
+        background-image: url("/images/bg/vps/bg-card-maintain-a-%24500-balance-desktop.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
 
         @include mobile {
-          background-image: url("../../assets/images/bg/vps/bg-card-maintain-a-$500-balance-mobile.svg");
+          background-image: url("/images/bg/vps/bg-card-maintain-a-%24500-balance-mobile.svg");
         }
       }
 
       &.monthly-trading-card {
-        background-image: url("../../assets/images/bg/vps/bg-card-monthly-trading-requirement-desktop.svg");
+        background-image: url("/images/bg/vps/bg-card-monthly-trading-requirement-desktop.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
 
         @include mobile {
-          background-image: url("../../assets/images/bg/vps/bg-card-monthly-trading-requirement-mobile.svg");
+          background-image: url("/images/bg/vps/bg-card-monthly-trading-requirement-mobile.svg");
         }
 
         @include desktop-lg {

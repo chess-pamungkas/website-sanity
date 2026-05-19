@@ -1,0 +1,57 @@
+/**
+ * Deferred styles for NON-HOMEPAGE (other routes). Loaded when user navigates off homepage.
+ * Reduces unused CSS on homepage Lighthouse audit without PurgeCSS.
+ */
+@import "vars";
+@import "mixins";
+
+/* Heavy / page-specific (popup-registration is in home bundle) */
+@import "webtrader";
+@import "legal";
+@import "documents";
+/* withdrawal + top-market-layout → index.scss (CLS on /funding/ .top-market-layout--withdrawal) */
+@import "keep-your-vps";
+@import "get-complimentary-vps";
+/* swap-free-freedom, how-to-trade-swap-free → index.scss */
+@import "privacy-policy";
+@import "client-portal-assistance";
+@import "simplify-your-setup";
+
+/* trading-tools → index.scss */
+/* faq, faq-section, guide → promoted to index.scss (main) to avoid CLS when this sheet applies after first paint. */
+@import "metals-spreads";
+@import "forex-spreads";
+@import "indices-spreads";
+@import "crypto-spreads";
+@import "cookie-policy-table";
+@import "energies-spreads";
+@import "search-page";
+@import "system-info";
+/* mt4 → index.scss */
+/* mt5 → index.scss */
+@import "mt-promotion";
+/* spreads-and-fees → index.scss */
+@import "help-center";
+@import "partners";
+/* accounts-type + account-types-account-comparison → index.scss (CLS when deferred-pages applied late) */
+@import "contact-us";
+@import "trading-tools-page";
+@import "vps";
+/* swap-free → index.scss */
+@import "featured-ideas";
+@import "trading-calendar";
+@import "tab-trading-tools";
+@import "our-community";
+@import "hero";
+@import "features-products";
+@import "fastin-fastout-section";
+@import "payment-systems-section";
+@import "mt-advantage-list";
+/* funding-withdrawals → index.scss (hero CLS + LCP on /funding/) */
+@import "company";
+@import "faq-hero";
+@import "faq-search-bar";
+@import "trust-pilot";
+@import "cost-swap-rate";
+/* commission → index.scss */
+@import "our-spreads";

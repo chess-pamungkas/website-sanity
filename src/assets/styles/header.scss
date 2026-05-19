@@ -73,10 +73,13 @@
       margin-left: auto; // Push container to the right edge
       max-width: 380px; // Prevent overflow
       gap: 8px; // Reduced gap to save space
+      min-height: 48px;
+      min-width: 200px;
 
       @include desktop-lg {
-        max-width: 400px; // More space for longer translations
+        max-width: 400px;
         gap: 10px;
+        min-width: 220px;
       }
 
       @include desktop-xl {

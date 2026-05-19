@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, lazy, Suspense, useEffect } from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
 import MarketItemAdvantageList from "../market-item-advantage-list";
@@ -6,8 +6,7 @@ import { useTranslationWithVariables } from "../../../../helpers/hooks/use-trans
 import { ButtonPrimaryStandard } from "../../../shared/reusable-buttons";
 import { ShowRegistrationPopup } from "../../../../helpers/constants";
 import LanguageContext from "../../../../context/language-context";
-import TradingTicker from "../../../trading-ticker";
-import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
+import WhenInView from "../../../shared/when-in-view";
 import {
   FOREX_TRADING_SECTION,
   CRYPTO_TRADING_SECTION,
@@ -17,6 +16,10 @@ import {
   INDICES_TRADING_SECTION,
   ETF_TRADING_SECTION,
 } from "../../../../helpers/config";
+
+/** Separate chunk: warm module when row mounts so Suspense + socket connect aren’t serialised on first paint. */
+const tradingTickerImport = () => import("../../../trading-ticker");
+const TradingTickerLazy = lazy(tradingTickerImport);
 
 const MarketItem = ({
   className,
@@ -31,7 +34,8 @@ const MarketItem = ({
   const { t } = useTranslationWithVariables();
   const { selectedLanguage } = useContext(LanguageContext);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const { isMobile, isTablet } = useWindowSize();
+
+  const parityEven = index % 2 === 0;
 
   // Function to get the correct trading section based on title
   const getTradingSection = (title) => {
@@ -76,6 +80,10 @@ const MarketItem = ({
     setIsPopupOpen(false);
   };
 
+  useEffect(() => {
+    tradingTickerImport();
+  }, []);
+
   return (
     <>
       <div
@@ -83,119 +91,47 @@ const MarketItem = ({
           "market-item--gray": isGrayBackground,
         })}
       >
-        {isMobile ? (
-          // Mobile: no container wrapper
-          <>
-            <div className="market-item__description">
-              <img src={icon} alt="" className="market-item__icon" />
-              <h3 className="market-item__title">{t(title)}</h3>
-              <div className="market-item__text">
-                {text.map((item, number) => (
-                  <span key={`${t(title)}-${number}`}>{t(item)}</span>
-                ))}
-              </div>
-              <ButtonPrimaryStandard
-                text={getButtonText(title)}
-                onClick={handleShowRegistrationPopup}
-                className="market-item__trade-button"
-              />
-              <div className="market-item__trading-ticker-wrapper">
-                <TradingTicker
-                  pageSpecificSection={getTradingSection(title)}
-                  uniqueId={`market-item-${index}-${title.toLowerCase()}`}
-                />
-              </div>
+        {/* Single DOM for all breakpoints — layout from CSS grid (no SSR→viewport branch flip CLS). */}
+        <div
+          className={cn("market-item__shell", {
+            "market-item__shell--even": parityEven,
+            "market-item__shell--odd": !parityEven,
+          })}
+        >
+          <div className="market-item__desc-main">
+            <img src={icon} alt="" width={64} height={64} className="market-item__icon" />
+            <h2 className="market-item__title">{t(title)}</h2>
+            <div className="market-item__text">
+              {text.map((item, number) => (
+                <span key={`${t(title)}-${number}`}>{t(item)}</span>
+              ))}
             </div>
-            <div className="market-item__advantages">
-              <MarketItemAdvantageList advantages={advantages} link={link} />
-            </div>
-          </>
-        ) : (
-          // Desktop: with container wrapper
-          <div className="market-item__container">
-            {index % 2 === 0 ? (
-              // Even items: description left, advantages right
-              <>
-                <div className="market-item__description">
-                  <img src={icon} alt="" className="market-item__icon" />
-                  <h3 className="market-item__title">{t(title)}</h3>
-                  <div className="market-item__text">
-                    {text.map((item, number) => (
-                      <span key={`${t(title)}-${number}`}>{t(item)}</span>
-                    ))}
-                  </div>
-                  <ButtonPrimaryStandard
-                    text={getButtonText(title)}
-                    onClick={handleShowRegistrationPopup}
-                    className="market-item__trade-button"
-                  />
-                  {!isTablet ? (
-                    <div className="market-item__trading-ticker-wrapper">
-                      <TradingTicker
-                        pageSpecificSection={getTradingSection(title)}
-                        uniqueId={`market-item-${index}-${title.toLowerCase()}`}
-                      />
-                    </div>
-                  ) : null}
-                </div>
-                <div className="market-item__advantages">
-                  <MarketItemAdvantageList
-                    advantages={advantages}
-                    link={link}
-                  />
-                </div>
-                {isTablet ? (
-                  <div className="market-item__trading-ticker-wrapper">
-                    <TradingTicker
-                      pageSpecificSection={getTradingSection(title)}
-                      uniqueId={`market-item-${index}-${title.toLowerCase()}`}
-                    />
-                  </div>
-                ) : null}
-              </>
-            ) : (
-              // Odd items: advantages left, description right
-              <>
-                <div className="market-item__advantages">
-                  <MarketItemAdvantageList
-                    advantages={advantages}
-                    link={link}
-                  />
-                </div>
-                <div className="market-item__description">
-                  <img src={icon} alt="" className="market-item__icon" />
-                  <h3 className="market-item__title">{t(title)}</h3>
-                  <div className="market-item__text">
-                    {text.map((item, number) => (
-                      <span key={`${t(title)}-${number}`}>{t(item)}</span>
-                    ))}
-                  </div>
-                  <ButtonPrimaryStandard
-                    text={getButtonText(title)}
-                    onClick={handleShowRegistrationPopup}
-                    className="market-item__trade-button"
-                  />
-                  {!isTablet ? (
-                    <div className="market-item__trading-ticker-wrapper">
-                      <TradingTicker
-                        pageSpecificSection={getTradingSection(title)}
-                        uniqueId={`market-item-${index}-${title.toLowerCase()}`}
-                      />
-                    </div>
-                  ) : null}
-                </div>
-                {isTablet ? (
-                  <div className="market-item__trading-ticker-wrapper">
-                    <TradingTicker
-                      pageSpecificSection={getTradingSection(title)}
-                      uniqueId={`market-item-${index}-${title.toLowerCase()}`}
-                    />
-                  </div>
-                ) : null}
-              </>
-            )}
+            <ButtonPrimaryStandard
+              text={getButtonText(title)}
+              onClick={handleShowRegistrationPopup}
+              className="market-item__trade-button"
+            />
           </div>
-        )}
+          <div className="market-item__ticker-panel">
+            <div className="market-item__trading-ticker-wrapper">
+              <WhenInView
+                rootMargin="280px 0px 520px 0px"
+                delayMs={0}
+                fastReveal
+              >
+                <Suspense fallback={null}>
+                  <TradingTickerLazy
+                    pageSpecificSection={getTradingSection(title)}
+                    uniqueId={`market-item-${index}-${title.toLowerCase()}`}
+                  />
+                </Suspense>
+              </WhenInView>
+            </div>
+          </div>
+          <div className="market-item__adv-panel">
+            <MarketItemAdvantageList advantages={advantages} link={link} />
+          </div>
+        </div>
       </div>
       {isPopupOpen && (
         <ShowRegistrationPopup

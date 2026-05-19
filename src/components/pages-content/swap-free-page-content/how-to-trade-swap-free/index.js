@@ -4,8 +4,10 @@ import { useTranslationWithVariables } from "../../../../helpers/hooks/use-trans
 import featuresIcon from "../../../../assets/images/icons/features.svg";
 import alreadyTradingIcon from "../../../../assets/images/icons/swap-free/already-trading-with-oqtima.svg";
 import newToOqtimaIcon from "../../../../assets/images/icons/swap-free/new-to-oqtima.svg";
-import HowToTradeDesktopBg from "../../../../assets/images/bg/swap-free/bg-how-to-trade-desktop.svg";
-import HowToTradeMobileBg from "../../../../assets/images/bg/swap-free/bg-how-to-trade-mobile.svg";
+import {
+  SWAP_FREE_HOW_TO_TRADE_DESKTOP_WEBP,
+  SWAP_FREE_HOW_TO_TRADE_MOBILE_WEBP,
+} from "../../../../helpers/swap-free-static-images";
 import { ShowRegistrationPopup } from "../../../../helpers/constants";
 import LanguageContext from "../../../../context/language-context";
 import { ButtonPrimaryStandard } from "../../../shared/reusable-buttons";
@@ -16,8 +18,12 @@ const HowToTradeSwapFree = ({ className }) => {
   const [isMobile, setIsMobile] = useState(false);
   const { selectedLanguage } = useContext(LanguageContext);
   const startConvrsSession = () => {
-    if (ConvrsChat) {
-      ConvrsChat.ShowWebChat();
+    if (typeof window !== "undefined") {
+      if (typeof window.loadConvrsWebchatAndOpen === "function") {
+        window.loadConvrsWebchatAndOpen();
+      } else if (window.ConvrsChat) {
+        window.ConvrsChat.ShowWebChat();
+      }
     }
   };
 
@@ -43,7 +49,11 @@ const HowToTradeSwapFree = ({ className }) => {
     };
   }, []);
 
-  const backgroundSrc = isMobile ? HowToTradeMobileBg : HowToTradeDesktopBg;
+  const backgroundSrc = isMobile
+    ? SWAP_FREE_HOW_TO_TRADE_MOBILE_WEBP
+    : SWAP_FREE_HOW_TO_TRADE_DESKTOP_WEBP;
+  const backgroundWidth = isMobile ? 393 : 1440;
+  const backgroundHeight = isMobile ? 1075 : 659;
 
   return (
     <section className="how-to-trade-swap-free">
@@ -53,6 +63,10 @@ const HowToTradeSwapFree = ({ className }) => {
           src={backgroundSrc}
           alt={t("how-to-trade-swap-free_background-alt")}
           className="how-to-trade-bg__image"
+          width={backgroundWidth}
+          height={backgroundHeight}
+          loading="lazy"
+          decoding="async"
         />
       </div>
 

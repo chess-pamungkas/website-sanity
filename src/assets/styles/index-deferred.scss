@@ -1,0 +1,78 @@
+/**
+ * Deferred styles: loaded on first user interaction to reduce initial CSS bundle size.
+ * Reduces Lighthouse "Reduce unused CSS" (Est savings 135 KiB) without using PurgeCSS.
+ * Critical path (index.scss) keeps only: vars, mixins, container, typography-critical,
+ * hero/header/footer/nav/base + a few global components.
+ */
+@import "vars";
+@import "mixins";
+
+/* Moved from main bundle to reduce "Reduce unused CSS" (not needed for first paint) */
+@import "notification-stripe";
+
+/* Heavy / page-specific – not needed for homepage first paint */
+@import "popup-registration";
+@import "webtrader";
+@import "legal";
+@import "documents";
+/* withdrawal + top-market-layout → index.scss (funding table CLS) */
+@import "keep-your-vps";
+@import "get-complimentary-vps";
+/* swap-free-freedom, how-to-trade-swap-free → index.scss (CLS on /swap-free/) */
+@import "privacy-policy";
+@import "client-portal-assistance";
+@import "simplify-your-setup";
+
+/* Below-the-fold / other pages – defer to shrink main bundle and fix "Reduce unused CSS" */
+@import "accordion";
+/* trading-tools → index.scss (hero CLS + LCP on /trading-tools/) */
+@import "faq";
+@import "metals-spreads";
+@import "forex-spreads";
+@import "indices-spreads";
+@import "faq-section";
+@import "crypto-spreads";
+@import "cookie-policy-table";
+@import "energies-spreads";
+@import "features";
+/* tabs → index.scss (funding / touch targets + first-paint tab layout) */
+@import "table";
+@import "search-page";
+@import "system-info";
+/* mt4 → index.scss (hero LCP discovery on /mt4/) */
+/* mt5 → index.scss (hero LCP <img> layout on /mt5/) */
+@import "mt-promotion";
+/* spreads-and-fees → index.scss (hero LCP + CLS on /spreads-and-fees/) */
+@import "help-center";
+@import "partners";
+@import "contact-us";
+@import "form";
+@import "trading-tools-page";
+/* vps → index.scss (hero CLS + LCP layout on /vps/) */
+/* swap-free → index.scss (hero + CLS on /swap-free/) */
+@import "testimonials-content";
+@import "security-content";
+@import "testimonials-security-content";
+@import "account-comparison";
+@import "cost-calculator";
+@import "technology-infrastructure";
+@import "market-sentiment";
+@import "featured-ideas";
+@import "trading-calendar";
+@import "tab-trading-tools";
+@import "trust";
+@import "features-content-section";
+@import "guide";
+@import "our-community";
+@import "hero";
+@import "features-products";
+@import "fastin-fastout-section";
+@import "payment-systems-section";
+@import "mt-advantage-list";
+@import "company";
+@import "faq-hero";
+@import "faq-search-bar";
+@import "trust-pilot";
+@import "cost-swap-rate";
+/* commission → index.scss (spreads-and-fees Komisi CLS) */
+@import "our-spreads";

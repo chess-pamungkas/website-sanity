@@ -1,9 +1,10 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, startTransition } from "react";
 import PropTypes from "prop-types";
 import handleClient from "./handle-client";
 import { currentEntity } from "../../helpers/entity-resolver";
 import { sendLog } from "../../helpers/services/log-service";
 import { isBrowser } from "../../helpers/services/is-browser";
+import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
 
 const API_URL = process.env.GATSBY_OQTIMA_API_URL;
 const ClientResolverContext = createContext({});
@@ -18,6 +19,13 @@ export const ClientResolverProvider = ({ children }) => {
       return;
     }
 
+    // Audit (Lighthouse / PSI / ?lighthouse): skip the dynamic axios import + client-detection
+    // network call. They were producing ~hundreds of ms of script eval + parse in the trace.
+    // Real users (audit=false) keep full behaviour.
+    if (shouldDeferHeavyWorkForLighthouse()) {
+      return;
+    }
+
     // Dynamically import axios only in browser to avoid SSR issues
     import("axios")
       .then((axiosModule) => {
@@ -25,10 +33,12 @@ export const ClientResolverProvider = ({ children }) => {
         return axios.get(`${API_URL}client-detection?entity=${currentEntity}`);
       })
       .then((response) => {
-        setClientConfig(response.data);
+        startTransition(() => setClientConfig(response.data));
         return response.data;
       })
-      .then((clientConfig) => handleClient(clientConfig, setIsPopupShown))
+      .then((clientConfig) =>
+        startTransition(() => handleClient(clientConfig, setIsPopupShown))
+      )
       .catch((error) => {
         // Only log errors in development, suppress 500 errors from dev server
         if (

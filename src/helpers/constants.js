@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import visaLogo from "../assets/images/icons/payments/visa.png";
 import masterCardLogo from "../assets/images/icons/payments/masterCard.png";
 import danaLogo from "../assets/images/icons/payments/dana.png";
@@ -30,8 +30,12 @@ import {
 } from "./services/marketing-service";
 import { setLangParam } from "./services/language-service";
 import { PORTAL_LANGUAGES_MAP } from "./lang-options.config";
-import RegistrationPopup from "../components/registration-popup";
 import { isBrowser } from "./services/is-browser";
+
+// Lazy load registration popup so it is not in the main bundle (Lighthouse: reduce unused JS).
+const RegistrationPopup = lazy(() =>
+  import("../components/registration-popup")
+);
 
 export const WINDOW_SIZE_SM = 375;
 export const WINDOW_SIZE_MD = 768;
@@ -84,36 +88,34 @@ export const getContactEmail = () => {
 export const BLOG_URL = "https://oqtima.news/";
 
 export const ShowRegistrationPopup = ({ isOpen, onClose, langParam }) => {
+  if (!isOpen) return null;
+
   const ibParams = setIBparamsToLink();
   const campaignParams = setCampaignParamsToLink();
 
-  // Prepare an object to store the parameters that will be sent
   const params = {};
-
-  // Specify the parameters to be included
   if (ibParams && ibParams.startsWith(`?${IB_PARAMS.r_code}=`)) {
     params.referral_type = 12;
-    params.referral_value = ibParams.split("=")[1]; // Extract only the value of r_code
+    params.referral_value = ibParams.split("=")[1];
   } else if (
     campaignParams &&
     campaignParams.startsWith(`?${CAMPAIGN_PARAMS.campaign_code}=`)
   ) {
     params.referral_type = 14;
-    params.referral_value = campaignParams.split("=")[1]; // Extract only the value of campaign_code
+    params.referral_value = campaignParams.split("=")[1];
   } else if (langParam) {
-    params.langParam = langParam; // Include langParam if it exists.
+    params.langParam = langParam;
   }
-
-  // Convert params object to a string
   const paramsString = JSON.stringify(params);
 
-  // Display the registration popup
   return (
-    <RegistrationPopup
-      isOpen={isOpen}
-      onClose={onClose}
-      params={paramsString} // Pass the stringified params
-    />
+    <Suspense fallback={null}>
+      <RegistrationPopup
+        isOpen={isOpen}
+        onClose={onClose}
+        params={paramsString}
+      />
+    </Suspense>
   );
 };
 
@@ -302,3 +304,16 @@ export const PAYMENT_SYSTEMS = {
     logo: wiseLogo,
   },
 };
+
+/**
+ * When true (set at build time via env), the homepage does not render the Market Sentiment
+ * block at all, so its JS/CSS and socket-driven work are absent — use to compare Lighthouse
+ * “with” vs “without” that section. Rebuild after changing .env.
+ *
+ * @see GATSBY_DISABLE_MARKET_SENTIMENT in .env — use "true" or "1" to disable.
+ */
+export const IS_HOMEPAGE_MARKET_SENTIMENT_DISABLED =
+  typeof process.env.GATSBY_DISABLE_MARKET_SENTIMENT !== "undefined" &&
+  /^(1|true|yes)$/i.test(
+    String(process.env.GATSBY_DISABLE_MARKET_SENTIMENT).trim()
+  );

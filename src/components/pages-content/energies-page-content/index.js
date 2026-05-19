@@ -88,7 +88,6 @@ const EnergiesContent = ({ className, isShowHero = true }) => {
         )}
       </TopMarketLayout>
 
-      {/* FAQ Section - Indices Trading Questions */}
       <ContainerWrapper>
         <FaqSection
           faqData={FAQ_ENERGIES}
@@ -99,10 +98,6 @@ const EnergiesContent = ({ className, isShowHero = true }) => {
           buttonTextKey="faq-button-text"
           onFaqButtonClick={handleFaqButtonClick}
         />
-      </ContainerWrapper>
-
-      {/* Guide Content Section */}
-      <ContainerWrapper>
         <GuideContent
           titleKey="energies-guide-title"
           subtitleKey="energies-guide-subtitle"

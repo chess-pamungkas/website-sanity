@@ -1,38 +1,35 @@
 import React, {
-  useContext,
   createContext,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
+  startTransition,
 } from "react";
 import PropTypes from "prop-types";
-import { useWindowSize } from "../../helpers/hooks/use-window-size";
 import { isBrowser } from "../../helpers/services/is-browser";
-import LanguageContext from "../language-context";
+import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
 
 const CommonContext = createContext({});
 
 export const CommonProvider = ({ children }) => {
-  const { width } = useWindowSize();
   const [sectionOptions, setSectionOptions] = useState(null);
   const headerRef = useRef();
   const [isSearchBarAttached, setIsSearchBarAttached] = useState(true);
   const [heightOffset, setHeightOffset] = useState(0);
-  const [dropdownHeightOffset, setDropdownHeightOffset] = useState(0);
-  const { selectedLanguage } = useContext(LanguageContext);
   const headerMainWrapperRef = useRef();
   const riskWarningRef = useRef();
   const [isScrolled, setIsScrolled] = useState("");
 
   const checkIsScrolled = () => {
     if (isBrowser()) {
-      setIsScrolled(window.scrollY > 0);
+      startTransition(() => setIsScrolled(window.scrollY > 0));
     }
   };
 
   useEffect(() => {
     if (isBrowser()) {
-      window.addEventListener("scroll", checkIsScrolled);
+      window.addEventListener("scroll", checkIsScrolled, { passive: true });
 
       return () => {
         window.removeEventListener("scroll", checkIsScrolled);
@@ -40,39 +37,55 @@ export const CommonProvider = ({ children }) => {
     }
   }, []);
 
-  useEffect(() => {
-    const updateOffset = () => {
-      if (isBrowser()) {
-        setHeightOffset(riskWarningRef?.current?.offsetHeight || 0);
-      }
+  // Must run before paint: the desktop header-offset spacer drives #main-container layout.
+  // startTransition deferred heightOffset → first paint had 0px placeholder → huge CLS (~0.56).
+  useLayoutEffect(() => {
+    if (shouldDeferHeavyWorkForLighthouse() || !isBrowser()) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    let ro = null;
+    const el = riskWarningRef.current;
+
+    const applyHeight = (h) => {
+      if (cancelled) return;
+      setHeightOffset(Math.max(0, Math.round(h)));
     };
 
-    const updateDropdownOffset = () => {
-      if (isBrowser() && headerMainWrapperRef?.current?.offsetTop) {
-        setDropdownHeightOffset(
-          headerMainWrapperRef.current.offsetTop +
-            headerMainWrapperRef.current.offsetHeight
-        );
-      }
+    if (!el) {
+      applyHeight(0);
+      return undefined;
+    }
+
+    // Defer first read to rAF so we do not force sync layout right after hydration (Lighthouse forced-reflow).
+    requestAnimationFrame(() => {
+      if (cancelled || !riskWarningRef.current) return;
+      applyHeight(riskWarningRef.current.offsetHeight || 0);
+    });
+
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver((entries) => {
+        const entry = entries[0];
+        if (cancelled || !entry) return;
+        let h = entry.contentRect.height;
+        const box = entry.borderBoxSize?.[0];
+        if (box && typeof box.blockSize === "number") {
+          h = box.blockSize;
+        }
+        applyHeight(h);
+      });
+      ro.observe(el);
+      return () => {
+        cancelled = true;
+        ro.disconnect();
+      };
+    }
+
+    return () => {
+      cancelled = true;
     };
-
-    // workaround to actually update offset, doesn't work without timeout
-    setTimeout(() => {
-      updateOffset();
-    }, 100);
-
-    // We should do this after header transition (0.4s) ends
-    setTimeout(() => {
-      updateDropdownOffset();
-    }, 500);
-  }, [
-    headerRef,
-    sectionOptions,
-    width,
-    selectedLanguage,
-    isScrolled,
-    riskWarningRef,
-  ]);
+  }, [sectionOptions]);
 
   return (
     <CommonContext.Provider
@@ -84,7 +97,6 @@ export const CommonProvider = ({ children }) => {
         setIsSearchBarAttached,
         heightOffset,
         headerMainWrapperRef,
-        dropdownHeightOffset,
         isScrolled,
         riskWarningRef,
       }}
@@ -97,4 +109,18 @@ export const CommonProvider = ({ children }) => {
 CommonProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
+/** Stub for deferred hydration; avoids useWindowSize, scroll listener, layout-effect spacer sync. */
+export const COMMON_STUB_VALUE = {
+  sectionOptions: null,
+  setSectionOptions: () => {},
+  headerRef: { current: null },
+  isSearchBarAttached: true,
+  setIsSearchBarAttached: () => {},
+  heightOffset: 0,
+  headerMainWrapperRef: { current: null },
+  riskWarningRef: { current: null },
+  isScrolled: "",
+};
+
 export default CommonContext;

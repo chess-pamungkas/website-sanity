@@ -9,15 +9,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 80px 0;
-  border-radius: 24px; // Add border radius for desktop
+  padding: 56px 0;
+  border-radius: 24px;
 
   @include mobile {
-    min-height: 100vh; // Increase height to cover more content
-    padding: 0; // Remove padding to ensure full coverage
-    align-items: flex-start; // Start from top on mobile
-    padding-top: 60px; // Add top padding for mobile
-    padding-bottom: 60px; // Add bottom padding for mobile
+    min-height: 100vh;
+    padding: 0;
+    align-items: flex-start;
+    padding-top: 48px;
+    padding-bottom: 48px;
     width: 100vw; // Ensure full viewport width
     left: 0;
     right: 0;
@@ -496,7 +496,7 @@
       left: 0.14px;
       width: 358.56px;
       height: 322px;
-      background-image: url("../images/bg/main-page/bg-card-market-sentiment.svg");
+      background-image: url("/images/bg/main-page/bg-card-market-sentiment.svg");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;

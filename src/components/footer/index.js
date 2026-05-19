@@ -3,7 +3,7 @@ import cn from "classnames";
 import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../helpers/hooks/use-translation-with-vars";
 import CopyRightBlock from "./components/copy-right-block";
-import { LogoTextMain } from "../shared/icons";
+import { LogoTextMain } from "../shared/icons/critical";
 import { getFooterText } from "../../helpers/footer.config";
 import Menu from "./components/menu";
 import { useRtlDirection } from "../../helpers/hooks/use-rtl-direction";
@@ -45,28 +45,28 @@ const Footer = ({ className }) => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img src={LinkedInIcon} alt="LinkedIn" />
+                <img src={LinkedInIcon} alt="LinkedIn" width={24} height={24} />
               </a>
               <a
                 href="https://www.facebook.com/OQtima.Global/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img src={FacebookIcon} alt="Facebook" />
+                <img src={FacebookIcon} alt="Facebook" width={24} height={24} />
               </a>
               <a
                 href="https://www.instagram.com/oqtima.global/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img src={InstagramIcon} alt="Instagram" />
+                <img src={InstagramIcon} alt="Instagram" width={24} height={24} />
               </a>
               <a
                 href="https://www.youtube.com/@OQtima"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img src={YoutubeIcon} alt="YouTube" />
+                <img src={YoutubeIcon} alt="YouTube" width={24} height={24} />
               </a>
             </div>
             {/* <div className="footer__app-badges">
@@ -75,14 +75,14 @@ const Footer = ({ className }) => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img src={AppStoreIcon} alt="App Store" />
+                <img src={AppStoreIcon} alt="App Store" width={24} height={24} />
               </a>
               <a
                 href="https://play.google.com"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img src={GooglePlayIcon} alt="Google Play" />
+                <img src={GooglePlayIcon} alt="Google Play" width={24} height={24} />
               </a>
             </div> */}
           </div>

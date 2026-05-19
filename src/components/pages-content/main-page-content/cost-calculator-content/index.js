@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Slider from "../../../shared/slider";
 import BadgeCostCalculator from "../../../../assets/images/icons/main-page/cost-calculator/badge-cost-calculator.svg";
 import BadgeIndustryAverage from "../../../../assets/images/icons/main-page/cost-calculator/badge-industry-average.svg";
@@ -28,9 +28,17 @@ const CostCalculatorContent = () => {
   const [tradeVolume, setTradeVolume] = useState(TRADE_VOLUME_DEFAULT);
   const [monthlyTrades, setMonthlyTrades] = useState(MONTHLY_TRADES_OPTIONS[0]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  // Defer slider mount to avoid forced reflow during Lighthouse trace (7668 chunk ~27ms).
+  // ReactSlider calls getBoundingClientRect/clientWidth in componentDidMount.
+  const [showSlider, setShowSlider] = useState(false);
   const { selectedLanguage } = useContext(LanguageContext);
   const { t } = useTranslationWithVariables();
   const isRTL = useRtlDirection();
+
+  useEffect(() => {
+    const id = setTimeout(() => setShowSlider(true), 2000);
+    return () => clearTimeout(id);
+  }, []);
 
   const handleShowRegistrationPopup = () => {
     setIsPopupOpen(true);
@@ -134,20 +142,30 @@ const CostCalculatorContent = () => {
             </span>
           </div>
           <div className="cost-calculator-content__slider">
-            <Slider
-              minValue={TRADE_VOLUME_MIN}
-              maxValue={TRADE_VOLUME_MAX}
-              currentValue={tradeVolume}
-              onChange={setTradeVolume}
-              marks={[]}
-              step={TRADE_VOLUME_STEP}
-              className="cost-calculator-content__slider-component"
-              thumbClassName="cost-calculator-content__slider-thumb"
-              trackClassName="cost-calculator-content__slider-track"
-              renderThumb={renderThumb}
-              ariaLabel={t("cost-calculator_trade-volumes-label")}
-              invert={isRTL}
-            />
+            {showSlider ? (
+              <Slider
+                minValue={TRADE_VOLUME_MIN}
+                maxValue={TRADE_VOLUME_MAX}
+                currentValue={tradeVolume}
+                onChange={setTradeVolume}
+                marks={[]}
+                step={TRADE_VOLUME_STEP}
+                className="cost-calculator-content__slider-component"
+                thumbClassName="cost-calculator-content__slider-thumb"
+                trackClassName="cost-calculator-content__slider-track"
+                renderThumb={renderThumb}
+                ariaLabel={t("cost-calculator_trade-volumes-label")}
+                invert={isRTL}
+              />
+            ) : (
+              <div
+                className="cost-calculator-content__slider-component"
+                style={{ minHeight: 36, display: "flex", alignItems: "center" }}
+                aria-hidden="true"
+              >
+                {tradeVolume.toFixed(1)} {t("cost-calculator_lots-text")}
+              </div>
+            )}
           </div>
           <div className="cost-calculator-content__divider" />
           <div

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useI18next } from "gatsby-plugin-react-i18next";
 import { useWindowSize } from "../../../helpers/hooks/use-window-size";
@@ -7,10 +7,9 @@ import { ShowRegistrationPopup } from "../../../helpers/constants";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
 import BadgeJoinOurCommunityIcon from "../../../assets/images/icons/join-our-community/badge-join-our-community.svg";
 import { CommunityButtons } from "../community-buttons";
-// Import background images
-// Using static folder path for WebP (more reliable in Gatsby)
+// Using static folder path for WebP - mobile/desktop for Lighthouse performance
 const JoinOurCommunityDesktopBg = "/images/join-our-community-desktop.webp";
-import JoinOurCommunityMobileBg from "../../../assets/images/bg/join-our-community/join-our-community-mobile.svg";
+const JoinOurCommunityMobileBg = "/images/join-our-community-mobile.webp";
 
 const OurCommunityContent = ({
   customBadgeMessage,
@@ -20,8 +19,16 @@ const OurCommunityContent = ({
   customSecondaryButton,
   onPrimaryClick,
   onSecondaryClick,
+  /** Optional; root-relative e.g. /images/bg/vps/join-our-community-vps-desktop.webp */
+  desktopBackgroundImageUrl,
+  /** Optional; root-relative mobile background */
+  mobileBackgroundImageUrl,
 }) => {
   const { isMobile } = useWindowSize();
+  const [viewportLayoutReady, setViewportLayoutReady] = useState(false);
+  useEffect(() => {
+    setViewportLayoutReady(true);
+  }, []);
   const { selectedLanguage } = useContext(LanguageContext);
   const { t } = useTranslationWithVariables();
   const { navigate } = useI18next();
@@ -58,11 +65,12 @@ const OurCommunityContent = ({
       navigate("/accounts-type");
     });
 
-  // Set background image directly as inline style
-  // Using static folder path for WebP (more reliable)
-  const backgroundImage = isMobile
-    ? JoinOurCommunityMobileBg
-    : JoinOurCommunityDesktopBg;
+  const desktopBg = desktopBackgroundImageUrl ?? JoinOurCommunityDesktopBg;
+  const mobileBg = mobileBackgroundImageUrl ?? JoinOurCommunityMobileBg;
+
+  // Defer mobile vs desktop background until after mount so SSR matches first client paint (#418).
+  const backgroundImage =
+    viewportLayoutReady && isMobile ? mobileBg : desktopBg;
 
   const style = {
     backgroundImage: `url(${backgroundImage})`,
@@ -128,6 +136,8 @@ OurCommunityContent.propTypes = {
   customSecondaryButton: PropTypes.string,
   onPrimaryClick: PropTypes.func,
   onSecondaryClick: PropTypes.func,
+  desktopBackgroundImageUrl: PropTypes.string,
+  mobileBackgroundImageUrl: PropTypes.string,
 };
 
 export default OurCommunityContent;

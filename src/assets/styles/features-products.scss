@@ -188,7 +188,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-image: url("../../assets/images/bg/features-products/features-products-desktop.svg");
+      background-image: url("/images/bg/features-products/features-products-desktop.svg");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -196,7 +196,7 @@
       z-index: 0;
 
       @include mobile {
-        background-image: url("../../assets/images/bg/features-products/features-products-mobile.svg");
+        background-image: url("/images/bg/features-products/features-products-mobile.svg");
       }
     }
 
@@ -232,6 +232,18 @@
 
     @include mobile {
       margin-bottom: 0;
+    }
+
+    /* Match .market-item__icon raster size (64×64; tablet width 71px). */
+    img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      display: block;
+
+      @include tablet {
+        width: 71px;
+      }
     }
   }
 

@@ -1,0 +1,63 @@
+@import "mixins";
+
+// Hero background stack + LCP <img> (see shared Hero) for forex / metals / crypto / indices /
+// shares / energies / etf pages. Mirrors all-markets &__hero-bg / &__hero-bg-lcp sizing.
+@mixin trading-product-hero-bg-lcp {
+  &__hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    border-radius: 24px;
+    z-index: 1;
+    overflow: hidden;
+    background-color: #000;
+
+    @include mobile {
+      border-radius: 20px;
+    }
+
+    @include tablet {
+      border-radius: 24px;
+    }
+
+    picture {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+  }
+
+  &__hero-bg-lcp {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    pointer-events: none;
+    display: block;
+
+    @include mobile {
+      object-fit: cover;
+      object-position: center bottom;
+    }
+
+    @include tablet {
+      object-position: 78% 100%;
+    }
+
+    @include desktop-lg {
+      object-position: 50% 50%;
+    }
+
+    @include desktop-5k {
+      object-position: 50% 60%;
+    }
+  }
+}

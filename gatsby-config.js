@@ -1,16 +1,15 @@
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 require("dotenv").config({
-  path: `.env.${process.env.NODE_ENV}`,
+  path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`),
 });
 
 const languages = require(`${__dirname}/src/locales/language.config`);
-const {
-  processLanguagesForConfig,
-} = require(`${__dirname}/src/locales/processLanguages`);
+const { processLanguagesForConfig } = require(
+  `${__dirname}/src/locales/processLanguages`,
+);
 
 const indexedLocaleData = processLanguagesForConfig(languages.uniqueList);
-exports.onRenderBody = ({ setHtmlAttributes }) => {
-  setHtmlAttributes({ lang: languages.list.id });
-};
 
 module.exports = {
   siteMetadata: {
@@ -51,22 +50,7 @@ module.exports = {
         path: `${__dirname}/src/locales/`,
       },
     },
-    ...(process.env.GATSBY_GOOGLE_TAG_MANAGER
-      ? [
-          {
-            resolve: "gatsby-plugin-google-tagmanager",
-            options: {
-              id: process.env.GATSBY_GOOGLE_TAG_MANAGER,
-              defaultDataLayer: { platform: "gatsby" },
-              // Enable GTM in development for testing
-              includeInDevelopment:
-                process.env.GATSBY_ENABLE_GTM_DEV === "true",
-              // Route change event name
-              routeChangeEventName: "gatsby-route-change",
-            },
-          },
-        ]
-      : []),
+    // GTM loaded via deferred script in gatsby-ssr (10s after load) for Lighthouse/TBT; not using plugin
     {
       resolve: "gatsby-plugin-react-i18next",
       options: {

@@ -1,12 +1,13 @@
 @import "vars";
 @import "mixins";
 
-// Import images directly in SCSS
-// Using static folder path for WebP (more reliable in Gatsby)
+// Import images directly in SCSS (desktop; hero uses JS + useWindowSize for mobile/desktop)
+// Using static folder path for WebP - mobile: globe-mobile.webp, hand-mobile.webp
 $globe-image: url("/images/globe.webp");
 $hand-image: url("/images/hand.webp");
 
 .main-promotion {
+  visibility: visible;
   position: relative;
   overflow: visible;
   color: map-get($colors, "white");
@@ -189,7 +190,7 @@ $hand-image: url("/images/hand.webp");
   &__hero-img {
     position: absolute;
     bottom: 0;
-    right: -50px;
+    right: 30px;
     width: 734px;
     height: 734px;
     opacity: 0.62;
@@ -226,7 +227,7 @@ $hand-image: url("/images/hand.webp");
       height: 500px;
       // max-height: 400px;
       bottom: 0;
-      right: 60px;
+      right: 110px;
     }
 
     @include desktop-lg {
@@ -235,7 +236,7 @@ $hand-image: url("/images/hand.webp");
       height: 600px;
       // max-height: 500px;
       bottom: 0;
-      right: 50px;
+      right: 100px;
     }
 
     @include desktop-xl {
@@ -244,7 +245,7 @@ $hand-image: url("/images/hand.webp");
       height: 734px;
       // max-height: 600px;
       bottom: 0;
-      right: 45px;
+      right: 95px;
     }
 
     @include desktop-2k {
@@ -253,7 +254,7 @@ $hand-image: url("/images/hand.webp");
       height: 734px;
       // max-height: 650px;
       bottom: 0;
-      right: 238px;
+      right: 300px;
     }
 
     @include desktop-5k {
@@ -262,7 +263,7 @@ $hand-image: url("/images/hand.webp");
       height: 734px;
       // max-height: 700px;
       bottom: 0;
-      right: 238px;
+      right: 300px;
     }
   }
 
@@ -528,6 +529,15 @@ $hand-image: url("/images/hand.webp");
 
   &__badge-arrow {
     flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff4400;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: map-get($font-weight, "semibold");
     align-items: center;
     margin-top: 5px;
     margin-left: 5px;
@@ -674,7 +684,7 @@ $hand-image: url("/images/hand.webp");
 
     @include mobile {
       font-size: 16px;
-      font-weight: map-get($font-weight, "light");
+      font-weight: map-get($font-weight, "regular");
       line-height: 24px;
       max-width: 100%;
     }
@@ -712,11 +722,15 @@ $hand-image: url("/images/hand.webp");
     flex-direction: column;
     gap: 31px;
     max-width: fit-content;
+    /* Reserve height for two buttons + title line so font load does not cause CLS (Layout shift culprits 0.011) */
+    min-height: 90px;
+    contain: layout;
 
     @include mobile {
       max-width: 100%;
       gap: 20px;
       margin-top: 20px;
+      min-height: 124px;
     }
 
     @include tablet {

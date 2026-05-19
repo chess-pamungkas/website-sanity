@@ -3,7 +3,7 @@
 
 .trust-content {
   width: 100%;
-  padding: 120px 0 0;
+  padding: 72px 0 0;
 
   &__container {
     margin: 0 auto;
@@ -504,8 +504,7 @@
       order: 2;
       display: block;
       visibility: visible;
-      background: url("../../assets/images/trust/trust-video-mobile.svg")
-        no-repeat center center;
+      background: url("/images/trust-video-mobile.webp") no-repeat center center;
       background-size: 100% 100%;
       border-radius: 16px;
     }
@@ -688,8 +687,7 @@
       order: 2;
       display: block;
       visibility: visible;
-      background: url("../../assets/images/trust/trust-video-mobile.svg")
-        no-repeat center center;
+      background: url("/images/trust-video-mobile.webp") no-repeat center center;
       background-size: 100% 100%;
       border-radius: 16px;
     }

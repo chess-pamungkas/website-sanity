@@ -132,6 +132,8 @@ const GetComplimentaryVPS = ({ className }) => {
               }
               alt={t("get-complimentary-vps_forex-cfd-alt")}
               className="vps-image"
+              width={isMobile ? 314 : 222}
+              height={isMobile ? 246 : 230}
             />
             <img
               src={handDesktop}

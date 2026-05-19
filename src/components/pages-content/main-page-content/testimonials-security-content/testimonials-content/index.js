@@ -36,6 +36,8 @@ const TestimonialsContent = () => {
               <img
                 src={TestimonialsIcon}
                 alt={t("testimonials-content_badge-icon-alt")}
+                width={24}
+                height={24}
               />
               {t("testimonials-content_badge-text")}
             </span>
@@ -45,6 +47,8 @@ const TestimonialsContent = () => {
                 src={item.countryIcon}
                 alt={t("testimonials-content_country-icon-alt")}
                 className="country-icon"
+                width={24}
+                height={24}
               />
             </span>
           </div>

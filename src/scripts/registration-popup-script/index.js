@@ -42,6 +42,21 @@ const urlParams = new URLSearchParams(window.location.search);
 // Define RTL languages constants
 const RTL_LANGUAGES = ["ar"];
 
+// Map our locale id to valid BCP 47 for HTML [lang] (Lighthouse/accessibility)
+function getBcp47Lang(id) {
+  if (!id || typeof id !== "string") return "en";
+  const m = {
+    jp: "ja",
+    cn: "zh-Hans",
+    zh: "zh-Hant",
+    br: "pt-BR",
+    vn: "vi",
+    my: "ms",
+  };
+  const n = id.trim().toLowerCase();
+  return m[n] || n;
+}
+
 // Wrap everything in a single IIFE to share scope across all functions
 (function () {
   // Create a namespace to expose functions globally
@@ -2436,7 +2451,7 @@ const RTL_LANGUAGES = ["ar"];
     modalContainer.className =
       "popup-registration popup-registration--rtl popup-registration--active";
     modalContainer.setAttribute("dir", "rtl");
-    modalContainer.setAttribute("lang", language);
+    modalContainer.setAttribute("lang", getBcp47Lang(language));
     modalContainer.style.cssText = `
       position: fixed !important;
       top: 0 !important;
@@ -2603,7 +2618,7 @@ const RTL_LANGUAGES = ["ar"];
     const iframe = document.createElement("iframe");
     iframe.id = "oqtima-registration-iframe";
     iframe.setAttribute("dir", "rtl");
-    iframe.setAttribute("lang", language);
+    iframe.setAttribute("lang", getBcp47Lang(language));
 
     // CRITICAL: Add attributes for cross-domain support
     iframe.setAttribute("allow", "clipboard-write");
@@ -4247,11 +4262,12 @@ const RTL_LANGUAGES = ["ar"];
     modalContainer.style.alignItems = "center";
 
     // Set RTL direction on the container if needed
+    const bcp47 = getBcp47Lang(finalLanguage);
     if (isRTL) {
       modalContainer.setAttribute("dir", "rtl");
-      modalContainer.setAttribute("lang", finalLanguage);
+      modalContainer.setAttribute("lang", bcp47);
     } else {
-      modalContainer.setAttribute("lang", finalLanguage);
+      modalContainer.setAttribute("lang", bcp47);
     }
 
     // Create an iframe to load the popup content
@@ -4279,7 +4295,7 @@ const RTL_LANGUAGES = ["ar"];
     // Note: crossorigin and sandbox removed to allow cross-origin content to load properly
 
     // Set RTL and language attributes for iframe
-    iframe.setAttribute("lang", finalLanguage);
+    iframe.setAttribute("lang", getBcp47Lang(finalLanguage));
     if (isRTL) {
       iframe.setAttribute("dir", "rtl");
     }
@@ -4655,18 +4671,13 @@ const RTL_LANGUAGES = ["ar"];
             document.body.scrollTop = mobileScrollY;
             document.documentElement.scrollTop = mobileScrollY;
 
-            // Force reflow to ensure styles are applied
-            document.body.offsetHeight;
-            document.documentElement.offsetHeight;
-
-            // Final scroll attempt
-            setTimeout(() => {
+            // Final scroll attempt in next frame (avoids forced reflow from reading offsetHeight)
+            requestAnimationFrame(() => {
               window.scrollTo(mobileScrollX, mobileScrollY);
-
               // Clean up mobile scroll variables
               delete window.__OQTIMA_MOBILE_SCROLL_X;
               delete window.__OQTIMA_MOBILE_SCROLL_Y;
-            }, 50);
+            });
           }
         }, 10);
       } catch (e) {

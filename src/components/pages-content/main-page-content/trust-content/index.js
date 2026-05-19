@@ -1,8 +1,10 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
 import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
-import BadgeSecurityIcon from "../../../../assets/images/icons/main-page/badge-security.svg";
-import CircleMarkIcon from "../../../../assets/images/icons/circle-mark.svg";
+import {
+  BadgeSecurityIcon,
+  CircleMarkIcon,
+} from "../../../shared/shared-icons";
 import CloseOverlayIcon from "../../../../assets/images/icons/main-page/trust/close-overlay.svg";
 import { ShowRegistrationPopup } from "../../../../helpers/constants";
 import LanguageContext from "../../../../context/language-context";
@@ -203,6 +205,8 @@ const TrustContent = () => {
               src={BadgeSecurityIcon}
               alt={t("trust-content_badge-icon-alt")}
               className="trust-content__badge-icon"
+              width={24}
+              height={24}
             />
             <span className="trust-content__badge-text">
               {t("trust-content_badge-text")}
@@ -225,6 +229,8 @@ const TrustContent = () => {
                   src={feature.icon}
                   alt={t("trust-content_check-icon-alt")}
                   className="trust-content__feature-icon"
+                  width={16}
+                  height={17}
                 />
                 <span className="trust-content__feature-text">
                   <strong>{feature.boldText}</strong>

@@ -1,9 +1,8 @@
-import React, { useRef, useContext, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import cn from "classnames";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
-import { ChevronDownIcon, ChevronUpIcon } from "../../../shared/icons";
-import CommonContext from "../../../../context/common-context";
+import { ChevronDownIcon, ChevronUpIcon } from "../../../shared/icons/critical";
 import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import PartnersNavIcon from "../../../shared/icons/PartnersNavIcon";
 import InternalLink from "../../../shared/internal-link";
@@ -24,7 +23,6 @@ const NavbarItem = ({
   const { t } = useTranslationWithVariables();
   const dropdownRef = useRef();
   const itemRef = useRef();
-  const { dropdownHeightOffset, isScrolled } = useContext(CommonContext);
   const { isTablet, isMobile } = useWindowSize();
   const [isHovered, setIsHovered] = useState(false);
 

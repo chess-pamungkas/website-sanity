@@ -126,6 +126,8 @@ const KeepYourVPS = ({ className }) => {
               }
               alt={t("keep-your-vps_forex-cfd-alt")}
               className="vps-image"
+              width={242}
+              height={251}
             />
             <button
               className="vps-start-trading-btn"

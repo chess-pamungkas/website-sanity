@@ -1,16 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import BadgeAccountComparisonIcon from "../../../assets/images/icons/account-comparison/badge-account-comparison.svg";
 import BadgeMostPopularIcon from "../../../assets/images/icons/account-comparison/badge-most-popular.svg";
-// Using static folder path for WebP (more reliable in Gatsby)
-const StarMostPopularIcon = "/images/star-most-popular.webp";
 import BadgeBeginnerChoiceIcon from "../../../assets/images/icons/account-comparison/badge-beginner-choice.svg";
-// Using static folder path for WebP (more reliable in Gatsby)
-const StarBeginnerChoiceIcon = "/images/star-beginner-choice.webp";
-import CircleMarkIcon from "../../../assets/images/icons/circle-mark.svg";
-// Import WebP for desktop (smaller file size), SVG for mobile
-// Using static folder path for WebP (more reliable in Gatsby)
-const AccountComparisonDesktopBg = "/images/account-comparison-desktop.webp";
-import AccountComparisonMobileBg from "../../../assets/images/bg/account-comparison/account-comparison-mobile.svg";
+import { CircleMarkIcon } from "../shared-icons";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
 import LanguageContext from "../../../context/language-context";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
@@ -20,12 +12,24 @@ import {
   ButtonPrimaryComparisonZero,
   ButtonContainer,
 } from "../reusable-buttons";
-import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
+
+// Using static folder path for WebP (more reliable in Gatsby)
+const StarMostPopularIcon = "/images/star-most-popular.webp";
+/** Retina candidate for mobile Lighthouse (display 110×116 @ ~1.5 DPR). */
+const StarMostPopularIcon2x = "/images/star-most-popular@2x.webp";
+const StarMostPopularSrcSet = `${StarMostPopularIcon} 110w, ${StarMostPopularIcon2x} 220w`;
+const StarBeginnerChoiceIcon = "/images/star-beginner-choice.webp";
+const AccountComparisonDesktopBg = "/images/account-comparison-desktop.webp";
+const AccountComparisonMobileBg = "/images/account-comparison-mobile.webp";
+/** Must match intrinsic pixels of each WebP (Lighthouse image-aspect-ratio). */
+const ACCOUNT_COMPARISON_BG_DIM = {
+  desktop: { width: 1440, height: 981 },
+  mobile: { width: 393, height: 1554 },
+};
 
 const AccountComparison = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const { isMobile } = useWindowSize();
   const { selectedLanguage } = useContext(LanguageContext);
   const { t } = useTranslationWithVariables();
   const isRTL = useRtlDirection();
@@ -52,11 +56,6 @@ const AccountComparison = () => {
     t("account-comparison-zero-feature4"),
   ];
 
-  // Using static folder path for WebP (more reliable)
-  const backgroundSrc = isMobile
-    ? AccountComparisonMobileBg
-    : AccountComparisonDesktopBg;
-
   return (
     <section
       className={`account-comparison-content ${
@@ -67,16 +66,27 @@ const AccountComparison = () => {
       {/* CRITICAL: This SVG is very large (3.6 MB), so we use lazy loading and low priority */}
       {/* TODO: Optimize SVG file by removing embedded bitmap images and using SVG paths */}
       <div className="account-comparison-bg">
-        <img
-          src={backgroundSrc}
-          alt={t("account-comparison-shared_background-alt")}
-          className="account-comparison-bg__image"
-          loading="lazy"
-          decoding="async"
-          fetchpriority="low"
-          width={isMobile ? "375" : "1920"}
-          height={isMobile ? "981" : "981"}
-        />
+        {/*
+          <picture> so mobile does not download 1440-wide WebP (Lighthouse "Improve image delivery").
+          Fallback <img> stays mobile dimensions for aspect hint when sources do not apply.
+        */}
+        <picture className="account-comparison-bg__picture">
+          <source
+            media="(min-width: 769px)"
+            srcSet={AccountComparisonDesktopBg}
+            type="image/webp"
+          />
+          <img
+            src={AccountComparisonMobileBg}
+            alt={t("account-comparison-shared_background-alt")}
+            className="account-comparison-bg__image"
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
+            width={ACCOUNT_COMPARISON_BG_DIM.mobile.width}
+            height={ACCOUNT_COMPARISON_BG_DIM.mobile.height}
+          />
+        </picture>
       </div>
 
       {/* Header */}
@@ -115,6 +125,8 @@ const AccountComparison = () => {
             <img
               src={StarBeginnerChoiceIcon}
               alt={t("account-comparison-zero-stars-alt")}
+              width={92}
+              height={112}
             />
           </div>
 
@@ -131,6 +143,8 @@ const AccountComparison = () => {
                   <img
                     src={CircleMarkIcon}
                     alt={t("account-comparison_feature-icon-alt")}
+                    width={16}
+                    height={17}
                   />
                 </div>
                 <span>{feature}</span>
@@ -166,7 +180,11 @@ const AccountComparison = () => {
           <div className="card-stars">
             <img
               src={StarMostPopularIcon}
+              srcSet={StarMostPopularSrcSet}
+              sizes="110px"
               alt={t("account-comparison-ecn-stars-alt")}
+              width={110}
+              height={116}
             />
           </div>
 
@@ -183,6 +201,8 @@ const AccountComparison = () => {
                   <img
                     src={CircleMarkIcon}
                     alt={t("account-comparison_feature-icon-alt")}
+                    width={16}
+                    height={17}
                   />
                 </div>
                 <span>{feature}</span>

@@ -6,7 +6,10 @@ import {
   getMT5DownloadLink,
   getAnimationStyle,
 } from "../../../helpers/platforms.config";
-import image from "../../../assets/images/mt5/mt5.svg";
+import {
+  MT5_PROMO_DESKTOP_WEBP,
+  MT5_PROMO_MOBILE_WEBP,
+} from "../../../helpers/mt-platform-static-images";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
 import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
@@ -53,7 +56,8 @@ const Mt5PageContent = ({ className, isShowHero = true }) => {
           advantagesTitle={t("mt5_market-items-list_title")}
           advantages={mt5Advantages}
           downloadTitle={t("mt5_download-title")}
-          image={image}
+          image={MT5_PROMO_DESKTOP_WEBP}
+          imageMobile={MT5_PROMO_MOBILE_WEBP}
           platformType="mt5"
           ref={downloadRef}
         />
