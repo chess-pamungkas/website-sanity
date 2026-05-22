@@ -22,4 +22,11 @@ export const SearchProvider = ({ children }) => {
 SearchProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
+/** Stub for deferred hydration (Layout uses after timer). */
+export const SEARCH_STUB_VALUE = {
+  searchState: INITIAL_SEARCH_STATE,
+  setSearchState: () => {},
+};
+
 export default SearchContext;

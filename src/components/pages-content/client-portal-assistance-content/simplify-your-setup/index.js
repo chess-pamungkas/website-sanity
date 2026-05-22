@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
 import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import LanguageContext from "../../../../context/language-context";
-import BadgeSecurityIcon from "../../../../assets/images/icons/badge-security.svg";
+import { BadgeSecurityIconGeneral as BadgeSecurityIcon } from "../../../shared/shared-icons";
 import SimplifyYourSetupImage from "../../../../assets/images/client-portal-assistance/simplify-your-setup.svg";
 
 const SimplifyYourSetup = () => {
@@ -25,6 +25,8 @@ const SimplifyYourSetup = () => {
               <img
                 src={BadgeSecurityIcon}
                 alt={t("simplify_your_setup_badge")}
+                width={24}
+                height={24}
               />
               <span className="simplify-your-setup__badge-text">
                 {t("simplify_your_setup_badge")}

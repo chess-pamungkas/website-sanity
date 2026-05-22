@@ -1,0 +1,51 @@
+/**
+ * Deferred styles for NON-HOMEPAGE (other routes). Loaded when user navigates off homepage.
+ * Reduces unused CSS on homepage Lighthouse audit without PurgeCSS.
+ */
+@import "vars";
+@import "mixins";
+
+/* Heavy / page-specific (popup-registration is in home bundle) */
+@import "webtrader";
+/* legal → index.scss (CLS on /legal/ hero shell + LCP) */
+@import "documents";
+/* withdrawal + top-market-layout → index.scss (CLS on /funding/ .top-market-layout--withdrawal) */
+/* keep-your-vps, get-complimentary-vps → index.scss (CLS on /vps/ section.keep-your-vps) */
+/* swap-free-freedom, how-to-trade-swap-free → index.scss */
+@import "privacy-policy";
+@import "client-portal-assistance";
+@import "simplify-your-setup";
+
+/* trading-tools → index.scss */
+/* faq, faq-section, guide → promoted to index.scss (main) to avoid CLS when this sheet applies after first paint. */
+@import "cookie-policy-table";
+/* *-spreads → index.scss (first-paint layout on trading product pages) */
+@import "search-page";
+@import "system-info";
+/* mt4 → index.scss */
+/* mt5 → index.scss */
+/* mt-promotion → index.scss */
+/* spreads-and-fees → index.scss */
+/* partners + income-slider → index.scss (hero LCP + income-slider CLS on /partners/) */
+/* accounts-type + account-types-account-comparison → index.scss (CLS when deferred-pages applied late) */
+/* contact-us → index.scss + contact-us-critical-css.js (CLS on __container when this sheet flipped late) */
+@import "trading-tools-page";
+@import "vps";
+/* swap-free → index.scss */
+@import "featured-ideas";
+@import "trading-calendar";
+@import "tab-trading-tools";
+@import "our-community";
+@import "hero";
+/* features-products → index.scss (must load before partners overrides on /partners/) */
+@import "fastin-fastout-section";
+@import "payment-systems-section";
+/* mt-advantage-list → index.scss */
+/* funding-withdrawals → index.scss (hero CLS + LCP on /funding/) */
+@import "company";
+/* faq-hero → index.scss (critical LCP layout) */
+@import "faq-search-bar";
+@import "trust-pilot";
+@import "cost-swap-rate";
+/* commission → index.scss */
+@import "our-spreads";

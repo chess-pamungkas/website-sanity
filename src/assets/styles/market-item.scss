@@ -3,6 +3,15 @@
 
 .market-items-list {
   margin: 25px 0;
+  contain: layout;
+
+  /* Lazy chunk placeholder: rough vertical reserve to limit CLS when the list mounts (mobile ~7 blocks). */
+  &--deferred {
+    min-height: 72rem;
+    @include desktop-lg {
+      min-height: 48rem;
+    }
+  }
 
   @include mobile {
     margin: 0;
@@ -48,8 +57,6 @@
   @include desktop-lg {
     max-width: 980px;
     padding: 24px;
-    flex-direction: row;
-    justify-content: space-between;
   }
 
   @include desktop-xl {
@@ -67,36 +74,158 @@
     padding: 24px;
   }
 
-  &__container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  // Tablet range matches JS breakpoints (768–1023): two-column row + full-width ticker.
+  &__shell {
+    display: grid;
     width: 100%;
-    gap: 40px;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+    row-gap: 0;
 
     @include mobile {
-      gap: 20px;
+      row-gap: 0;
+      column-gap: 0;
     }
 
+    @media screen and (min-width: $md) and (max-width: $max-lg) {
+      grid-template-columns: minmax(0, 48%) minmax(0, 48%);
+      justify-content: space-between;
+      column-gap: 10px;
+      align-items: start;
+
+      > .market-item__desc-main {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      > .market-item__adv-panel {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      > .market-item__ticker-panel {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+    }
+
+    &--even {
+      @include desktop-lg {
+        grid-template-columns: minmax(0, 55fr) auto;
+        column-gap: 5px;
+        grid-template-rows: auto auto;
+
+        > .market-item__desc-main {
+          grid-column: 1;
+          grid-row: 1;
+          min-width: 0;
+        }
+
+        > .market-item__ticker-panel {
+          grid-column: 1;
+          grid-row: 2;
+          align-self: start;
+        }
+
+        > .market-item__adv-panel {
+          grid-column: 2;
+          grid-row: 1 / span 2;
+          align-self: start;
+        }
+      }
+
+      @include desktop-xl {
+        grid-template-columns: minmax(0, 65fr) auto;
+        column-gap: 15px;
+      }
+
+      @include desktop-2k {
+        grid-template-columns: minmax(0, 70fr) auto;
+        column-gap: 15px;
+      }
+
+      @include desktop-5k {
+        grid-template-columns: minmax(0, 75fr) auto;
+        column-gap: 15px;
+      }
+    }
+
+    &--odd {
+      @include desktop-lg {
+        grid-template-columns: auto minmax(0, 55fr);
+        column-gap: 5px;
+        grid-template-rows: auto auto;
+
+        > .market-item__adv-panel {
+          grid-column: 1;
+          grid-row: 1 / span 2;
+          align-self: start;
+        }
+
+        > .market-item__desc-main {
+          grid-column: 2;
+          grid-row: 1;
+          min-width: 0;
+        }
+
+        > .market-item__ticker-panel {
+          grid-column: 2;
+          grid-row: 2;
+          align-self: start;
+        }
+      }
+
+      @include desktop-xl {
+        grid-template-columns: auto minmax(0, 65fr);
+        column-gap: 15px;
+      }
+
+      @include desktop-2k {
+        grid-template-columns: auto minmax(0, 70fr);
+        column-gap: 15px;
+      }
+
+      @include desktop-5k {
+        grid-template-columns: auto minmax(0, 75fr);
+        column-gap: 15px;
+      }
+    }
+  }
+
+  &__desc-main {
+    grid-column: 1;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+
     @include tablet {
-      gap: 10px;
-      flex-wrap: wrap;
+      width: auto;
+    }
+  }
+
+  &__ticker-panel {
+    grid-column: 1;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  &__adv-panel {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    grid-column: 1;
+    width: 100%;
+    padding-top: 30px;
+    box-sizing: border-box;
+
+    @media screen and (min-width: $md) and (max-width: $max-lg) {
+      padding-top: 0;
     }
 
     @include desktop-lg {
-      gap: 5px;
-    }
-
-    @include desktop-xl {
-      gap: 15px;
-    }
-
-    @include desktop-2k {
-      gap: 15px;
-    }
-
-    @include desktop-5k {
-      gap: 15px;
+      padding-top: 0;
     }
   }
 
@@ -115,51 +244,6 @@
       height: 100%;
       background-color: #f9f9f9;
       z-index: -999999999;
-    }
-  }
-
-  &__description {
-    @include tablet {
-      width: 48%;
-    }
-
-    @include desktop-lg {
-      width: 55%;
-    }
-
-    @include desktop-xl {
-      width: 65%;
-    }
-
-    @include desktop-2k {
-      width: 70%;
-    }
-
-    @include desktop-5k {
-      width: 75%;
-    }
-  }
-
-  &__advantages {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    padding-top: 30px;
-
-    @include tablet {
-      padding-top: 0;
-      width: 48%;
-    }
-
-    @include desktop-lg {
-      padding-top: 0;
-      width: auto;
-    }
-
-    @include desktop-xl {
-      padding-top: 0;
-      width: auto;
     }
   }
 
@@ -353,22 +437,45 @@
     }
   }
 
+  &__ticker-placeholder {
+    display: block;
+    width: 100%;
+    min-height: 112px;
+    border-radius: 20px;
+    background: rgba(255, 68, 0, 0.04);
+    box-sizing: border-box;
+
+    @include mobile {
+      min-height: 104px;
+    }
+  }
+
   &__trading-ticker-wrapper {
     max-width: 2000px;
     width: 100%;
-    margin-top: 30px;
+    margin-top: 6px;
     overflow: hidden;
     position: relative;
+    /* Reserve row height before Socket.IO populates symbols (cuts CLS on all-markets). */
+    min-height: 112px;
 
     @include mobile {
-      margin-top: 20px;
+      margin-top: 2px;
+      min-height: 104px;
     }
 
-    @include tablet {
+    @media screen and (min-width: $md) and (max-width: $max-lg) {
       margin-top: 0;
       width: 100%;
-      flex-basis: 100%;
-      order: 3;
+    }
+
+    /*
+      Global .trading-ticker.scss uses margin-top: 100px on mobile/tablet/xl — fine for homepage
+      hero context, but it stacks here and leaves a huge gap under the CTA on all-markets.
+    */
+    .trading-ticker-wrapper {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
     }
 
     // Ensure TradingTicker stays within wrapper bounds
@@ -378,13 +485,17 @@
       overflow: hidden !important;
     }
 
-    // Override any TradingTicker internal styling that might break out
     > * {
       max-width: 100% !important;
       width: 100% !important;
       overflow: hidden !important;
-      margin-top: 30px !important;
-      margin-bottom: 20px !important;
+      margin-top: 4px !important;
+      margin-bottom: 8px !important;
+
+      @include mobile {
+        margin-top: 2px !important;
+        margin-bottom: 6px !important;
+      }
     }
   }
 }

@@ -5,12 +5,12 @@ import { useTranslationWithVariables } from "../../../../helpers/hooks/use-trans
 import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import MenuColumn from "../menu-column";
 import { stringTransformToKebabCase } from "../../../../helpers/services/string-service";
-import { getMenuItems } from "../../../../helpers/menu.config";
+import { getMenuStructure } from "../../../../helpers/menu-structure.config";
 
 const Menu = ({ className }) => {
   const { t } = useTranslationWithVariables();
   const { isMobile, isTablet } = useWindowSize();
-  const menu = getMenuItems();
+  const menu = getMenuStructure();
 
   // Process menu items for footer-specific changes
   const processMenuForFooter = (menuItems) => {
@@ -121,7 +121,7 @@ const Menu = ({ className }) => {
                 key={`footer-menu-${stringTransformToKebabCase(item.title)}`}
                 className="menu__wrapper"
               >
-                <h3 className="menu__column-title">{translatedTitle}</h3>
+                <h2 className="menu__column-title">{translatedTitle}</h2>
                 <MenuColumn items={item.subItems || []} />
               </div>
             )

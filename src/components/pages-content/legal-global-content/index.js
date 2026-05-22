@@ -11,12 +11,10 @@ import { getLegalDocs } from "../../../helpers/documents";
 import Hero from "../../shared/hero";
 import ContainerWrapper from "../../shared/container-wrapper";
 import OurCommunityContent from "../../shared/our-community";
-import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 
 const LegalContentGlobal = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
   const isRTL = useRtlDirection();
-  const { isMobile } = useWindowSize();
 
   return (
     <>
@@ -30,9 +28,11 @@ const LegalContentGlobal = ({ className, isShowHero = true }) => {
         desktopBackground="url(../../assets/images/bg/hero/legal/legal-desktop.svg)"
         mobileBackground="url(../../assets/images/bg/hero/legal/legal-mobile.svg)"
       />
-      <ContainerWrapper>
-        <LegalRegulators regulators={LEGAL_REGULATORS} />
-      </ContainerWrapper>
+      <div className="legal-regulators-shell">
+        <ContainerWrapper>
+          <LegalRegulators regulators={LEGAL_REGULATORS} />
+        </ContainerWrapper>
+      </div>
       <LegalRegulatedContent />
       <Documents
         title={t("legal_documents-title-fsa")}
@@ -42,13 +42,11 @@ const LegalContentGlobal = ({ className, isShowHero = true }) => {
         documents={getLegalDocs()}
       />
 
-      {isMobile ? (
-        <OurCommunityContent />
-      ) : (
+      <div className="legal-page-community">
         <ContainerWrapper>
           <OurCommunityContent />
         </ContainerWrapper>
-      )}
+      </div>
     </>
   );
 };

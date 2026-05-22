@@ -933,3 +933,61 @@
     @include trading-type-variant("etf");
   }
 }
+
+/* Trading pages: FAQ block immediately above — avoid double header offset + match tighter rhythm vs homepage guide. */
+.guide-content--crypto,
+.guide-content--indices,
+.guide-content--forex,
+.guide-content--metals,
+.guide-content--shares,
+.guide-content--energies,
+.guide-content--etf {
+  @include mobile {
+    margin-top: 28px;
+    margin-bottom: 50px;
+  }
+
+  @include tablet {
+    padding-top: 40px;
+    padding-bottom: 20px;
+  }
+
+  @include desktop-lg {
+    padding-top: 40px;
+    padding-bottom: 0;
+  }
+
+  @include desktop-xl {
+    padding-top: 48px;
+    padding-bottom: 50px;
+  }
+
+  @include desktop-2k {
+    padding-top: 40px;
+    padding-bottom: 0;
+  }
+}
+
+/* Crypto & indices: FAQ → guide — extra breathing room above the Panduan block. */
+.guide-content--crypto,
+.guide-content--indices {
+  @include mobile {
+    margin-top: 56px;
+  }
+
+  @include tablet {
+    padding-top: 68px;
+  }
+
+  @include desktop-lg {
+    padding-top: 68px;
+  }
+
+  @include desktop-xl {
+    padding-top: 76px;
+  }
+
+  @include desktop-2k {
+    padding-top: 68px;
+  }
+}

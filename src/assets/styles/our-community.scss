@@ -4,16 +4,37 @@
 .our-community-content {
   position: relative;
   overflow: hidden;
-  margin-bottom: 100px;
   border-radius: 24px;
-  margin: 0 20px 100px 20px;
+  margin: 0 auto 32px;
 
-  // Background image will be set via inline style from component
-  // Removed ::before to allow inline style to work properly
-  position: relative;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
+  &__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    border-radius: inherit;
+  }
+
+  /* Tablet+: match join-our-community-desktop.webp (1240×501). */
+  @include tablet {
+    aspect-ratio: 1240 / 501;
+
+    &__bg-image {
+      object-position: left center;
+    }
+  }
 
   &__container {
     position: relative;
@@ -312,7 +333,7 @@
   // Mobile Styles
   @include mobile {
     padding: 45px 0;
-    margin: 50px 0 40px 0;
+    margin: 40px 0 32px 0;
     border-radius: 20px;
     width: 100%;
     height: 817px;
@@ -455,83 +476,68 @@
     }
   }
 
-  // Tablet Styles
-  @include tablet {
-    margin: 30px 0;
+  /* Tablet-only (768–1023): desktop banner + compact row layout (desktop-lg+ overrides below). */
+  @media screen and (min-width: $md) and (max-width: $max-lg) {
+    margin: 24px auto 32px;
     border-radius: 24px;
     width: 100%;
 
-    &::before {
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border-radius: 24px;
-      background-size: 100% auto;
-      background-position: center;
-    }
-
     &__container {
-      flex-direction: column;
-      gap: 0;
-      padding: 40px 20px;
+      flex-direction: row;
+      align-items: center;
+      gap: 24px;
+      padding: 70px 32px;
       border-radius: 24px;
     }
 
     &__left {
-      width: 100%;
+      width: auto;
+      flex: 1;
+      min-width: 0;
       gap: 0;
-      padding-top: 40px;
+      padding-top: 0;
       align-items: flex-start;
     }
 
     &__right {
-      width: 100%;
-    }
-
-    &__badge {
-      width: fit-content;
-      height: 28px;
-      margin-bottom: 0;
+      display: none;
     }
 
     &__title {
-      width: 450px;
+      width: 100%;
+      max-width: 420px;
       height: auto;
       font-size: 20px;
       line-height: 1.25;
-      text-align: left;
-      white-space: pre-line; // Allow line breaks to be displayed
-      background: linear-gradient(
-          102.31deg,
-          rgba(255, 255, 255, 0) 9.12%,
-          rgba(255, 68, 0, 0.45) 71.6%
-        ),
-        #ffffff;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-top: 0;
-      margin-bottom: 0;
+      margin-top: 4px;
+      margin-bottom: 4px;
     }
 
     &__subtitle {
       width: 100%;
-      height: auto;
+      max-width: 360px;
       font-size: 16px;
-      line-height: 28px;
-      letter-spacing: 0.2px;
-      color: #ffffff;
-      opacity: 0.7;
-      text-align: left;
-      margin-bottom: 0;
+      line-height: 26px;
     }
 
     .navbar-dropdown-highlight__button-group {
       flex-direction: row;
+      flex-wrap: wrap;
       gap: 12px;
-      margin-top: 5px;
+      margin-top: 12px;
       width: 100%;
+      max-width: 480px;
+    }
+  }
+
+  // Tablet Styles (768+, overridden by desktop-lg at 1024+)
+  @include tablet {
+    border-radius: 24px;
+    width: 100%;
+
+    .navbar-dropdown-highlight__button-group {
+      flex-direction: row;
+      gap: 12px;
       align-items: flex-start;
     }
 
@@ -605,7 +611,7 @@
 
   // Desktop Large Styles
   @include desktop-lg {
-    margin: 50px 0;
+    margin: 40px 0 32px;
     border-radius: 24px;
     width: 100%;
 
@@ -732,7 +738,7 @@
 
   // Desktop XL Styles
   @include desktop-xl {
-    margin: 0 0 50px 0;
+    margin: 0 0 32px;
     border-radius: 24px;
     width: 100%;
 
@@ -851,7 +857,7 @@
 
   // Desktop 2K Styles
   @include desktop-2k {
-    margin: 50px 0;
+    margin: 40px 0 32px;
     border-radius: 24px;
     width: 100%;
 
@@ -975,7 +981,7 @@
 
   // Desktop 5K Styles
   @include desktop-5k {
-    margin: 80px 0;
+    margin: 48px 0 32px;
     border-radius: 24px;
     width: 100%;
 
@@ -1164,5 +1170,37 @@
 
   &:active {
     text-decoration: underline;
+  }
+}
+
+/* Shared shell: our-community → footer (MT4, MT5, VPS, …). Stops #main-container flex-grow gap. */
+.mt4-page-community,
+.mt5-page-community,
+.vps-page-community,
+.partners-page-community,
+.help-center__our-community,
+.legal-page-community,
+.contact-us-page-community,
+.homepage-our-community-shell,
+.our-community-page-shell {
+  @include tablet-only {
+    #main-container {
+      min-height: 0;
+      flex-grow: 0;
+      contain: none;
+    }
+  }
+
+  #main-container {
+    min-height: 0;
+    flex-grow: 0;
+  }
+
+  #main-container .container {
+    @include mobile {
+      max-width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+    }
   }
 }

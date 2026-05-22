@@ -1,0 +1,12 @@
+/**
+ * Second chunk of deferred homepage styles. Loaded after the first deferred chunk (often in
+ * parallel; see Layout) to reduce "Reduce unused CSS" on first paint without PurgeCSS.
+ */
+@import "vars";
+@import "mixins";
+
+@import "trust";
+@import "features-content-section";
+@import "guide";
+@import "our-community";
+@import "form";

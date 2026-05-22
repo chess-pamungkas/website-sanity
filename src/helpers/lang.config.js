@@ -144,6 +144,44 @@ const CURRENT_ENTITY = process.env.GATSBY_ENTITY;
 const ENTITY_LANGUAGES =
   CURRENT_ENTITY == "FSA" ? LANG_CONFIG : CYSEC_LANG_CONFIG;
 
+/** Map our locale id to valid BCP 47 for HTML [lang]. Fixes Lighthouse "valid value for [lang] attribute". */
+const LOCALE_TO_BCP47 = {
+  en: "en",
+  fr: "fr",
+  br: "pt-BR",
+  vn: "vi",
+  th: "th",
+  es: "es",
+  it: "it",
+  cn: "zh-Hans",
+  zh: "zh-Hant",
+  id: "id",
+  jp: "ja",
+  my: "ms",
+  ar: "ar",
+};
+
+function getBcp47Lang(localeId) {
+  if (!localeId || typeof localeId !== "string") return "en";
+  const normalized = localeId.trim().toLowerCase();
+  return LOCALE_TO_BCP47[normalized] ?? normalized;
+}
+
+/** Resolve locale id from URL path (SSR / first paint). Used by gatsby-ssr setHtmlAttributes so <html lang> exists before react-helmet hydrates. */
+function getLanguageIdFromPathname(pathname) {
+  const fallbackId = ENTITY_LANGUAGES.find(({ isDefault }) => isDefault).id;
+  if (!pathname || typeof pathname !== "string") return fallbackId;
+  const trimmed = pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+  const lower = trimmed.toLowerCase();
+  for (let i = 0; i < ENTITY_LANGUAGES.length; i++) {
+    const lang = ENTITY_LANGUAGES[i];
+    const part = (lang.URIPart || "").toLowerCase();
+    if (!part) continue;
+    if (lower === part || lower.startsWith(`${part}/`)) return lang.id;
+  }
+  return fallbackId;
+}
+
 module.exports = {
   LANG_CONFIG,
   CYSEC_LANG_CONFIG,
@@ -152,4 +190,6 @@ module.exports = {
   uniqueList: allUniqueLanguages.map(({ id }) => id),
   list: ENTITY_LANGUAGES.map(({ id }) => id),
   defaultLangKey: ENTITY_LANGUAGES.find(({ isDefault }) => isDefault).id,
+  getBcp47Lang,
+  getLanguageIdFromPathname,
 };

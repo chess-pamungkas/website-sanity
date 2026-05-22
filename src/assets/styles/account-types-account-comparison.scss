@@ -9,7 +9,15 @@
   background: transparent;
   border-radius: 24px;
   overflow: hidden;
-  margin: 48px 0;
+  margin: 32px 0;
+
+  @include tablet-only {
+    margin: $below-marketing-hero-gap-tablet 0;
+  }
+
+  @include desktop-lg {
+    margin: $below-marketing-hero-gap-desktop 0;
+  }
 
   .account-comparison-bg {
     position: absolute;
@@ -52,6 +60,14 @@
     padding: 73px 20px 0;
     gap: 16px;
     text-align: center;
+
+    @include tablet-only {
+      padding-top: $below-marketing-hero-section-padding-top-tablet;
+    }
+
+    @include desktop-lg {
+      padding-top: $below-marketing-hero-section-padding-top-desktop;
+    }
     .badge-row {
       box-sizing: border-box;
       display: flex;
@@ -143,7 +159,7 @@
       flex: 1;
       min-height: 507px;
       background: transparent;
-      background-image: url("../../assets/images/accounts-type/account-comparison-desktop.svg");
+      background-image: url("/images/accounts-type/account-comparison-desktop.svg");
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
@@ -277,7 +293,7 @@
             right: -15px;
             width: 155px;
             height: 164.25px;
-            background-image: url("../../assets/images/icons/account-comparison/star-most-popular-hover.svg");
+            background-image: url("/images/icons/account-comparison/star-most-popular-hover.svg");
             background-size: contain;
             background-repeat: no-repeat;
             background-position: top right;

@@ -10,8 +10,12 @@
     padding: 125px 0 20px 0;
   }
 
-  @include tablet {
-    padding: 150px 0 20px 0;
+  @include tablet-only {
+    padding: $below-marketing-hero-gap-tablet 0 20px 0;
+  }
+
+  @include desktop-lg {
+    padding: $below-marketing-hero-gap-desktop 0 20px 0;
   }
   s &__container {
     max-width: 1280px;

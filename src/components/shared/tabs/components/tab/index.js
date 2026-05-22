@@ -2,18 +2,19 @@ import React, { memo } from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
 
-const Tab = memo(({ children, isSelected, tabIndex, onTabClick }) => {
+const Tab = memo(({ children, isSelected, panelId, onTabClick }) => {
   return (
     <li
       className={cn("tabs__tab", { "tabs__tab--active": isSelected })}
       role="tab"
-      id={`tab-${tabIndex}`}
+      id={`tab-${panelId}`}
       aria-selected={isSelected}
-      aria-controls={`panel-${tabIndex}`}
-      tabIndex={tabIndex}
+      aria-controls={`panel-${panelId}`}
+      tabIndex={isSelected ? 0 : -1}
       onClick={onTabClick}
-      onKeyPress={(event) => {
-        if (event.key === "Enter") {
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
           onTabClick();
         }
       }}
@@ -26,7 +27,7 @@ const Tab = memo(({ children, isSelected, tabIndex, onTabClick }) => {
 Tab.propTypes = {
   children: PropTypes.node.isRequired,
   isSelected: PropTypes.bool.isRequired,
-  tabIndex: PropTypes.number.isRequired,
+  panelId: PropTypes.number.isRequired,
   onTabClick: PropTypes.func.isRequired,
 };
 

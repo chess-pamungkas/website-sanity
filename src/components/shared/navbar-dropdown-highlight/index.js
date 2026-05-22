@@ -96,6 +96,8 @@ const NavbarDropdownHighlight = ({
               src={subNavBadgeIcon}
               alt={t("navbar-dropdown-highlight_badge-icon-alt")}
               className="navbar-dropdown-highlight__badge-icon"
+              width={24}
+              height={24}
             />
           </span>
           <span

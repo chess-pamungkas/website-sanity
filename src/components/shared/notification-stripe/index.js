@@ -110,12 +110,12 @@ const NotificationsContainer = ({ className, setSectionOptions }) => {
 
   useEffect(() => {
     if (isMobile) {
-      let livechatindex = document.getElementById(
+      const livechatindex = document.getElementById(
         "convrs-chat-channel-container"
       );
 
       if (isBrowser()) {
-        let livechatisMobile = document.getElementById(
+        const livechatisMobile = document.getElementById(
           "convrs-chat-channel-container"
         );
 
@@ -151,7 +151,7 @@ const NotificationsContainer = ({ className, setSectionOptions }) => {
           bottom = "10px";
       }
 
-      let livechat = document.getElementById("convrs-chat-channel-container");
+      const livechat = document.getElementById("convrs-chat-channel-container");
 
       if (livechat) {
         livechat.style.bottom = bottom;

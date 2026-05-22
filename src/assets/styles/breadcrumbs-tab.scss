@@ -3,6 +3,7 @@
 
 .breadcrumbs-tab {
   margin: 0 auto;
+
   @include mobile {
     // display: none;
     max-width: 100%;
@@ -12,10 +13,19 @@
     padding-bottom: 30px;
   }
 
-  @include tablet {
+  /* Tablet (768–1023): tight gap under hero — was 100px and overrode --*-hero-tight. */
+  @include tablet-only {
     max-width: 720px;
-    padding-top: 100px;
-    padding-bottom: 30px;
+    padding-top: 32px;
+    padding-bottom: 20px;
+  }
+
+  /* All-markets / product pages: slightly tighter on small-mobile. */
+  &--all-markets-hero-tight {
+    @include mobile {
+      padding-top: 28px;
+      padding-bottom: 20px;
+    }
   }
 
   @include desktop-lg {
@@ -142,6 +152,13 @@
 
     @include desktop-lg {
       display: flex;
+    }
+  }
+
+  /* Hide on desktop-lg via CSS — avoids useWindowSize tab filter + post-hydration reflow. */
+  &__tab--hide-desktop-lg {
+    @include desktop-lg {
+      display: none !important;
     }
   }
 

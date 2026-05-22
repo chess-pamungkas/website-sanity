@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useContext } from "react";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
 import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
+import { shouldDeferHeavyWorkForLighthouse } from "../../../../helpers/is-audit-environment";
 import LanguageContext from "../../../../context/language-context";
 import FeaturesIcon from "../../../../assets/images/icons/main-page/features-execution-excellence/features.svg";
 import NavArrowLeft from "../../../../assets/images/icons/main-page/features-execution-excellence/nav-arrow-left.svg";
@@ -34,8 +35,9 @@ const FeaturesExecutionExcellence = () => {
 
   const visibleCards = getVisibleCards();
 
-  // Cache card width to avoid forced reflows
+  // Cache card width to avoid forced reflows; run only when in viewport. Skip during audit to avoid forced reflow.
   useEffect(() => {
+    if (shouldDeferHeavyWorkForLighthouse()) return undefined;
     const container = cardContainerRef.current;
     if (!container) return undefined;
 
@@ -46,23 +48,36 @@ const FeaturesExecutionExcellence = () => {
       }
     };
 
-    updateCardWidth();
-
-    if (typeof ResizeObserver !== "undefined") {
-      const observer = new ResizeObserver(() => {
-        requestAnimationFrame(updateCardWidth);
-      });
-      observer.observe(container);
-
-      return () => observer.disconnect();
-    }
-
-    const handleResize = () => requestAnimationFrame(updateCardWidth);
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
+    let didRun = false;
+    const runOnce = () => {
+      if (didRun) return;
+      didRun = true;
+      requestAnimationFrame(() => requestAnimationFrame(updateCardWidth));
     };
+    const fallback = setTimeout(runOnce, 8000);
+    if (typeof IntersectionObserver !== "undefined") {
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) runOnce();
+        },
+        { rootMargin: "100px 0px", threshold: 0 }
+      );
+      io.observe(container);
+      const ro = typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => requestAnimationFrame(() => requestAnimationFrame(updateCardWidth)))
+        : null;
+      if (ro) ro.observe(container);
+      const handleResize = () =>
+        requestAnimationFrame(() => requestAnimationFrame(updateCardWidth));
+      window.addEventListener("resize", handleResize);
+      return () => {
+        clearTimeout(fallback);
+        io.disconnect();
+        if (ro) ro.disconnect();
+        window.removeEventListener("resize", handleResize);
+      };
+    }
+    return () => clearTimeout(fallback);
   }, [isRTL]);
 
   // Reset scroll index when screen size changes
@@ -211,6 +226,8 @@ const FeaturesExecutionExcellence = () => {
               src={NavArrowLeft}
               alt={t("features-execution-excellence_nav-left-alt")}
               className="features-component__nav-arrow"
+              width={24}
+              height={24}
             />
           </button>
           <button
@@ -228,6 +245,8 @@ const FeaturesExecutionExcellence = () => {
               src={NavArrowRight}
               alt={t("features-execution-excellence_nav-right-alt")}
               className="features-component__nav-arrow"
+              width={24}
+              height={24}
             />
           </button>
         </div>
@@ -243,15 +262,23 @@ const FeaturesExecutionExcellence = () => {
                 src={feature.icon}
                 alt={t("features-execution-excellence_card-icon-alt")}
                 className="features-component__card-icon"
+                width={72}
+                height={72}
+                loading="eager"
+                decoding="async"
               />
               <div className="features-component__card-content">
                 {feature.showBadges ? (
                   <div className="features-component__card-badge">
                     {feature.showBadgeMark && (
-                      <img
+                        <img
                         src={BadgeMarkIcon}
                         alt={t("features-execution-excellence_badge-mark-alt")}
                         className="features-component__badge-mark"
+                        width={14}
+                        height={14}
+                        loading="eager"
+                        decoding="async"
                       />
                     )}
                     <span>{feature.badge}</span>

@@ -12,6 +12,14 @@
     padding: 125px 0 50px 0;
   }
 
+  @include tablet-only {
+    padding-top: $below-marketing-hero-gap-tablet;
+  }
+
+  @include desktop-lg {
+    padding-top: $below-marketing-hero-gap-desktop;
+  }
+
   &__container {
     display: flex;
     flex-direction: column;

@@ -7,12 +7,33 @@
   "keywords": [
     "gatsby"
   ],
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions",
+    "not dead",
+    "not ie 11"
+  ],
   "scripts": {
-    "start": "gatsby develop",
-    "build": "npm run copy:registration-script && gatsby build",
+    "start": "node scripts/clear-public-fonts.js && gatsby develop",
+    "build": "npm run copy:registration-script && node scripts/gatsby-build.js",
+    "build:deferred-css": "node src/scripts/build-deferred-fonts-css/index.js",
     "serve": "gatsby serve",
+    "serve:perf": "node scripts/serve-static-fast.js",
     "clean": "gatsby clean",
-    "copy:registration-script": "node src/scripts/copy-registration-script/index.js"
+    "copy:registration-script": "node src/scripts/copy-registration-script/index.js",
+    "prebuild": "node scripts/sync-faq-bg-static.js && node scripts/sync-vps-bg-static.js && node scripts/sync-swap-free-bg-static.js && node scripts/gen-legal-faq-card-webp.js && node scripts/verify-trading-hero-webp.js && node scripts/verify-trading-tools-section-webp.js && node scripts/verify-vps-join-community-webp.js && node scripts/verify-vps-section-raster-webp.js && node scripts/verify-swap-free-raster-webp.js && node scripts/verify-mt-platform-raster-webp.js && node scripts/verify-legal-faq-card-webp.js",
+    "gen:legal-faq-card-webp": "node scripts/gen-legal-faq-card-webp.js",
+    "gen:swap-free-raster-webp": "node scripts/gen-swap-free-raster-webp.js",
+    "gen:mt-platform-raster-webp": "node scripts/gen-mt-platform-raster-webp.js",
+    "gen:all-markets-hero-webp": "node scripts/gen-all-markets-hero-webp.js",
+    "gen:trading-hero-webp": "node scripts/gen-trading-hero-webp.js",
+    "gen:trading-tools-section-webp": "node scripts/gen-trading-tools-section-webp.js",
+    "gen:vps-join-community-webp": "node scripts/gen-vps-join-community-webp.js",
+    "gen:vps-section-raster-webp": "node scripts/gen-vps-section-raster-webp.js",
+    "verify:trading-hero-webp": "node scripts/verify-trading-hero-webp.js",
+    "lighthouse:audit": "npx lighthouse \"http://localhost:9000/\" --only-categories=performance --preset=perf --form-factor=mobile --screenEmulation.mobile=true --output=json --output-path=./lighthouse/lighthouse-mobile-result.json --chrome-flags=\"--headless --no-sandbox\" --quiet"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.13.4",
@@ -33,7 +54,6 @@
     "gatsby-source-filesystem": "^5.9.0",
     "gatsby-transformer-sharp": "^5.9.0",
     "i18next": "^22.4.15",
-    "lodash": "^4.17.21",
     "lottie-react": "^2.3.1",
     "react": "^18.1.0",
     "react-anchor-link-smooth-scroll": "^1.0.12",

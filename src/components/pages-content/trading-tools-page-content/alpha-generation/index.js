@@ -1,23 +1,20 @@
 import React, { useState, useContext } from "react";
-import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
 import { ShowRegistrationPopup } from "../../../../helpers/constants";
-import { ChevronDownIcon, ChevronUpIcon } from "../../../shared/icons";
+import { ChevronDownIcon, ChevronUpIcon } from "../../../shared/icons/critical";
 import LanguageContext from "../../../../context/language-context";
 import cn from "classnames";
 import ReusableButtons from "../../../shared/reusable-buttons";
-
-const { ArrowIcon } = ReusableButtons;
-import desktopBgSVG from "../../../../assets/images/bg/trading-tools/bg-alpha-generation-desktop.svg";
-import mobileBgSVG from "../../../../assets/images/bg/trading-tools/bg-alpha-generation-mobile.svg";
+import { ALPHA_GENERATION_BG } from "../../../../helpers/trading-tools-section-assets";
 import badgeIcon from "../../../../assets/images/icons/badge-market-sentiment.svg";
 import analystViewsIcon from "../../../../assets/images/trading-tools/analyst-views.svg";
 import adaptiveCandlesIcon from "../../../../assets/images/trading-tools/adaptive-candles.svg";
 import adcIcon from "../../../../assets/images/trading-tools/adaptive-divergence-convergence.svg";
 
+const { ArrowIcon } = ReusableButtons;
+
 const AlphaGeneration = () => {
-  const { isMobile } = useWindowSize();
   const isRTL = useRtlDirection();
   const { t } = useTranslationWithVariables();
   const { selectedLanguage } = useContext(LanguageContext);
@@ -82,8 +79,6 @@ const AlphaGeneration = () => {
 
   const currentContent = getTabContent();
 
-  const backgroundSrc = isMobile ? mobileBgSVG : desktopBgSVG;
-
   return (
     <>
       <div
@@ -92,11 +87,32 @@ const AlphaGeneration = () => {
       >
         {/* Background */}
         <div className="alpha-generation__background">
-          <img
-            src={backgroundSrc}
-            alt="Alpha Generation Background"
-            className="alpha-generation__background-image"
-          />
+          <picture>
+            <source
+              type="image/webp"
+              media="(max-width: 767px)"
+              srcSet={ALPHA_GENERATION_BG.mobileWebp}
+            />
+            <source
+              type="image/webp"
+              media="(min-width: 768px)"
+              srcSet={ALPHA_GENERATION_BG.desktopWebp}
+            />
+            <source
+              media="(max-width: 767px)"
+              srcSet={ALPHA_GENERATION_BG.mobileSvg}
+              type="image/svg+xml"
+            />
+            <img
+              src={ALPHA_GENERATION_BG.desktopSvg}
+              alt=""
+              className="alpha-generation__background-image"
+              width={ALPHA_GENERATION_BG.widthDesktop}
+              height={ALPHA_GENERATION_BG.heightDesktop}
+              decoding="async"
+              loading="lazy"
+            />
+          </picture>
         </div>
 
         <div className="alpha-generation__container container">

@@ -1,8 +1,10 @@
 import React from "react";
 import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
-import BadgeSecurityIcon from "../../../../assets/images/icons/main-page/badge-security.svg";
-import CircleMarkIcon from "../../../../assets/images/icons/circle-mark.svg";
+import {
+  BadgeSecurityIcon,
+  CircleMarkIcon,
+} from "../../../shared/shared-icons";
 import InfrastructureIcon from "../../../../assets/images/icons/main-page/technology-infrastructure/infrastructure.svg";
 import TradingPlatformsIcon from "../../../../assets/images/icons/main-page/technology-infrastructure/trading-platforms.svg";
 import AdvancedToolsIcon from "../../../../assets/images/icons/main-page/technology-infrastructure/advanced-tools.svg";
@@ -60,6 +62,8 @@ const TechnologyInfrastructureContent = () => {
                   src={BadgeSecurityIcon}
                   alt={t("technology-infrastructure_badge-icon-alt")}
                   className="technology-infrastructure-content__badge-icon"
+                  width={24}
+                  height={24}
                 />
               </div>
               <span className="technology-infrastructure-content__badge-message">
@@ -88,7 +92,7 @@ const TechnologyInfrastructureContent = () => {
             >
               {/* Card Icon */}
               <div className="technology-infrastructure-content__card-icon">
-                <img src={feature.icon} alt={feature.title} />
+                <img src={feature.icon} alt={feature.title} width={24} height={24} />
               </div>
 
               {/* Card Title */}
@@ -107,6 +111,8 @@ const TechnologyInfrastructureContent = () => {
                       src={CircleMarkIcon}
                       alt={t("technology-infrastructure_check-icon-alt")}
                       className="technology-infrastructure-content__feature-icon"
+                      width={16}
+                      height={17}
                     />
                     <span className="technology-infrastructure-content__feature-text">
                       {item}

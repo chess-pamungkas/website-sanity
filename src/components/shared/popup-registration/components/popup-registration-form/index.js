@@ -1,9 +1,9 @@
-﻿import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
+import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import { Formik } from "formik";
 import cn from "classnames";
 import { PopupRegistrationSchema } from "../../../../../validations/popup-registration";
 import axios from "axios";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "gatsby-plugin-react-i18next";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useTranslationWithVariables } from "../../../../../helpers/hooks/use-translation-with-vars";
 import { useRtlDirection } from "../../../../../helpers/hooks/use-rtl-direction";
@@ -11,6 +11,7 @@ import { sendLog } from "../../../../../helpers/services/log-service";
 import countries from "../../../../shared/countries";
 import ClientResolverContext from "../../../../../context/client-resolver-context";
 import { PORTAL_LANGUAGES_MAP } from "../../../../../helpers/lang-options.config";
+import { getBcp47Lang } from "../../../../../helpers/lang.config";
 import LanguageContext from "../../../../../context/language-context";
 import selectorIcon from "../../../../../assets/images/icons/popup-registration/selector.svg";
 import chevronDownIcon from "../../../../../assets/images/icons/popup-registration/chevron-down.svg";
@@ -668,7 +669,7 @@ const PopupRegistrationForm = ({ params }) => {
             window.__FORCE_LANGUAGE__ = true;
 
             // Set on document element
-            document.documentElement.setAttribute("lang", urlLanguage);
+            document.documentElement.setAttribute("lang", getBcp47Lang(urlLanguage));
 
             // Update localStorage
             try {
@@ -697,8 +698,7 @@ const PopupRegistrationForm = ({ params }) => {
 
                   document.documentElement.removeAttribute("data-rtl");
 
-                  // Force UI update by triggering a reflow
-                  const reflow = document.body.offsetHeight;
+                  // Avoid reading layout here to prevent Lighthouse forced-reflow.
 
                   // console.log("RTL attributes cleaned inline");
                 }
@@ -754,7 +754,7 @@ const PopupRegistrationForm = ({ params }) => {
           ? sanitizeLanguageCode(detectedLanguage)
           : detectedLanguage;
 
-      document.documentElement.setAttribute("lang", cleanedLanguage);
+      document.documentElement.setAttribute("lang", getBcp47Lang(cleanedLanguage));
       sessionStorage.setItem("oqtima_tab_language", cleanedLanguage);
       window.__OQTIMA_TAB_LANGUAGE__ = cleanedLanguage;
 
@@ -2861,35 +2861,39 @@ const PopupRegistrationForm = ({ params }) => {
                     aria-label="Toggle consent agreement"
                   />
                   <span className="toggle-text">
-                    <Trans i18nKey="popup-registration-consent" ns="index">
-                      I agree to allow the company to process my personal data
-                      to meet its regulatory obligations and I have read and
-                      understood the
-                      <a
-                        href={policyLinks.privacyPolicy}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link"
-                        onClick={(e) =>
-                          handlePolicyLinkClick(e, policyLinks.privacyPolicy)
-                        }
-                      >
-                        Privacy Policy
-                      </a>
-                      and
-                      <a
-                        href={policyLinks.cookiePolicy}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link"
-                        onClick={(e) =>
-                          handlePolicyLinkClick(e, policyLinks.cookiePolicy)
-                        }
-                      >
-                        Cookie Policy
-                      </a>
-                      of the Company.
-                    </Trans>
+                    {t("popup-registration-consent", {
+                      ns: "index",
+                      privacyLink: (
+                        <a
+                          href={policyLinks.privacyPolicy}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="link"
+                          onClick={(e) =>
+                            handlePolicyLinkClick(e, policyLinks.privacyPolicy)
+                          }
+                        >
+                          {t("popup-registration-consent-privacy-label", {
+                            ns: "index",
+                          })}
+                        </a>
+                      ),
+                      cookieLink: (
+                        <a
+                          href={policyLinks.cookiePolicy}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="link"
+                          onClick={(e) =>
+                            handlePolicyLinkClick(e, policyLinks.cookiePolicy)
+                          }
+                        >
+                          {t("popup-registration-consent-cookie-label", {
+                            ns: "index",
+                          })}
+                        </a>
+                      ),
+                    })}
                   </span>
                 </div>
 

@@ -14,7 +14,7 @@ import bgCardCompanyMobile from "../../../../assets/images/bg/company/bg-card-co
 
 // Import icons
 import badgeMostPopular from "../../../../assets/images/icons/badge-most-popular.svg";
-import circleMark from "../../../../assets/images/icons/circle-mark.svg";
+import { CircleMarkIcon as circleMark } from "../../../shared/shared-icons";
 
 const CompanySection = ({ className }) => {
   const { t } = useTranslationWithVariables();
@@ -131,6 +131,8 @@ const CompanySection = ({ className }) => {
                       src={circleMark}
                       alt="Check Mark"
                       className="company-section-card__bullet-icon"
+                      width={16}
+                      height={17}
                     />
                     <span className="company-section-card__bullet-text">
                       {bullet}

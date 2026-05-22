@@ -20,7 +20,9 @@ import {
 } from "../../../helpers/constants";
 import { getUrlParamValue } from "../../../helpers/services/get-url-param-value";
 import ButtonLink from "../../shared/button-link";
-import { Logo, SearchIcon, SearchNoResultsImg } from "../../shared/icons";
+import { Logo } from "../../shared/icons/Logo";
+import { SearchIcon } from "../../shared/icons/SearchIcon";
+import { SearchNoResultsImg } from "../../shared/icons/SearchNoResultsImg";
 import { ArabicNumbers } from "react-native-arabic-numbers";
 import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
 import cn from "classnames";

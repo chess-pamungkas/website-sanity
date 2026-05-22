@@ -5,7 +5,7 @@ import { useTranslationWithVariables } from "../../../../helpers/hooks/use-trans
 import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import featureIcon from "../../../../assets/images/icons/features.svg";
 import bgCommissionDesktop from "../../../../assets/images/bg/spreads-fees/bg-commission-desktop.svg";
-import bgCommissionMobile from "../../../../assets/images/bg/spreads-fees/bg-commission-mobile.svg";
+import bgCommissionMobile from "../../../../assets/images/bg/spreads-fees/bg-commission-mobile.webp";
 import CommissionTableMobile from "../commission-table-mobile";
 
 const SpreadsFeesCommission = ({ className }) => {
@@ -54,11 +54,17 @@ const SpreadsFeesCommission = ({ className }) => {
           src={bgCommissionDesktop}
           alt={t("spreads-fees-commission_background-alt")}
           className="desktop-bg"
+          width={1440}
+          height={706}
+          decoding="async"
         />
         <img
           src={bgCommissionMobile}
           alt={t("spreads-fees-commission_background-alt")}
           className="mobile-bg"
+          width={393}
+          height={840}
+          decoding="async"
         />
       </div>
 

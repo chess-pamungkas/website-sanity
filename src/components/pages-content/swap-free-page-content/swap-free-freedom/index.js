@@ -3,9 +3,14 @@ import { useTranslationWithVariables } from "../../../../helpers/hooks/use-trans
 import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { ShowRegistrationPopup } from "../../../../helpers/constants";
 import LanguageContext from "../../../../context/language-context";
-import BadgeSecurityIcon from "../../../../assets/images/icons/badge-security.svg";
-import CircleMarkIcon from "../../../../assets/images/icons/circle-mark.svg";
-import SwapFreeFreedomImage from "../../../../assets/images/swap-free/swap-free-freedom.svg";
+import {
+  BadgeSecurityIconGeneral as BadgeSecurityIcon,
+  CircleMarkIcon,
+} from "../../../shared/shared-icons";
+import {
+  SWAP_FREE_FREEDOM_DESKTOP_WEBP,
+  SWAP_FREE_FREEDOM_MOBILE_WEBP,
+} from "../../../../helpers/swap-free-static-images";
 import { StandardButtons } from "../../../../components/shared/reusable-buttons";
 
 const SwapFreeFreedom = () => {
@@ -46,16 +51,27 @@ const SwapFreeFreedom = () => {
       <div className="swap-free-freedom__container">
         <div className="swap-free-freedom__content">
           <div className="swap-free-freedom__image">
-            <img
-              src={SwapFreeFreedomImage}
-              alt="Swap-Free Freedom"
-              className="swap-free-freedom__image-content"
-            />
+            <picture>
+              <source
+                media="(max-width: 768px)"
+                type="image/webp"
+                srcSet={SWAP_FREE_FREEDOM_MOBILE_WEBP}
+              />
+              <img
+                src={SWAP_FREE_FREEDOM_DESKTOP_WEBP}
+                alt="Swap-Free Freedom"
+                className="swap-free-freedom__image-content"
+                width={589}
+                height={500}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
           </div>
           <div className="swap-free-freedom__text">
             {/* Badge */}
             <div className="swap-free-freedom__badge">
-              <img src={BadgeSecurityIcon} alt={t("swap_free_freedom_badge")} />
+              <img src={BadgeSecurityIcon} alt={t("swap_free_freedom_badge")} width={24} height={24} />
               <span className="swap-free-freedom__badge-text">
                 {t("swap_free_freedom_badge")}
               </span>
@@ -79,6 +95,8 @@ const SwapFreeFreedom = () => {
                     src={feature.icon}
                     alt="Check mark"
                     className="swap-free-freedom__feature-icon"
+                    width={16}
+                    height={17}
                   />
                   <span className="swap-free-freedom__feature-text">
                     {feature.text}

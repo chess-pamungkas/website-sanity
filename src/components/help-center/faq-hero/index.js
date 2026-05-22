@@ -12,8 +12,6 @@ const FaqHero = ({ className, setSearchResults, setNoSearchResult }) => {
         showHandImage={false}
         showHeroImage={false}
         showTrustPilot={true}
-        desktopBackground="../../assets/images/bg/hero/faq/faq-desktop.svg"
-        mobileBackground="../../assets/images/bg/hero/faq/faq-mobile.svg"
         setSearchResults={setSearchResults}
         setNoSearchResult={setNoSearchResult}
       />

@@ -1,16 +1,17 @@
 import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { useI18next } from "gatsby-plugin-react-i18next";
-import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import LanguageContext from "../../../context/language-context";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
+import { SM_MAX_WIDTH, WINDOW_SIZE_MD } from "../../../helpers/constants";
+import {
+  JOIN_OUR_COMMUNITY_BG_DIMENSIONS,
+  JOIN_OUR_COMMUNITY_DESKTOP_WEBP,
+  JOIN_OUR_COMMUNITY_MOBILE_WEBP,
+} from "../../../helpers/join-our-community-backgrounds";
 import BadgeJoinOurCommunityIcon from "../../../assets/images/icons/join-our-community/badge-join-our-community.svg";
 import { CommunityButtons } from "../community-buttons";
-// Import background images
-// Using static folder path for WebP (more reliable in Gatsby)
-const JoinOurCommunityDesktopBg = "/images/join-our-community-desktop.webp";
-import JoinOurCommunityMobileBg from "../../../assets/images/bg/join-our-community/join-our-community-mobile.svg";
 
 const OurCommunityContent = ({
   customBadgeMessage,
@@ -20,8 +21,9 @@ const OurCommunityContent = ({
   customSecondaryButton,
   onPrimaryClick,
   onSecondaryClick,
+  desktopBackgroundImageUrl,
+  mobileBackgroundImageUrl,
 }) => {
-  const { isMobile } = useWindowSize();
   const { selectedLanguage } = useContext(LanguageContext);
   const { t } = useTranslationWithVariables();
   const { navigate } = useI18next();
@@ -35,44 +37,54 @@ const OurCommunityContent = ({
     setIsPopupOpen(false);
   };
 
-  // Use custom content if provided, otherwise fall back to translations
   const badgeMessage = customBadgeMessage || t("our_community_badge_message");
   const title = customTitle || t("our_community_title");
   const subtitle = customSubtitle || t("our_community_subtitle");
   const primaryButtonText =
     customPrimaryButton || t("our_community_primary_button");
-  // If customSecondaryButton is explicitly null, pass null to hide the button
-  // Otherwise, use customSecondaryButton if provided, or fall back to translation
   const secondaryButtonText =
     customSecondaryButton === null
       ? null
       : customSecondaryButton || t("our_community_secondary_button");
 
-  // Use custom click handlers if provided, otherwise use default handlers
   const handlePrimaryClick = onPrimaryClick || handleShowRegistrationPopup;
-  // Default secondary button navigates to accounts-type page instead of opening popup
-  // navigate from useI18next automatically preserves language prefix (e.g., /my/accounts-type)
   const handleSecondaryClick =
     onSecondaryClick ||
     (() => {
       navigate("/accounts-type");
     });
 
-  // Set background image directly as inline style
-  // Using static folder path for WebP (more reliable)
-  const backgroundImage = isMobile
-    ? JoinOurCommunityMobileBg
-    : JoinOurCommunityDesktopBg;
-
-  const style = {
-    backgroundImage: `url(${backgroundImage})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center center",
-    backgroundRepeat: "no-repeat",
-  };
+  const desktopBg =
+    desktopBackgroundImageUrl ?? JOIN_OUR_COMMUNITY_DESKTOP_WEBP;
+  const mobileBg = mobileBackgroundImageUrl ?? JOIN_OUR_COMMUNITY_MOBILE_WEBP;
+  const { desktop: bgDesktopDim, mobile: bgMobileDim } =
+    JOIN_OUR_COMMUNITY_BG_DIMENSIONS;
 
   return (
-    <div className="our-community-content" style={style}>
+    <div className="our-community-content">
+      <picture className="our-community-content__bg" aria-hidden="true">
+        <source
+          media={`(min-width: ${WINDOW_SIZE_MD}px)`}
+          type="image/webp"
+          srcSet={desktopBg}
+        />
+        <source
+          media={`(max-width: ${SM_MAX_WIDTH}px)`}
+          type="image/webp"
+          srcSet={mobileBg}
+        />
+        <img
+          src={desktopBg}
+          alt=""
+          className="our-community-content__bg-image"
+          width={bgDesktopDim.width}
+          height={bgDesktopDim.height}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
+      </picture>
+
       <div className="our-community-content__container">
         <div className="our-community-content__left">
           <div className="our-community-content__badge">
@@ -103,9 +115,7 @@ const OurCommunityContent = ({
         </div>
 
         <div className="our-community-content__right">
-          <div className="our-community-content__image-container">
-            {/* Background images are handled via CSS */}
-          </div>
+          <div className="our-community-content__image-container" />
         </div>
       </div>
 
@@ -128,6 +138,8 @@ OurCommunityContent.propTypes = {
   customSecondaryButton: PropTypes.string,
   onPrimaryClick: PropTypes.func,
   onSecondaryClick: PropTypes.func,
+  desktopBackgroundImageUrl: PropTypes.string,
+  mobileBackgroundImageUrl: PropTypes.string,
 };
 
 export default OurCommunityContent;

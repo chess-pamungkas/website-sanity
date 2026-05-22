@@ -1,23 +1,20 @@
 import React, { useState, useContext } from "react";
-import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
 import { ShowRegistrationPopup } from "../../../../helpers/constants";
-import { ChevronDownIcon } from "../../../shared/icons";
+import { ChevronDownIcon } from "../../../shared/icons/critical";
 import LanguageContext from "../../../../context/language-context";
 import ReusableButtons from "../../../shared/reusable-buttons";
-
-const { ArrowIcon } = ReusableButtons;
-import desktopBgSVG from "../../../../assets/images/bg/trading-tools/bg-feature-ideas-desktop.svg";
-import mobileBgSVG from "../../../../assets/images/bg/trading-tools/bg-feature-ideas-mobile.svg";
+import { FEATURED_IDEAS_BG } from "../../../../helpers/trading-tools-section-assets";
 import badgeIcon from "../../../../assets/images/icons/badge-market-sentiment.svg";
 import featuredIdeasCustomizableFiltersImage from "../../../../assets/images/trading-tools/featured-ideas-customizable-filters.png";
 import featuredIdeasEducationalImage from "../../../../assets/images/trading-tools/featured-ideas-educational.png";
 import featuredIdeasRealTimeOnLiveChartsImage from "../../../../assets/images/trading-tools/featured-ideas-real-time-on-live-charts.png";
 import { setLangParam } from "../../../../helpers/services/language-service";
 
+const { ArrowIcon } = ReusableButtons;
+
 const FeaturedIdeas = ({ className }) => {
-  const { isMobile } = useWindowSize();
   const isRTL = useRtlDirection();
   const { t } = useTranslationWithVariables();
   const { selectedLanguage } = useContext(LanguageContext);
@@ -86,17 +83,36 @@ const FeaturedIdeas = ({ className }) => {
 
   const currentContent = getTabContent();
 
-  const backgroundSrc = isMobile ? mobileBgSVG : desktopBgSVG;
-
   return (
     <div id="featured-ideas" className={`featured-ideas ${className || ""}`}>
       {/* Background */}
       <div className="featured-ideas__background">
-        <img
-          src={backgroundSrc}
-          alt="Featured Ideas Background"
-          className="featured-ideas__background-image"
-        />
+        <picture>
+          <source
+            type="image/webp"
+            media="(max-width: 767px)"
+            srcSet={FEATURED_IDEAS_BG.mobileWebp}
+          />
+          <source
+            type="image/webp"
+            media="(min-width: 768px)"
+            srcSet={FEATURED_IDEAS_BG.desktopWebp}
+          />
+          <source
+            media="(max-width: 767px)"
+            srcSet={FEATURED_IDEAS_BG.mobileSvg}
+            type="image/svg+xml"
+          />
+          <img
+            src={FEATURED_IDEAS_BG.desktopSvg}
+            alt=""
+            className="featured-ideas__background-image"
+            width={FEATURED_IDEAS_BG.widthDesktop}
+            height={FEATURED_IDEAS_BG.heightDesktop}
+            decoding="async"
+            loading="lazy"
+          />
+        </picture>
       </div>
 
       <div className="featured-ideas__container container">

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
-import { AngleDownIcon } from "../icons";
+import { AngleDownIcon } from "../icons/AngleDownIcon";
 
 const Accordion = ({
   children,

@@ -1,4 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, {
+  useState,
+  useContext,
+  useMemo,
+  lazy,
+  Suspense,
+} from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
@@ -8,11 +14,235 @@ import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
 import LanguageContext from "../../../context/language-context";
 import { HeroButtons, ButtonPrimaryHero } from "../reusable-buttons";
 import FaqSearchBar from "../../help-center/faq-search-bar";
-import TrustPilot from "../trust-pilot";
-// Using static folder path for WebP (more reliable in Gatsby)
-const globeImage = "/images/globe.webp";
-const handImage = "/images/hand.webp";
 import { useI18next } from "gatsby-plugin-react-i18next";
+import {
+  HERO_ASSET_DESKTOP_MQ,
+  HERO_ASSET_MOBILE_MQ,
+} from "../../../helpers/viewport-media";
+
+/** Split Trustpilot + bootstrap out of the main hero chunk so lab/CPU parses less during TBT window. */
+const TrustPilot = lazy(() => import("../trust-pilot"));
+// Using static folder path for WebP - responsive srcset so mobile fetches only mobile assets
+const globeImageDesktop = "/images/globe.webp";
+const globeImageMobile = "/images/globe-mobile.webp";
+const handImageDesktop = "/images/hand.webp";
+const handImageMobile = "/images/hand-mobile.webp";
+/**
+ * WebP + SVG fallbacks under /static/images/bg/hero/<slug>/ — LCP must be real <img>s.
+ * Desktop artboards are 1440×583; mobile SVGs/WebPs are 393×953 (`width`/`viewBox` on each *-mobile.svg).
+ */
+const HERO_LCP_DIM = {
+  desktop: { width: 1440, height: 583 },
+  mobile: { width: 393, height: 953 },
+};
+
+const HERO_LCP_BY_TYPE = {
+  "all-markets": {
+    mobileWebp: "/images/bg/hero/all-markets/all-markets-mobile.webp",
+    desktopWebp: "/images/bg/hero/all-markets/all-markets-desktop.webp",
+    mobileSvg: "/images/bg/hero/all-markets/all-markets-mobile.svg",
+    desktopSvg: "/images/bg/hero/all-markets/all-markets-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  forex: {
+    mobileWebp: "/images/bg/hero/forex/forex-mobile.webp",
+    desktopWebp: "/images/bg/hero/forex/forex-desktop.webp",
+    mobileSvg: "/images/bg/hero/forex/forex-mobile.svg",
+    desktopSvg: "/images/bg/hero/forex/forex-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  metals: {
+    mobileWebp: "/images/bg/hero/metals/metals-mobile.webp",
+    desktopWebp: "/images/bg/hero/metals/metals-desktop.webp",
+    mobileSvg: "/images/bg/hero/metals/metals-mobile.svg",
+    desktopSvg: "/images/bg/hero/metals/metals-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  crypto: {
+    mobileWebp: "/images/bg/hero/crypto/crypto-mobile.webp",
+    desktopWebp: "/images/bg/hero/crypto/crypto-desktop.webp",
+    mobileSvg: "/images/bg/hero/crypto/crypto-mobile.svg",
+    desktopSvg: "/images/bg/hero/crypto/crypto-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  indices: {
+    mobileWebp: "/images/bg/hero/indices/indices-mobile.webp",
+    desktopWebp: "/images/bg/hero/indices/indices-desktop.webp",
+    mobileSvg: "/images/bg/hero/indices/indices-mobile.svg",
+    desktopSvg: "/images/bg/hero/indices/indices-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  shares: {
+    mobileWebp: "/images/bg/hero/shares/shares-mobile.webp",
+    desktopWebp: "/images/bg/hero/shares/shares-desktop.webp",
+    mobileSvg: "/images/bg/hero/shares/shares-mobile.svg",
+    desktopSvg: "/images/bg/hero/shares/shares-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  energies: {
+    mobileWebp: "/images/bg/hero/energies/energies-mobile.webp",
+    desktopWebp: "/images/bg/hero/energies/energies-desktop.webp",
+    mobileSvg: "/images/bg/hero/energies/energies-mobile.svg",
+    desktopSvg: "/images/bg/hero/energies/energies-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  etf: {
+    mobileWebp: "/images/bg/hero/etf/etf-mobile.webp",
+    desktopWebp: "/images/bg/hero/etf/etf-desktop.webp",
+    mobileSvg: "/images/bg/hero/etf/etf-mobile.svg",
+    desktopSvg: "/images/bg/hero/etf/etf-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  "account-types": {
+    mobileWebp: "/images/bg/hero/accounts-type/accounts-type-mobile.webp",
+    desktopWebp: "/images/bg/hero/accounts-type/accounts-type-desktop.webp",
+    mobileSvg: "/images/bg/hero/accounts-type/accounts-type-mobile.svg",
+    desktopSvg: "/images/bg/hero/accounts-type/accounts-type-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  "funding-withdrawals": {
+    mobileWebp:
+      "/images/bg/hero/funding-withdrawals/funding-withdrawals-mobile.webp",
+    desktopWebp:
+      "/images/bg/hero/funding-withdrawals/funding-withdrawals-desktop.webp",
+    mobileSvg:
+      "/images/bg/hero/funding-withdrawals/funding-withdrawals-mobile.svg",
+    desktopSvg:
+      "/images/bg/hero/funding-withdrawals/funding-withdrawals-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  "spreads-fees": {
+    mobileWebp: "/images/bg/hero/spreads-fees/spreads-fees-mobile.webp",
+    desktopWebp: "/images/bg/hero/spreads-fees/spreads-fees-desktop.webp",
+    mobileSvg: "/images/bg/hero/spreads-fees/spreads-fees-mobile.svg",
+    desktopSvg: "/images/bg/hero/spreads-fees/spreads-fees-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  /* WebP preferred (gen:trading-hero-webp); SVG fallbacks + huge mobile SVG avoided on desktop LCP */
+  "trading-tools": {
+    mobileWebp: "/images/bg/hero/trading-tools/trading-tools-mobile.webp",
+    desktopWebp: "/images/bg/hero/trading-tools/trading-tools-desktop.webp",
+    mobileSvg: "/images/bg/hero/trading-tools/trading-tools-mobile.svg",
+    desktopSvg: "/images/bg/hero/trading-tools/trading-tools-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  vps: {
+    mobileWebp: "/images/bg/hero/vps/vps-mobile.webp",
+    desktopWebp: "/images/bg/hero/vps/vps-desktop.webp",
+    mobileSvg: "/images/bg/hero/vps/vps-mobile.svg",
+    desktopSvg: "/images/bg/hero/vps/vps-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  "swap-free": {
+    mobileWebp: "/images/bg/hero/swap-free/swap-free-mobile.webp",
+    desktopWebp: "/images/bg/hero/swap-free/swap-free-desktop.webp",
+    mobileSvg: "/images/bg/hero/swap-free/swap-free-mobile.svg",
+    desktopSvg: "/images/bg/hero/swap-free/swap-free-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  mt4: {
+    mobileWebp: "/images/bg/hero/mt4/mt4-mobile.webp",
+    desktopWebp: "/images/bg/hero/mt4/mt4-desktop.webp",
+    mobileSvg: "/images/bg/hero/mt4/mt4-mobile.svg",
+    desktopSvg: "/images/bg/hero/mt4/mt4-desktop.svg",
+    dimensions: {
+      desktop: { width: 1400, height: 583 },
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  mt5: {
+    mobileWebp: "/images/bg/hero/mt5/mt5-mobile.webp",
+    desktopWebp: "/images/bg/hero/mt5/mt5-desktop.webp",
+    mobileSvg: "/images/bg/hero/mt5/mt5-mobile.svg",
+    desktopSvg: "/images/bg/hero/mt5/mt5-desktop.svg",
+    dimensions: {
+      desktop: { width: 1400, height: 583 },
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  "faq-hero": {
+    mobileWebp: "/images/bg/hero/faq/faq-mobile.webp",
+    desktopWebp: "/images/bg/hero/faq/faq-desktop.webp",
+    mobileSvg: "/images/bg/hero/faq/faq-mobile.svg",
+    desktopSvg: "/images/bg/hero/faq/faq-desktop.svg",
+    dimensions: {
+      desktop: { width: 1400, height: 480 },
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  legal: {
+    mobileWebp: "/images/bg/hero/legal/legal-mobile.webp",
+    desktopWebp: "/images/bg/hero/legal/legal-desktop.webp",
+    mobileSvg: "/images/bg/hero/legal/legal-mobile.svg",
+    desktopSvg: "/images/bg/hero/legal/legal-desktop.svg",
+    dimensions: {
+      desktop: { width: 1400, height: 510 },
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  "contact-us": {
+    mobileWebp: "/images/bg/hero/contact-us/contact-us-mobile.webp",
+    desktopWebp: "/images/bg/hero/contact-us/contact-us-desktop.webp",
+    mobileSvg: "/images/bg/hero/contact-us/contact-us-mobile.svg",
+    desktopSvg: "/images/bg/hero/contact-us/contact-us-desktop.svg",
+    dimensions: {
+      desktop: { width: 1400, height: 510 },
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  partners: {
+    mobileWebp: "/images/bg/hero/partners/partners-mobile.webp",
+    desktopWebp: "/images/bg/hero/partners/partners-desktop.webp",
+    mobileSvg: "/images/bg/hero/partners/partners-mobile.svg",
+    desktopSvg: "/images/bg/hero/partners/partners-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+};
 
 const Hero = ({
   className,
@@ -38,12 +268,18 @@ const Hero = ({
   setSearchResults,
   setNoSearchResult,
 }) => {
-  const { t } = useTranslationWithVariables();
+  const { t } = useTranslationWithVariables({
+    deferUntilBelowHeroReady: heroType === "main-promotion",
+  });
   const { selectedLanguage } = useContext(LanguageContext);
   const { content, sect1 } = useContext(MarketingContext);
   const isRTL = useRtlDirection();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { navigate } = useI18next();
+  // Use responsive images (srcset + sizes) so mobile viewport fetches only mobile assets.
+  // Default src is mobile for LCP on mobile; browser picks from srcSet by viewport.
+  const globeSrcSet = `${globeImageMobile} 500w, ${globeImageDesktop} 734w`;
+  const handSrcSet = `${handImageMobile} 280w, ${handImageDesktop} 450w`;
 
   const handleShowRegistrationPopup = () => {
     setIsPopupOpen(true);
@@ -346,6 +582,30 @@ const Hero = ({
   };
 
   const translationKeys = getTranslationKeys();
+  const heroLcpConfig = useMemo(
+    () => HERO_LCP_BY_TYPE[heroType] ?? null,
+    [heroType]
+  );
+  const heroLcpHasRaster =
+    heroLcpConfig &&
+    typeof heroLcpConfig.mobileWebp === "string" &&
+    typeof heroLcpConfig.desktopWebp === "string";
+  const localized = useMemo(() => {
+    const title = t(translationKeys.title);
+    return {
+      badge: t(translationKeys.badge),
+      title,
+      titleLines: title.split("\n"),
+      subtitle: t(translationKeys.subtitle),
+      primaryButton: translationKeys.primaryButton
+        ? t(translationKeys.primaryButton)
+        : null,
+      secondaryButton: translationKeys.secondaryButton
+        ? t(translationKeys.secondaryButton)
+        : null,
+      warning: t(translationKeys.warning),
+    };
+  }, [t, translationKeys]);
 
   return (
     <>
@@ -353,47 +613,86 @@ const Hero = ({
         className={cn(`${heroType}`, className, {
           [`${heroType}--rtl`]: isRTL,
         })}
+        style={heroType === "main-promotion" ? { opacity: 1 } : undefined}
       >
         <div className={`${heroType}__hero-container`}>
           {/* Hero Background Image - Render LCP image immediately for main-promotion */}
           {/* CRITICAL: Always render image container for main-promotion to avoid conditional rendering delay */}
           <div className={`${heroType}__hero-bg`}>
+            {/* All-markets: LCP must be a real <img> in the document (CSS bg was ~2.6s discovery delay in Lighthouse). */}
+            {heroLcpConfig ? (
+              <picture>
+                {heroLcpHasRaster ? (
+                  <>
+                    <source
+                      media={HERO_ASSET_MOBILE_MQ}
+                      type="image/webp"
+                      srcSet={heroLcpConfig.mobileWebp}
+                    />
+                    <source
+                      media={HERO_ASSET_DESKTOP_MQ}
+                      type="image/webp"
+                      srcSet={heroLcpConfig.desktopWebp}
+                    />
+                  </>
+                ) : null}
+                <source
+                  media={HERO_ASSET_MOBILE_MQ}
+                  type="image/svg+xml"
+                  srcSet={heroLcpConfig.mobileSvg}
+                />
+                <source
+                  media={HERO_ASSET_DESKTOP_MQ}
+                  type="image/svg+xml"
+                  srcSet={heroLcpConfig.desktopSvg}
+                />
+                <img
+                  className={`${heroType}__hero-bg-lcp`}
+                  src={
+                    heroLcpHasRaster
+                      ? heroLcpConfig.desktopWebp
+                      : heroLcpConfig.desktopSvg
+                  }
+                  alt=""
+                  width={heroLcpConfig.dimensions.desktop.width}
+                  height={heroLcpConfig.dimensions.desktop.height}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="sync"
+                  aria-hidden="true"
+                />
+              </picture>
+            ) : null}
             {/* For main-promotion, always render image container (no conditional) to ensure immediate visibility */}
             {heroType === "main-promotion" ? (
-              <div
-                className={`${heroType}__hero-img`}
-                aria-hidden="true"
-                style={{
-                  display: "block",
-                  visibility: "visible",
-                  position: "absolute",
-                  bottom: 0,
-                  right: "-50px",
-                  width: "734px",
-                  height: "734px",
-                  opacity: 0.62,
-                  zIndex: 1,
-                }}
-              >
+              <div className={`${heroType}__hero-img`} aria-hidden="true">
                 {showHeroImage && (
-                  <img
-                    src={globeImage}
-                    alt=""
-                    width="734"
-                    height="734"
-                    loading="eager"
-                    fetchpriority="high"
-                    decoding="sync"
-                    className={`${heroType}__hero-img-element`}
-                    style={{
-                      display: "block",
-                      visibility: "visible",
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                      objectPosition: "bottom center",
-                    }}
-                  />
+                  <picture>
+                    <source
+                      media={HERO_ASSET_MOBILE_MQ}
+                      srcSet={globeImageMobile}
+                    />
+                    <img
+                      src={globeImageMobile}
+                      srcSet={globeSrcSet}
+                      sizes="(max-width: 767px) 419px, 734px"
+                      alt=""
+                      width="734"
+                      height="734"
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="sync"
+                      className={`${heroType}__hero-img-element`}
+                      style={{
+                        display: "block",
+                        visibility: "visible",
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        objectPosition: "bottom center",
+                      }}
+                    />
+                  </picture>
                 )}
               </div>
             ) : showHeroImage ? (
@@ -435,14 +734,14 @@ const Hero = ({
                       </svg>
                     </div>
                     <span className={`${heroType}__badge-text`}>
-                      {t(translationKeys.badge)}
+                      {localized.badge}
                     </span>
                   </div>
                 ) : (
                   // Default Badge Structure
                   <div className={`${heroType}__badge-content`}>
                     <span className={`${heroType}__badge-message`}>
-                      {t(translationKeys.badge)}
+                      {localized.badge}
                     </span>
                     <svg
                       className={`${heroType}__badge-arrow`}
@@ -451,6 +750,7 @@ const Hero = ({
                       viewBox="0 0 16 16"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
                     >
                       <path
                         d="M1 5.50004H10.3333M10.3333 5.50004L5.66667 0.833374M10.3333 5.50004L5.66667 10.1667"
@@ -467,24 +767,17 @@ const Hero = ({
               {/* Heading */}
               <h1 className={`${heroType}__heading`}>
                 <span className={`${heroType}__title`}>
-                  {t(translationKeys.title)
-                    .split("\n")
-                    .map((line, index) => (
-                      <React.Fragment key={index}>
-                        {line}
-                        {index <
-                          t(translationKeys.title).split("\n").length - 1 && (
-                          <br />
-                        )}
-                      </React.Fragment>
-                    ))}
+                  {localized.titleLines.map((line, index) => (
+                    <React.Fragment key={index}>
+                      {line}
+                      {index < localized.titleLines.length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
                 </span>
               </h1>
 
               {/* Subheading */}
-              <p className={`${heroType}__subheading`}>
-                {t(translationKeys.subtitle)}
-              </p>
+              <p className={`${heroType}__subheading`}>{localized.subtitle}</p>
 
               {/* Search Bar for FAQ */}
               {heroType === "faq-hero" &&
@@ -501,7 +794,9 @@ const Hero = ({
               {/* Trust Pilot Section for FAQ */}
               {heroType === "faq-hero" && showTrustPilot && (
                 <div className={`${heroType}__trust-pilot`}>
-                  <TrustPilot className="trust-pilot--compact" />
+                  <Suspense fallback={null}>
+                    <TrustPilot className="trust-pilot--compact" />
+                  </Suspense>
                 </div>
               )}
 
@@ -511,14 +806,14 @@ const Hero = ({
                 <div className={`${heroType}__button-container`}>
                   {translationKeys.secondaryButton ? (
                     <HeroButtons
-                      primaryText={t(translationKeys.primaryButton)}
-                      secondaryText={t(translationKeys.secondaryButton)}
+                      primaryText={localized.primaryButton}
+                      secondaryText={localized.secondaryButton}
                       onPrimaryClick={handlePrimaryButtonClick}
                       onSecondaryClick={handleSecondaryButtonClick}
                     />
                   ) : translationKeys.primaryButton ? (
                     <ButtonPrimaryHero
-                      text={t(translationKeys.primaryButton)}
+                      text={localized.primaryButton}
                       onClick={handlePrimaryButtonClick}
                       className={
                         heroType === "mt4"
@@ -542,6 +837,7 @@ const Hero = ({
                         viewBox="0 0 16 16"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
                       >
                         <g clipPath="url(#clip0_2188_8291)">
                           <path
@@ -556,17 +852,19 @@ const Hero = ({
                         </defs>
                       </svg>
                       <span className={`${heroType}__warning-text`}>
-                        {t(translationKeys.warning)}
+                        {localized.warning}
                       </span>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Trust Pilot Section - positioned after warning text */}
+              {/* TrustPilot: real widget; script load is deferred inside trust-pilot/index.js (mobile). */}
               {showTrustPilot && heroType !== "faq-hero" && (
                 <div className={`${heroType}__trust-pilot`}>
-                  <TrustPilot />
+                  <Suspense fallback={null}>
+                    <TrustPilot />
+                  </Suspense>
                 </div>
               )}
             </div>
@@ -576,16 +874,24 @@ const Hero = ({
               <div className={`${heroType}__hand-container`}>
                 <div className={`${heroType}__hand-img`} aria-hidden="true">
                   {heroType === "main-promotion" && (
-                    <img
-                      src={handImage}
-                      alt=""
-                      width="714"
-                      height="692"
-                      loading="eager"
-                      fetchpriority="high"
-                      decoding="sync"
-                      className={`${heroType}__hand-img-element`}
-                    />
+                    <picture>
+                      <source
+                        media={HERO_ASSET_MOBILE_MQ}
+                        srcSet={handImageMobile}
+                      />
+                      <img
+                        src={handImageMobile}
+                        srcSet={handSrcSet}
+                        sizes="(max-width: 767px) 222px, 412px"
+                        alt=""
+                        width="714"
+                        height="692"
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="sync"
+                        className={`${heroType}__hand-img-element`}
+                      />
+                    </picture>
                   )}
                 </div>
               </div>

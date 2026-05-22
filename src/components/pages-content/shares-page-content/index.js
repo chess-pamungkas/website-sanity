@@ -67,7 +67,6 @@ const SharesContent = ({ className, isShowHero = true }) => {
 
       <AccountComparison />
 
-      {/* FAQ Section - Shares Trading Questions */}
       <ContainerWrapper>
         <FaqSection
           faqData={FAQ_SHARES}
@@ -78,10 +77,6 @@ const SharesContent = ({ className, isShowHero = true }) => {
           buttonTextKey="faq-button-text"
           onFaqButtonClick={handleFaqButtonClick}
         />
-      </ContainerWrapper>
-
-      {/* Guide Content Section */}
-      <ContainerWrapper>
         <GuideContent
           titleKey="shares-guide-title"
           subtitleKey="shares-guide-subtitle"

@@ -18,7 +18,7 @@ const SpreadsHeader = ({ tradingType }) => {
   return (
     <div className="spreads-header">
       <div className="spreads-badge">
-        <img src={SpreadsIcon} alt="Spreads" className="spreads-badge__icon" />
+        <img src={SpreadsIcon} alt="Spreads" className="spreads-badge__icon" width={24} height={24} />
         <span className="spreads-badge__text">{t("spreads-badge-text")}</span>
       </div>
       <h2 className="spreads-title">

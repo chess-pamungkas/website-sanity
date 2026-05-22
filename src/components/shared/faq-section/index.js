@@ -81,19 +81,22 @@ const FaqSection = ({
       }
     };
 
-    // Check on mount
-    checkScrollPosition();
+    const checkScrollPositionInFrame = () => {
+      requestAnimationFrame(() => requestAnimationFrame(checkScrollPosition));
+    };
 
-    // Check on scroll
-    window.addEventListener("scroll", checkScrollPosition, { passive: true });
-    window.addEventListener("resize", checkScrollPosition, { passive: true });
+    // Check on mount after layout (avoids forced reflow)
+    requestAnimationFrame(() => requestAnimationFrame(checkScrollPosition));
+
+    window.addEventListener("scroll", checkScrollPositionInFrame, { passive: true });
+    window.addEventListener("resize", checkScrollPositionInFrame, { passive: true });
 
     // Hide live chat on mount (since faq-section is visible)
     hideLiveChat();
 
     return () => {
-      window.removeEventListener("scroll", checkScrollPosition);
-      window.removeEventListener("resize", checkScrollPosition);
+      window.removeEventListener("scroll", checkScrollPositionInFrame);
+      window.removeEventListener("resize", checkScrollPositionInFrame);
       // Show live chat again when component unmounts or when switching to desktop
       showLiveChat();
     };
@@ -118,7 +121,7 @@ const FaqSection = ({
       <div className="faq-left">
         <div className="faq-badge">
           <div className="faq-badge-icon">
-            <img src={SpreadsIcon} alt="FAQ" />
+            <img src={SpreadsIcon} alt="FAQ" width={24} height={24} />
           </div>
           <span className="faq-badge-text">{t(badgeTextKey)}</span>
         </div>

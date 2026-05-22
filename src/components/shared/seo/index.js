@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import LanguageContext from "../../../context/language-context";
 import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
 import { DIR_LTR, DIR_RTL } from "../../../helpers/constants";
+import { getBcp47Lang } from "../../../helpers/lang.config";
 
 const noIndex = Boolean(Number(process.env.GATSBY_NOINDEX));
 const microsoftAds = process.env.GATSBY_MICROSOFT_ADS;
@@ -15,7 +16,7 @@ const Seo = ({ title, description, fsaTitle, fsaDescription, fsaRobots }) => {
   return (
     <Helmet
       htmlAttributes={{
-        lang: selectedLanguage.id,
+        lang: getBcp47Lang(selectedLanguage?.id),
         dir: isRTL ? DIR_RTL : DIR_LTR,
       }}
     >

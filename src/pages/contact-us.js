@@ -27,16 +27,20 @@ const ContactUsPage = ({ className, isShowHero = true }) => {
         desktopBackground="url(../../assets/images/bg/hero/contact-us/contact-us-desktop.svg)"
         mobileBackground="url(../../assets/images/bg/hero/contact-us/contact-us-mobile.svg)"
       />
-      <ContainerWrapper>
-        <ContactUs />
-      </ContainerWrapper>
+      <div className="contact-us-shell">
+        <ContainerWrapper>
+          <ContactUs />
+        </ContainerWrapper>
+      </div>
 
       {isMobile ? (
         <OurCommunityContent />
       ) : (
-        <ContainerWrapper>
-          <OurCommunityContent />
-        </ContainerWrapper>
+        <div className="contact-us-page-community">
+          <ContainerWrapper>
+            <OurCommunityContent />
+          </ContainerWrapper>
+        </div>
       )}
     </PageBackground>
   );

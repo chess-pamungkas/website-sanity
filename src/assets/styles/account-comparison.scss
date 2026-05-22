@@ -25,6 +25,15 @@
     align-items: center;
     justify-content: center;
 
+    &__picture {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* One <img>; <picture><source media> swaps asset so mobile skips desktop WebP. */
     &__image {
       width: 100%;
       height: 100%;
@@ -36,6 +45,9 @@
       mix-blend-mode: color-dodge;
 
       @include mobile {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 393 / 1554;
         object-fit: cover;
         object-position: center;
       }
@@ -149,7 +161,7 @@
           rgba(255, 68, 0, 0.25) 100%
         ),
         rgba(0, 0, 0, 0.3);
-      background-image: url("../../assets/images/bg/account-comparison/pricing-card.svg");
+      background-image: url("/images/bg/account-comparison/pricing-card.svg");
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
@@ -284,7 +296,7 @@
             right: -15px;
             width: 155px;
             height: 164.25px;
-            background-image: url("../../assets/images/icons/account-comparison/star-most-popular-hover.svg");
+            background-image: url("/images/icons/account-comparison/star-most-popular-hover.svg");
             background-size: contain;
             background-repeat: no-repeat;
             background-position: top right;

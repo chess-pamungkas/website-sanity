@@ -1,8 +1,17 @@
-import React, { useContext, useState, useRef } from "react";
+import React, {
+  useContext,
+  useState,
+  useRef,
+  lazy,
+  Suspense,
+  useEffect,
+  startTransition,
+} from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
+import { useLocation } from "@reach/router";
 import { useTranslationWithVariables } from "../../helpers/hooks/use-translation-with-vars";
-import { LogoTextMain, ChevronDownIcon } from "../shared/icons";
+import { LogoTextMain, ChevronDownIcon } from "../shared/icons/critical";
 import {
   DIR_LTR,
   DIR_RTL,
@@ -16,8 +25,12 @@ import BurgerMenu from "./components/burger-menu";
 import ButtonLink from "../shared/button-link";
 import ButtonPopup from "../shared/button-popup";
 import SearchBar from "./components/search-bar";
-import { getMenuItems } from "../../helpers/menu.config";
+import { getMenuStructure } from "../../helpers/menu-structure.config";
 import NotificationsContainer from "../shared/notification-stripe";
+
+const HeaderDropdownContent = lazy(() =>
+  import("./HeaderDropdownContent").then((m) => ({ default: m.default }))
+);
 import { GDPRPopup } from "../gdpr-popup";
 import { useRtlDirection } from "../../helpers/hooks/use-rtl-direction";
 import CommonContext from "../../context/common-context";
@@ -25,13 +38,11 @@ import InternalLink from "../shared/internal-link";
 import { useWindowSize } from "../../helpers/hooks/use-window-size";
 import { useLangParam } from "../../helpers/services/language-service";
 import LangSelect from "./components/lang-select";
-import NavbarDropdownHighlight from "../shared/navbar-dropdown-highlight";
-import NavbarSubItem from "./components/navbar-sub-item";
 import PartnersNavIcon from "../shared/icons/PartnersNavIcon";
 
 const Header = ({ className }) => {
   const { t } = useTranslationWithVariables();
-  const menu = getMenuItems();
+  const menu = getMenuStructure();
   const isRTL = useRtlDirection();
   const { isDesktop, isTablet, isMobile } = useWindowSize();
 
@@ -44,6 +55,12 @@ const Header = ({ className }) => {
   } = useContext(CommonContext);
 
   const langParam = useLangParam();
+  const location = useLocation();
+  const isHomepage =
+    location?.pathname === "/" ||
+    /^\/[a-z]{2}\/?$/.test(location?.pathname || "");
+  const [showSigninCTA] = useState(true);
+
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
   const [dropdownLocked, setDropdownLocked] = useState(false); // Add lock state
@@ -88,8 +105,25 @@ const Header = ({ className }) => {
   const activeMenuItem =
     openDropdownIndex !== null ? menu[openDropdownIndex] : null;
 
+  useEffect(() => {
+    if (isDesktop) {
+      import("./HeaderDropdownContent");
+    }
+  }, [isDesktop]);
+
+  const isDropdownOpen =
+    openDropdownIndex !== null &&
+    isDesktop &&
+    activeMenuItem &&
+    !!activeMenuItem.subItems?.length;
+
   return (
-    <div className="header-wrapper" ref={headerRef}>
+    <div
+      className={cn("header-wrapper", {
+        "header-wrapper--dropdown-open": isDropdownOpen,
+      })}
+      ref={headerRef}
+    >
       <NotificationsContainer setSectionOptions={setSectionOptions} />
       <GDPRPopup />
       {/* Header--big or header--small always visible behind */}
@@ -158,8 +192,11 @@ const Header = ({ className }) => {
           <div className="header__right">
             <BurgerMenu />
             <div className="header__controls">
-              <LangSelect className="lang-select--header" isHeader={true} />
-              {isDesktop && (
+              {/* Defer lang selector on homepage (desktop + mobile) so LCP = hero, not EN flag img */}
+              {showSigninCTA && (
+                <LangSelect className="lang-select--header" isHeader={true} />
+              )}
+              {isDesktop && showSigninCTA && (
                 <>
                   <ButtonLink
                     link={GetLoginLink()}
@@ -188,10 +225,7 @@ const Header = ({ className }) => {
       </header>
 
       {/* Header-dropdown-card floating above with header content + dropdown content */}
-      {openDropdownIndex !== null &&
-        isDesktop &&
-        activeMenuItem &&
-        !!activeMenuItem.subItems?.length && (
+      {isDropdownOpen && (
           <div
             className={cn("header-dropdown-card", {
               "header-dropdown-card--from-small": isScrolled,
@@ -328,164 +362,19 @@ const Header = ({ className }) => {
               {/* </div> */}
             </div>
 
-            {/* Dropdown content inside the same card */}
+            {/* Dropdown content inside the same card (lazy: NavbarDropdownHighlight + menu icons load only when dropdown opens) */}
             <div className="dropdown-content">
               <div className="navbar-item__dropdown navbar-item__dropdown--visible">
-                {/* <div className="container"> */}
                 <div className="navbar-item__dropdown-flex">
-                  <NavbarDropdownHighlight
-                    menuType={activeMenuItem.title}
-                    onOpenRegistrationPopup={handleShowRegistrationPopup}
-                  />
-                  <div className="navbar-item__dropdown-separator" />
-                  <div className="navbar-item__dropdown-content">
-                    {(() => {
-                      const items = activeMenuItem.subItems.filter(
-                        (item) => !item.footerOnly
-                      );
-
-                      // Check if this is a grouped structure (Trading Hub) - v2
-                      const hasGroupedItems = items.some(
-                        (item) =>
-                          item &&
-                          item.groupTitle &&
-                          item.groupItems &&
-                          Array.isArray(item.groupItems)
-                      );
-
-                      if (hasGroupedItems) {
-                        // Handle grouped structure (Trading Hub)
-                        return (
-                          <div className="navbar-item__dropdown-columns navbar-item__dropdown-columns--grouped">
-                            {items
-                              .filter(
-                                (item) =>
-                                  item &&
-                                  item.groupTitle &&
-                                  item.groupItems &&
-                                  Array.isArray(item.groupItems)
-                              )
-                              .map((group, groupIdx) => (
-                                <div
-                                  key={`group-${groupIdx}`}
-                                  className="navbar-item__dropdown-column navbar-item__dropdown-column--group"
-                                >
-                                  <h3 className="navbar-item__dropdown-group-title">
-                                    {t(group.groupTitle)}
-                                  </h3>
-                                  <ul className="navbar-item__dropdown-group-items">
-                                    {group.groupItems
-                                      .filter(
-                                        (subItem) => subItem && subItem.title
-                                      )
-                                      .map((subItem, itemIdx) => (
-                                        <NavbarSubItem
-                                          key={`header-menu-${stringTransformToKebabCase(
-                                            subItem.title
-                                          )}`}
-                                          subItem={subItem}
-                                          onClick={handleCloseDropdown}
-                                          className="navbar-item__dropdown-card"
-                                          isTwoItemsLayout={false}
-                                          hideIcon
-                                          hideDescription
-                                        />
-                                      ))}
-                                  </ul>
-                                </div>
-                              ))}
-                          </div>
-                        );
-                      } else {
-                        // Handle flat structure (other menus)
-                        const count = items.length;
-                        let left = [],
-                          right = [],
-                          showSeparator = false;
-                        if (count === 8) {
-                          left = items.slice(0, 4);
-                          right = items.slice(4, 8);
-                        } else if (count === 6) {
-                          left = items.slice(0, 3);
-                          right = items.slice(3, 6);
-                        } else if (count === 2) {
-                          left = [items[0]];
-                          right = [items[1]];
-                          showSeparator = true;
-                        } else if (count === 5) {
-                          left = items.slice(0, 3);
-                          right = items.slice(3, 5);
-                        } else {
-                          // fallback: split evenly
-                          const mid = Math.ceil(count / 2);
-                          left = items.slice(0, mid);
-                          right = items.slice(mid);
-                        }
-                        if (left.length < right.length) {
-                          while (left.length < right.length)
-                            left.push({ empty: true });
-                        } else if (right.length < left.length) {
-                          while (right.length < left.length)
-                            right.push({ empty: true });
-                        }
-                        return (
-                          <div
-                            className={`navbar-item__dropdown-columns navbar-item__dropdown-columns--grid${
-                              showSeparator
-                                ? " navbar-item__dropdown-columns--with-separator"
-                                : ""
-                            }`}
-                          >
-                            <div className="navbar-item__dropdown-column">
-                              {left.map((subItem, idx) =>
-                                subItem.empty ? (
-                                  <li
-                                    className="dropdown-item dropdown-item--empty navbar-item__dropdown-card"
-                                    key={`empty-left-${idx}`}
-                                  ></li>
-                                ) : (
-                                  <NavbarSubItem
-                                    key={`header-menu-${stringTransformToKebabCase(
-                                      subItem.title
-                                    )}`}
-                                    subItem={subItem}
-                                    onClick={handleCloseDropdown}
-                                    className="navbar-item__dropdown-card"
-                                    isTwoItemsLayout={count === 2}
-                                  />
-                                )
-                              )}
-                            </div>
-                            {showSeparator && (
-                              <div className="navbar-item__dropdown-separator navbar-item__dropdown-separator--column" />
-                            )}
-                            <div className="navbar-item__dropdown-column">
-                              {right.map((subItem, idx) =>
-                                subItem.empty ? (
-                                  <li
-                                    className="dropdown-item dropdown-item--empty navbar-item__dropdown-card"
-                                    key={`empty-right-${idx}`}
-                                  ></li>
-                                ) : (
-                                  <NavbarSubItem
-                                    key={`header-menu-${stringTransformToKebabCase(
-                                      subItem.title
-                                    )}`}
-                                    subItem={subItem}
-                                    onClick={handleCloseDropdown}
-                                    className="navbar-item__dropdown-card"
-                                    isTwoItemsLayout={count === 2}
-                                  />
-                                )
-                              )}
-                            </div>
-                          </div>
-                        );
-                      }
-                    })()}
-                  </div>
+                  <Suspense fallback={null}>
+                    <HeaderDropdownContent
+                      openDropdownIndex={openDropdownIndex}
+                      activeMenuItem={activeMenuItem}
+                      handleCloseDropdown={handleCloseDropdown}
+                      handleShowRegistrationPopup={handleShowRegistrationPopup}
+                    />
+                  </Suspense>
                 </div>
-                {/* </div> */}
               </div>
             </div>
           </div>

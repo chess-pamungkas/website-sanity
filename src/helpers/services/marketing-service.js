@@ -2,9 +2,22 @@ import { MARKETING_GET_PARAMS } from "../marketing.config";
 import { isBrowser } from "./is-browser";
 import { IB_PARAMS } from "./ib-service";
 
-import _ from "lodash";
+/** Fisher–Yates partial shuffle — avoids pulling in full `lodash` for marketing helpers. */
+function sampleSize(arr, count) {
+  if (!arr?.length || count <= 0) return [];
+  const len = arr.length;
+  const take = Math.min(count, len);
+  const copy = arr.slice();
+  for (let i = 0; i < take; i++) {
+    const j = i + Math.floor(Math.random() * (len - i));
+    const t = copy[i];
+    copy[i] = copy[j];
+    copy[j] = t;
+  }
+  return copy.slice(0, take);
+}
 
-export const getRandomArray = (arr, count) => _.sampleSize(arr, count);
+export const getRandomArray = (arr, count) => sampleSize(arr, count);
 
 const getParamsFromUrl = () => {
   return new URLSearchParams(window.location.search);
@@ -22,8 +35,9 @@ export const getMarketingParamsFromUrl = () => {
 };
 
 export const transformParamToKey = (param) => {
-  const paramWithoutSymbols = _.replace(param, "+", " ");
-  return _.lowerCase(paramWithoutSymbols);
+  if (param == null || typeof param !== "string") return "";
+  const paramWithoutSymbols = param.replace(/\+/g, " ");
+  return paramWithoutSymbols.trim().toLowerCase();
 };
 
 export const CAMPAIGN_PARAMS = {

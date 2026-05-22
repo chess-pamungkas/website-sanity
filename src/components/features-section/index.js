@@ -108,6 +108,8 @@ const FeaturesContent = () => {
                       src={tier1BanksImg}
                       alt={t("features-content-section_tier1-banks_alt")}
                       className="features-content-section__card-graphic-img tier1-banks-img"
+                      width={245}
+                      height={226}
                     />
                   </div>
                 </div>
@@ -144,6 +146,8 @@ const FeaturesContent = () => {
                       src={chooseLanguageImg}
                       alt={t("features-content-section_choose-language_alt")}
                       className="features-content-section__card-graphic-img choose-language-img"
+                      width={251}
+                      height={120}
                     />
                   </div>
                 </div>

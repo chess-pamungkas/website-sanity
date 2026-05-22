@@ -15,9 +15,6 @@ import badgeCheckedIcon from "../../../../assets/images/icons/trading-tools/badg
 import tcMarketBuzzIcon from "../../../../assets/images/bg/trading-tools/tc-market-buzz.svg";
 import marketBuzzDesktop from "../../../../assets/images/trading-tools/market-buzz-desktop.svg";
 import marketBuzzMobile from "../../../../assets/images/trading-tools/market-buzz-mobile.svg";
-import aiFeatureDesktopBg from "../../../../assets/images/bg/trading-tools/bg-card-tc-market-buzz-desktop.svg";
-import aiFeatureMobileBg from "../../../../assets/images/bg/trading-tools/bg-card-tc-market-buzz-mobile.svg";
-
 const MarketBuzz = ({ className }) => {
   const { t } = useTranslationWithVariables();
   const { isMobile } = useWindowSize();
@@ -58,7 +55,6 @@ const MarketBuzz = ({ className }) => {
     icon: tcMarketBuzzIcon,
     title: t("market-buzz_harness_online_news"),
     description: t("market-buzz_harness_description"),
-    background: isMobile ? aiFeatureMobileBg : aiFeatureDesktopBg,
   };
 
   return (
@@ -71,8 +67,10 @@ const MarketBuzz = ({ className }) => {
         <div className="market-buzz__header-badge">
           <img
             src={featuresIcon}
-            alt="Trading Tools"
+            alt=""
             className="market-buzz__header-badge-icon"
+            width={14}
+            height={14}
           />
           <span className="market-buzz__header-badge-text">
             {t("market-buzz_badge_text")}
@@ -112,11 +110,17 @@ const MarketBuzz = ({ className }) => {
         {/* Dashboard Section */}
         <div className="market-buzz__dashboard">
           <div className="market-buzz__dashboard-image">
-            <img
-              src={isMobile ? marketBuzzMobile : marketBuzzDesktop}
-              alt="Market Buzz Dashboard"
-              className="market-buzz__image"
-            />
+            <picture>
+              <source media="(max-width: 767px)" srcSet={marketBuzzMobile} />
+              <img
+                src={marketBuzzDesktop}
+                alt="Market Buzz Dashboard"
+                className="market-buzz__image"
+                width={1030}
+                height={655}
+                decoding="async"
+              />
+            </picture>
           </div>
 
           {/* Key Metrics Section - Positioned within dashboard */}
@@ -128,8 +132,10 @@ const MarketBuzz = ({ className }) => {
                     <div className="market-buzz__metric-badge-icon">
                       <img
                         src={metric.icon}
-                        alt={metric.title}
+                        alt=""
                         className="market-buzz__metric-badge-icon-img"
+                        width={14}
+                        height={15}
                       />
                     </div>
                     <span className="market-buzz__metric-badge-message">
@@ -157,8 +163,10 @@ const MarketBuzz = ({ className }) => {
               <div className="market-buzz__ai-icon">
                 <img
                   src={aiFeature.icon}
-                  alt="AI Feature"
+                  alt=""
                   className="market-buzz__ai-icon-img"
+                  width={48}
+                  height={48}
                 />
               </div>
               <div className="market-buzz__ai-text">

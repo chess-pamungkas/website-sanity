@@ -5,6 +5,12 @@ import { useTranslationWithVariables } from "../../../../helpers/hooks/use-trans
 import desktopPaymentSystemsSVG from "../../../../assets/images/bg/funding-withdrawals/payment-systems-desktop.svg";
 import mobilePaymentSystemsSVG from "../../../../assets/images/bg/funding-withdrawals/payment-systems-mobile.svg";
 
+/** Match SVG root width/height (Lighthouse unsized-images + CLS). */
+const PAYMENT_SYSTEMS_BG_SIZE = {
+  mobile: { width: 353, height: 226 },
+  desktop: { width: 1241, height: 76 },
+};
+
 const PaymentSystemsContent = ({ isDepositTab = true }) => {
   const { isMobile } = useWindowSize();
   const { t } = useTranslationWithVariables();
@@ -12,6 +18,9 @@ const PaymentSystemsContent = ({ isDepositTab = true }) => {
   const backgroundSrc = isMobile
     ? mobilePaymentSystemsSVG
     : desktopPaymentSystemsSVG;
+  const bgSize = isMobile
+    ? PAYMENT_SYSTEMS_BG_SIZE.mobile
+    : PAYMENT_SYSTEMS_BG_SIZE.desktop;
 
   return (
     <div className="payment-systems-section">
@@ -22,6 +31,10 @@ const PaymentSystemsContent = ({ isDepositTab = true }) => {
             src={backgroundSrc}
             alt="Payment Systems"
             className="payment-systems-section__background-image"
+            width={bgSize.width}
+            height={bgSize.height}
+            loading="lazy"
+            decoding="async"
           />
         </div>
 
