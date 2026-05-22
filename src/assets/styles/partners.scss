@@ -1,5 +1,12 @@
 @import "vars";
 @import "mixins";
+@import "trading-product-hero-bg-lcp";
+
+body.homepage-bg-1 .partners-page-community #main-container {
+  min-height: 0;
+  flex-grow: 0;
+  contain: none;
+}
 
 .partners {
   position: relative;
@@ -9,7 +16,8 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+  height: auto;
+  min-height: 953px;
   padding-top: 80px;
   z-index: 2;
   left: 50%;
@@ -20,7 +28,8 @@
   align-items: center;
 
   @include mobile {
-    height: 953px;
+    min-height: 953px;
+    height: auto;
     border-radius: 20px;
     padding-top: 73px;
     margin-top: 0;
@@ -28,32 +37,25 @@
     overflow: visible;
   }
 
-  @include tablet {
-    height: 555px;
-    border-radius: 24px;
-    padding-top: 70px;
-    padding-bottom: 0;
-  }
+  @include hero-page-shell-tablet(555px, 73px, 70px);
 
-  @include desktop-lg {
-    height: 583px;
-    border-radius: 24px;
-    padding-top: 83px;
-    padding-bottom: 0;
-  }
+  @include hero-page-shell-desktop-lg(583px, 83px, 83px);
 
   @include desktop-xl {
-    height: 583px;
+    min-height: calc(83px + 583px);
+    height: auto;
     padding-top: 83px;
   }
 
   @include desktop-2k {
-    height: 583px;
+    min-height: calc(83px + 583px);
+    height: auto;
     padding-top: 83px;
   }
 
   @include desktop-5k {
-    height: 583px;
+    min-height: calc(83px + 583px);
+    height: auto;
     padding-top: 83px;
   }
 
@@ -82,17 +84,7 @@
       border-radius: 20px;
     }
 
-    @include tablet {
-      width: 768px;
-      max-width: 768px;
-      height: 555px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 73px;
-      margin: 0 auto;
-      border-radius: 24px;
-    }
+    @include hero-tablet-container(555px, 73px);
 
     @include desktop-lg {
       width: calc(100vw - 20px);
@@ -140,67 +132,11 @@
     }
   }
 
-  &__hero-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    border-radius: 24px;
-    z-index: 1;
-    overflow: hidden;
-    background-position: center center;
-    background-repeat: no-repeat;
+  @include trading-product-hero-bg-lcp;
 
-    @include mobile {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 0;
-      top: 0;
-      border-radius: 20px;
-      background: url("/images/bg/hero/partners/partners-mobile.svg")
-        no-repeat center center;
-      background-size: cover;
-      overflow: hidden;
-      border-radius: 20px;
-      background-color: transparent;
-    }
-
-    @include tablet {
-      background: url("/images/bg/hero/partners/partners-desktop.svg")
-        no-repeat 75% 100%;
-      background-size: cover;
-      background-color: transparent;
-    }
-
-    @include desktop-lg {
-      background: url("/images/bg/hero/partners/partners-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
-    }
-
-    @include desktop-xl {
-      background: url("/images/bg/hero/partners/partners-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
-    }
-
-    @include desktop-2k {
-      background: url("/images/bg/hero/partners/partners-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
-    }
-
-    @include desktop-5k {
-      background: url("/images/bg/hero/partners/partners-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
+  &__hero-bg-lcp {
+    @include tablet-only {
+      object-position: 75% 100%;
     }
   }
 
@@ -1078,7 +1014,7 @@
       flex-shrink: 0;
       min-width: 405px;
 
-      // Background image similar to features-products__card
+      /* Dark grid texture (static path — avoids 404 from ../../assets/ in production). */
       &::before {
         content: "";
         position: absolute;
@@ -1086,15 +1022,16 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-image: url("../../assets/images/bg/partners/bg-card-features-partners-desktop.svg");
+        background-image: url("/images/bg/partners/bg-card-features-partners-desktop.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         opacity: 0.1;
         z-index: 0;
+        pointer-events: none;
 
         @include mobile {
-          background-image: url("../../assets/images/bg/partners/bg-card-features-partners-mobile.svg");
+          background-image: url("/images/bg/partners/bg-card-features-partners-mobile.svg");
         }
       }
 

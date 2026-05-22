@@ -1,12 +1,26 @@
 import React from "react";
 import PropTypes from "prop-types";
+import {
+  HERO_ASSET_DESKTOP_MQ,
+  HERO_ASSET_MOBILE_MQ,
+} from "../../../helpers/viewport-media";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
 import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
+import { LEGAL_REGULATED_CRITICAL_CSS } from "../../../helpers/legal-regulated-critical-css";
 import personPlusIcon from "../../../assets/images/icons/person-plus.svg";
-import cysecRegulatedDesktop from "../../../assets/images/legal/cysec-regulated-desktop.svg";
-import cysecRegulatedMobile from "../../../assets/images/legal/cysec-regulated-mobile.svg";
-import fsaRegulatedDesktop from "../../../assets/images/legal/fsa-regulated-desktop.svg";
-import fsaRegulatedMobile from "../../../assets/images/legal/fsa-regulated-mobile.svg";
+import fsaRegulatedDesktopSvg from "../../../assets/images/legal/fsa-regulated-desktop.svg";
+import fsaRegulatedMobileSvg from "../../../assets/images/legal/fsa-regulated-mobile.svg";
+
+const FSA_REGULATED_DESKTOP_WEBP = "/images/legal/fsa-regulated-desktop.webp";
+const FSA_REGULATED_MOBILE_WEBP = "/images/legal/fsa-regulated-mobile.webp";
+/** Full-bleed regulated section background (matches gen-legal-faq-card-webp.js artboards). */
+const BG_REGULATED_DESKTOP_WEBP = "/images/legal/bg-regulated-desktop.webp";
+const BG_REGULATED_MOBILE_WEBP = "/images/legal/bg-regulated-mobile.webp";
+/** Matches SVG viewBox dimensions (CLS + Lighthouse unsized-images). */
+const FSA_DESKTOP_DIM = { w: 483, h: 360 };
+const FSA_MOBILE_DIM = { w: 340, h: 254 };
+/** Matches legal.scss mobile min-height shell (aspect-ratio for CLS; desktop via <source>). */
+const BG_REGULATED_MOBILE_DIM = { w: 393, h: 953 };
 
 const ArrowIcon = () => (
   <svg
@@ -40,13 +54,39 @@ const LegalRegulatedContent = ({ className }) => {
   };
 
   return (
-    <section
-      className={`legal-regulated-content ${className || ""} ${
-        isRTL ? "legal-regulated-content--rtl" : ""
-      }`}
-    >
-      {/* Background Image */}
-      <div className="legal-regulated-content__hero-bg"></div>
+    <>
+      {/* Parsed immediately before the section so min-height/grid apply before layout (CLS). */}
+      <style dangerouslySetInnerHTML={{ __html: LEGAL_REGULATED_CRITICAL_CSS }} />
+      <section
+        className={`legal-regulated-content ${className || ""} ${
+          isRTL ? "legal-regulated-content--rtl" : ""
+        }`}
+      >
+        {/* LCP: real <img> in HTML; grid overlay keeps box stable when deferred legal.scss loads. */}
+        <div className="legal-regulated-content__hero-bg" aria-hidden="true">
+        <picture>
+          <source
+            media={HERO_ASSET_DESKTOP_MQ}
+            type="image/webp"
+            srcSet={BG_REGULATED_DESKTOP_WEBP}
+          />
+          <source
+            media={HERO_ASSET_MOBILE_MQ}
+            type="image/webp"
+            srcSet={BG_REGULATED_MOBILE_WEBP}
+          />
+          <img
+            src={BG_REGULATED_MOBILE_WEBP}
+            alt=""
+            width={BG_REGULATED_MOBILE_DIM.w}
+            height={BG_REGULATED_MOBILE_DIM.h}
+            className="legal-regulated-content__hero-bg-img"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </picture>
+      </div>
 
       <div className="legal-regulated-content__wrapper container">
         {/* Bottom Section: Authorized by Seychelles FSA */}
@@ -54,19 +94,33 @@ const LegalRegulatedContent = ({ className }) => {
           <div className="legal-regulated-content__image-container">
             {/* Desktop Image */}
             <div className="legal-regulated-content__image--desktop">
-              <img
-                src={fsaRegulatedDesktop}
-                alt="FSA Regulated Desktop"
-                className="legal-regulated-content__image"
-              />
+              <picture>
+                <source type="image/webp" srcSet={FSA_REGULATED_DESKTOP_WEBP} />
+                <img
+                  src={fsaRegulatedDesktopSvg}
+                  alt=""
+                  width={FSA_DESKTOP_DIM.w}
+                  height={FSA_DESKTOP_DIM.h}
+                  className="legal-regulated-content__image"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </div>
             {/* Mobile Image */}
             <div className="legal-regulated-content__image--mobile">
-              <img
-                src={fsaRegulatedMobile}
-                alt="FSA Regulated Mobile"
-                className="legal-regulated-content__image"
-              />
+              <picture>
+                <source type="image/webp" srcSet={FSA_REGULATED_MOBILE_WEBP} />
+                <img
+                  src={fsaRegulatedMobileSvg}
+                  alt=""
+                  width={FSA_MOBILE_DIM.w}
+                  height={FSA_MOBILE_DIM.h}
+                  className="legal-regulated-content__image"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </div>
           </div>
 
@@ -77,7 +131,9 @@ const LegalRegulatedContent = ({ className }) => {
                 <div className="legal-regulated-content__badge-icon">
                   <img
                     src={personPlusIcon}
-                    alt="Person Plus Icon"
+                    alt=""
+                    width={14}
+                    height={14}
                     className="legal-regulated-content__badge-icon-img"
                   />
                 </div>
@@ -108,7 +164,8 @@ const LegalRegulatedContent = ({ className }) => {
           </div>
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
 };
 

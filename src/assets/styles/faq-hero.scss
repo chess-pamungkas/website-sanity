@@ -1,5 +1,6 @@
 @import "vars";
 @import "mixins";
+@import "trading-product-hero-bg-lcp";
 
 // FAQ Hero Styles - following the same pattern as contact-us.scss
 .faq-hero {
@@ -29,12 +30,7 @@
     overflow: visible;
   }
 
-  @include tablet {
-    min-height: 480px;
-    border-radius: 24px;
-    padding-top: 70px;
-    padding-bottom: 0;
-  }
+  @include hero-page-shell-tablet(480px, 73px, 70px);
 
   @include desktop-lg {
     min-height: 480px;
@@ -83,17 +79,7 @@
       overflow: hidden;
     }
 
-    @include tablet {
-      width: 768px;
-      max-width: 768px;
-      height: 480px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 73px;
-      margin: 0 auto;
-      border-radius: 24px;
-    }
+    @include hero-tablet-container(480px, 73px);
 
     @include desktop-lg {
       width: calc(100vw - 20px);
@@ -141,67 +127,11 @@
     }
   }
 
-  &__hero-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    border-radius: 24px;
-    z-index: 1;
-    overflow: hidden;
-    background-position: center center;
-    background-repeat: no-repeat;
+  @include trading-product-hero-bg-lcp;
 
-    @include mobile {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 0;
-      top: 0;
-      border-radius: 20px;
-      background: url("/images/bg/hero/faq/faq-mobile.svg")
-        no-repeat center center;
-      background-size: cover;
-      overflow: hidden;
-      border-radius: 20px;
-      background-color: transparent;
-    }
-
+  &__hero-bg-lcp {
     @include tablet {
-      background: url("/images/bg/hero/faq/faq-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
-    }
-
-    @include desktop-lg {
-      background: url("/images/bg/hero/faq/faq-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
-    }
-
-    @include desktop-xl {
-      background: url("/images/bg/hero/faq/faq-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
-    }
-
-    @include desktop-2k {
-      background: url("/images/bg/hero/faq/faq-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
-    }
-
-    @include desktop-5k {
-      background: url("/images/bg/hero/faq/faq-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
+      object-position: center center;
     }
   }
 
@@ -218,7 +148,8 @@
     @include mobile {
       padding-top: 0;
       justify-content: center;
-      min-height: 100vh;
+      min-height: auto;
+  min-height: 953px;
       margin: 0 auto;
     }
 

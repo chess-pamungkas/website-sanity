@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
-import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { getFeaturesByTradingType } from "../../../helpers/features-products.config";
 import FeaturesProducts from "../../shared/features-products";
 import { setLangParam } from "../../../helpers/services/language-service";
@@ -18,7 +17,6 @@ import GetComplimentaryVPS from "./get-complimentary-vps";
 
 const VPSContent = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
-  const { isMobile } = useWindowSize();
   const langParam = setLangParam(); // Get the language parameter
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
 
@@ -62,17 +60,7 @@ const VPSContent = ({ className, isShowHero = true }) => {
         </div>
       </ContainerWrapper>
 
-      {isMobile ? (
-        <OurCommunityContent
-          desktopBackgroundImageUrl={VPS_JOIN_COMMUNITY_DESKTOP_WEBP}
-          mobileBackgroundImageUrl={VPS_JOIN_COMMUNITY_MOBILE_WEBP}
-          customBadgeMessage={t("vps_our_community_badge_message")}
-          customTitle={t("vps_our_community_title")}
-          customSubtitle={t("vps_our_community_subtitle")}
-          customPrimaryButton={t("vps_our_community_primary_button")}
-          customSecondaryButton={t("vps_our_community_secondary_button")}
-        />
-      ) : (
+      <div className="vps-page-community">
         <ContainerWrapper>
           <OurCommunityContent
             desktopBackgroundImageUrl={VPS_JOIN_COMMUNITY_DESKTOP_WEBP}
@@ -84,7 +72,7 @@ const VPSContent = ({ className, isShowHero = true }) => {
             customSecondaryButton={t("vps_our_community_secondary_button")}
           />
         </ContainerWrapper>
-      )}
+      </div>
 
       {/* Render the popup */}
       {isPopupOpen && (

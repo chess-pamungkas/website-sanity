@@ -60,7 +60,7 @@ const Document = ({ className, document }) => {
         </div>
 
         {/* Document Name */}
-        <h3 className="document__name">{t(document.name)}</h3>
+        <p className="document__name">{t(document.name)}</p>
 
         {/* View PDF Button */}
         <a

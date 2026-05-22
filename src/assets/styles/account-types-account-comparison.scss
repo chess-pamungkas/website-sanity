@@ -11,6 +11,14 @@
   overflow: hidden;
   margin: 32px 0;
 
+  @include tablet-only {
+    margin: $below-marketing-hero-gap-tablet 0;
+  }
+
+  @include desktop-lg {
+    margin: $below-marketing-hero-gap-desktop 0;
+  }
+
   .account-comparison-bg {
     position: absolute;
     top: 0;
@@ -52,6 +60,14 @@
     padding: 73px 20px 0;
     gap: 16px;
     text-align: center;
+
+    @include tablet-only {
+      padding-top: $below-marketing-hero-section-padding-top-tablet;
+    }
+
+    @include desktop-lg {
+      padding-top: $below-marketing-hero-section-padding-top-desktop;
+    }
     .badge-row {
       box-sizing: border-box;
       display: flex;

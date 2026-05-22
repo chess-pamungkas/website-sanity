@@ -74,7 +74,7 @@ const AllMarkets = ({ className, isShowHero = true }) => {
         {mobileLayout ? (
           <OurCommunityLazy />
         ) : (
-          <ContainerWrapper>
+          <ContainerWrapper className="our-community-page-shell">
             <OurCommunityLazy />
           </ContainerWrapper>
         )}

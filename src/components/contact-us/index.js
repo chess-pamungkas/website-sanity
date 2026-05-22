@@ -11,7 +11,6 @@ import {
 } from "../../helpers/constants";
 import ContactUsForm from "./components/contact-us-form";
 import { useRtlDirection } from "../../helpers/hooks/use-rtl-direction";
-import { useWindowSize } from "../../helpers/hooks/use-window-size";
 
 // Import icons
 import { BadgeSecurityIcon as BadgeIcon } from "../shared/shared-icons";

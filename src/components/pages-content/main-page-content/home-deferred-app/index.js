@@ -76,7 +76,7 @@ const HomeDeferredApp = ({ isMobile }) => {
             <OurCommunityContent />
           </Suspense>
         ) : (
-          <ContainerWrapper>
+          <ContainerWrapper className="homepage-our-community-shell">
             <Suspense fallback={null}>
               <OurCommunityContent />
             </Suspense>

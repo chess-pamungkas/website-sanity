@@ -1,17 +1,21 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
 import featuresIcon from "../../../../assets/images/icons/features.svg";
 import minimumDepositIcon from "../../../../assets/images/icons/vps/minimum-$3000-deposit.svg";
 import minimumTradingVolumeIcon from "../../../../assets/images/icons/vps/minimum-trading-volume.svg";
-import oqtimaForexCfdLightDesktop from "../../../../assets/images/vps/oqtima-forex-cfd-light-desktop.svg";
-import oqtimaForexCfdLightMobile from "../../../../assets/images/vps/oqtima-forex-cfd-light-mobile.svg";
-import handDesktop from "../../../../assets/images/vps/hand-desktop.svg";
-import handMobile from "../../../../assets/images/vps/hand-mobile.svg";
 import { ShowRegistrationPopup } from "../../../../helpers/constants";
 import LanguageContext from "../../../../context/language-context";
-import { ButtonPrimaryStandard } from "../../../shared/reusable-buttons";
+import {
+  VPS_HAND_DESKTOP_WEBP,
+  VPS_HAND_MOBILE_WEBP,
+  VPS_HAND_DIMENSIONS,
+  VPS_FOREX_CFD_LIGHT_DESKTOP_WEBP,
+  VPS_FOREX_CFD_LIGHT_MOBILE_WEBP,
+  VPS_FOREX_CFD_LIGHT_DIMENSIONS,
+  VPS_DESKTOP_PICTURE_MEDIA,
+} from "../../../../helpers/vps-static-images";
 
 // Arrow SVG component with RTL support
 const ArrowIcon = ({ isRTL = false }) => (
@@ -38,7 +42,6 @@ const ArrowIcon = ({ isRTL = false }) => (
 const GetComplimentaryVPS = ({ className }) => {
   const { t } = useTranslationWithVariables();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const { selectedLanguage } = useContext(LanguageContext);
   const isRTL = useRtlDirection();
 
@@ -50,19 +53,8 @@ const GetComplimentaryVPS = ({ className }) => {
     setIsPopupOpen(false);
   };
 
-  // Mobile detection
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkIsMobile();
-    window.addEventListener("resize", checkIsMobile);
-
-    return () => {
-      window.removeEventListener("resize", checkIsMobile);
-    };
-  }, []);
+  const { desktop: handDesktop } = VPS_HAND_DIMENSIONS;
+  const { desktop: forexDesktop } = VPS_FOREX_CFD_LIGHT_DIMENSIONS;
 
   return (
     <section
@@ -70,7 +62,6 @@ const GetComplimentaryVPS = ({ className }) => {
         isRTL ? "get-complimentary-vps--rtl" : ""
       } ${className || ""}`}
     >
-      {/* Header */}
       <div className="get-complimentary-vps-header">
         <div className="badge-row">
           <img
@@ -89,9 +80,7 @@ const GetComplimentaryVPS = ({ className }) => {
         </p>
       </div>
 
-      {/* Cards */}
       <div className="get-complimentary-vps-cards container">
-        {/* Card 1: Minimum $3000 deposit */}
         <div className="get-complimentary-vps-card minimum-deposit-card">
           <div className="card-icon">
             <img
@@ -107,7 +96,6 @@ const GetComplimentaryVPS = ({ className }) => {
           </p>
         </div>
 
-        {/* Card 2: Minimum trading volume of 5 Lots Forex */}
         <div className="get-complimentary-vps-card minimum-trading-card">
           <div className="card-content-wrapper">
             <div className="card-icon">
@@ -124,27 +112,34 @@ const GetComplimentaryVPS = ({ className }) => {
             </p>
           </div>
           <div className="vps-image-container">
-            <img
-              src={
-                isMobile
-                  ? oqtimaForexCfdLightMobile
-                  : oqtimaForexCfdLightDesktop
-              }
-              alt={t("get-complimentary-vps_forex-cfd-alt")}
-              className="vps-image"
-              width={isMobile ? 314 : 222}
-              height={isMobile ? 246 : 230}
-            />
-            <img
-              src={handDesktop}
-              alt={t("get-complimentary-vps_hand-icon-alt")}
-              className="vps-hand-icon desktop-only"
-            />
-            <img
-              src={handMobile}
-              alt={t("get-complimentary-vps_hand-icon-alt")}
-              className="vps-hand-icon mobile-only"
-            />
+            <picture>
+              <source
+                media={`not ${VPS_DESKTOP_PICTURE_MEDIA}`}
+                srcSet={VPS_FOREX_CFD_LIGHT_MOBILE_WEBP}
+              />
+              <img
+                src={VPS_FOREX_CFD_LIGHT_DESKTOP_WEBP}
+                alt={t("get-complimentary-vps_forex-cfd-alt")}
+                className="vps-image"
+                width={forexDesktop.width}
+                height={forexDesktop.height}
+                decoding="async"
+              />
+            </picture>
+            <picture className="vps-hand-icon">
+              <source
+                media={`not ${VPS_DESKTOP_PICTURE_MEDIA}`}
+                srcSet={VPS_HAND_MOBILE_WEBP}
+              />
+              <img
+                src={VPS_HAND_DESKTOP_WEBP}
+                alt=""
+                width={handDesktop.width}
+                height={handDesktop.height}
+                decoding="async"
+                aria-hidden="true"
+              />
+            </picture>
             <button
               className="vps-start-trading-btn"
               onClick={handleShowRegistrationPopup}
@@ -158,7 +153,6 @@ const GetComplimentaryVPS = ({ className }) => {
         </div>
       </div>
 
-      {/* Registration Popup */}
       {isPopupOpen && (
         <ShowRegistrationPopup
           isOpen={isPopupOpen}

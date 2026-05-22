@@ -105,8 +105,25 @@ const Header = ({ className }) => {
   const activeMenuItem =
     openDropdownIndex !== null ? menu[openDropdownIndex] : null;
 
+  useEffect(() => {
+    if (isDesktop) {
+      import("./HeaderDropdownContent");
+    }
+  }, [isDesktop]);
+
+  const isDropdownOpen =
+    openDropdownIndex !== null &&
+    isDesktop &&
+    activeMenuItem &&
+    !!activeMenuItem.subItems?.length;
+
   return (
-    <div className="header-wrapper" ref={headerRef}>
+    <div
+      className={cn("header-wrapper", {
+        "header-wrapper--dropdown-open": isDropdownOpen,
+      })}
+      ref={headerRef}
+    >
       <NotificationsContainer setSectionOptions={setSectionOptions} />
       <GDPRPopup />
       {/* Header--big or header--small always visible behind */}
@@ -208,10 +225,7 @@ const Header = ({ className }) => {
       </header>
 
       {/* Header-dropdown-card floating above with header content + dropdown content */}
-      {openDropdownIndex !== null &&
-        isDesktop &&
-        activeMenuItem &&
-        !!activeMenuItem.subItems?.length && (
+      {isDropdownOpen && (
           <div
             className={cn("header-dropdown-card", {
               "header-dropdown-card--from-small": isScrolled,

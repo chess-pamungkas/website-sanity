@@ -112,14 +112,6 @@ const TrustPilot = ({
       const el = widgetRef.current;
       if (!el || typeof window === "undefined") return undefined;
 
-      const isMobileViewport =
-        window.matchMedia &&
-        window.matchMedia("(max-width: 768px)").matches;
-
-      const fallbackMs = isMobileViewport
-        ? MOBILE_TRUSTPILOT_FALLBACK_MS
-        : DESKTOP_TRUSTPILOT_FALLBACK_MS;
-
       const enqueueBelowFold = () => {
         trustpilotViewportCapMs = TRUSTPILOT_AFTER_LCP_CAP_MS;
         bootstrapInViewportUx = false;
@@ -132,10 +124,22 @@ const TrustPilot = ({
         enqueueBootstrap();
       };
 
+      // Defer reading matchMedia to avoid synchronous forced reflow during hydration
       fallbackTimer = setTimeout(() => {
         if (cancelledStart) return;
-        enqueueBelowFold();
-      }, fallbackMs);
+        const isMobileViewport =
+          window.matchMedia &&
+          window.matchMedia("(max-width: 768px)").matches;
+        
+        if (isMobileViewport) {
+          enqueueBelowFold();
+        } else {
+          fallbackTimer = setTimeout(() => {
+            if (cancelledStart) return;
+            enqueueBelowFold();
+          }, DESKTOP_TRUSTPILOT_FALLBACK_MS - MOBILE_TRUSTPILOT_FALLBACK_MS);
+        }
+      }, MOBILE_TRUSTPILOT_FALLBACK_MS);
 
       if ("IntersectionObserver" in window) {
         io = new IntersectionObserver(

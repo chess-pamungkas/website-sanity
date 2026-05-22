@@ -6,6 +6,10 @@ import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import ForexContent from "../components/pages-content/forex-page-content";
 import PageBackground from "../components/shared/page-background";
+import {
+  HERO_ASSET_DESKTOP_MQ,
+  HERO_ASSET_MOBILE_MQ,
+} from "../helpers/viewport-media";
 
 const FOREX_LCP_DESKTOP = "/images/bg/hero/forex/forex-desktop.webp";
 const FOREX_LCP_MOBILE = "/images/bg/hero/forex/forex-mobile.webp";
@@ -21,14 +25,14 @@ const ForexPage = () => {
           as="image"
           type="image/webp"
           href={FOREX_LCP_DESKTOP}
-          media="(min-width: 769px)"
+          media={HERO_ASSET_DESKTOP_MQ}
         />
         <link
           rel="preload"
           as="image"
           type="image/webp"
           href={FOREX_LCP_MOBILE}
-          media="(max-width: 768px)"
+          media={HERO_ASSET_MOBILE_MQ}
         />
       </Helmet>
       <Seo

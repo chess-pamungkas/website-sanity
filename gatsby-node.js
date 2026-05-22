@@ -121,6 +121,16 @@ exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
                       enforce: true,
                       priority: 19,
                     },
+                    gatsbyReactI18next: {
+                      test: (module) => {
+                        const id = module.identifier?.() || module.resource || "";
+                        return /gatsby-plugin-react-i18next/.test(id);
+                      },
+                      name: "gatsby-react-i18next",
+                      chunks: "all",
+                      enforce: true,
+                      priority: 18,
+                    },
                   },
                 },
               },

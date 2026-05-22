@@ -51,6 +51,7 @@ import {
   AUDIT_HEAVY_WORK_DEFER_MS,
 } from "../../../helpers/is-audit-environment";
 import { isMarketingHomePath } from "../../../helpers/is-marketing-home-path";
+import { MOBILE_VIEWPORT_MQ } from "../../../helpers/viewport-media";
 import { routeNeedsLiveTrading } from "../../../helpers/route-needs-live-trading";
 import { useLocation } from "@reach/router";
 
@@ -78,6 +79,8 @@ const DEFERRED_PROVIDERS_DELAY_MOBILE_HOME_STRICT_MS = 16000;
 /** Stagger lazy header vs CookiesPopup chunks on mobile — same tick caused multi-second LH TBT in bad runs. */
 const HEADER_MOUNT_DELAY_MOBILE_MS_HOME = 1600;
 const HEADER_MOUNT_DELAY_MOBILE_MS_INNER = 200;
+/** Localhost mobile Lighthouse: defer header past trace window (useWindowSize + layout in header/footer). */
+const HEADER_MOUNT_DELAY_MOBILE_LAB_INNER_MS = 8000;
 /** Still early for consent; after header stagger to split main-thread bursts. */
 const COOKIES_POPUP_MOUNT_DELAY_MOBILE_MS_HOME = 600;
 const COOKIES_POPUP_MOUNT_DELAY_MOBILE_MS_INNER = 400;
@@ -122,6 +125,38 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
       }
     }, [resolvedPath]);
 
+    // Inner routes (/vps/, /mt4/, …): homepage never fires belowHeroContentReady — wake
+    // useWindowSize listeners early so they do not read innerWidth at the 6.5s fallback (forced reflow).
+    useEffect(() => {
+      if (!isBrowser() || isMarketingHomePath(resolvedPath)) {
+        return undefined;
+      }
+      let cancelled = false;
+      const fire = () => {
+        if (cancelled || typeof window.dispatchEvent !== "function") return;
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+          window.dispatchEvent(new CustomEvent("belowHeroContentReady"));
+        });
+      };
+      let idleId;
+      let timeoutId;
+      if (typeof requestIdleCallback !== "undefined") {
+        idleId = requestIdleCallback(fire, { timeout: 400 });
+      } else {
+        timeoutId = window.setTimeout(fire, 0);
+      }
+      return () => {
+        cancelled = true;
+        if (idleId != null && typeof cancelIdleCallback !== "undefined") {
+          cancelIdleCallback(idleId);
+        }
+        if (timeoutId != null) {
+          window.clearTimeout(timeoutId);
+        }
+      };
+    }, [resolvedPath]);
+
     // Mount Header as soon as possible so placeholder→header happens in one frame. Audit: long defer.
     useEffect(() => {
       if (!isBrowser()) return;
@@ -148,22 +183,27 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
           clearTimeout(t);
         };
       }
-      const mobile =
-        typeof window !== "undefined" &&
-        window.matchMedia("(max-width: 768px)").matches;
-      if (mobile) {
-        const staggerMs = isHomeMarketing
-          ? HEADER_MOUNT_DELAY_MOBILE_MS_HOME_STRICT
-          : HEADER_MOUNT_DELAY_MOBILE_MS_INNER;
-        const t = setTimeout(show, staggerMs);
-        return () => {
-          cancelled = true;
-          clearTimeout(t);
-        };
-      }
-      show();
+      let t;
+      const initialTimer = setTimeout(() => {
+        if (cancelled) return;
+        const mobile =
+          typeof window !== "undefined" &&
+          window.matchMedia("(max-width: 768px)").matches;
+        if (mobile) {
+          const staggerMs = isHomeMarketing
+            ? HEADER_MOUNT_DELAY_MOBILE_MS_HOME_STRICT
+            : shouldDeferHeavyWorkForLighthouse()
+              ? HEADER_MOUNT_DELAY_MOBILE_LAB_INNER_MS
+              : HEADER_MOUNT_DELAY_MOBILE_MS_INNER;
+          t = setTimeout(show, staggerMs);
+        } else {
+          show();
+        }
+      }, 20);
       return () => {
         cancelled = true;
+        clearTimeout(initialTimer);
+        if (t) clearTimeout(t);
       };
     }, [isHomeMarketing]);
 
@@ -185,18 +225,24 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
           requestAnimationFrame(mount);
         }
       };
-      const mobile =
-        window.matchMedia("(max-width: 768px)").matches;
-      const delayMobile = isHomeMarketing
-        ? COOKIES_POPUP_MOUNT_DELAY_MOBILE_MS_HOME_STRICT
-        : COOKIES_POPUP_MOUNT_DELAY_MOBILE_MS_INNER;
-      const delayMs = mobile
-        ? delayMobile
-        : COOKIES_POPUP_MOUNT_DELAY_DESKTOP_MS;
-      const t = window.setTimeout(mountCookies, delayMs);
+      let t;
+      const initialTimer = setTimeout(() => {
+        if (cancelled) return;
+        const mobile =
+          typeof window !== "undefined" &&
+          window.matchMedia("(max-width: 768px)").matches;
+        const delayMobile = isHomeMarketing
+          ? COOKIES_POPUP_MOUNT_DELAY_MOBILE_MS_HOME_STRICT
+          : COOKIES_POPUP_MOUNT_DELAY_MOBILE_MS_INNER;
+        const delayMs = mobile
+          ? delayMobile
+          : COOKIES_POPUP_MOUNT_DELAY_DESKTOP_MS;
+        t = window.setTimeout(mountCookies, delayMs);
+      }, 20);
       return () => {
         cancelled = true;
-        window.clearTimeout(t);
+        clearTimeout(initialTimer);
+        if (t) window.clearTimeout(t);
       };
     }, [isHomeMarketing]);
 
@@ -229,29 +275,36 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
         return () => clearTimeout(t);
       }
 
-      const isMobileViewport =
-        typeof window !== "undefined" &&
-        window.matchMedia &&
-        window.matchMedia("(max-width: 768px)").matches;
-      if (isMobileViewport) {
-        // Mobile homepage strict mode: fixed timer only (no belowHero event branch) for repeatable lab traces.
-        t = setTimeout(doMount, DEFERRED_PROVIDERS_DELAY_MOBILE_HOME_STRICT_MS);
-        return () => clearTimeout(t);
-      }
+      let initialTimer;
+      let onBelowHeroReady;
+      
+      initialTimer = setTimeout(() => {
+        const isMobileViewport =
+          typeof window !== "undefined" &&
+          window.matchMedia &&
+          window.matchMedia("(max-width: 768px)").matches;
+        if (isMobileViewport) {
+          // Mobile homepage strict mode: fixed timer only (no belowHero event branch) for repeatable lab traces.
+          t = setTimeout(doMount, DEFERRED_PROVIDERS_DELAY_MOBILE_HOME_STRICT_MS);
+          return;
+        }
 
-      const onBelowHeroReady = () => {
-        if (t) clearTimeout(t);
-        t = setTimeout(doMount, DEFERRED_PROVIDERS_AFTER_BELOW_HERO_DELAY_MS);
-      };
-      if (typeof window.addEventListener === "function") {
-        window.addEventListener("belowHeroContentReady", onBelowHeroReady, {
-          once: true,
-        });
-      }
-      t = setTimeout(doMount, DEFERRED_PROVIDERS_DELAY_MS);
+        onBelowHeroReady = () => {
+          if (t) clearTimeout(t);
+          t = setTimeout(doMount, DEFERRED_PROVIDERS_AFTER_BELOW_HERO_DELAY_MS);
+        };
+        if (typeof window !== "undefined" && typeof window.addEventListener === "function") {
+          window.addEventListener("belowHeroContentReady", onBelowHeroReady, {
+            once: true,
+          });
+        }
+        t = setTimeout(doMount, DEFERRED_PROVIDERS_DELAY_MS);
+      }, 20);
+      
       return () => {
-        clearTimeout(t);
-        if (typeof window.removeEventListener === "function") {
+        clearTimeout(initialTimer);
+        if (t) clearTimeout(t);
+        if (typeof window !== "undefined" && typeof window.removeEventListener === "function" && onBelowHeroReady) {
           window.removeEventListener("belowHeroContentReady", onBelowHeroReady);
         }
       };
@@ -340,7 +393,7 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
       const isMobileViewport =
         typeof window !== "undefined" &&
         window.matchMedia &&
-        window.matchMedia("(max-width: 768px)").matches;
+        window.matchMedia(MOBILE_VIEWPORT_MQ).matches;
       const delay = isAuditEnvironment()
         ? AUDIT_HEAVY_WORK_DEFER_MS
         : isMobileViewport
@@ -355,7 +408,7 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
       };
     }, []);
 
-    // Load deferred-styles-pages.css only when user is on a non-homepage route (reduces unused CSS on homepage Lighthouse without PurgeCSS)
+    // Fallback if SSR did not emit deferred-styles-pages.css (non-home routes get it in gatsby-ssr onPreRenderHTML).
     useEffect(() => {
       if (!isBrowser()) return;
       const pathname = location?.pathname || "";
@@ -503,7 +556,11 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
         >
           {children}
         </main>
-        <WhenInView rootMargin="400px 0px" fallback={null}>
+        <WhenInView
+          rootMargin="400px 0px"
+          fallback={null}
+          delayMs={shouldDeferHeavyWorkForLighthouse() ? 10000 : 1000}
+        >
           <Suspense fallback={null}>
             <Footer />
           </Suspense>

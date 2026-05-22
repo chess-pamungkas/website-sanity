@@ -19,6 +19,119 @@
   }
 }
 
+/* 768px–1023px only (iPad / iPad Air); avoids 768px matching both mobile + tablet rules. */
+@mixin tablet-only {
+  @media screen and (min-width: $md) and (max-width: $max-lg) {
+    @content;
+  }
+}
+
+/*
+ * Outer hero section: drop 100vh on tablet — reserve only top offset + artboard (partners pattern).
+ */
+@mixin hero-page-shell-tablet(
+  $artboard-height: 555px,
+  $hero-top: 73px,
+  $padding-top: 70px
+) {
+  @include tablet-only {
+    min-height: calc(#{$hero-top} + #{$artboard-height});
+    height: auto;
+    padding-top: $padding-top;
+    padding-bottom: 0;
+    border-radius: 24px;
+  }
+}
+
+@mixin hero-page-shell-desktop-lg(
+  $artboard-height: 583px,
+  $hero-top: 83px,
+  $padding-top: 83px
+) {
+  @include desktop-lg {
+    min-height: calc(#{$hero-top} + #{$artboard-height});
+    height: auto;
+    padding-top: $padding-top;
+    padding-bottom: 0;
+    border-radius: 24px;
+  }
+}
+
+/* iPad / iPad Air (768–1023): hero gutters + inner padding (matches main-promotion). */
+/* Below trading-product hero: tight ticker gap on tablet + desktop (overrides legacy 110px). */
+/* First content block after absolute-positioned marketing hero (tablet + desktop). */
+@mixin below-marketing-hero-margin-top {
+  @include tablet-only {
+    margin-top: $below-marketing-hero-gap-tablet !important;
+  }
+
+  @include desktop-lg {
+    margin-top: $below-marketing-hero-gap-desktop !important;
+  }
+}
+
+@mixin below-marketing-hero-padding-top {
+  @include tablet-only {
+    padding-top: $below-marketing-hero-gap-tablet !important;
+  }
+
+  @include desktop-lg {
+    padding-top: $below-marketing-hero-gap-desktop !important;
+  }
+}
+
+@mixin trading-product-page-ticker-spacing {
+  .trading-ticker-wrapper {
+    @include tablet {
+      margin-top: $product-page-ticker-margin-top-tablet;
+    }
+
+    @include desktop-lg {
+      margin-top: $product-page-ticker-margin-top-desktop;
+    }
+
+    @include desktop-xl {
+      margin-top: $product-page-ticker-margin-top-desktop;
+    }
+
+    @include desktop-2k {
+      margin-top: $product-page-ticker-margin-top-desktop;
+    }
+
+    @include desktop-5k {
+      margin-top: $product-page-ticker-margin-top-desktop;
+    }
+  }
+}
+
+@mixin hero-tablet-container($height: 575px, $top: 66px, $border-radius: 24px) {
+  @include tablet-only {
+    width: calc(100% - 48px);
+    max-width: 100%;
+    height: $height;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: $top;
+    margin: 0 auto;
+    border-radius: $border-radius;
+    overflow: visible;
+    padding-left: 24px;
+    padding-right: 24px;
+    box-sizing: border-box;
+
+    .container {
+      max-width: 100%;
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
+      box-sizing: border-box;
+    }
+  }
+}
+
 @mixin desktop-lg {
   @media screen and (min-width: $lg) {
     @content;

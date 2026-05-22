@@ -12,7 +12,8 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+  height: auto;
+  min-height: 953px;
   padding-top: 80px;
   z-index: 2;
   left: 50%;
@@ -31,10 +32,7 @@
     overflow: visible;
   }
 
-  @include tablet {
-    height: 575px;
-    padding-top: 70px;
-  }
+  @include hero-page-shell-tablet(575px, 66px, 70px);
 
   @include desktop-lg {
     height: 786px;
@@ -83,18 +81,7 @@
       overflow: hidden;
     }
 
-    @include tablet {
-      width: 768px;
-      max-width: 768px;
-      height: 575px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 73px;
-      margin: 0 auto;
-      border-radius: 20px;
-      overflow: visible;
-    }
+    @include hero-tablet-container(575px, 66px);
 
     @include desktop-lg {
       width: calc(100vw - 20px);

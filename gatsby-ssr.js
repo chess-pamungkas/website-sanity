@@ -5,6 +5,15 @@ import {
   getBcp47Lang,
   getLanguageIdFromPathname,
 } from "./src/helpers/lang.config";
+import { LEGAL_REGULATED_CRITICAL_CSS } from "./src/helpers/legal-regulated-critical-css";
+import { CONTACT_US_HERO_CRITICAL_CSS } from "./src/helpers/contact-us-critical-css";
+import { PARTNERS_HERO_CRITICAL_CSS } from "./src/helpers/partners-critical-css";
+import {
+  heroTabletContainerCritical,
+  heroPageShellCritical,
+  heroTabletBgLcpCritical,
+} from "./src/helpers/hero-tablet-critical-css";
+import { SM_MAX_WIDTH, WINDOW_SIZE_MD } from "./src/helpers/constants";
 
 /** Keep in sync with src/helpers/is-audit-environment.js (inline scripts cannot import). */
 const SSR_INLINE_IS_AUDIT_FN = `
@@ -40,7 +49,11 @@ function isPerfLab(){
     if(typeof window==="undefined"||!window.location)return false;
     var host=(window.location.hostname||"").toLowerCase();
     if(host!=="localhost"&&host!=="127.0.0.1"&&host!=="")return false;
-    return window.matchMedia&&window.matchMedia("(max-width:768px)").matches&&window.outerWidth>820;
+    var narrow=window.matchMedia&&window.matchMedia("(max-width:768px)").matches;
+    if(!narrow)return false;
+    if(window.outerWidth>820)return true;
+    if(window.outerWidth<=520)return true;
+    return false;
   }catch(e){return false;}
 }
 function shouldDeferThirdParty(){return isAudit()||isPerfLab();}
@@ -335,7 +348,7 @@ export const onRenderBody = ({
                     loadWhenBodyReady();
                   };
                   window.loadConvrsWebchat = function() { loadWhenBodyReady(); };
-                  /* Audits / headless / ?lighthouse: never auto-fetch Convrs bundle (LH flags ~25ms+ forced reflow in their script). Manual Load Live Chat APIs still work. */
+                  /* Audits / headless / ?lighthouse / localhost mobile lab: never auto-fetch Convrs (LH ~71ms+ forced reflow in webchat.conv.rs). Use loadConvrsWebchatAndOpen() from Live Chat menu. */
                   try {
                     if (typeof shouldDeferThirdParty === "function" && shouldDeferThirdParty()) return;
                   } catch (e0) {}
@@ -343,19 +356,8 @@ export const onRenderBody = ({
                   try {
                     isNarrow = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
                   } catch (e) {}
-                  function scheduleDesktop() {
-                    setTimeout(loadWhenBodyReady, 300);
-                  }
-                  /* Idle-priority on narrow viewports avoids running Convrs parsing in the same busy window as React hydration/Gatsby (reduces main-thread bursts + overlap with forced-layout reads). Fallback timeout caps worst-case wait. */
-                  function scheduleMobile() {
-                    if (typeof window.requestIdleCallback !== "undefined") {
-                      window.requestIdleCallback(loadWhenBodyReady, { timeout: 12000 });
-                      return;
-                    }
-                    setTimeout(loadWhenBodyReady, 7800);
-                  }
-                  if (isNarrow) scheduleMobile();
-                  else scheduleDesktop();
+                  if (isNarrow) return;
+                  setTimeout(loadWhenBodyReady, 300);
                 })();
               `,
             }}
@@ -632,6 +634,56 @@ export const onPreRenderHTML = ({
   const hasPrintStylesheet = filteredHeadComponents.some(
     (n) => n?.props?.rel === "stylesheet" && n?.props?.media === "print"
   );
+  // MUST be defined before delayed-app-loader string (uses skipHeroLcpWaitForLoader) — otherwise ReferenceError
+  // in the template aborts the try block, replacePostBodyComponents never runs, print CSS never flips → unstyled site.
+  /** { rootClass, assetSlug } — rootClass is BEM prefix (e.g. faq-hero); assetSlug is static/images/bg/hero/<slug>/ */
+  const heroLcpPage =
+    typeof pathname === "string"
+      ? (() => {
+          const parts = pathname.split("/").filter(Boolean);
+          const last = (parts[parts.length - 1] || "").toLowerCase();
+          if (last === "faq") {
+            return { rootClass: "faq-hero", assetSlug: "faq" };
+          }
+          if (last === "legal") {
+            return { rootClass: "legal", assetSlug: "legal" };
+          }
+          if (last === "contact-us") {
+            return { rootClass: "contact-us", assetSlug: "contact-us" };
+          }
+          const allowed = new Set([
+            "all-markets",
+            "forex",
+            "metals",
+            "crypto",
+            "indices",
+            "shares",
+            "energies",
+            "etf",
+            "accounts-type",
+            "vps",
+            "swap-free",
+            "mt4",
+            "mt5",
+          ]);
+          if (last === "funding") {
+            return {
+              rootClass: "funding-withdrawals",
+              assetSlug: "funding-withdrawals",
+            };
+          }
+          if (last === "spreads-and-fees") {
+            return { rootClass: "spreads-fees", assetSlug: "spreads-fees" };
+          }
+          if (allowed.has(last)) {
+            return { rootClass: last, assetSlug: last };
+          }
+          return null;
+        })()
+      : null;
+  const isHeroLcpPath = heroLcpPage !== null;
+  const skipHeroLcpWaitForLoader = Boolean(heroLcpPage);
+
   // Don't push script to head so first paint isn't delayed; inject into body end below.
 
   // Defer app scripts until after LCP (PerformanceObserver) so LCP paints from SSR+critical CSS — real score for PageSpeed/GTmetrix (no ?lighthouse).
@@ -715,7 +767,7 @@ function afterFlip(cb){ric(function(){requestAnimationFrame(function(){requestAn
 function doWork(){if(done)return;done=true;queueStart=nowMs();flipThen(function(){afterFlip(function(){inj();ric(function(){injInline()},1200)})})}
 function scheduleDoWorkAfterLcp(){var fired=false;function go(){if(fired)return;fired=true;doWork();}setTimeout(go,${LCP_FALLBACK_MS});if(typeof PerformanceObserver!=="undefined"){try{var po=new PerformanceObserver(function(){go();try{po.disconnect();}catch(e){}});po.observe({type:"largest-contentful-paint",buffered:true});}catch(e){}}}
 var armMobile=!!(window.matchMedia&&window.matchMedia("(max-width: 768px)").matches);
-var skipLcpWait=!u.length;
+var skipLcpWait=!u.length||${skipHeroLcpWaitForLoader ? "true" : "false"};
 if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFrame(function(){ric(doWork,48)})})}else{requestAnimationFrame(function(){requestAnimationFrame(function(){scheduleDoWorkAfterLcp()})})}})();`).replace(/\s+/g," ").trim(),
         }}
       />
@@ -754,33 +806,6 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
 
   // Inline critical CSS for LCP block so it can paint as soon as body is parsed (no wait for external CSS). Homepage only.
   const isHome = pathname === "/" || (pathname && pathname.match(/^\/[a-z]{2}\/?$/));
-  const tradingProductHeroSlug =
-    typeof pathname === "string"
-      ? (() => {
-          const parts = pathname.split("/").filter(Boolean);
-          const last = (parts[parts.length - 1] || "").toLowerCase();
-          const allowed = new Set([
-            "all-markets",
-            "forex",
-            "metals",
-            "crypto",
-            "indices",
-            "shares",
-            "energies",
-            "etf",
-            "accounts-type",
-            "vps",
-            "swap-free",
-            "mt4",
-            "mt5",
-          ]);
-          /** URL last segment → static/images/bg/hero/<folder>/ folder name */
-          if (last === "funding") return "funding-withdrawals";
-          if (last === "spreads-and-fees") return "spreads-fees";
-          return allowed.has(last) ? last : null;
-        })()
-      : null;
-  const isTradingProductHeroPath = tradingProductHeroSlug !== null;
   // Hero critical CSS (mobile-first) so LCP paints from SSR without waiting for main stylesheet. No placeholder block.
   if (isHome) {
     earlyHints.push(
@@ -788,7 +813,7 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
         key="mobile-cold-start-class"
         dangerouslySetInnerHTML={{
           __html:
-            "(function(){try{var m=window.matchMedia&&window.matchMedia('(max-width: 768px)').matches;if(!m)return;document.documentElement.classList.add('mobile-cold-start');}catch(e){}})();",
+            "(function(){try{var m=window.matchMedia&&window.matchMedia('(max-width: 767px)').matches;if(!m)return;document.documentElement.classList.add('mobile-cold-start');}catch(e){}})();",
         }}
       />
     );
@@ -804,20 +829,25 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
             '@font-face{font-family:"Sofia Pro";src:url("/fonts/SofiaProSemiBold.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}',
             '@font-face{font-family:"Sofia Pro";src:url("/fonts/SofiaProBold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}',
             ".cookies-popup{display:none}",
-            ".main-promotion{visibility:visible;position:relative;display:flex;align-items:center;justify-content:center;width:100%;min-height:100vh;color:#fff;box-sizing:border-box;left:50%;margin-left:-50vw;margin-right:-50vw}",
-            "@media(max-width:768px){.main-promotion{height:953px}}",
-            "@media(min-width:769px){.main-promotion{min-height:686px;height:686px}}",
+            ".main-promotion{visibility:visible;position:relative;display:flex;align-items:center;justify-content:center;width:100%;color:#fff;box-sizing:border-box;left:50%;margin-left:-50vw;margin-right:-50vw}",
+            "@media(max-width:767px){.main-promotion{height:953px;min-height:953px}}",
+            "@media(min-width:768px) and (max-width:1023px){.main-promotion{min-height:calc(66px + 575px);height:auto}}",
+            "@media(min-width:1024px){.main-promotion{min-height:calc(77px + 686px);height:auto}}",
             ".main-promotion__hero-container{width:100%;height:100%;max-width:100%;background:#000;position:absolute;left:50%;transform:translateX(-50%);margin:0;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box;overflow:hidden}",
-            "@media(max-width:768px){.main-promotion__hero-container{border-radius:20px;top:66px;min-height:953px}}",
-            "@media(min-width:769px){.main-promotion__hero-container{border-radius:0;top:0;left:0;transform:none;width:100%;min-height:686px;height:686px}}",
+            "@media(max-width:767px){.main-promotion__hero-container{border-radius:20px;top:66px;min-height:953px;height:953px}}",
+            "@media(min-width:768px) and (max-width:1023px){.main-promotion__hero-container{border-radius:24px;top:66px;left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:100%;min-height:575px;height:575px;padding-left:24px;padding-right:24px;box-sizing:border-box}}",
+            "@media(min-width:1024px){.main-promotion__hero-container{border-radius:24px;top:77px;left:50%;transform:translateX(-50%);width:calc(100vw - 120px);max-width:1400px;min-height:686px;height:686px}}",
             ".main-promotion__content-container{position:relative;z-index:4;display:flex;flex-direction:column;padding-top:50px;max-width:100%}",
             ".main-promotion__heading{margin:0;display:flex;flex-direction:column;gap:0}",
             '.main-promotion__title{display:block;font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:600;font-size:clamp(28px,8vw,72px);line-height:1.3;color:#fff;margin:0;visibility:visible!important;opacity:1!important}',
-            '@media(max-width:768px){.main-promotion__subheading{font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px;line-height:24px!important;color:#fff!important;font-weight:400!important;margin:0!important;max-width:100%!important;opacity:0.7;visibility:visible!important;display:block}}',
-            '@media(min-width:769px){.main-promotion__subheading{font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:18px;line-height:28px!important;color:#fff!important;font-weight:400!important;margin:0!important;max-width:615px;opacity:0.7;visibility:visible!important;display:block}}',
+            '@media(max-width:767px){.main-promotion__subheading{font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px;line-height:24px!important;color:#fff!important;font-weight:400!important;margin:0!important;max-width:100%!important;opacity:0.7;visibility:visible!important;display:block}}',
+            '@media(min-width:768px){.main-promotion__subheading{font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:18px;line-height:28px!important;color:#fff!important;font-weight:400!important;margin:0!important;max-width:615px;opacity:0.7;visibility:visible!important;display:block}}',
             ".main-promotion__hand-container{position:absolute;bottom:-225px;right:auto;width:100%;height:488px;display:block;z-index:2;overflow:visible}",
             ".main-promotion__hand-img,.main-promotion__hand-img picture,.main-promotion__hand-img img,.main-promotion__hand-img-element{width:100%;height:100%;display:block!important;visibility:visible!important;opacity:1!important;object-fit:contain;object-position:bottom center}",
-            "@media(max-width:768px){html.mobile-cold-start *,html.mobile-cold-start *::before,html.mobile-cold-start *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}",
+            "@media(max-width:767px){.trading-ticker-wrapper{margin-top:100px;margin-bottom:0}}",
+            "@media(min-width:768px) and (max-width:1023px){.trading-ticker-wrapper{margin-top:24px;margin-bottom:24px}}",
+            "@media(min-width:1024px){.trading-ticker-wrapper{margin-top:24px;margin-bottom:0}}",
+            "@media(max-width:767px){html.mobile-cold-start *,html.mobile-cold-start *::before,html.mobile-cold-start *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}",
             // Audit-mode visual minimization: when our audit-detect-stamp script sets
             // data-audit="1" on <html>, hide specific non-essential SSR elements (header,
             // footer, cookies popup, stripe, Trustpilot containers, deferred-app placeholder)
@@ -829,9 +859,9 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
         }}
       />
     );
-  } else if (isTradingProductHeroPath) {
-    // Match /all-markets and product pages (forex, metals, vps, …): fonts + mobile hero shell before deferred CSS flip.
-    const heroRoot = tradingProductHeroSlug;
+  } else if (isHeroLcpPath) {
+    // Match /all-markets, /faq/, forex, metals, vps, …: fonts + hero shell before deferred CSS flip.
+    const heroRoot = heroLcpPage.rootClass;
     earlyHints.push(
       <style
         key="trading-product-hero-font-inline"
@@ -849,12 +879,50 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
         key={`trading-product-hero-layout-${heroRoot}`}
         dangerouslySetInnerHTML={{
           __html: [
-            `@media(max-width:768px){.${heroRoot}{position:relative;width:100vw;left:50%;margin-left:-50vw;margin-right:-50vw;min-height:953px;height:auto;padding-top:73px;padding-bottom:20px;box-sizing:border-box;overflow:visible}}`,
-            `@media(max-width:768px){.${heroRoot}__hero-container{min-height:953px;height:auto;position:absolute;top:73px;left:50%;transform:translateX(-50%);width:100%;max-width:100%;box-sizing:border-box;contain:layout;border-radius:20px;background:#000}}`,
-            `@media(max-width:768px){.${heroRoot}__hero-bg,.${
+            `@media(max-width:767px){.${heroRoot}{position:relative;width:100vw;left:50%;margin-left:-50vw;margin-right:-50vw;min-height:953px;height:auto;padding-top:73px;padding-bottom:20px;box-sizing:border-box;overflow:visible}}`,
+            `@media(max-width:767px){.${heroRoot}__hero-container{min-height:953px;height:auto;position:absolute;top:73px;left:50%;transform:translateX(-50%);width:100%;max-width:100%;box-sizing:border-box;contain:layout;border-radius:20px;background:#000}}`,
+            `@media(max-width:767px){.${heroRoot}__hero-bg,.${
               heroRoot
             }__hero-bg-lcp{position:absolute;inset:0;width:100%;height:100%}}`,
-            `@media(max-width:768px){.${heroRoot}__hero-bg-lcp{object-fit:cover;object-position:center bottom;display:block}}`,
+            ...(heroRoot !== "faq-hero" && heroRoot !== "legal" && heroRoot !== "contact-us"
+              ? [
+                  heroPageShellCritical(heroRoot, 555, 73, 70),
+                  heroTabletContainerCritical(`.${heroRoot}__hero-container`, 555, 73),
+                  heroTabletBgLcpCritical(heroRoot, "78% 100%"),
+                ]
+              : []),
+            ...(heroRoot === "faq-hero"
+              ? [
+                  heroPageShellCritical("faq-hero", 480, 73, 70),
+                  heroTabletContainerCritical(".faq-hero__hero-container", 480, 73),
+                  `@media(min-width:1024px){.faq-hero{position:relative;width:100vw;left:50%;margin-left:-50vw;margin-right:-50vw;min-height:480px;box-sizing:border-box}}`,
+                  `@media(min-width:1024px){.faq-hero__hero-container{height:480px;min-height:480px;position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:1400px;box-sizing:border-box;border-radius:24px;background:#000;overflow:hidden}}`,
+                  `@media(min-width:768px){.faq-hero__hero-bg,.faq-hero__hero-bg-lcp{position:absolute;inset:0;width:100%;height:100%}}`,
+                  heroTabletBgLcpCritical("faq-hero", "center center"),
+                  `@media(min-width:1024px){.faq-hero__hero-bg-lcp{object-fit:cover;object-position:center;display:block}}`,
+                  `.faq-hero__content-container{position:relative;z-index:4}`,
+                ]
+              : []),
+            ...(heroRoot === "legal"
+              ? [
+                  /* Tablet tier (769–1023): matches legal.scss 455px hero shell */
+                  heroPageShellCritical("legal", 455, 73, 70),
+                  heroTabletContainerCritical(".legal__hero-container", 455, 73),
+                  /* Desktop lg+ (≥1024): 510px artboard */
+                  `@media(min-width:1024px){.legal{position:relative;width:100vw;left:50%;margin-left:-50vw;margin-right:-50vw;min-height:510px;box-sizing:border-box}}`,
+                  `@media(min-width:1024px){.legal__hero-container{height:510px;min-height:510px;position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:1400px;box-sizing:border-box;border-radius:24px;background:#000;overflow:hidden}}`,
+                  `@media(min-width:768px){.legal__hero-bg,.legal__hero-bg-lcp{position:absolute;inset:0;width:100%;height:100%}}`,
+                  heroTabletBgLcpCritical("legal", "65% 50%"),
+                  `@media(min-width:1024px) and (max-width:1919px){.legal__hero-bg-lcp{object-fit:cover;object-position:35% 50%;display:block}}`,
+                  `@media(min-width:1920px){.legal__hero-bg-lcp{object-fit:cover;object-position:center;display:block}}`,
+                  `.legal__content-container{position:relative;z-index:4}`,
+                  LEGAL_REGULATED_CRITICAL_CSS,
+                ]
+              : []),
+            ...(heroRoot === "contact-us"
+              ? [CONTACT_US_HERO_CRITICAL_CSS]
+              : []),
+            ...(heroRoot === "partners" ? [PARTNERS_HERO_CRITICAL_CSS] : []),
           ].join(""),
         }}
       />
@@ -921,7 +989,9 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
   // credentialled connection that DOES match a plain script tag, so the script reuses it.
   const isHomePathForPreconnect =
     pathname === "/" || (pathname && pathname.match(/^\/[a-z]{2}\/?$/));
-  if (isHomePathForPreconnect) {
+  const isContactUsPath =
+    typeof pathname === "string" && pathname.includes("contact-us");
+  if (isHomePathForPreconnect || isContactUsPath) {
     preconnectLinks.push(
       <link
         key="preconnect-trustpilot"
@@ -944,8 +1014,8 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
 
   // Trading-product LCP WebP (all-markets, forex, metals, shares, …): start image fetch BEFORE
   // five Sofia preloads so LCP does not queue behind fonts under Fast 4G + CPU throttle.
-  if (tradingProductHeroSlug) {
-    const slug = tradingProductHeroSlug;
+  if (heroLcpPage) {
+    const slug = heroLcpPage.assetSlug;
     const desktopHeroWebp = `/images/bg/hero/${slug}/${slug}-desktop.webp`;
     const mobileHeroWebp = `/images/bg/hero/${slug}/${slug}-mobile.webp`;
     earlyHints.push(
@@ -955,7 +1025,7 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
         as="image"
         type="image/webp"
         href={desktopHeroWebp}
-        media="(min-width: 769px)"
+        media={`(min-width: ${WINDOW_SIZE_MD}px)`}
         fetchPriority="high"
       />,
       <link
@@ -964,7 +1034,59 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
         as="image"
         type="image/webp"
         href={mobileHeroWebp}
-        media="(max-width: 768px)"
+        media={`(max-width: ${SM_MAX_WIDTH}px)`}
+        fetchPriority="high"
+      />
+    );
+  }
+
+  if (isContactUsPath) {
+    earlyHints.push(
+      <link
+        key="preload-sofia-semibold-contact-us"
+        rel="preload"
+        as="font"
+        type="font/woff2"
+        href="/fonts/SofiaProSemiBold.woff2"
+        crossOrigin="anonymous"
+      />,
+      <link
+        key="preload-sofia-regular-contact-us"
+        rel="preload"
+        as="font"
+        type="font/woff2"
+        href="/fonts/SofiaProRegular.woff2"
+        crossOrigin="anonymous"
+      />,
+      <link
+        key="preload-roboto-bold-contact-us"
+        rel="preload"
+        as="font"
+        type="font/ttf"
+        href="/fonts/Roboto-Bold.ttf"
+        crossOrigin="anonymous"
+      />
+    );
+  }
+
+  if (heroLcpPage?.assetSlug === "legal") {
+    earlyHints.push(
+      <link
+        key="preload-legal-bg-regulated-desktop"
+        rel="preload"
+        as="image"
+        type="image/webp"
+        href="/images/legal/bg-regulated-desktop.webp"
+        media={`(min-width: ${WINDOW_SIZE_MD}px)`}
+        fetchPriority="high"
+      />,
+      <link
+        key="preload-legal-bg-regulated-mobile"
+        rel="preload"
+        as="image"
+        type="image/webp"
+        href="/images/legal/bg-regulated-mobile.webp"
+        media={`(max-width: ${SM_MAX_WIDTH}px)`}
         fetchPriority="high"
       />
     );
@@ -979,7 +1101,7 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
         as="image"
         type="image/webp"
         href="/images/hand-mobile.webp"
-        media="(max-width: 768px)"
+        media={`(max-width: ${SM_MAX_WIDTH}px)`}
         fetchPriority="high"
       />,
       <link
@@ -988,7 +1110,7 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
         as="image"
         type="image/webp"
         href="/images/hand.webp"
-        media="(min-width: 769px)"
+        media={`(min-width: ${WINDOW_SIZE_MD}px)`}
         fetchPriority="high"
       />
     );
@@ -996,8 +1118,27 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
 
   const isHomePath = pathname === "/" || (pathname && pathname.match(/^\/[a-z]{2}\/?$/));
 
+  // Non-home routes (/vps/, /mt4/, …): ship pages CSS in SSR (print → all via delayed-app-loader)
+  // instead of client-only inject in Layout — avoids mid-trace style invalidation + forced reflow.
+  if (!isHomePath) {
+    earlyHints.push(
+      createElement("link", {
+        key: "deferred-styles-pages-ssr",
+        rel: "stylesheet",
+        href: "/css/deferred-styles-pages.css",
+        media: "print",
+      }),
+      createElement("link", {
+        key: "preload-deferred-styles-pages",
+        rel: "preload",
+        href: "/css/deferred-styles-pages.css",
+        as: "style",
+      })
+    );
+  }
+
   // Stable stack: preload Regular + Medium on most routes. Trading-product heroes: five weights (incl. Bold) to avoid hero CLS when weight-700 paints after Semibold.
-  if (!isTradingProductHeroPath) {
+  if (!isHeroLcpPath) {
     earlyHints.push(
       <link key="preload-sofia-regular" rel="preload" href="/fonts/SofiaProRegular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />,
       <link key="preload-sofia-medium" rel="preload" href="/fonts/SofiaProMedium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />

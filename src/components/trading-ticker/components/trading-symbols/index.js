@@ -12,6 +12,10 @@ import {
   preloadTradingTickerIcons,
 } from "./icon-loader-async";
 import symbolMapping from "./symbol-icon-mapping.json";
+import {
+  TRADING_SYMBOL_CARD_STRIDE_PX,
+  TRADING_SYMBOL_CARD_WIDTH_PX,
+} from "../../../../helpers/trading-ticker-layout";
 
 function collectTickerIconKeys(symbols) {
   const set = new Set();
@@ -32,7 +36,12 @@ function collectTickerIconKeys(symbols) {
   return [...set];
 }
 
-const TradingSymbols = ({ className, symbols, uniqueId = "default" }) => {
+const TradingSymbols = ({
+  className,
+  symbols,
+  uniqueId = "default",
+  isInfiniteAutoScroll = true,
+}) => {
   const symbolsRef = useRef();
   const isRTL = useRtlDirection();
   const { isMobile } = useWindowSize();
@@ -42,6 +51,7 @@ const TradingSymbols = ({ className, symbols, uniqueId = "default" }) => {
   const [isTouched, setIsTouched] = useState(false);
   const scrollMetricsRef = useRef({ scrollWidth: 0 });
   const scrollPositionRef = useRef(0);
+  const isTickerVisibleRef = useRef(false);
   const [, setIconsNonce] = useState(0);
   const preloadKey = useMemo(
     () => (symbols || []).map((s) => s?.symbol ?? "").join("|"),
@@ -84,11 +94,19 @@ const TradingSymbols = ({ className, symbols, uniqueId = "default" }) => {
     };
   }, [preloadKey]);
 
+  const fixedCardWidthPx = () =>
+    isMobile ? 0 : TRADING_SYMBOL_CARD_WIDTH_PX;
+
   const getCardWidth = (card) => {
     if (!card) return 0;
     const cachedWidth = card.dataset.cardWidth;
     if (cachedWidth) {
       return Number(cachedWidth);
+    }
+    const fixed = fixedCardWidthPx();
+    if (fixed > 0) {
+      card.dataset.cardWidth = String(fixed);
+      return fixed;
     }
     const measuredWidth =
       card.offsetWidth || card.getBoundingClientRect().width;
@@ -104,6 +122,11 @@ const TradingSymbols = ({ className, symbols, uniqueId = "default" }) => {
     if (cached) {
       const n = Number(cached);
       return Number.isFinite(n) ? n : 0;
+    }
+    const fixed = fixedCardWidthPx();
+    if (fixed > 0) {
+      card.dataset.cardWidth = String(fixed);
+      return fixed;
     }
     const measured =
       card.offsetWidth || card.getBoundingClientRect().width || 0;
@@ -130,15 +153,19 @@ const TradingSymbols = ({ className, symbols, uniqueId = "default" }) => {
         frame2 = requestAnimationFrame(() => {
           const cards = container.querySelectorAll(".trading-symbol-card");
           if (!cards.length) return;
-          /* Cards use a fixed CSS width (~267px); sampling every card caused N layout reads (~28ms+ forced reflow in Lighthouse). */
-          scrollMetricsRef.current.scrollWidth = container.scrollWidth;
           scrollPositionRef.current = container.scrollLeft || 0;
-          let sampleWidth = cards[0].dataset.cardWidth
-            ? Number(cards[0].dataset.cardWidth)
-            : readCardWidth(cards[0]);
+          const sampleWidth = fixedCardWidthPx() || readCardWidth(cards[0]);
+          if (fixedCardWidthPx() > 0) {
+            scrollMetricsRef.current.scrollWidth =
+              cards.length * TRADING_SYMBOL_CARD_STRIDE_PX;
+          } else {
+            scrollMetricsRef.current.scrollWidth = container.scrollWidth;
+          }
           frame3 = requestAnimationFrame(() => {
             for (let i = 0; i < cards.length; i++) {
-              if (!cards[i].dataset.cardWidth) setCardWidthCache(cards[i], sampleWidth);
+              if (!cards[i].dataset.cardWidth) {
+                setCardWidthCache(cards[i], sampleWidth);
+              }
             }
           });
         });
@@ -195,12 +222,18 @@ const TradingSymbols = ({ className, symbols, uniqueId = "default" }) => {
     const measure = () => {
       const container = symbolsRef.current;
       if (!container) return;
-      // Read layout first, then invalidate caches (avoids forced reflow).
-      scrollMetricsRef.current.scrollWidth = container.scrollWidth;
       scrollPositionRef.current = container.scrollLeft || 0;
-      container
-        .querySelectorAll(".trading-symbol-card")
-        .forEach((card) => delete card.dataset.cardWidth);
+      const cards = container.querySelectorAll(".trading-symbol-card");
+      if (fixedCardWidthPx() > 0 && cards.length) {
+        scrollMetricsRef.current.scrollWidth =
+          cards.length * TRADING_SYMBOL_CARD_STRIDE_PX;
+        cards.forEach((card) => {
+          card.dataset.cardWidth = String(fixedCardWidthPx());
+        });
+      } else {
+        scrollMetricsRef.current.scrollWidth = container.scrollWidth;
+        cards.forEach((card) => delete card.dataset.cardWidth);
+      }
     };
 
     const handleResize = () => {
@@ -215,7 +248,7 @@ const TradingSymbols = ({ className, symbols, uniqueId = "default" }) => {
       window.removeEventListener("resize", handleResize);
       if (resizeFrame) cancelAnimationFrame(resizeFrame);
     };
-  }, []);
+  }, [isMobile]);
 
   const getIconIdsForSymbol = (symbolStr) => {
     const symbolUpper = symbolStr.toUpperCase();
@@ -358,28 +391,73 @@ const TradingSymbols = ({ className, symbols, uniqueId = "default" }) => {
   };
 
   useEffect(() => {
-    if (isTouched) return;
+    if (!isInfiniteAutoScroll || isTouched) return;
     /* No symbols yet (page-specific tickers before Socket.IO): skip the loop — N tickers × idle rAF was dominating TBT on /all-markets/. */
     if (!symbols?.length) return;
 
+    const container = symbolsRef.current;
+    if (!container) return undefined;
+
     let animationFrameId;
     let writeFrameId;
+    let cancelled = false;
+    let scrolling = false;
+
+    const stopScroll = () => {
+      scrolling = false;
+      if (writeFrameId) {
+        cancelAnimationFrame(writeFrameId);
+        writeFrameId = null;
+      }
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+    };
 
     const tick = () => {
+      if (cancelled || !scrolling) return;
       const action = computeScrollAction();
       writeFrameId = requestAnimationFrame(() => {
+        writeFrameId = null;
+        if (cancelled || !scrolling) return;
         applyScrollAction(action);
         animationFrameId = requestAnimationFrame(tick);
       });
     };
 
-    animationFrameId = requestAnimationFrame(tick);
+    const startScroll = () => {
+      if (scrolling || cancelled) return;
+      scrolling = true;
+      animationFrameId = requestAnimationFrame(tick);
+    };
+
+    if (typeof IntersectionObserver === "undefined") {
+      isTickerVisibleRef.current = true;
+      startScroll();
+      return () => {
+        cancelled = true;
+        stopScroll();
+      };
+    }
+
+    const visibilityIo = new IntersectionObserver(
+      ([entry]) => {
+        const visible = !!entry?.isIntersecting;
+        isTickerVisibleRef.current = visible;
+        if (visible) startScroll();
+        else stopScroll();
+      },
+      { rootMargin: "80px 0px", threshold: 0 }
+    );
+    visibilityIo.observe(container);
 
     return () => {
-      if (writeFrameId) cancelAnimationFrame(writeFrameId);
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      cancelled = true;
+      visibilityIo.disconnect();
+      stopScroll();
     };
-  }, [isTouched, isRTL, symbols?.length]);
+  }, [isInfiniteAutoScroll, isTouched, isRTL, symbols?.length]);
 
   return (
     <div
@@ -480,6 +558,7 @@ TradingSymbols.propTypes = {
     })
   ),
   uniqueId: PropTypes.string,
+  isInfiniteAutoScroll: PropTypes.bool,
 };
 
 export default TradingSymbols;

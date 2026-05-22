@@ -6,6 +6,10 @@ import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import AllMarkets from "../components/all-markets";
 import PageBackground from "../components/shared/page-background";
+import {
+  HERO_ASSET_DESKTOP_MQ,
+  HERO_ASSET_MOBILE_MQ,
+} from "../helpers/viewport-media";
 
 const ALL_MARKETS_LCP_DESKTOP =
   "/images/bg/hero/all-markets/all-markets-desktop.webp";
@@ -23,14 +27,14 @@ const AllMarketsPage = () => {
           as="image"
           type="image/webp"
           href={ALL_MARKETS_LCP_DESKTOP}
-          media="(min-width: 769px)"
+          media={HERO_ASSET_DESKTOP_MQ}
         />
         <link
           rel="preload"
           as="image"
           type="image/webp"
           href={ALL_MARKETS_LCP_MOBILE}
-          media="(max-width: 768px)"
+          media={HERO_ASSET_MOBILE_MQ}
         />
         {/* Hero fonts: <link rel="preload" as="font"> for Light/Regular/Medium/SemiBold — gatsby-ssr.js
             (all-markets path) so network dependency tree stays parallel with document (not chained off @font-face). */}

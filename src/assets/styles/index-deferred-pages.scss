@@ -7,11 +7,10 @@
 
 /* Heavy / page-specific (popup-registration is in home bundle) */
 @import "webtrader";
-@import "legal";
+/* legal → index.scss (CLS on /legal/ hero shell + LCP) */
 @import "documents";
 /* withdrawal + top-market-layout → index.scss (CLS on /funding/ .top-market-layout--withdrawal) */
-@import "keep-your-vps";
-@import "get-complimentary-vps";
+/* keep-your-vps, get-complimentary-vps → index.scss (CLS on /vps/ section.keep-your-vps) */
 /* swap-free-freedom, how-to-trade-swap-free → index.scss */
 @import "privacy-policy";
 @import "client-portal-assistance";
@@ -19,22 +18,17 @@
 
 /* trading-tools → index.scss */
 /* faq, faq-section, guide → promoted to index.scss (main) to avoid CLS when this sheet applies after first paint. */
-@import "metals-spreads";
-@import "forex-spreads";
-@import "indices-spreads";
-@import "crypto-spreads";
 @import "cookie-policy-table";
-@import "energies-spreads";
+/* *-spreads → index.scss (first-paint layout on trading product pages) */
 @import "search-page";
 @import "system-info";
 /* mt4 → index.scss */
 /* mt5 → index.scss */
-@import "mt-promotion";
+/* mt-promotion → index.scss */
 /* spreads-and-fees → index.scss */
-@import "help-center";
-@import "partners";
+/* partners + income-slider → index.scss (hero LCP + income-slider CLS on /partners/) */
 /* accounts-type + account-types-account-comparison → index.scss (CLS when deferred-pages applied late) */
-@import "contact-us";
+/* contact-us → index.scss + contact-us-critical-css.js (CLS on __container when this sheet flipped late) */
 @import "trading-tools-page";
 @import "vps";
 /* swap-free → index.scss */
@@ -43,13 +37,13 @@
 @import "tab-trading-tools";
 @import "our-community";
 @import "hero";
-@import "features-products";
+/* features-products → index.scss (must load before partners overrides on /partners/) */
 @import "fastin-fastout-section";
 @import "payment-systems-section";
-@import "mt-advantage-list";
+/* mt-advantage-list → index.scss */
 /* funding-withdrawals → index.scss (hero CLS + LCP on /funding/) */
 @import "company";
-@import "faq-hero";
+/* faq-hero → index.scss (critical LCP layout) */
 @import "faq-search-bar";
 @import "trust-pilot";
 @import "cost-swap-rate";

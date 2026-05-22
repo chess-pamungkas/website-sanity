@@ -6,6 +6,10 @@ import "../assets/styles/index.scss";
 import Seo from "../components/shared/seo";
 import MetalsContent from "../components/pages-content/metals-page-content";
 import PageBackground from "../components/shared/page-background";
+import {
+  HERO_ASSET_DESKTOP_MQ,
+  HERO_ASSET_MOBILE_MQ,
+} from "../helpers/viewport-media";
 
 const METALS_LCP_DESKTOP = "/images/bg/hero/metals/metals-desktop.webp";
 const METALS_LCP_MOBILE = "/images/bg/hero/metals/metals-mobile.webp";
@@ -21,14 +25,14 @@ const MetalsPage = () => {
           as="image"
           type="image/webp"
           href={METALS_LCP_DESKTOP}
-          media="(min-width: 769px)"
+          media={HERO_ASSET_DESKTOP_MQ}
         />
         <link
           rel="preload"
           as="image"
           type="image/webp"
           href={METALS_LCP_MOBILE}
-          media="(max-width: 768px)"
+          media={HERO_ASSET_MOBILE_MQ}
         />
       </Helmet>
       <Seo

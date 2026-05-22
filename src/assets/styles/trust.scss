@@ -499,25 +499,27 @@
 
     &__video-section {
       width: 100%;
-      max-width: 352px;
-      height: 484px;
+      max-width: 100%;
+      height: auto;
+      aspect-ratio: 352 / 484;
       order: 2;
       display: block;
       visibility: visible;
       background: url("/images/trust-video-mobile.webp") no-repeat center center;
-      background-size: 100% 100%;
+      background-size: cover;
       border-radius: 16px;
     }
 
     &__video-container {
       width: 100%;
-      height: 484px;
+      height: auto;
+      aspect-ratio: 352 / 484;
       border-radius: 16px;
     }
 
     &__play-button {
-      top: 200px;
-      left: 20px;
+      top: 41%;
+      left: 5.7%;
       width: 40px;
       height: 40px;
 
@@ -528,20 +530,20 @@
     }
 
     &__video-name {
-      font-size: 28px;
-      line-height: 32px;
-      left: 20px;
-      top: 300px;
-      width: 200px;
+      font-size: 24px;
+      line-height: 1.15;
+      left: 5.7%;
+      top: 62%;
+      width: 58%;
       height: auto;
     }
 
     &__video-title {
-      font-size: 14px;
-      line-height: 20px;
-      left: 20px;
-      top: 380px;
-      width: 250px;
+      font-size: 13px;
+      line-height: 1.35;
+      left: 5.7%;
+      top: 78%;
+      width: 72%;
       height: auto;
     }
 
@@ -552,8 +554,9 @@
 
     &__youtube-player {
       width: 100%;
-      max-width: 352px;
-      height: 484px;
+      max-width: 100%;
+      height: auto;
+      aspect-ratio: 352 / 484;
     }
 
     &__youtube-play-button {
@@ -567,8 +570,8 @@
     }
 
     &__youtube-content {
-      bottom: 24px;
-      left: 24px;
+      bottom: 5%;
+      left: 5.7%;
     }
 
     &__youtube-name {
@@ -591,15 +594,11 @@
       height: 16px;
     }
 
-    &__youtube-player {
-      width: 100%;
-      max-width: 352px;
-      height: 300px;
-    }
-
     &__video-element {
       width: 100%;
-      height: 300px;
+      height: 100%;
+      aspect-ratio: 352 / 484;
+      object-fit: cover;
     }
 
     &__video-controls {
@@ -623,14 +622,14 @@
 
     &__content-section {
       width: 100%;
-      max-width: 352px;
+      max-width: 100%;
       order: 1;
       gap: 20px;
       padding: 0;
     }
 
     &__title {
-      font-size: 34px !important;
+      font-size: 30px !important;
     }
 
     &__features {

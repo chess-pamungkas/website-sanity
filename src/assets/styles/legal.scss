@@ -1,5 +1,6 @@
 @import "vars";
 @import "mixins";
+@import "trading-product-hero-bg-lcp";
 
 .legal {
   position: relative;
@@ -9,7 +10,8 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+  height: auto;
+  min-height: 953px;
   padding-top: 80px;
   z-index: 2;
   left: 50%;
@@ -28,17 +30,9 @@
     overflow: visible;
   }
 
-  @include tablet {
-    height: 455px;
-    padding-top: 70px;
-    padding-bottom: 0;
-  }
+  @include hero-page-shell-tablet(455px, 73px, 70px);
 
-  @include desktop-lg {
-    height: 510px;
-    padding-top: 83px;
-    padding-bottom: 0;
-  }
+  @include hero-page-shell-desktop-lg(510px, 83px, 83px);
 
   @include desktop-xl {
     height: 510px;
@@ -79,17 +73,7 @@
       border-radius: 20px;
     }
 
-    @include tablet {
-      width: 768px;
-      max-width: 768px;
-      height: 455px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 73px;
-      margin: 0 auto;
-      border-radius: 24px;
-    }
+    @include hero-tablet-container(455px, 73px);
 
     @include desktop-lg {
       width: calc(100vw - 20px);
@@ -137,67 +121,31 @@
     }
   }
 
-  &__hero-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    border-radius: 24px;
-    z-index: 1;
-    overflow: hidden;
-    background-position: center center;
-    background-repeat: no-repeat;
+  @include trading-product-hero-bg-lcp;
 
+  &__hero-bg-lcp {
     @include mobile {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 0;
-      top: 0;
-      background: url("/images/bg/hero/legal/legal-mobile.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
-      border-radius: 20px;
+      object-position: center center;
     }
 
     @include tablet {
-      background: url("/images/bg/hero/legal/legal-desktop.svg")
-        no-repeat 65% 50%;
-      background-size: cover;
-      background-color: transparent;
-      border-radius: 24px;
+      object-position: 65% 50%;
     }
 
     @include desktop-lg {
-      background: url("/images/bg/hero/legal/legal-desktop.svg")
-        no-repeat 35% 50%;
-      background-size: cover;
-      background-color: transparent;
-      border-radius: 24px;
+      object-position: 35% 50%;
     }
 
     @include desktop-xl {
-      background: url("/images/bg/hero/legal/legal-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
+      object-position: center center;
     }
 
     @include desktop-2k {
-      background: url("/images/bg/hero/legal/legal-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
+      object-position: center center;
     }
 
     @include desktop-5k {
-      background: url("/images/bg/hero/legal/legal-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
+      object-position: center center;
     }
   }
 
@@ -799,6 +747,14 @@
   }
 }
 
+/* Legal: beat body.homepage-bg-1 #main-container (890px mobile CLS shell from index.scss). */
+body.homepage-bg-1 .legal-regulators-shell #main-container,
+body.homepage-bg-1 .legal-page-community #main-container {
+  min-height: 0;
+  flex-grow: 0;
+  contain: none;
+}
+
 // Legal Regulators Section
 .legal-regulators {
   position: relative;
@@ -1247,19 +1203,25 @@
   position: relative;
   overflow: visible;
   color: map-get($colors, "white");
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
   width: 100vw;
-  min-height: 1049px;
-  padding-top: 80px;
+  /* Desktop-first shell (matches faq-hero); mobile/tablet override below — avoids 1049px flash before deferred CSS. */
+  min-height: 583px;
+  padding-top: 75px;
+  padding-bottom: 75px;
   z-index: 2;
   left: 50%;
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
   box-sizing: border-box;
-  align-items: center;
+
+  > * {
+    grid-column: 1;
+    grid-row: 1;
+  }
 
   @include mobile {
     min-height: 953px;
@@ -1271,12 +1233,7 @@
     overflow: visible;
   }
 
-  @include tablet {
-    min-height: 555px;
-    border-radius: 24px;
-    padding-top: 70px;
-    padding-top: 70px;
-  }
+  @include hero-page-shell-tablet(555px, 73px, 70px);
 
   @include desktop-lg {
     min-height: 583px;
@@ -1332,17 +1289,7 @@
       border-radius: 20px;
     }
 
-    @include tablet {
-      width: 768px;
-      max-width: 768px;
-      height: 555px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 73px;
-      margin: 0 auto;
-      border-radius: 24px;
-    }
+    @include hero-tablet-container(555px, 73px);
 
     @include desktop-lg {
       width: calc(100vw - 20px);
@@ -1390,67 +1337,82 @@
   }
 
   &__hero-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100%;
+    position: relative;
+    z-index: 1;
+    align-self: stretch;
+    justify-self: stretch;
+    width: 100%;
+    min-height: 100%;
     margin: 0 auto;
     border-radius: 24px;
-    z-index: 1;
     overflow: hidden;
-    background-position: center center;
-    background-repeat: no-repeat;
+    pointer-events: none;
 
-    @include mobile {
-      position: absolute;
+    picture {
+      display: block;
+      position: relative;
       width: 100%;
       height: 100%;
-      left: 0;
-      top: 0;
-      background: url("../../assets/images/legal/bg-regulated-mobile.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
+      min-height: 100%;
+    }
+
+    /* Raster lives in SSR <picture><img>; no CSS url() → LCP discoverable + no deferred-sheet jump. */
+
+    &-img {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+
+      @include tablet {
+        object-fit: contain;
+      }
+
+      @include desktop-xl {
+        object-fit: cover;
+        object-position: bottom center;
+      }
+
+      @include desktop-2k {
+        object-fit: cover;
+        object-position: 50% 95%;
+      }
+
+      @include desktop-5k {
+        object-fit: cover;
+        object-position: 50% 95%;
+      }
+    }
+
+    @include mobile {
       border-radius: 9.92px;
+
+      &-img {
+        object-fit: cover;
+        object-position: center center;
+      }
     }
 
     @include tablet {
-      background: url("../../assets/images/legal/bg-regulated-desktop.svg")
-        no-repeat center center;
-      background-size: auto auto;
-      background-color: transparent;
       border-radius: 24px;
     }
 
     @include desktop-lg {
-      background: url("../../assets/images/legal/bg-regulated-desktop.svg")
-        no-repeat center center;
-      background-color: transparent;
       border-radius: 24px;
     }
 
     @include desktop-xl {
-      background: url("../../assets/images/legal/bg-regulated-desktop.svg")
-        no-repeat bottom center;
-      background-size: 100vw auto;
-      background-color: transparent;
       border-radius: 24px;
     }
 
     @include desktop-2k {
-      background: url("../../assets/images/legal/bg-regulated-desktop.svg")
-        no-repeat 50% 95%;
-      background-size: 100vw auto;
-      background-color: transparent;
       border-radius: 24px;
     }
 
     @include desktop-5k {
-      background: url("../../assets/images/legal/bg-regulated-desktop.svg")
-        no-repeat 50% 95%;
-      background-size: 100vw auto;
-      background-color: transparent;
       border-radius: 24px;
     }
   }
@@ -1707,6 +1669,9 @@
   &__wrapper {
     position: relative;
     z-index: 2;
+    align-self: center;
+    justify-self: center;
+    width: 100%;
     // max-width: 1400px;
     margin: 0 auto;
     padding: 80px 20px;
@@ -2004,6 +1969,12 @@
     width: 100%;
     height: 100%;
 
+    picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
     @include mobile {
       display: none;
     }
@@ -2014,12 +1985,21 @@
     width: 100%;
     height: 100%;
 
+    picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
     @include mobile {
       display: block;
     }
   }
 
   &__image {
+    display: block;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     object-position: center center;
 

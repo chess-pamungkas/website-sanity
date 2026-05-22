@@ -17,6 +17,7 @@ export const CommonProvider = ({ children }) => {
   const headerRef = useRef();
   const [isSearchBarAttached, setIsSearchBarAttached] = useState(true);
   const [heightOffset, setHeightOffset] = useState(0);
+  const lastHeightRef = useRef(0);
   const headerMainWrapperRef = useRef();
   const riskWarningRef = useRef();
   const [isScrolled, setIsScrolled] = useState("");
@@ -46,23 +47,32 @@ export const CommonProvider = ({ children }) => {
 
     let cancelled = false;
     let ro = null;
+    let rafId = null;
     const el = riskWarningRef.current;
 
     const applyHeight = (h) => {
       if (cancelled) return;
-      setHeightOffset(Math.max(0, Math.round(h)));
+      const rounded = Math.max(0, Math.round(h));
+      if (rounded === lastHeightRef.current) return;
+      lastHeightRef.current = rounded;
+      setHeightOffset(rounded);
+    };
+
+    const scheduleHeight = (h) => {
+      if (cancelled) return;
+      if (rafId != null) {
+        cancelAnimationFrame(rafId);
+      }
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        applyHeight(h);
+      });
     };
 
     if (!el) {
       applyHeight(0);
       return undefined;
     }
-
-    // Defer first read to rAF so we do not force sync layout right after hydration (Lighthouse forced-reflow).
-    requestAnimationFrame(() => {
-      if (cancelled || !riskWarningRef.current) return;
-      applyHeight(riskWarningRef.current.offsetHeight || 0);
-    });
 
     if (typeof ResizeObserver !== "undefined") {
       ro = new ResizeObserver((entries) => {
@@ -73,11 +83,12 @@ export const CommonProvider = ({ children }) => {
         if (box && typeof box.blockSize === "number") {
           h = box.blockSize;
         }
-        applyHeight(h);
+        scheduleHeight(h);
       });
       ro.observe(el);
       return () => {
         cancelled = true;
+        if (rafId != null) cancelAnimationFrame(rafId);
         ro.disconnect();
       };
     }

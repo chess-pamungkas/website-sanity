@@ -30,6 +30,13 @@
 @import "indices";
 @import "metals";
 @import "shares";
+/* Trading routes: account-comparison + *-spreads were deferred-only → multi-second FOUC (squashed cards / empty spreads) on mobile & tablet before deferred-styles.css (11.4s) or pages sheet flip. */
+@import "account-comparison";
+@import "crypto-spreads";
+@import "forex-spreads";
+@import "indices-spreads";
+@import "metals-spreads";
+@import "energies-spreads";
 /* Account types (/accounts-type): was deferred-pages-only → ~0.35 CLS on comparison section when sheet applied after first paint */
 @import "accounts-type";
 @import "account-types-account-comparison";
@@ -44,6 +51,9 @@
 @import "trading-tools";
 /* VPS (/vps/): was deferred-only → ~0.25 CLS on .vps__hero-container when deferred-styles.css applied after first paint. */
 @import "vps";
+/* VPS keep-your-vps: deferred-only → ~1 CLS on section.keep-your-vps when deferred-pages.css applied (layout + min-heights). */
+@import "keep-your-vps";
+@import "get-complimentary-vps";
 /* Swap-free (/swap-free/): deferred-only → ~1 CLS on #main-container when deferred-styles.css applied (desktop lab). */
 @import "swap-free";
 @import "swap-free-freedom";
@@ -51,6 +61,9 @@
 /* MT4/MT5 hero: LCP <img> + layout must be in main CSS (was deferred-only). */
 @import "mt4";
 @import "mt5";
+/* MT4/MT5 promotion block: deferred-only → ~0.15 CLS on .mt-promotion__wrapper when row layout applied (desktop). */
+@import "mt-promotion";
+@import "mt-advantage-list";
 /* Komisi block (.commission on /spreads-and-fees/): deferred-only → ~1 CLS when fixed height layout applies after first paint. */
 @import "commission";
 /* Tabs (/funding/ Deposit ↔ Penarikan): deferred-styles-only `.tabs__tab` left taps ~21px tall in Lighthouse — target-size + roving tabindex. */
@@ -58,6 +71,18 @@
 /* FAQ + guide: were deferred-pages-only → first paint unstyled then full rules load → ~0.14+ CLS on trading routes (e.g. /id/etf/). Base layout must ship with main CSS. */
 @import "faq";
 @import "faq-section";
+@import "help-center";
+/* FAQ hero: was deferred-pages-only → ~3.5s LCP element render delay until deferred-styles-pages.css flipped. */
+@import "faq-hero";
+/* Legal (/legal): was deferred-pages-only → ~1 CLS on section.legal when deferred-styles-pages.css flipped (desktop Lighthouse). */
+@import "legal";
+/* Contact-us (/contact-us/): hero LCP <img> + layout were deferred-only → CLS + undiscoverable LCP. */
+@import "contact-us";
+/* Partners features grid: load generic card rules first, then partners overrides (was both in deferred-pages). */
+@import "features-products";
+/* Partners (/partners/): hero LCP + income-slider were deferred-only → ~0.47 CLS. */
+@import "partners";
+@import "income-slider";
 @import "guide";
 /* Below-fold all-markets page: was in deferred-pages only → ~0.10 CLS when CSS flipped after LCP defer. */
 @import "trading-symbols";
@@ -122,13 +147,14 @@
     min-height: 760px;
   }
 }
-body.homepage-bg-1 #main-container {
+/* Homepage below-hero CLS reserve only — not other routes’ #main-container (was 890px gap on tablet). */
+body.homepage-bg-1 .below-hero-first-block-wrapper #main-container {
   min-height: 420px;
   @media screen and (max-width: $max-lg) {
     min-height: $below-hero-first-block-inner-min-height-mobile;
   }
   @include desktop-lg {
-    min-height: 760px;
+    min-height: 500px;
   }
   contain: layout;
 }
@@ -178,10 +204,46 @@ body {
   }
 }
 
+body.homepage-bg-1,
+body.homepage-bg-2 {
+  @include tablet-only {
+    /* Tablet: footer follows content (no viewport stretch above footer). */
+    #gatsby-focus-wrapper {
+      min-height: auto;
+    }
+
+    #gatsby-focus-wrapper main {
+      flex-grow: 0;
+    }
+
+    #main-container {
+      min-height: 0;
+      flex-grow: 0;
+      contain: none;
+    }
+
+    .our-community-content {
+      margin-bottom: 32px;
+    }
+  }
+}
+
 body.homepage-bg-1 {
   background: url("../images/bg/oqtima-bg-1.svg") no-repeat center top;
   background-size: cover;
   background-color: #f7f5f3;
+
+  /* Homepage ends at our-community; do not stretch <main> and leave a gap above footer. */
+  #gatsby-focus-wrapper main {
+    flex-grow: 0;
+  }
+
+  /* Our-community shell: drop 890px CLS reserve (only for first below-hero block). */
+  #main-container.homepage-our-community-shell {
+    min-height: 0;
+    flex-grow: 0;
+    contain: none;
+  }
 }
 
 body.homepage-bg-2 {

@@ -13,8 +13,25 @@ $xl-height: 1080px;
 
 /* Homepage: stacked features + testimonials (viewport < $lg ~1024px). Reserve min-height reduces CLS before HomeDeferredApp mounts. */
 $below-hero-first-block-min-height-mobile: 1240px;
-/* TradingTicker: margin-top 100px + strip on mobile (trading-ticker.scss). Placeholder must mirror or #main-container CLS ~0.13. */
+/* TradingTicker: mobile needs 100px (hand extends below hero); tablet/desktop sit tight under hero card. */
 $homepage-ticker-margin-top-mobile: 100px;
+$homepage-ticker-margin-top-tablet: 24px;
+$homepage-ticker-margin-top-desktop: 24px;
+/* Trading-product pages (/crypto/, /forex/, …): gap under hero → ticker (was 110px). */
+$product-page-ticker-margin-top-tablet: $homepage-ticker-margin-top-tablet;
+$product-page-ticker-margin-top-desktop: $homepage-ticker-margin-top-desktop;
+/* Marketing heroes (account-types, funding, spreads, tools, VPS, swap-free): gap hero → first block. */
+$below-marketing-hero-gap-tablet: $homepage-ticker-margin-top-tablet;
+$below-marketing-hero-gap-desktop: $homepage-ticker-margin-top-desktop;
+$below-marketing-hero-section-padding-top-tablet: 32px;
+$below-marketing-hero-section-padding-top-desktop: 40px;
+/* /funding/: gap between .funding-withdrawals hero and .funding-page (all viewports). */
+$funding-page-after-hero-gap-mobile: 32px;
+$funding-page-after-hero-gap-tablet: 32px;
+$funding-page-after-hero-gap-desktop: 40px;
+/* Mobile hero shell: padding-top + absolute artboard (matches *-mobile.svg 953px). */
+$funding-withdrawals-hero-mobile-top: 73px;
+$funding-withdrawals-hero-mobile-artboard: 953px;
 $homepage-ticker-body-height-mobile: 250px;
 $homepage-ticker-block-height-mobile: (
   $homepage-ticker-margin-top-mobile + $homepage-ticker-body-height-mobile

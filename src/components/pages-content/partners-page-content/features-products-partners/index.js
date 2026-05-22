@@ -133,7 +133,12 @@ const FeaturesProductsPartners = ({
                   }}
                 >
                   <div className="features-products__card-icon">
-                    <img src={feature.icon} alt={feature.title} width={64} height={64} />
+                    <img
+                      src={feature.icon}
+                      alt={feature.title}
+                      width={64}
+                      height={64}
+                    />
                   </div>
                   <h3 className="features-products__card-title">
                     {t(feature.title)}
@@ -160,7 +165,12 @@ const FeaturesProductsPartners = ({
                   }}
                 >
                   <div className="features-products__card-icon">
-                    <img src={feature.icon} alt={feature.title} width={64} height={64} />
+                    <img
+                      src={feature.icon}
+                      alt={feature.title}
+                      width={64}
+                      height={64}
+                    />
                   </div>
                   <h3 className="features-products__card-title">
                     {t(feature.title)}

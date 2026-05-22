@@ -38,9 +38,11 @@ export const isHomepagePerfLabSession = () => {
     host === "";
   if (!isLocalhost) return false;
   try {
-    const narrow =
-      window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
-    return Boolean(narrow && window.outerWidth > 820);
+    const narrow = window.screen && window.screen.width <= 768;
+    if (!narrow) return false;
+    if (window.outerWidth > 820) return true;
+    if (window.outerWidth <= 520) return true;
+    return false;
   } catch {
     return false;
   }

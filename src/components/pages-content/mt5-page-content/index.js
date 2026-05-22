@@ -1,20 +1,13 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import MtPromotion from "../../mt-promotion";
-import {
-  getMT5Advantages,
-  getMT5DownloadLink,
-  getAnimationStyle,
-} from "../../../helpers/platforms.config";
+import { getMT5Advantages } from "../../../helpers/platforms.config";
 import {
   MT5_PROMO_DESKTOP_WEBP,
   MT5_PROMO_MOBILE_WEBP,
 } from "../../../helpers/mt-platform-static-images";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
-import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
-import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
-import { isIOS, isAndroid, isWindows, isMacOs } from "react-device-detect";
 import { setLangParam } from "../../../helpers/services/language-service";
 import Hero from "../../shared/hero";
 import ContainerWrapper from "../../shared/container-wrapper";
@@ -23,18 +16,17 @@ import OurCommunityContent from "../../shared/our-community";
 
 const Mt5PageContent = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
-  const { isMobile, isTablet, isLG, isXL } = useWindowSize();
   const mt5Advantages = getMT5Advantages();
   const downloadRef = useRef(null);
-  const langParam = setLangParam(); // Get the language parameter
-  const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
+  const langParam = setLangParam();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleShowRegistrationPopup = () => {
-    setIsPopupOpen(true); // Open the popup
+    setIsPopupOpen(true);
   };
 
   const handleClosePopup = () => {
-    setIsPopupOpen(false); // Close the popup
+    setIsPopupOpen(false);
   };
 
   return (
@@ -50,7 +42,7 @@ const Mt5PageContent = ({ className, isShowHero = true }) => {
         mobileBackground="url(../../assets/images/bg/hero/mt5/mt5-mobile.svg)"
       />
 
-      <ContainerWrapper>
+      <ContainerWrapper className="mt-platform-promotion-shell">
         <MtPromotion
           title={t("mt5_top-market-promo-text2")}
           advantagesTitle={t("mt5_market-items-list_title")}
@@ -62,23 +54,20 @@ const Mt5PageContent = ({ className, isShowHero = true }) => {
           ref={downloadRef}
         />
       </ContainerWrapper>
-      <div className="mt5-page-content">
+      <div className="mt5-page-content mt-platform-page-content">
         <AccountComparison />
       </div>
-      {isMobile ? (
-        <OurCommunityContent />
-      ) : (
+      <div className="mt5-page-community">
         <ContainerWrapper>
           <OurCommunityContent />
         </ContainerWrapper>
-      )}
+      </div>
 
-      {/* Render the popup */}
       {isPopupOpen && (
         <ShowRegistrationPopup
           isOpen={isPopupOpen}
           onClose={handleClosePopup}
-          langParam={langParam} // Pass langParam if needed
+          langParam={langParam}
         />
       )}
     </>

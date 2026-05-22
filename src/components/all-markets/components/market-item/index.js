@@ -115,11 +115,24 @@ const MarketItem = ({
           <div className="market-item__ticker-panel">
             <div className="market-item__trading-ticker-wrapper">
               <WhenInView
-                rootMargin="280px 0px 520px 0px"
-                delayMs={0}
-                fastReveal
+                rootMargin="400px 0px 800px 0px"
+                delayMs={Math.min(index * 180, 1200)}
+                observeMinHeight={112}
+                fallback={
+                  <div
+                    className="market-item__ticker-placeholder"
+                    aria-hidden="true"
+                  />
+                }
               >
-                <Suspense fallback={null}>
+                <Suspense
+                  fallback={
+                    <div
+                      className="market-item__ticker-placeholder"
+                      aria-hidden="true"
+                    />
+                  }
+                >
                   <TradingTickerLazy
                     pageSpecificSection={getTradingSection(title)}
                     uniqueId={`market-item-${index}-${title.toLowerCase()}`}

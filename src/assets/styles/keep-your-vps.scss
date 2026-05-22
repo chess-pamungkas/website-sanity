@@ -28,6 +28,12 @@
     align-items: center;
     justify-content: center;
 
+    picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
     &__image {
       width: 100%;
       height: 100%;
@@ -429,8 +435,10 @@
 
           @include mobile {
             width: 100%;
-            margin-top: 20px;
+            margin-top: 28px;
             order: 2;
+            flex-direction: column;
+            align-items: center;
           }
 
           @include desktop-lg {
@@ -439,14 +447,27 @@
             align-self: center;
           }
 
+          picture {
+            display: block;
+            width: 100%;
+
+            @include mobile {
+              display: flex;
+              justify-content: center;
+            }
+          }
+
           .vps-image {
             width: 100%;
             height: auto;
-            // max-width: 200px;
 
             @include mobile {
               margin-top: 0;
               max-width: 242px;
+              width: auto;
+              height: auto;
+              margin-left: auto;
+              margin-right: auto;
             }
 
             @include desktop-lg {
@@ -481,7 +502,8 @@
               position: absolute;
               width: 169.88px;
               height: 35.56px;
-              left: 50px;
+              left: 50%;
+              transform: translateX(-50%);
               top: 185px;
               background: rgba(255, 68, 0, 0.3);
               border: 1px solid rgba(255, 68, 0, 0.5);
@@ -493,7 +515,8 @@
               position: absolute;
               width: 169.88px;
               height: 35.56px;
-              left: 13px;
+              left: 50%;
+              transform: translateX(-50%);
               top: 185px;
               background: rgba(255, 68, 0, 0.3);
               border: 1px solid rgba(255, 68, 0, 0.5);

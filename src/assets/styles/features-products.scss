@@ -158,7 +158,8 @@
     -ms-overflow-style: none;
     padding: 0 16px;
 
-    @include desktop-lg {
+    /* Tablet+ uses __grid-container (2×2 / 3-col); slider is mobile-only (≤767). */
+    @include tablet {
       display: none;
     }
 

@@ -17,8 +17,12 @@
     padding-bottom: 20px;
   }
 
-  @include tablet {
-    margin: 150px 0 0 0;
+  @include tablet-only {
+    margin: $below-marketing-hero-gap-tablet 0 0 0;
+  }
+
+  @include desktop-lg {
+    margin-top: $below-marketing-hero-gap-desktop;
   }
 
   .get-complimentary-vps-bg {
@@ -470,6 +474,11 @@
           align-self: flex-start;
         }
 
+        picture:not(.vps-hand-icon) {
+          display: block;
+          width: 100%;
+        }
+
         .vps-image {
           max-width: 100%;
           height: auto;
@@ -493,52 +502,39 @@
           }
         }
 
-        // Hand Icon
-        .vps-hand-icon {
+        // Hand icon (picture: one WebP per breakpoint — avoids loading hidden <img>)
+        picture.vps-hand-icon {
           position: absolute;
           z-index: 15;
           pointer-events: none;
+          display: block;
+          width: auto;
+          height: 80px;
+          right: -20px;
+          top: 175px;
 
-          &.desktop-only {
-            display: none;
-
-            @include desktop-lg {
-              display: block;
-              width: auto;
-              height: 150px;
-              right: -30px;
-              top: 155px;
-            }
-
-            @include desktop-xl {
-              display: block;
-              width: auto;
-              height: 150px;
-              right: -30px;
-              top: 165px;
-            }
+          img {
+            width: auto;
+            height: 100%;
+            display: block;
           }
 
-          &.mobile-only {
-            display: block;
-            width: auto;
-            height: 80px;
-            right: -20px;
-            top: 175px;
+          @include small-mobile {
+            top: 150px;
+          }
 
-            @include small-mobile {
-              display: block;
-              top: 150px;
-            }
+          @include tablet {
+            top: 210px;
+          }
 
-            @include tablet {
-              display: block;
-              top: 210px;
-            }
+          @include desktop-lg {
+            height: 150px;
+            right: -30px;
+            top: 155px;
+          }
 
-            @include desktop-lg {
-              display: none;
-            }
+          @include desktop-xl {
+            top: 165px;
           }
         }
 

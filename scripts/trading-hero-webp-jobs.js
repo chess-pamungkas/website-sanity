@@ -29,6 +29,14 @@ const SLUGS = [
   "mt4",
   /** /mt5/ */
   "mt5",
+  /** /faq/ — hero class is `faq-hero`; assets under static/images/bg/hero/faq/ */
+  "faq",
+  /** /legal/ — hero class `legal`; desktop artboard 1400×510 */
+  "legal",
+  /** /contact-us/ — hero class `contact-us`; desktop artboard 1400×510 */
+  "contact-us",
+  /** /partners/ — hero class `partners`; desktop artboard 1400×583 */
+  "partners",
 ];
 
 const DESKTOP = { width: 1440, height: 583 };
@@ -36,6 +44,9 @@ const DESKTOP = { width: 1440, height: 583 };
 const DESKTOP_BY_SLUG = {
   mt4: { width: 1400, height: 583 },
   mt5: { width: 1400, height: 583 },
+  faq: { width: 1400, height: 480 },
+  legal: { width: 1400, height: 510 },
+  "contact-us": { width: 1400, height: 510 },
 };
 /** Matches `*-mobile.svg` artboards (e.g. width="393" height="953" viewBox="0 0 393 953"). */
 const MOBILE = { width: 393, height: 953 };

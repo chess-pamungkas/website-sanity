@@ -1676,7 +1676,8 @@ body[dir="rtl"] .phone-number-container,
     z-index: 1000001;
     width: 100%;
     height: auto;
-    max-height: 100vh;
+    max-height: auto;
+  max-height: 100vh;
     margin: auto;
     display: flex;
     flex-direction: row-reverse !important; // Reverse the flex direction for RTL
@@ -1698,7 +1699,8 @@ body[dir="rtl"] .phone-number-container,
       flex-direction: column !important;
       width: 100%;
       height: 100%;
-      max-height: 100vh;
+      max-height: auto;
+  max-height: 100vh;
       overflow-y: auto;
     }
 
@@ -2041,7 +2043,8 @@ html[dir="rtl"] {
     body {
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      min-height: auto;
+  max-height: 100vh;
       width: 100%;
       overflow-x: hidden;
     }
@@ -2123,7 +2126,8 @@ html[dir="rtl"] {
     body {
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      min-height: auto;
+  max-height: 100vh;
       width: 100%;
       overflow-x: hidden;
     }
@@ -2546,8 +2550,8 @@ body[dir="rtl"] .crypto__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("/images/bg/hero/crypto/crypto-desktop.svg") no-repeat
-      130% 100% !important;
+    background: url("/images/bg/hero/crypto/crypto-desktop.svg") no-repeat 130%
+      100% !important;
     background-color: map-get($colors, "black") !important;
   }
 
@@ -3131,8 +3135,8 @@ body[dir="rtl"] .indices__hero-bg,
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat
-        135% 100% !important;
+      background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat 135%
+        100% !important;
       background-color: map-get($colors, "black") !important;
     }
 
@@ -3182,16 +3186,14 @@ body[dir="rtl"] .forex__hero-bg,
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat -800px
-      center !important;
+    background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat -800px center !important;
     background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat -750px
-      center !important;
+    background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat -750px center !important;
     background-color: map-get($colors, "black") !important;
   }
 }
@@ -3253,8 +3255,8 @@ body[dir="rtl"] .metals__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("/images/bg/hero/metals/metals-desktop.svg") no-repeat
-      137% 100% !important;
+    background: url("/images/bg/hero/metals/metals-desktop.svg") no-repeat 137%
+      100% !important;
     background-color: map-get($colors, "black") !important;
   }
 
@@ -3324,8 +3326,8 @@ body[dir="rtl"] .shares__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("/images/bg/hero/shares/shares-desktop.svg") no-repeat
-      135% 100% !important;
+    background: url("/images/bg/hero/shares/shares-desktop.svg") no-repeat 135%
+      100% !important;
     background-color: map-get($colors, "black") !important;
   }
 
@@ -6107,8 +6109,7 @@ body[dir="rtl"] .swap-free .swap-free__badge-arrow,
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("/images/bg/hero/mt4/mt4-desktop.svg") no-repeat 128%
-        100% !important;
+      background: url("/images/bg/hero/mt4/mt4-desktop.svg") no-repeat 128% 100% !important;
       background-color: transparent !important;
     }
 
@@ -6148,8 +6149,7 @@ body[dir="rtl"] .mt4 .mt4__badge-arrow,
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("/images/bg/hero/mt5/mt5-desktop.svg") no-repeat 128%
-        100% !important;
+      background: url("/images/bg/hero/mt5/mt5-desktop.svg") no-repeat 128% 100% !important;
       background-color: transparent !important;
     }
 
@@ -6461,24 +6461,24 @@ body[dir="rtl"] .swap-free .swap-free__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("/images/bg/hero/swap-free/swap-free-desktop.svg")
-      no-repeat 135% 100% !important;
+    background: url("/images/bg/hero/swap-free/swap-free-desktop.svg") no-repeat
+      135% 100% !important;
     background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("/images/bg/hero/swap-free/swap-free-desktop.svg")
-      no-repeat -800px center !important;
+    background: url("/images/bg/hero/swap-free/swap-free-desktop.svg") no-repeat -800px
+      center !important;
     background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("/images/bg/hero/swap-free/swap-free-desktop.svg")
-      no-repeat -750px center !important;
+    background: url("/images/bg/hero/swap-free/swap-free-desktop.svg") no-repeat -750px
+      center !important;
     background-color: map-get($colors, "black") !important;
   }
 }

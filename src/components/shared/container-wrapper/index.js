@@ -1,27 +1,29 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
+import cn from "classnames";
 import CommonContext from "../../../context/common-context";
-import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 
-const ContainerWrapper = ({ children }) => {
+const ContainerWrapper = ({ children, className }) => {
   const { heightOffset } = useContext(CommonContext);
-  const { isDesktop } = useWindowSize();
 
   return (
-    <main id="main-container">
+    <div id="main-container" className={cn(className)}>
       <div
-        style={{
-          height: `${isDesktop ? heightOffset : 0}px`,
-        }}
         className="header-offset-placeholder"
+        style={
+          heightOffset > 0
+            ? { "--header-offset-px": `${heightOffset}px` }
+            : undefined
+        }
       />
       <div className="container">{children}</div>
-    </main>
+    </div>
   );
 };
 
 ContainerWrapper.propTypes = {
   children: PropTypes.node.isRequired,
+  className: PropTypes.string,
 };
 
 export default ContainerWrapper;

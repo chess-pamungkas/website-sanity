@@ -12,6 +12,7 @@ import {
   shouldDeferHeavyWorkForLighthouse,
   AUDIT_HEAVY_WORK_DEFER_MS,
 } from "../../helpers/is-audit-environment";
+import { isMobileViewportMedia } from "../../helpers/viewport-media";
 
 const API_URL = process.env.GATSBY_OQTIMA_API_URL;
 /** Homepage ticker: desktop — fixed timer after hydrate (avoid rIC starving under load). Audits defer separately. */
@@ -60,10 +61,7 @@ const TradingTicker = ({
         if (!cancelled) setNeedToLoadSymbols(true);
       };
       let idleCallbackId = null;
-      const isNarrowViewport =
-        typeof window !== "undefined" &&
-        window.matchMedia &&
-        window.matchMedia("(max-width: 767px)").matches;
+      const isNarrowViewport = isMobileViewportMedia();
       const bootDelayMs = isNarrowViewport
         ? HOMEPAGE_SYMBOLS_BOOT_DELAY_MOBILE_MS
         : HOMEPAGE_SYMBOLS_BOOT_DELAY_MS;
@@ -205,7 +203,9 @@ const TradingTicker = ({
       )}
       <TradingSymbols
         symbols={filterSymbols(symbols, selectedSection.id)}
-        isInfiniteAutoScroll={isInfiniteAutoScroll}
+        isInfiniteAutoScroll={
+          isHomepage && isInfiniteAutoScroll !== false
+        }
         uniqueId={uniqueId}
       />
     </section>

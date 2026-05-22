@@ -15,6 +15,10 @@ import LanguageContext from "../../../context/language-context";
 import { HeroButtons, ButtonPrimaryHero } from "../reusable-buttons";
 import FaqSearchBar from "../../help-center/faq-search-bar";
 import { useI18next } from "gatsby-plugin-react-i18next";
+import {
+  HERO_ASSET_DESKTOP_MQ,
+  HERO_ASSET_MOBILE_MQ,
+} from "../../../helpers/viewport-media";
 
 /** Split Trustpilot + bootstrap out of the main hero chunk so lab/CPU parses less during TBT window. */
 const TrustPilot = lazy(() => import("../trust-pilot"));
@@ -195,6 +199,46 @@ const HERO_LCP_BY_TYPE = {
     desktopSvg: "/images/bg/hero/mt5/mt5-desktop.svg",
     dimensions: {
       desktop: { width: 1400, height: 583 },
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  "faq-hero": {
+    mobileWebp: "/images/bg/hero/faq/faq-mobile.webp",
+    desktopWebp: "/images/bg/hero/faq/faq-desktop.webp",
+    mobileSvg: "/images/bg/hero/faq/faq-mobile.svg",
+    desktopSvg: "/images/bg/hero/faq/faq-desktop.svg",
+    dimensions: {
+      desktop: { width: 1400, height: 480 },
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  legal: {
+    mobileWebp: "/images/bg/hero/legal/legal-mobile.webp",
+    desktopWebp: "/images/bg/hero/legal/legal-desktop.webp",
+    mobileSvg: "/images/bg/hero/legal/legal-mobile.svg",
+    desktopSvg: "/images/bg/hero/legal/legal-desktop.svg",
+    dimensions: {
+      desktop: { width: 1400, height: 510 },
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  "contact-us": {
+    mobileWebp: "/images/bg/hero/contact-us/contact-us-mobile.webp",
+    desktopWebp: "/images/bg/hero/contact-us/contact-us-desktop.webp",
+    mobileSvg: "/images/bg/hero/contact-us/contact-us-mobile.svg",
+    desktopSvg: "/images/bg/hero/contact-us/contact-us-desktop.svg",
+    dimensions: {
+      desktop: { width: 1400, height: 510 },
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
+  partners: {
+    mobileWebp: "/images/bg/hero/partners/partners-mobile.webp",
+    desktopWebp: "/images/bg/hero/partners/partners-desktop.webp",
+    mobileSvg: "/images/bg/hero/partners/partners-mobile.svg",
+    desktopSvg: "/images/bg/hero/partners/partners-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
       mobile: HERO_LCP_DIM.mobile,
     },
   },
@@ -581,24 +625,24 @@ const Hero = ({
                 {heroLcpHasRaster ? (
                   <>
                     <source
-                      media="(max-width: 768px)"
+                      media={HERO_ASSET_MOBILE_MQ}
                       type="image/webp"
                       srcSet={heroLcpConfig.mobileWebp}
                     />
                     <source
-                      media="(min-width: 769px)"
+                      media={HERO_ASSET_DESKTOP_MQ}
                       type="image/webp"
                       srcSet={heroLcpConfig.desktopWebp}
                     />
                   </>
                 ) : null}
                 <source
-                  media="(max-width: 768px)"
+                  media={HERO_ASSET_MOBILE_MQ}
                   type="image/svg+xml"
                   srcSet={heroLcpConfig.mobileSvg}
                 />
                 <source
-                  media="(min-width: 769px)"
+                  media={HERO_ASSET_DESKTOP_MQ}
                   type="image/svg+xml"
                   srcSet={heroLcpConfig.desktopSvg}
                 />
@@ -606,15 +650,15 @@ const Hero = ({
                   className={`${heroType}__hero-bg-lcp`}
                   src={
                     heroLcpHasRaster
-                      ? heroLcpConfig.mobileWebp
-                      : heroLcpConfig.mobileSvg
+                      ? heroLcpConfig.desktopWebp
+                      : heroLcpConfig.desktopSvg
                   }
                   alt=""
-                  width={heroLcpConfig.dimensions.mobile.width}
-                  height={heroLcpConfig.dimensions.mobile.height}
+                  width={heroLcpConfig.dimensions.desktop.width}
+                  height={heroLcpConfig.dimensions.desktop.height}
                   loading="eager"
                   fetchPriority="high"
-                  decoding="async"
+                  decoding="sync"
                   aria-hidden="true"
                 />
               </picture>
@@ -625,19 +669,19 @@ const Hero = ({
                 {showHeroImage && (
                   <picture>
                     <source
-                      media="(max-width: 768px)"
+                      media={HERO_ASSET_MOBILE_MQ}
                       srcSet={globeImageMobile}
                     />
                     <img
                       src={globeImageMobile}
                       srcSet={globeSrcSet}
-                      sizes="(max-width: 768px) 419px, 734px"
+                      sizes="(max-width: 767px) 419px, 734px"
                       alt=""
                       width="734"
                       height="734"
                       loading="eager"
                       fetchPriority="high"
-                      decoding="async"
+                      decoding="sync"
                       className={`${heroType}__hero-img-element`}
                       style={{
                         display: "block",
@@ -832,13 +876,13 @@ const Hero = ({
                   {heroType === "main-promotion" && (
                     <picture>
                       <source
-                        media="(max-width: 768px)"
+                        media={HERO_ASSET_MOBILE_MQ}
                         srcSet={handImageMobile}
                       />
                       <img
                         src={handImageMobile}
                         srcSet={handSrcSet}
-                        sizes="(max-width: 768px) 222px, 412px"
+                        sizes="(max-width: 767px) 222px, 412px"
                         alt=""
                         width="714"
                         height="692"

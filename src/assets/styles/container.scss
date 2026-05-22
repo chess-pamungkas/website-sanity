@@ -65,3 +65,12 @@
     }
   }
 }
+
+/* Desktop-only header spacer; height from CommonContext (--header-offset-px). Avoids innerWidth in ContainerWrapper. */
+#main-container .header-offset-placeholder {
+  height: 0;
+
+  @include desktop-lg {
+    height: var(--header-offset-px, 0px);
+  }
+}

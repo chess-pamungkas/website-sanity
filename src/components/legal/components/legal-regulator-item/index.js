@@ -47,9 +47,9 @@ const LegalRegulatorItem = ({
         <div className="legal-regulator-item__text-content-wrapper">
           {/* Title */}
           <div className="legal-regulator-item__title-container">
-            <h3 className="legal-regulator-item__title">
+            <p className="legal-regulator-item__title">
               {t(title)} {t(titleAccent)}
-            </h3>
+            </p>
           </div>
 
           {/* Description Text */}

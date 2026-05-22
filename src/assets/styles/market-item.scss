@@ -437,6 +437,19 @@
     }
   }
 
+  &__ticker-placeholder {
+    display: block;
+    width: 100%;
+    min-height: 112px;
+    border-radius: 20px;
+    background: rgba(255, 68, 0, 0.04);
+    box-sizing: border-box;
+
+    @include mobile {
+      min-height: 104px;
+    }
+  }
+
   &__trading-ticker-wrapper {
     max-width: 2000px;
     width: 100%;

@@ -1,8 +1,13 @@
 import { useEffect, useState, useCallback, startTransition } from "react";
 import { WINDOW_SIZE_MD, WINDOW_SIZE_LG, WINDOW_SIZE_XL } from "../constants";
+import {
+  DESKTOP_LG_VIEWPORT_MQ,
+  MOBILE_VIEWPORT_MQ,
+  readViewportSizeFromMedia,
+} from "../viewport-media";
+import { isMarketingHomePath } from "../is-marketing-home-path";
 
 // Initial state must be identical on server and client to avoid hydration mismatch #418.
-// We use undefined and set real size in useEffect so first render is consistent.
 export const useWindowSize = () => {
   const [windowSize, setWindowSize] = useState({
     width: undefined,
@@ -10,16 +15,9 @@ export const useWindowSize = () => {
   });
   const [didActivate, setDidActivate] = useState(false);
 
-  const handleResize = useCallback(() => {
-    requestAnimationFrame(() => {
-      if (typeof window === "undefined") return;
-      startTransition(() =>
-        setWindowSize({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        })
-      );
-    });
+  const syncFromMedia = useCallback(() => {
+    if (typeof window === "undefined") return;
+    startTransition(() => setWindowSize(readViewportSizeFromMedia()));
   }, []);
 
   useEffect(() => {
@@ -28,54 +26,60 @@ export const useWindowSize = () => {
     let cancelled = false;
     let activated = false;
     let fallbackId;
+    let mobileMq;
+    let desktopMq;
+    let onMediaChange;
+    let onReady;
 
     const activate = () => {
       if (cancelled || activated) return;
       activated = true;
-      window.addEventListener("resize", handleResize);
-      // Defer innerWidth reads to the next animation frame so we do not invoke a forced
-      // synchronous layout flush in the same turn as hydration / body class/style writes.
-      // UA heuristic keeps isMobile stable for ~one frame when guess matches (~all mobile).
-      requestAnimationFrame(() => {
+
+      setTimeout(() => {
         if (cancelled) return;
-        setDidActivate(true);
-        startTransition(() =>
-          setWindowSize({
-            width: window.innerWidth,
-            height: window.innerHeight,
-          })
-        );
-      });
+        mobileMq = window.matchMedia(MOBILE_VIEWPORT_MQ);
+        desktopMq = window.matchMedia(DESKTOP_LG_VIEWPORT_MQ);
+        onMediaChange = () => syncFromMedia();
+        mobileMq.addEventListener("change", onMediaChange);
+        desktopMq.addEventListener("change", onMediaChange);
+
+        requestAnimationFrame(() => {
+          if (cancelled) return;
+          setDidActivate(true);
+          syncFromMedia();
+        });
+      }, 20);
     };
 
-    // Marketing homepage emits this when below-hero content becomes ready.
-    // We use it as the main trigger to avoid early `innerWidth` reads and resize listeners.
-    const onReady = () => activate();
-    window.addEventListener("belowHeroContentReady", onReady, { once: true });
-
-    // Safety: if the event never fires (non-home routes, errors), activate after a short delay.
-    fallbackId = setTimeout(activate, 6500);
+    const path = window.location?.pathname || "";
+    if (!isMarketingHomePath(path)) {
+      activate();
+    } else {
+      onReady = () => activate();
+      window.addEventListener("belowHeroContentReady", onReady, { once: true });
+      fallbackId = setTimeout(activate, 6500);
+    }
 
     return () => {
       cancelled = true;
-      window.removeEventListener("belowHeroContentReady", onReady);
+      if (onReady) {
+        window.removeEventListener("belowHeroContentReady", onReady);
+      }
       if (fallbackId) clearTimeout(fallbackId);
-      window.removeEventListener("resize", handleResize);
+      if (onMediaChange && mobileMq) {
+        mobileMq.removeEventListener("change", onMediaChange);
+      }
+      if (onMediaChange && desktopMq) {
+        desktopMq.removeEventListener("change", onMediaChange);
+      }
     };
-  }, [handleResize]);
+  }, [syncFromMedia]);
 
   const width = windowSize.width;
   const height = windowSize.height;
-  const hasSize = width !== undefined && height !== undefined;
+  const hasSize = didActivate && width !== undefined;
 
-  // Before activation we avoid `innerWidth` reads but still want a decent branch for rendering.
-  // Use a cheap UA-based heuristic until real dimensions are populated.
-  const uaMobileGuess =
-    typeof navigator !== "undefined" &&
-    (navigator.userAgentData?.mobile ||
-      /Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent));
-
-  const isMobile = hasSize ? width < WINDOW_SIZE_MD : !!uaMobileGuess;
+  const isMobile = hasSize ? width < WINDOW_SIZE_MD : false;
 
   return {
     width,

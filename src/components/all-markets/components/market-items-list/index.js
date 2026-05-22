@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
 import { getAllMarkets } from "../../../../helpers/all-markets.config";
@@ -9,6 +9,10 @@ import { DIR_LTR, DIR_RTL } from "../../../../helpers/constants";
 const MarketItemsList = ({ className }) => {
   const markets = getAllMarkets();
   const isRTL = useRtlDirection();
+
+  useEffect(() => {
+    import("../../../trading-ticker");
+  }, []);
 
   return (
     <section

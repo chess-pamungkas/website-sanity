@@ -35,29 +35,53 @@ const getLangFromUrl = () => {
 
 const langFromCookie = cookies.get(LAST_LANGUAGE_KEY);
 
+const pathHasLocalePrefix = (pathname) =>
+  /^\/[a-z]{2}(\/|$)/.test(pathname || "");
+
+/** Canonical English routes (/all-markets, /forex, …) have no /en/ prefix. */
+const isDefaultLanguageCanonicalPath = (pathname) => {
+  if (!pathname) return false;
+  const normalized = pathname.replace(/\/+$/, "") || "/";
+  if (normalized === "/") return false;
+  return !pathHasLocalePrefix(pathname);
+};
+
 export const changeI18nLanguage = (selectedLang) => {
   // used to update the actual path with the selected language (e.g. from /forex to /fr/forex)
-  if (isBrowser()) {
-    const { pathname, search } = window.location;
-    if (!pathname.startsWith(`/${selectedLang.id}/`)) {
-      // IMPORTANT: Don't change URL for popup-registration page
-      // This prevents duplication of language paths in the URL
-      if (pathname.includes("popup-registration")) {
-        return; // Don't navigate for popup-registration page
-      }
+  if (!isBrowser()) return;
+  const { pathname, search } = window.location;
+  if (pathname.includes("popup-registration")) return;
 
-      const navigatePath =
-        `${selectedLang.URIPart}` + pathname.replace(/\/[a-z]{2}\//, "/");
-      navigate(`${navigatePath}${search}`);
-    }
+  const urlLang = getLangFromUrl();
+  if (urlLang === selectedLang.id) return;
+
+  // Unprefixed canonical English URLs (/all-markets): never redirect from cookie locale.
+  if (selectedLang.isDefault && isDefaultLanguageCanonicalPath(pathname)) {
+    return;
+  }
+
+  if (selectedLang.isDefault) {
+    const stripped = pathname.replace(/^\/[a-z]{2}\//, "/");
+    navigate(`${stripped}${search}`);
+    return;
+  }
+
+  if (!pathname.startsWith(`/${selectedLang.id}/`)) {
+    const navigatePath =
+      `${selectedLang.URIPart}` + pathname.replace(/^\/[a-z]{2}\//, "/");
+    navigate(`${navigatePath}${search}`);
   }
 };
 
 export const detectInitialLanguage = (recommendedLanguage) => {
-  // Language resolution order: language from URL -> language from cookie -> recommended language (from backend config) -> default (en)
-  return findLangById(
-    getLangFromUrl() || langFromCookie || recommendedLanguage
-  );
+  const fromUrl = getLangFromUrl();
+  if (fromUrl) return findLangById(fromUrl);
+
+  if (isBrowser() && isDefaultLanguageCanonicalPath(window.location.pathname)) {
+    return defaultLang;
+  }
+
+  return findLangById(langFromCookie || recommendedLanguage);
 };
 
 export const setLangParam = (selectedLanguage) => {

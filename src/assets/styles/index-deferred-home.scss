@@ -23,13 +23,12 @@
 @import "table";
 @import "lang-options";
 @import "navbar-dropdown-highlight";
-@import "account-comparison";
+/* account-comparison → index.scss (main bundle; avoids FOUC when home deferred chunk loads late) */
 @import "cost-calculator";
 @import "technology-infrastructure";
 @import "market-sentiment";
 /*
- * Above three were in deferred-styles-2-only; sequential load + mobile quick-reveal (280ms) vs
- * deferred CSS (~1s) left HTML mounted before rules applied — broken layout/spinners. Keep them
- * in the first deferred chunk alongside account-comparison.
+ * Above were in deferred-styles-2-only; sequential load + mobile quick-reveal (280ms) vs
+ * deferred CSS (~1s) left HTML mounted before rules applied — broken layout/spinners.
  * Chunk 2 (trust, guide, our-community, form, …) → index-deferred-home-2.scss
  */
