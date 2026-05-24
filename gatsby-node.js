@@ -92,7 +92,8 @@ exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
       ...(stage === "build-javascript"
         ? (() => {
             const config = getConfig();
-            const existing = config?.optimization?.splitChunks?.cacheGroups || {};
+            const existing =
+              config?.optimization?.splitChunks?.cacheGroups || {};
             return {
               optimization: {
                 splitChunks: {
@@ -102,7 +103,8 @@ exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
                     localizationVars: {
                       // Function so we match regardless of path format (Windows, query strings, etc.)
                       test: (module) => {
-                        const id = module.identifier?.() || module.resource || "";
+                        const id =
+                          module.identifier?.() || module.resource || "";
                         return /localization-variables\.js/.test(id);
                       },
                       name: "localization-vars",
@@ -113,8 +115,12 @@ exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
                     // Dedupe critical icons and menu config (Lighthouse "Duplicated JavaScript" ~2.8 KiB)
                     sharedIconsAndMenu: {
                       test: (module) => {
-                        const id = module.identifier?.() || module.resource || "";
-                        return /icons[/\\]critical\.js/.test(id) || /menu-structure\.config\.js/.test(id);
+                        const id =
+                          module.identifier?.() || module.resource || "";
+                        return (
+                          /icons[/\\]critical\.js/.test(id) ||
+                          /menu-structure\.config\.js/.test(id)
+                        );
                       },
                       name: "shared-icons-menu",
                       chunks: "all",
@@ -123,7 +129,8 @@ exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
                     },
                     gatsbyReactI18next: {
                       test: (module) => {
-                        const id = module.identifier?.() || module.resource || "";
+                        const id =
+                          module.identifier?.() || module.resource || "";
                         return /gatsby-plugin-react-i18next/.test(id);
                       },
                       name: "gatsby-react-i18next",
@@ -141,13 +148,40 @@ exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
   }
 };
 
+const {
+  shouldAllowSearchIndexing,
+} = require("./src/helpers/should-allow-search-indexing");
+
+const writeRobotsTxt = async (publicDir, allowIndex) => {
+  const robotsPath = path.join(publicDir, "robots.txt");
+  const body = allowIndex
+    ? ["User-agent: *", "Allow: /", "", "Sitemap: /sitemap-index.xml", ""].join(
+        "\n"
+      )
+    : ["User-agent: *", "Disallow: /", ""].join("\n");
+  await fs.writeFile(robotsPath, body, "utf8");
+};
+
 // Make sure the registration script is copied to the public folder
 exports.onPostBuild = async ({ reporter }) => {
   const scriptsDir = path.join(process.cwd(), "src", "scripts");
-  const publicScriptsDir = path.join(process.cwd(), "public", "scripts");
+  const publicDir = path.join(process.cwd(), "public");
+  const publicScriptsDir = path.join(publicDir, "scripts");
 
   // Ensure the scripts directory exists in public
   await fs.ensureDir(publicScriptsDir);
+
+  const allowIndex = shouldAllowSearchIndexing();
+  try {
+    await writeRobotsTxt(publicDir, allowIndex);
+    reporter.info(
+      `robots.txt written (${allowIndex ? "Allow /" : "Disallow /"}) — GATSBY_ENV=${
+        process.env.GATSBY_ENV ?? "(unset)"
+      }, GATSBY_NOINDEX=${process.env.GATSBY_NOINDEX ?? "(unset)"}`
+    );
+  } catch (err) {
+    reporter.error("Error writing robots.txt", err);
+  }
 
   // Copy the registration script to the public folder
   try {

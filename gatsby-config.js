@@ -5,9 +5,9 @@ require("dotenv").config({
 });
 
 const languages = require(`${__dirname}/src/locales/language.config`);
-const { processLanguagesForConfig } = require(
-  `${__dirname}/src/locales/processLanguages`,
-);
+const {
+  processLanguagesForConfig,
+} = require(`${__dirname}/src/locales/processLanguages`);
 
 const indexedLocaleData = processLanguagesForConfig(languages.uniqueList);
 

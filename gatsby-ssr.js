@@ -58,7 +58,9 @@ function isPerfLab(){
   }catch(e){return false;}
 }
 function shouldDeferThirdParty(){return isAudit()||isPerfLab();}
-`.replace(/\s+/g, " ").trim();
+`
+  .replace(/\s+/g, " ")
+  .trim();
 
 export const onRenderBody = ({
   setPostBodyComponents,
@@ -157,7 +159,10 @@ export const onRenderBody = ({
     <script
       key="audit-block-bundles"
       dangerouslySetInnerHTML={{
-        __html: `(function(){${SSR_INLINE_IS_AUDIT_FN}try{if(!isAudit())return;var blocked=[];try{var d=Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype,"src");if(d&&d.set){Object.defineProperty(HTMLScriptElement.prototype,"src",{configurable:true,enumerable:true,set:function(v){blocked.push("set:"+String(v||""));},get:function(){return "";}});}}catch(e1){}try{var oSA=Element.prototype.setAttribute;Element.prototype.setAttribute=function(name,value){if(this&&this.tagName==="SCRIPT"&&typeof name==="string"&&name.toLowerCase()==="src"){blocked.push("setAttr:"+String(value||""));return;}return oSA.apply(this,arguments);};}catch(e2){}try{var mo=new MutationObserver(function(records){for(var r=0;r<records.length;r++){var added=records[r].addedNodes;if(!added)continue;for(var i=0;i<added.length;i++){var n=added[i];if(!n||n.nodeType!==1)continue;if(n.tagName==="SCRIPT"){var sa=n.getAttribute&&n.getAttribute("src");if(sa){try{if(n.parentNode){n.parentNode.removeChild(n);}blocked.push("mo:"+sa);}catch(e3){}}}}}});mo.observe(document.documentElement||document,{childList:true,subtree:true});setTimeout(function(){try{mo.disconnect();}catch(e4){}},60000);}catch(e5){}window.__OQTIMA_AUDIT_BLOCKED=function(){return blocked.slice();};window.__OQTIMA_AUDIT_BLOCKED_COUNT=function(){return blocked.length;};}catch(e){}})();`.replace(/\s+/g, " ").trim(),
+        __html:
+          `(function(){${SSR_INLINE_IS_AUDIT_FN}try{if(!isAudit())return;var blocked=[];try{var d=Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype,"src");if(d&&d.set){Object.defineProperty(HTMLScriptElement.prototype,"src",{configurable:true,enumerable:true,set:function(v){blocked.push("set:"+String(v||""));},get:function(){return "";}});}}catch(e1){}try{var oSA=Element.prototype.setAttribute;Element.prototype.setAttribute=function(name,value){if(this&&this.tagName==="SCRIPT"&&typeof name==="string"&&name.toLowerCase()==="src"){blocked.push("setAttr:"+String(value||""));return;}return oSA.apply(this,arguments);};}catch(e2){}try{var mo=new MutationObserver(function(records){for(var r=0;r<records.length;r++){var added=records[r].addedNodes;if(!added)continue;for(var i=0;i<added.length;i++){var n=added[i];if(!n||n.nodeType!==1)continue;if(n.tagName==="SCRIPT"){var sa=n.getAttribute&&n.getAttribute("src");if(sa){try{if(n.parentNode){n.parentNode.removeChild(n);}blocked.push("mo:"+sa);}catch(e3){}}}}}});mo.observe(document.documentElement||document,{childList:true,subtree:true});setTimeout(function(){try{mo.disconnect();}catch(e4){}},60000);}catch(e5){}window.__OQTIMA_AUDIT_BLOCKED=function(){return blocked.slice();};window.__OQTIMA_AUDIT_BLOCKED_COUNT=function(){return blocked.length;};}catch(e){}})();`
+            .replace(/\s+/g, " ")
+            .trim(),
       }}
     />,
   ];
@@ -572,17 +577,20 @@ export const onPreRenderHTML = ({
 
   // Remove manifest link from critical path (Network dependency tree: 383 ms).
   // Inject it after load so LCP is not blocked.
-  let filteredHeadComponents = (Array.isArray(headComponents) ? headComponents : []).filter(
-    (node) => {
-      if (!node?.props) return true;
-      const rel = node.props.rel;
-      const href = (node.props.href || "").toString();
-      if (rel === "manifest" || (typeof rel === "string" && rel.includes("manifest")))
-        return false;
-      if (href.includes("manifest.webmanifest")) return false;
-      return true;
-    }
-  );
+  let filteredHeadComponents = (
+    Array.isArray(headComponents) ? headComponents : []
+  ).filter((node) => {
+    if (!node?.props) return true;
+    const rel = node.props.rel;
+    const href = (node.props.href || "").toString();
+    if (
+      rel === "manifest" ||
+      (typeof rel === "string" && rel.includes("manifest"))
+    )
+      return false;
+    if (href.includes("manifest.webmanifest")) return false;
+    return true;
+  });
 
   // Replace Gatsby's inline global CSS <style data-identity="gatsby-global-css"> with a non-blocking link.
   // Inline style blocks are always render-blocking; loading the same file with media="print" allows LCP to paint first.
@@ -591,7 +599,11 @@ export const onPreRenderHTML = ({
     if (!node?.props) return true;
     const identity = node.props["data-identity"] || node.props.dataIdentity;
     if (identity === "gatsby-global-css") {
-      gatsbyGlobalCssHref = (node.props["data-href"] || node.props.dataHref || "").toString();
+      gatsbyGlobalCssHref = (
+        node.props["data-href"] ||
+        node.props.dataHref ||
+        ""
+      ).toString();
       return false;
     }
     return true;
@@ -613,7 +625,10 @@ export const onPreRenderHTML = ({
     <script
       key="non-blocking-stylesheets"
       dangerouslySetInnerHTML={{
-        __html: `(function(){var s=document.querySelectorAll('link[rel="stylesheet"][media="print"]');[].forEach.call(s,function(l){l.onload=function(){l.media='all';};if(l.sheet)l.media='all';});})();`.replace(/\s+/g, " ").trim(),
+        __html:
+          `(function(){var s=document.querySelectorAll('link[rel="stylesheet"][media="print"]');[].forEach.call(s,function(l){l.onload=function(){l.media='all';};if(l.sheet)l.media='all';});})();`
+            .replace(/\s+/g, " ")
+            .trim(),
       }}
     />
   );
@@ -625,7 +640,8 @@ export const onPreRenderHTML = ({
       const isStylesheet =
         rel === "stylesheet" ||
         (typeof rel === "string" && rel.includes("stylesheet"));
-      const isMainOrFontsCss = isStylesheet && href && !href.includes("deferred");
+      const isMainOrFontsCss =
+        isStylesheet && href && !href.includes("deferred");
       if (!isMainOrFontsCss) return node;
       return cloneElement(node, {
         ...node.props,
@@ -713,7 +729,8 @@ export const onPreRenderHTML = ({
       const src = node?.props?.src;
       const isScript =
         node?.type === "script" ||
-        (typeof node?.type === "string" && node?.type?.toLowerCase() === "script");
+        (typeof node?.type === "string" &&
+          node?.type?.toLowerCase() === "script");
       if (
         !isWebtraderRoute &&
         isScript &&
@@ -721,11 +738,7 @@ export const onPreRenderHTML = ({
         src.startsWith("/")
       ) {
         delayedUrls.push(src);
-      } else if (
-        !isWebtraderRoute &&
-        isScript &&
-        typeof src !== "string"
-      ) {
+      } else if (!isWebtraderRoute && isScript && typeof src !== "string") {
         // React element keys can be encoded (e.g. ".$livechat-management"), so use contains match.
         const nodeKey = String(node?.key || "");
         const shouldDelayInline = delayedInlineScriptKeys.some((k) =>
@@ -748,15 +761,15 @@ export const onPreRenderHTML = ({
     // Defer until after LCP (or fallback). Flip styles in doInj so hero stays visible with critical CSS until then — same for all users and PageSpeed/GTmetrix.
     const loaderScript =
       delayedUrls.length > 0 || delayedInlineBodies.length > 0 ? (
-      <script
-        key="delayed-app-loader"
-        dangerouslySetInnerHTML={{
-          // rAF+idle between print→all flips and delayed script work.
-          __html: (`(function(){var u=${JSON.stringify(
-            delayedUrls
-          )};var inlineBodies=${JSON.stringify(
-            delayedInlineBodies
-          )};var done=false;function ric(fn,to){var w=typeof to==="number"?to:140;if(typeof requestIdleCallback!=="undefined")requestIdleCallback(fn,{timeout:w});else setTimeout(fn,Math.min(w,52));}
+        <script
+          key="delayed-app-loader"
+          dangerouslySetInnerHTML={{
+            // rAF+idle between print→all flips and delayed script work.
+            __html: `(function(){var u=${JSON.stringify(
+              delayedUrls
+            )};var inlineBodies=${JSON.stringify(
+              delayedInlineBodies
+            )};var done=false;function ric(fn,to){var w=typeof to==="number"?to:140;if(typeof requestIdleCallback!=="undefined")requestIdleCallback(fn,{timeout:w});else setTimeout(fn,Math.min(w,52));}
 function flipNext(links,i,cb){if(i>=links.length)return void(cb&&cb());requestAnimationFrame(function(){ric(function(){try{var el=links[i];el.media='all';if(el.onload)el.onload();}catch(e){};flipNext(links,i+1,cb)},160)})}
 function flipThen(cb){var arr=[].slice.call(document.querySelectorAll('link[rel="stylesheet"][media="print"]'));if(!arr.length)return void(cb&&cb());flipNext(arr,0,cb)}
 function isMobile(){return !!(window.matchMedia&&window.matchMedia("(max-width: 768px)").matches)}
@@ -771,12 +784,18 @@ function doWork(){if(done)return;done=true;queueStart=nowMs();flipThen(function(
 function scheduleDoWorkAfterLcp(){var fired=false;function go(){if(fired)return;fired=true;doWork();}setTimeout(go,${LCP_FALLBACK_MS});if(typeof PerformanceObserver!=="undefined"){try{var po=new PerformanceObserver(function(){go();try{po.disconnect();}catch(e){}});po.observe({type:"largest-contentful-paint",buffered:true});}catch(e){}}}
 var armMobile=!!(window.matchMedia&&window.matchMedia("(max-width: 768px)").matches);
 var skipLcpWait=!u.length||${skipHeroLcpWaitForLoader ? "true" : "false"};
-if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFrame(function(){ric(doWork,48)})})}else{requestAnimationFrame(function(){requestAnimationFrame(function(){scheduleDoWorkAfterLcp()})})}})();`).replace(/\s+/g," ").trim(),
-        }}
-      />
-    ) : null;
+if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFrame(function(){ric(doWork,48)})})}else{requestAnimationFrame(function(){requestAnimationFrame(function(){scheduleDoWorkAfterLcp()})})}})();`
+              .replace(/\s+/g, " ")
+              .trim(),
+          }}
+        />
+      ) : null;
 
-    const bodyComponents = [manifestDeferScript, ...(loaderScript ? [loaderScript] : []), ...rest].map((node) => {
+    const bodyComponents = [
+      manifestDeferScript,
+      ...(loaderScript ? [loaderScript] : []),
+      ...rest,
+    ].map((node) => {
       if (!node || !node.props || !node.props.src) return node;
       const type = node.type;
       const isScript =
@@ -799,16 +818,29 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
   const earlyHints = [];
 
   // Preload main stylesheet so it starts in parallel with document (shortens Network dependency tree).
-  const mainCssLink = (Array.isArray(filteredHeadComponents) ? filteredHeadComponents : []).find(
-    (n) => n?.props?.rel === "stylesheet" && n?.props?.href && !String(n.props.href).includes("deferred")
+  const mainCssLink = (
+    Array.isArray(filteredHeadComponents) ? filteredHeadComponents : []
+  ).find(
+    (n) =>
+      n?.props?.rel === "stylesheet" &&
+      n?.props?.href &&
+      !String(n.props.href).includes("deferred")
   );
   const mainCssHref = mainCssLink?.props?.href;
   if (mainCssHref) {
-    earlyHints.push(createElement("link", { key: "preload-main-css", rel: "preload", href: mainCssHref, as: "style" }));
+    earlyHints.push(
+      createElement("link", {
+        key: "preload-main-css",
+        rel: "preload",
+        href: mainCssHref,
+        as: "style",
+      })
+    );
   }
 
   // Inline critical CSS for LCP block so it can paint as soon as body is parsed (no wait for external CSS). Homepage only.
-  const isHome = pathname === "/" || (pathname && pathname.match(/^\/[a-z]{2}\/?$/));
+  const isHome =
+    pathname === "/" || (pathname && pathname.match(/^\/[a-z]{2}\/?$/));
   // Hero critical CSS (mobile-first) so LCP paints from SSR without waiting for main stylesheet. No placeholder block.
   if (isHome) {
     earlyHints.push(
@@ -885,20 +917,28 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
           __html: [
             `@media(max-width:767px){.${heroRoot}{position:relative;width:100vw;left:50%;margin-left:-50vw;margin-right:-50vw;min-height:953px;height:auto;padding-top:73px;padding-bottom:20px;box-sizing:border-box;overflow:visible}}`,
             `@media(max-width:767px){.${heroRoot}__hero-container{min-height:953px;height:auto;position:absolute;top:73px;left:50%;transform:translateX(-50%);width:100%;max-width:100%;box-sizing:border-box;contain:layout;border-radius:20px;background:#000}}`,
-            `@media(max-width:767px){.${heroRoot}__hero-bg,.${
-              heroRoot
-            }__hero-bg-lcp{position:absolute;inset:0;width:100%;height:100%}}`,
-            ...(heroRoot !== "faq-hero" && heroRoot !== "legal" && heroRoot !== "contact-us"
+            `@media(max-width:767px){.${heroRoot}__hero-bg,.${heroRoot}__hero-bg-lcp{position:absolute;inset:0;width:100%;height:100%}}`,
+            ...(heroRoot !== "faq-hero" &&
+            heroRoot !== "legal" &&
+            heroRoot !== "contact-us"
               ? [
                   heroPageShellCritical(heroRoot, 555, 73, 70),
-                  heroTabletContainerCritical(`.${heroRoot}__hero-container`, 555, 73),
+                  heroTabletContainerCritical(
+                    `.${heroRoot}__hero-container`,
+                    555,
+                    73
+                  ),
                   heroTabletBgLcpCritical(heroRoot, "78% 100%"),
                 ]
               : []),
             ...(heroRoot === "faq-hero"
               ? [
                   heroPageShellCritical("faq-hero", 480, 73, 70),
-                  heroTabletContainerCritical(".faq-hero__hero-container", 480, 73),
+                  heroTabletContainerCritical(
+                    ".faq-hero__hero-container",
+                    480,
+                    73
+                  ),
                   `@media(min-width:1024px){.faq-hero{position:relative;width:100vw;left:50%;margin-left:-50vw;margin-right:-50vw;min-height:480px;box-sizing:border-box}}`,
                   `@media(min-width:1024px){.faq-hero__hero-container{height:480px;min-height:480px;position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:1400px;box-sizing:border-box;border-radius:24px;background:#000;overflow:hidden}}`,
                   `@media(min-width:768px){.faq-hero__hero-bg,.faq-hero__hero-bg-lcp{position:absolute;inset:0;width:100%;height:100%}}`,
@@ -911,7 +951,11 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
               ? [
                   /* Tablet tier (769–1023): matches legal.scss 455px hero shell */
                   heroPageShellCritical("legal", 455, 73, 70),
-                  heroTabletContainerCritical(".legal__hero-container", 455, 73),
+                  heroTabletContainerCritical(
+                    ".legal__hero-container",
+                    455,
+                    73
+                  ),
                   /* Desktop lg+ (≥1024): 510px artboard */
                   `@media(min-width:1024px){.legal{position:relative;width:100vw;left:50%;margin-left:-50vw;margin-right:-50vw;min-height:510px;box-sizing:border-box}}`,
                   `@media(min-width:1024px){.legal__hero-container{height:510px;min-height:510px;position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:1400px;box-sizing:border-box;border-radius:24px;background:#000;overflow:hidden}}`,
@@ -1120,7 +1164,8 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
     );
   }
 
-  const isHomePath = pathname === "/" || (pathname && pathname.match(/^\/[a-z]{2}\/?$/));
+  const isHomePath =
+    pathname === "/" || (pathname && pathname.match(/^\/[a-z]{2}\/?$/));
 
   // Non-home routes (/vps/, /mt4/, …): ship pages CSS in SSR (print → all via delayed-app-loader)
   // instead of client-only inject in Layout — avoids mid-trace style invalidation + forced reflow.
@@ -1144,23 +1189,93 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
   // Stable stack: preload Regular + Medium on most routes. Trading-product heroes: five weights (incl. Bold) to avoid hero CLS when weight-700 paints after Semibold.
   if (!isHeroLcpPath) {
     earlyHints.push(
-      <link key="preload-sofia-regular" rel="preload" href="/fonts/SofiaProRegular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />,
-      <link key="preload-sofia-medium" rel="preload" href="/fonts/SofiaProMedium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+      <link
+        key="preload-sofia-regular"
+        rel="preload"
+        href="/fonts/SofiaProRegular.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />,
+      <link
+        key="preload-sofia-medium"
+        rel="preload"
+        href="/fonts/SofiaProMedium.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />
     );
   } else {
     earlyHints.push(
-      <link key="preload-sofia-light-tp" rel="preload" href="/fonts/SofiaProLight.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />,
-      <link key="preload-sofia-regular-tp" rel="preload" href="/fonts/SofiaProRegular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />,
-      <link key="preload-sofia-medium-tp" rel="preload" href="/fonts/SofiaProMedium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />,
-      <link key="preload-sofia-semibold-tp" rel="preload" href="/fonts/SofiaProSemiBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />,
-      <link key="preload-sofia-bold-tp" rel="preload" href="/fonts/SofiaProBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+      <link
+        key="preload-sofia-light-tp"
+        rel="preload"
+        href="/fonts/SofiaProLight.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />,
+      <link
+        key="preload-sofia-regular-tp"
+        rel="preload"
+        href="/fonts/SofiaProRegular.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />,
+      <link
+        key="preload-sofia-medium-tp"
+        rel="preload"
+        href="/fonts/SofiaProMedium.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />,
+      <link
+        key="preload-sofia-semibold-tp"
+        rel="preload"
+        href="/fonts/SofiaProSemiBold.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />,
+      <link
+        key="preload-sofia-bold-tp"
+        rel="preload"
+        href="/fonts/SofiaProBold.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />
     );
   }
   if (isHomePath) {
     earlyHints.push(
-      <link key="preload-sofia-light" rel="preload" href="/fonts/SofiaProLight.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />,
-      <link key="preload-sofia-semibold-home" rel="preload" href="/fonts/SofiaProSemiBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />,
-      <link key="preload-sofia-bold-home" rel="preload" href="/fonts/SofiaProBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+      <link
+        key="preload-sofia-light"
+        rel="preload"
+        href="/fonts/SofiaProLight.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />,
+      <link
+        key="preload-sofia-semibold-home"
+        rel="preload"
+        href="/fonts/SofiaProSemiBold.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />,
+      <link
+        key="preload-sofia-bold-home"
+        rel="preload"
+        href="/fonts/SofiaProBold.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />
     );
   }
   // Load fonts-critical.css async (no render-blocking): sync loading regressed TBT ~700ms+ on mobile (main-thread long tasks).
@@ -1213,7 +1328,11 @@ export const wrapPageElement = ({ element }) => {
       cloneElement(
         element.props.children,
         element.props.children.props,
-        createElement(Layout, { pathname: element.props?.location?.pathname }, element.props.children.props.children)
+        createElement(
+          Layout,
+          { pathname: element.props?.location?.pathname },
+          element.props.children.props.children
+        )
       )
     );
     return newElement;
