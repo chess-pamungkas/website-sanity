@@ -26,10 +26,22 @@ const WIV_MOBILE = [0, 24, 48, 72, 96];
 const WIV_DESKTOP = [0, 48, 96, 144, 192];
 /** Reserve space while lazy chunks load so IO can fire before children mount. */
 const BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX = 520;
+const BELOW_FOLD_OBSERVE_MIN_HEIGHT_MOBILE_PX = 280;
+/** If IO misses (overflow/contain edge cases), still show content on mobile. */
+const BELOW_FOLD_SAFETY_REVEAL_MS = 8000;
 
 const HomeDeferredApp = ({ isMobile }) => {
   const firstBlockPlaceholderRef = useRef(null);
   const wivDelays = isMobile ? WIV_MOBILE : WIV_DESKTOP;
+  const observeMinHeight = isMobile
+    ? BELOW_FOLD_OBSERVE_MIN_HEIGHT_MOBILE_PX
+    : BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX;
+  const wivCommon = isMobile
+    ? {
+        fastReveal: true,
+        safetyRevealMs: BELOW_FOLD_SAFETY_REVEAL_MS,
+      }
+    : {};
 
   return (
     <>
@@ -47,7 +59,8 @@ const HomeDeferredApp = ({ isMobile }) => {
       <WhenInView
         rootMargin="200px 0px"
         delayMs={wivDelays[0]}
-        observeMinHeight={BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX}
+        observeMinHeight={observeMinHeight}
+        {...wivCommon}
       >
         <Suspense fallback={null}>
           <AccountComparison />
@@ -56,7 +69,8 @@ const HomeDeferredApp = ({ isMobile }) => {
       <WhenInView
         rootMargin="200px 0px"
         delayMs={wivDelays[1]}
-        observeMinHeight={BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX}
+        observeMinHeight={observeMinHeight}
+        {...wivCommon}
       >
         <ContainerWrapper>
           <Suspense fallback={null}>
@@ -68,7 +82,8 @@ const HomeDeferredApp = ({ isMobile }) => {
       <WhenInView
         rootMargin="200px 0px"
         delayMs={wivDelays[2]}
-        observeMinHeight={BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX}
+        observeMinHeight={observeMinHeight}
+        {...wivCommon}
       >
         <Suspense fallback={null}>
           <MarketSentimentContent />
@@ -77,7 +92,8 @@ const HomeDeferredApp = ({ isMobile }) => {
       <WhenInView
         rootMargin="200px 0px"
         delayMs={wivDelays[3]}
-        observeMinHeight={BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX}
+        observeMinHeight={observeMinHeight}
+        {...wivCommon}
       >
         <ContainerWrapper>
           <Suspense fallback={null}>
@@ -93,7 +109,8 @@ const HomeDeferredApp = ({ isMobile }) => {
       <WhenInView
         rootMargin="200px 0px"
         delayMs={wivDelays[4]}
-        observeMinHeight={BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX}
+        observeMinHeight={observeMinHeight}
+        {...wivCommon}
       >
         {isMobile ? (
           <Suspense fallback={null}>

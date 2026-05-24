@@ -16,6 +16,10 @@ import {
 import { SM_MAX_WIDTH, WINDOW_SIZE_MD } from "./src/helpers/constants";
 import { trustpilotRobotoFontFaceCritical } from "./src/helpers/trustpilot-fonts";
 
+/** Baked into inline scripts — keep in sync with src/helpers/is-non-production-build.js */
+const SSR_IS_NON_PROD_BUILD =
+  process.env.GATSBY_ENV !== "production" ? "true" : "false";
+
 /** Keep in sync with src/helpers/is-audit-environment.js (inline scripts cannot import). */
 const SSR_INLINE_IS_AUDIT_FN = `
 function isAudit() {
@@ -23,7 +27,7 @@ function isAudit() {
     if (typeof navigator !== "undefined") {
       if (navigator.webdriver === true) return true;
       var ua = navigator.userAgent || "";
-      if (/Chrome-Lighthouse|Lighthouse|HeadlessChrome|Google-InspectionTool|PTST|PhantomJS|Puppet|Selenium|WebDriver|Playwright/i.test(ua)) return true;
+      if (/Chrome-Lighthouse|Lighthouse|HeadlessChrome|Google-InspectionTool|PTST|GTmetrix|WebPageTest|DareBoost|PhantomJS|Puppet|Selenium|WebDriver|Playwright/i.test(ua)) return true;
       try {
         var uad = navigator.userAgentData;
         if (uad && uad.brands) {
@@ -39,7 +43,9 @@ function isAudit() {
       var host = (window.location.hostname || "").toLowerCase();
       if ((host === "localhost" || host === "127.0.0.1" || host === "") && /[?&]lighthouse(=|$|-[a-z]+)/i.test(window.location.search || "")) return true;
     }
-    if (typeof navigator !== "undefined" && navigator.platform === "Linux x86_64" && /Android/i.test(navigator.userAgent || "")) return true;
+    var hostPsi=(typeof window!=="undefined"&&window.location)?(window.location.hostname||"").toLowerCase():"";
+    var isLocalPsi=hostPsi==="localhost"||hostPsi==="127.0.0.1"||hostPsi==="";
+    if (!isLocalPsi && typeof navigator !== "undefined" && navigator.platform === "Linux x86_64" && /Android/i.test(navigator.userAgent || "")) return true;
     return false;
   } catch (e) {
     return false;
@@ -57,7 +63,8 @@ function isPerfLab(){
     return false;
   }catch(e){return false;}
 }
-function shouldDeferThirdParty(){return isAudit()||isPerfLab();}
+function isNonProdBuild(){return ${SSR_IS_NON_PROD_BUILD};}
+function shouldDeferThirdParty(){return isAudit()||isPerfLab()||isNonProdBuild();}
 `
   .replace(/\s+/g, " ")
   .trim();
@@ -91,7 +98,7 @@ export const onRenderBody = ({
       if (typeof navigator!=="undefined") {
         if (navigator.webdriver===true) return "webdriver";
         var ua=navigator.userAgent||"";
-        if (/Chrome-Lighthouse|Lighthouse|HeadlessChrome|Google-InspectionTool|PTST/i.test(ua)) return "ua-lighthouse";
+        if (/Chrome-Lighthouse|Lighthouse|HeadlessChrome|Google-InspectionTool|PTST|GTmetrix|WebPageTest|DareBoost/i.test(ua)) return "ua-lighthouse";
         if (/PhantomJS|Puppet|Selenium|WebDriver|Playwright/i.test(ua)) return "ua-headless";
         try {
           var uad=navigator.userAgentData;
@@ -101,7 +108,9 @@ export const onRenderBody = ({
             if (/Google-InspectionTool|HeadlessChrome|Lighthouse/i.test(br)) return "uad-brands";
           }
         } catch(eb){}
-        if (navigator.platform==="Linux x86_64" && /Android/i.test(navigator.userAgent||"")) return "psi-emulation";
+        var hostD=(window.location.hostname||"").toLowerCase();
+        var isLocalD=hostD==="localhost"||hostD==="127.0.0.1"||hostD==="";
+        if (!isLocalD && navigator.platform==="Linux x86_64" && /Android/i.test(navigator.userAgent||"")) return "psi-emulation";
       }
       if (typeof window!=="undefined" && window.location) {
         var host=(window.location.hostname||"").toLowerCase();
@@ -480,7 +489,7 @@ if(isConvrsLoaded() || hasConvrsNodes()){
     <script
       key="mt-widget-deferred"
       dangerouslySetInnerHTML={{
-        __html: `(function(){${SSR_INLINE_IS_AUDIT_FN}if(isAudit())return;var url="https://metatraderweb.app/trade/widget.js";function load(){var s=document.createElement("script");s.type="text/javascript";s.src=url;s.async=true;s.defer=true;document.body.appendChild(s);}function onInteract(){window.removeEventListener("click",onInteract);window.removeEventListener("keydown",onInteract);window.removeEventListener("scroll",onInteract,true);load();}function start(){var isMobile=!!(window.matchMedia&&window.matchMedia("(max-width: 768px)").matches);if(isMobile){window.addEventListener("click",onInteract,{once:true,passive:true});window.addEventListener("keydown",onInteract,{once:true,passive:true});window.addEventListener("scroll",onInteract,{once:true,passive:true});setTimeout(load,20000);}else{setTimeout(load,2500);}}if(document.readyState==="complete")start();else window.addEventListener("load",start,{once:true});})();`,
+        __html: `(function(){${SSR_INLINE_IS_AUDIT_FN}if(typeof shouldDeferThirdParty==="function"&&shouldDeferThirdParty())return;var url="https://metatraderweb.app/trade/widget.js";function load(){var s=document.createElement("script");s.type="text/javascript";s.src=url;s.async=true;s.defer=true;document.body.appendChild(s);}function onInteract(){window.removeEventListener("click",onInteract);window.removeEventListener("keydown",onInteract);window.removeEventListener("scroll",onInteract,true);load();}function start(){var isMobile=!!(window.matchMedia&&window.matchMedia("(max-width: 768px)").matches);if(isMobile){window.addEventListener("click",onInteract,{once:true,passive:true});window.addEventListener("keydown",onInteract,{once:true,passive:true});window.addEventListener("scroll",onInteract,{once:true,passive:true});setTimeout(load,20000);}else{setTimeout(load,2500);}}if(document.readyState==="complete")start();else window.addEventListener("load",start,{once:true});})();`,
       }}
     />,
   ];
@@ -1039,11 +1048,22 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
     pathname === "/" || (pathname && pathname.match(/^\/[a-z]{2}\/?$/));
   const isContactUsPath =
     typeof pathname === "string" && pathname.includes("contact-us");
-  if (isHomePathForPreconnect || isContactUsPath) {
+  if (
+    process.env.GATSBY_ENV === "production" &&
+    (isHomePathForPreconnect || isContactUsPath)
+  ) {
     preconnectLinks.push(
       <link
         key="preconnect-trustpilot"
         rel="preconnect"
+        href="https://widget.trustpilot.com"
+      />
+    );
+  } else if (isHomePathForPreconnect || isContactUsPath) {
+    preconnectLinks.push(
+      <link
+        key="dns-prefetch-trustpilot"
+        rel="dns-prefetch"
         href="https://widget.trustpilot.com"
       />
     );

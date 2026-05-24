@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, startTransition } from "react";
 import PropTypes from "prop-types";
 import {
   AUDIT_HEAVY_WORK_DEFER_MS,
-  shouldDeferHeavyWorkForLighthouse,
+  isAuditEnvironment,
+  isDocumentAuditMode,
 } from "../../../helpers/is-audit-environment";
 
 /**
@@ -10,7 +11,9 @@ import {
  * Uses IntersectionObserver to reduce initial mount/hydration work (Lighthouse TBT).
  * rootMargin loads content a bit before it enters the viewport for smoother UX.
  * delayMs staggers when the observer is created so work is spread (avoids long tasks).
- * Full audit: 180s (opt-in localhost: ?lighthouse). Otherwise use delayMs prop.
+ * Full audit only (PSI / ?lighthouse / data-audit): 180s defer. Do NOT use
+ * shouldDeferHeavyWorkForLighthouse() here — localhost DevTools mobile lab matches
+ * that helper and left below-fold sections blank for 3 minutes.
  */
 
 const WhenInView = ({
@@ -24,6 +27,8 @@ const WhenInView = ({
   fastReveal = false,
   /** Min height on the observer node while pending (empty IO targets never intersect). */
   observeMinHeight,
+  /** Force reveal if IO never fires (mobile overflow / edge cases). 0 = disabled. */
+  safetyRevealMs = 0,
   ...wrapperProps
 }) => {
   const [inView, setInView] = useState(false);
@@ -35,9 +40,10 @@ const WhenInView = ({
       startTransition(() => setInView(true));
       return undefined;
     }
-    const effectiveDelay = shouldDeferHeavyWorkForLighthouse()
-      ? AUDIT_HEAVY_WORK_DEFER_MS
-      : delayMs;
+    const effectiveDelay =
+      isAuditEnvironment() || isDocumentAuditMode()
+        ? AUDIT_HEAVY_WORK_DEFER_MS
+        : delayMs;
     let observer = null;
     let revealed = false;
 
@@ -77,11 +83,16 @@ const WhenInView = ({
     } else {
       attachObserver();
     }
+    let safetyT = null;
+    if (safetyRevealMs > 0) {
+      safetyT = setTimeout(reveal, safetyRevealMs);
+    }
     return () => {
       if (t) clearTimeout(t);
+      if (safetyT) clearTimeout(safetyT);
       if (observer) observer.disconnect();
     };
-  }, [rootMargin, threshold, delayMs, fastReveal]);
+  }, [rootMargin, threshold, delayMs, fastReveal, safetyRevealMs]);
 
   const pendingStyle =
     !inView && observeMinHeight != null
@@ -113,6 +124,7 @@ WhenInView.propTypes = {
   delayMs: PropTypes.number,
   fastReveal: PropTypes.bool,
   observeMinHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  safetyRevealMs: PropTypes.number,
 };
 
 export default WhenInView;

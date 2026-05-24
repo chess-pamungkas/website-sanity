@@ -4,7 +4,7 @@ import handleClient from "./handle-client";
 import { currentEntity } from "../../helpers/entity-resolver";
 import { sendLog } from "../../helpers/services/log-service";
 import { isBrowser } from "../../helpers/services/is-browser";
-import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
+import { shouldSkipClientDetection } from "../../helpers/is-audit-environment";
 
 const API_URL = process.env.GATSBY_OQTIMA_API_URL;
 const ClientResolverContext = createContext({});
@@ -22,7 +22,7 @@ export const ClientResolverProvider = ({ children }) => {
     // Audit (Lighthouse / PSI / ?lighthouse): skip the dynamic axios import + client-detection
     // network call. They were producing ~hundreds of ms of script eval + parse in the trace.
     // Real users (audit=false) keep full behaviour.
-    if (shouldDeferHeavyWorkForLighthouse()) {
+    if (shouldSkipClientDetection()) {
       return;
     }
 
