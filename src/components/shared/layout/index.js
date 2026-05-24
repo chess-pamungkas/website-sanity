@@ -52,6 +52,7 @@ import {
   AUDIT_HEAVY_WORK_DEFER_MS,
 } from "../../../helpers/is-audit-environment";
 import { isMarketingHomePath } from "../../../helpers/is-marketing-home-path";
+import { isNonProductionBuild } from "../../../helpers/is-non-production-build";
 import { MOBILE_VIEWPORT_MQ } from "../../../helpers/viewport-media";
 import { routeNeedsLiveTrading } from "../../../helpers/route-needs-live-trading";
 import { useLocation } from "@reach/router";
@@ -209,7 +210,7 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
     }, [isHomeMarketing]);
 
     useEffect(() => {
-      if (!isBrowser()) return;
+      if (!isBrowser() || isAuditEnvironment()) return undefined;
       let cancelled = false;
       const mountCookies = () => {
         if (cancelled) return;
@@ -237,7 +238,9 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
           : COOKIES_POPUP_MOUNT_DELAY_MOBILE_MS_INNER;
         const delayMs = mobile
           ? delayMobile
-          : COOKIES_POPUP_MOUNT_DELAY_DESKTOP_MS;
+          : isNonProductionBuild() && isHomeMarketing
+            ? 8000
+            : COOKIES_POPUP_MOUNT_DELAY_DESKTOP_MS;
         t = window.setTimeout(mountCookies, delayMs);
       }, 20);
       return () => {

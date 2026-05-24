@@ -1,3 +1,5 @@
+import { isNonProductionBuild } from "./is-non-production-build";
+
 /**
  * Detect Lighthouse / PageSpeed / headless environments (webdriver, UA, or explicit URL).
  * Used to defer non-critical work so it doesn't run during the audit trace.
@@ -75,16 +77,36 @@ export const shouldDeferHeavyWorkForLighthouse = () =>
  * On localhost only: load the official Trustpilot widget even when localhost mobile lab
  * would suppress it (for manual QA). Example: http://localhost:9000/id/?trustpilot=1
  */
-export const isTrustpilotForcedOnLocalhost = () => {
+export const isClientDetectionForced = () => {
   if (typeof window === "undefined") return false;
-  const host = (window.location.hostname || "").toLowerCase();
-  if (host !== "localhost" && host !== "127.0.0.1" && host !== "::1")
-    return false;
   try {
-    return /[?&]trustpilot=1(?:[&=]|$)/i.test(window.location.search || "");
+    return /[?&]client-detection=1(?:[&=]|$)/i.test(
+      window.location.search || ""
+    );
   } catch {
     return false;
   }
+};
+
+/** Skip geo API on PSI/Lighthouse or on dev/staging unless ?client-detection=1. */
+export const shouldSkipClientDetection = () =>
+  shouldDeferHeavyWorkForLighthouse() ||
+  (isNonProductionBuild() && !isClientDetectionForced());
+
+export const isTrustpilotForcedOnLocalhost = () => {
+  if (typeof window === "undefined") return false;
+  try {
+    if (!/[?&]trustpilot=1(?:[&=]|$)/i.test(window.location.search || "")) {
+      return false;
+    }
+  } catch {
+    return false;
+  }
+  const host = (window.location.hostname || "").toLowerCase();
+  const isLocalhost =
+    host === "localhost" || host === "127.0.0.1" || host === "::1";
+  if (isLocalhost) return true;
+  return isNonProductionBuild();
 };
 
 /**
@@ -93,7 +115,8 @@ export const isTrustpilotForcedOnLocalhost = () => {
  * audit run to force the widget when webdriver blocks it.
  */
 export const shouldSuppressTrustpilotForLighthousePerf = () =>
-  isAuditEnvironment() && !isTrustpilotForcedOnLocalhost();
+  (isAuditEnvironment() || isNonProductionBuild()) &&
+  !isTrustpilotForcedOnLocalhost();
 
 export const isAuditEnvironment = () => {
   if (typeof navigator === "undefined") return false;
@@ -101,7 +124,7 @@ export const isAuditEnvironment = () => {
     if (navigator.webdriver === true) return true;
     const ua = navigator.userAgent || "";
     if (
-      /Chrome-Lighthouse|Lighthouse|HeadlessChrome|Google-InspectionTool|PTST|PhantomJS|Puppet|Selenium|WebDriver|Playwright/i.test(
+      /Chrome-Lighthouse|Lighthouse|HeadlessChrome|Google-InspectionTool|PTST|GTmetrix|WebPageTest|DareBoost|PhantomJS|Puppet|Selenium|WebDriver|Playwright/i.test(
         ua
       )
     )

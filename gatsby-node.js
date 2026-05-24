@@ -152,14 +152,24 @@ const {
   shouldAllowSearchIndexing,
 } = require("./src/helpers/should-allow-search-indexing");
 
+/** Google / Lighthouse require an absolute Sitemap URL (not `/sitemap-index.xml`). */
+const getSitemapLine = () => {
+  const base = (process.env.GATSBY_SITE_URL || "").trim().replace(/\/$/, "");
+  if (!base || !/^https?:\/\//i.test(base)) return null;
+  return `Sitemap: ${base}/sitemap-index.xml`;
+};
+
 const writeRobotsTxt = async (publicDir, allowIndex) => {
   const robotsPath = path.join(publicDir, "robots.txt");
-  const body = allowIndex
-    ? ["User-agent: *", "Allow: /", "", "Sitemap: /sitemap-index.xml", ""].join(
-        "\n"
-      )
-    : ["User-agent: *", "Disallow: /", ""].join("\n");
-  await fs.writeFile(robotsPath, body, "utf8");
+  const lines = ["User-agent: *"];
+  if (allowIndex) {
+    lines.push("Allow: /", "");
+    const sitemapLine = getSitemapLine();
+    if (sitemapLine) lines.push(sitemapLine, "");
+  } else {
+    lines.push("Disallow: /", "");
+  }
+  await fs.writeFile(robotsPath, `${lines.join("\n")}\n`, "utf8");
 };
 
 // Make sure the registration script is copied to the public folder

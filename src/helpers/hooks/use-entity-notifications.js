@@ -3,6 +3,8 @@ import ClientResolverContext from "../../context/client-resolver-context";
 import { isBrowser } from "../services/is-browser";
 import { REDIRECT_OR_BANNED_POPUP_SHOWN_KEY } from "../gdpr-cookie.config";
 import { redirectToOppositeEntity } from "../services/redirect-to-opposite-entity";
+import { isNonProductionBuild } from "../is-non-production-build";
+import { shouldSkipClientDetection } from "../is-audit-environment";
 
 export const useEntityNotifications = (handlePopupOpen) => {
   const { clientConfig } = useContext(ClientResolverContext);
@@ -25,6 +27,8 @@ export const useEntityNotifications = (handlePopupOpen) => {
       clientConfig &&
       Object.keys(clientConfig).length &&
       isBrowser() &&
+      !isNonProductionBuild() &&
+      !shouldSkipClientDetection() &&
       !window.sessionStorage.getItem(REDIRECT_OR_BANNED_POPUP_SHOWN_KEY)
     ) {
       if (clientConfig.forceRedirectPopup && !clientConfig.banned) {

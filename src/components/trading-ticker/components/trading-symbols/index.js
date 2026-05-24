@@ -64,6 +64,7 @@ const TradingSymbols = ({
 
   useEffect(() => {
     if (!preloadKey || !symbols?.length) return undefined;
+    if (shouldDeferHeavyWorkForLighthouse()) return undefined;
     const keysNeeded = collectTickerIconKeys(symbols);
     if (!keysNeeded.length) return undefined;
     let cancelled = false;
