@@ -347,14 +347,48 @@ $mt-platform-promo-to-comparison-gap: 48px;
   flex-grow: 0 !important;
   min-height: 0 !important;
 
-  .mt-promotion {
+  /* Hero already clears the fixed header; spacer + legacy 150px padding caused a large gap. */
+  .header-offset-placeholder {
+    @include tablet-only {
+      height: 0 !important;
+    }
+
     @include desktop-lg {
-      padding-top: 150px;
+      height: 0 !important;
+    }
+  }
+
+  @include tablet-only {
+    padding-top: $below-marketing-hero-gap-tablet;
+  }
+
+  @include desktop-lg {
+    padding-top: $below-marketing-hero-gap-desktop;
+  }
+
+  .mt-promotion {
+    @include tablet-only {
+      padding-top: 0 !important;
+      margin-bottom: 0;
+    }
+
+    @include desktop-lg {
+      padding-top: 0 !important;
       margin-bottom: 0;
     }
 
     @include desktop-xl {
-      padding-top: 150px;
+      padding-top: 0 !important;
+      margin-bottom: 0;
+    }
+
+    @include desktop-2k {
+      padding-top: 0 !important;
+      margin-bottom: 0;
+    }
+
+    @include desktop-5k {
+      padding-top: 0 !important;
       margin-bottom: 0;
     }
   }

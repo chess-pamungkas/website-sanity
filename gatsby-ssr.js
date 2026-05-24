@@ -14,6 +14,7 @@ import {
   heroTabletBgLcpCritical,
 } from "./src/helpers/hero-tablet-critical-css";
 import { SM_MAX_WIDTH, WINDOW_SIZE_MD } from "./src/helpers/constants";
+import { trustpilotRobotoFontFaceCritical } from "./src/helpers/trustpilot-fonts";
 
 /** Keep in sync with src/helpers/is-audit-environment.js (inline scripts cannot import). */
 const SSR_INLINE_IS_AUDIT_FN = `
@@ -207,7 +208,9 @@ export const onRenderBody = ({
     w.addEventListener('keydown',onInteraction,{once:true,passive:true});
     w.addEventListener('touchstart',onInteraction,{once:true,passive:true});
   } else {
-    t=setTimeout(load,1500);
+    t=setTimeout(load,90000);
+    w.addEventListener('click',onInteraction,{once:true,passive:true});
+    w.addEventListener('keydown',onInteraction,{once:true,passive:true});
   }
 })(window,document,'script','dataLayer','${gtmId.replace(/"/g, '\\"')}');
               `.trim(),
@@ -828,6 +831,7 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
             '@font-face{font-family:"Sofia Pro";src:url("/fonts/SofiaProMedium.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}',
             '@font-face{font-family:"Sofia Pro";src:url("/fonts/SofiaProSemiBold.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}',
             '@font-face{font-family:"Sofia Pro";src:url("/fonts/SofiaProBold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}',
+            trustpilotRobotoFontFaceCritical,
             ".cookies-popup{display:none}",
             ".main-promotion{visibility:visible;position:relative;display:flex;align-items:center;justify-content:center;width:100%;color:#fff;box-sizing:border-box;left:50%;margin-left:-50vw;margin-right:-50vw}",
             "@media(max-width:767px){.main-promotion{height:953px;min-height:953px}}",

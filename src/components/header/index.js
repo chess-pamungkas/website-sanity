@@ -190,7 +190,6 @@ const Header = ({ className }) => {
           </div>
           {/* Desktop navigation */}
           <div className="header__right">
-            <BurgerMenu />
             <div className="header__controls">
               {/* Defer lang selector on homepage (desktop + mobile) so LCP = hero, not EN flag img */}
               {showSigninCTA && (
@@ -218,6 +217,7 @@ const Header = ({ className }) => {
                 </>
               )}
             </div>
+            <BurgerMenu />
           </div>
         </div>
         {/* </div> */}

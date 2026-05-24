@@ -183,12 +183,12 @@
 
   .burger-menu__trigger {
     @include mobile {
-      left: 25px;
-      right: unset;
+      left: auto;
+      right: auto;
     }
     @include tablet {
-      left: 0;
-      right: unset;
+      left: auto;
+      right: auto;
     }
   }
 

@@ -70,14 +70,20 @@ const IndexPage = ({ className, isShowHero = true }) => {
   const [showDeferredApp, setShowDeferredApp] = useState(false);
 
   useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
     const isAudit = isAuditEnvironment();
     const isPerfLab = isHomepagePerfLabSession();
+    const isMobileView =
+      window.matchMedia && window.matchMedia("(max-width: 767px)").matches;
     let effectAlive = true;
     let triggerConsumed = false;
     let tId;
     let cancelLcpGate = () => {};
     let onScroll;
     let onTouch;
+    let deferDesktopRaf1;
+    let deferDesktopRaf2;
 
     // Real users: warm the chunk off the critical path (not during short Lighthouse/PSI traces).
     if (!isAudit) {
@@ -105,7 +111,7 @@ const IndexPage = ({ className, isShowHero = true }) => {
       });
     };
 
-    if (!isAudit && !isPerfLab && isMobile) {
+    if (!isAudit && !isPerfLab && isMobileView) {
       // Unblock hero translations + useWindowSize immediately; do NOT mount HomeDeferredApp yet.
       // Previously belowHeroContentReady only fired with trigger(), so hero felt "late" vs. desktop.
       if (typeof window !== "undefined") {
@@ -152,12 +158,18 @@ const IndexPage = ({ className, isShowHero = true }) => {
         clearTimeout(tId);
       };
     }
-    // Desktop, non-audit: below-hero i18n fires immediately; deferred tree mounts after chunk load.
-    trigger();
+    // Desktop, non-audit: defer past hydration so Suspense is not updated mid-hydrate (React #421).
+    deferDesktopRaf1 = requestAnimationFrame(() => {
+      deferDesktopRaf2 = requestAnimationFrame(() => {
+        if (effectAlive) trigger();
+      });
+    });
     return () => {
       effectAlive = false;
+      if (deferDesktopRaf1) cancelAnimationFrame(deferDesktopRaf1);
+      if (deferDesktopRaf2) cancelAnimationFrame(deferDesktopRaf2);
     };
-  }, [isMobile]);
+  }, []);
 
   return (
     <PageBackground backgroundType="homepage-bg-1">

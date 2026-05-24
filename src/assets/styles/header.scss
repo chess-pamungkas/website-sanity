@@ -271,6 +271,17 @@
     gap: 8px; // Reduced gap to save space
     margin-left: auto; // Push container to the right edge
     max-width: 380px; // Prevent overflow
+    min-width: 0;
+
+    @include mobile {
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    @include tablet {
+      gap: 10px;
+      flex-shrink: 0;
+    }
 
     @include desktop-lg {
       max-width: 400px; // More space for longer translations
@@ -425,18 +436,38 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-right: 50px;
+      margin-right: 0;
+      min-width: 0;
+      flex: 0 1 auto;
+
+      .header__signin,
+      .header__start {
+        display: none !important;
+      }
     }
-    @include tablet {
+    @include tablet-only {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-right: 50px;
+      margin-right: 0;
+      min-width: 0;
+      flex: 0 1 auto;
+
+      .header__signin,
+      .header__start {
+        display: none !important;
+      }
     }
     @include desktop-lg {
       display: flex;
+      align-items: center;
       gap: 0;
       margin-right: 0;
+
+      .header__signin,
+      .header__start {
+        display: flex !important;
+      }
     }
   }
 

@@ -37,17 +37,17 @@
   @include hero-page-shell-desktop-lg(583px, 83px, 83px);
 
   @include desktop-xl {
-    height: 583px;
+    height: auto;
     padding-top: 83px;
   }
 
   @include desktop-2k {
-    height: 583px;
+    height: auto;
     padding-top: 83px;
   }
 
   @include desktop-5k {
-    height: 583px;
+    height: auto;
     padding-top: 83px;
   }
 

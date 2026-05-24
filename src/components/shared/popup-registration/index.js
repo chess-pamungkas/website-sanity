@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import ReactDOM from "react-dom";
 import cn from "classnames";
 import PropTypes from "prop-types";
@@ -228,10 +228,14 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
   const [isContentReady, setIsContentReady] = useState(false);
   const [isBackgroundLoaded, setIsBackgroundLoaded] = useState(false);
   const [isExternalLoad, setIsExternalLoad] = useState(false);
-  const [portalMounted, setPortalMounted] = useState(false);
+  const [portalMounted, setPortalMounted] = useState(
+    () => typeof document !== "undefined"
+  );
   const popupRootRef = React.useRef(null);
 
-  useEffect(() => setPortalMounted(true), []);
+  useLayoutEffect(() => {
+    setPortalMounted(true);
+  }, []);
   useEffect(() => {
     setIsExternalLoad(isLoadedFromExternalScript());
   }, []);
@@ -1407,6 +1411,8 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
   // NEW: Add debug hook to monitor RTL attributes and force cleanup if needed
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // Internal popup: never force a full-page reload while open (looked like instant close).
+    if (isOpen && !isExternalLoad) return undefined;
 
     // Define what we consider a "stuck" RTL state
     const isRTLStuck = () => {
@@ -1452,7 +1458,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     }, 1000);
 
     return () => clearTimeout(checkTimeout);
-  }, []);
+  }, [isOpen, isExternalLoad]);
 
   // Effect to hide/show live chat on mobile when popup opens/closes
   useEffect(() => {

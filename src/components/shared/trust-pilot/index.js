@@ -128,9 +128,8 @@ const TrustPilot = ({
       fallbackTimer = setTimeout(() => {
         if (cancelledStart) return;
         const isMobileViewport =
-          window.matchMedia &&
-          window.matchMedia("(max-width: 768px)").matches;
-        
+          window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+
         if (isMobileViewport) {
           enqueueBelowFold();
         } else {

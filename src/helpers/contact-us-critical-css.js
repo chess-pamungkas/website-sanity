@@ -24,8 +24,8 @@ export const CONTACT_US_HERO_CRITICAL_CSS = [
   "@media(min-width:1024px){.contact-us__trust-pilot{margin-top:30px;width:393.48px}}",
   /* Content block: paint before deferred-styles-pages.css flip (~0.097 CLS on __container) */
   ".contact-us-content-section{box-sizing:border-box;padding:80px 0 0}",
-  "@media(min-width:769px) and (max-width:1023px){.contact-us-content-section{padding:125px 0 0}}",
-  "@media(min-width:1024px){.contact-us-content-section{padding:150px 0 0}}",
+  "@media(min-width:768px) and (max-width:1023px){.contact-us-content-section{padding:32px 0 0}}",
+  "@media(min-width:1024px){.contact-us-content-section{padding:40px 0 0}}",
   ".contact-us-content-section__container{display:flex;margin:0 auto;box-sizing:border-box;align-items:stretch}",
   "@media(max-width:768px){.contact-us-content-section__container{flex-direction:column;gap:24px;max-width:100%}}",
   "@media(min-width:769px) and (max-width:1023px){.contact-us-content-section__container{flex-direction:column;gap:32px;max-width:100%}}",

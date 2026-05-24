@@ -32,6 +32,10 @@
 
   @include hero-page-shell-tablet(480px, 73px, 70px);
 
+  @include tablet-only {
+    margin-bottom: 0;
+  }
+
   @include desktop-lg {
     min-height: 480px;
     border-radius: 24px;

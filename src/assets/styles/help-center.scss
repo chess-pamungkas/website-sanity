@@ -11,8 +11,8 @@
     padding-bottom: 0;
   }
 
-  @include tablet {
-    padding-top: 150px;
+  @include tablet-only {
+    padding-top: $faq-help-center-after-hero-gap-tablet;
     padding-bottom: 0;
   }
 

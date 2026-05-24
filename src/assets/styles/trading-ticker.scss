@@ -362,6 +362,22 @@
 
   &--infinite-auto-scroll {
     justify-content: unset;
+
+    @media (min-width: 768px) {
+      overflow: hidden;
+      width: 100%;
+
+      .trading-symbols--css-auto-scroll {
+        overflow: visible;
+        width: max-content;
+        animation: auto-scroll-animation 90s linear infinite;
+        will-change: transform;
+      }
+
+      &.trading-symbols-wrapper--rtl .trading-symbols--css-auto-scroll {
+        animation-name: auto-scroll-animation-rtl;
+      }
+    }
   }
 }
 
