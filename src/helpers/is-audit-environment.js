@@ -69,9 +69,7 @@ export const shouldDeferStylesheetsForLighthouse = () =>
 
 /** Defer ticker/socket/layout reads during PSI, ?lighthouse, or localhost DevTools mobile lab. */
 export const shouldDeferHeavyWorkForLighthouse = () =>
-  isAuditEnvironment() ||
-  isHomepagePerfLabSession() ||
-  isDocumentAuditMode();
+  isAuditEnvironment() || isHomepagePerfLabSession() || isDocumentAuditMode();
 
 /**
  * On localhost only: load the official Trustpilot widget even when localhost mobile lab
@@ -110,13 +108,11 @@ export const isTrustpilotForcedOnLocalhost = () => {
 };
 
 /**
- * Skip Trustpilot bootstrap only during true audits (PSI / headless / ?lighthouse). DevTools
- * mobile on localhost loads the official widget like production; use ?trustpilot=1 during an
- * audit run to force the widget when webdriver blocks it.
+ * Skip Trustpilot bootstrap only during true audits (PSI / headless / ?lighthouse on localhost).
+ * Dev/staging/production all load the widget for QA; use ?trustpilot=1 to force it during an audit.
  */
 export const shouldSuppressTrustpilotForLighthousePerf = () =>
-  (isAuditEnvironment() || isNonProductionBuild()) &&
-  !isTrustpilotForcedOnLocalhost();
+  isAuditEnvironment() && !isTrustpilotForcedOnLocalhost();
 
 export const isAuditEnvironment = () => {
   if (typeof navigator === "undefined") return false;

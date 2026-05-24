@@ -1048,22 +1048,11 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
     pathname === "/" || (pathname && pathname.match(/^\/[a-z]{2}\/?$/));
   const isContactUsPath =
     typeof pathname === "string" && pathname.includes("contact-us");
-  if (
-    process.env.GATSBY_ENV === "production" &&
-    (isHomePathForPreconnect || isContactUsPath)
-  ) {
+  if (isHomePathForPreconnect || isContactUsPath) {
     preconnectLinks.push(
       <link
         key="preconnect-trustpilot"
         rel="preconnect"
-        href="https://widget.trustpilot.com"
-      />
-    );
-  } else if (isHomePathForPreconnect || isContactUsPath) {
-    preconnectLinks.push(
-      <link
-        key="dns-prefetch-trustpilot"
-        rel="dns-prefetch"
         href="https://widget.trustpilot.com"
       />
     );
