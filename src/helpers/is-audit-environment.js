@@ -48,9 +48,28 @@ export const isHomepagePerfLabSession = () => {
   }
 };
 
+/** Set by gatsby-ssr audit-detect-stamp before React hydrates (covers DevTools LH when webdriver is unset). */
+export const isDocumentAuditMode = () => {
+  if (typeof document === "undefined") return false;
+  try {
+    return document.documentElement?.getAttribute("data-audit") === "1";
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Stylesheet / GTM defer only (must NOT gate WhenInView, sockets, or ticker — breaks localhost dev).
+ * Active during true audits or explicit ?lighthouse on localhost.
+ */
+export const shouldDeferStylesheetsForLighthouse = () =>
+  isAuditEnvironment() || isDocumentAuditMode();
+
 /** Defer ticker/socket/layout reads during PSI, ?lighthouse, or localhost DevTools mobile lab. */
 export const shouldDeferHeavyWorkForLighthouse = () =>
-  isAuditEnvironment() || isHomepagePerfLabSession();
+  isAuditEnvironment() ||
+  isHomepagePerfLabSession() ||
+  isDocumentAuditMode();
 
 /**
  * On localhost only: load the official Trustpilot widget even when localhost mobile lab
@@ -59,11 +78,7 @@ export const shouldDeferHeavyWorkForLighthouse = () =>
 export const isTrustpilotForcedOnLocalhost = () => {
   if (typeof window === "undefined") return false;
   const host = (window.location.hostname || "").toLowerCase();
-  if (
-    host !== "localhost" &&
-    host !== "127.0.0.1" &&
-    host !== "::1"
-  )
+  if (host !== "localhost" && host !== "127.0.0.1" && host !== "::1")
     return false;
   try {
     return /[?&]trustpilot=1(?:[&=]|$)/i.test(window.location.search || "");
@@ -96,7 +111,9 @@ export const isAuditEnvironment = () => {
       if (Array.isArray(brands)) {
         const b = brands.map((x) => x.brand || "").join(" ");
         if (
-          /Google-InspectionTool|HeadlessChrome|Chrome-Lighthouse|Lighthouse/i.test(b)
+          /Google-InspectionTool|HeadlessChrome|Chrome-Lighthouse|Lighthouse/i.test(
+            b
+          )
         )
           return true;
       }

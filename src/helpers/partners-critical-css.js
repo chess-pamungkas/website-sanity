@@ -16,8 +16,9 @@ export const PARTNERS_HERO_CRITICAL_CSS = [
   "@media(min-width:768px) and (max-width:1023px){.partners__hero-bg-lcp{object-fit:cover;object-position:75% 100%}}",
   ".partners__content-container{position:relative;z-index:4}",
   ".partners__trust-pilot{min-height:30px;height:30px;box-sizing:border-box}",
-  ".income-slider{box-sizing:border-box;padding:150px 0 40px;min-height:520px}",
-  "@media(max-width:768px){.income-slider{min-height:480px;padding:125px 0 40px}}",
+  ".income-slider{box-sizing:border-box;padding:40px 0 40px;min-height:520px}",
+  "@media(min-width:768px) and (max-width:1023px){.income-slider{min-height:520px;padding:32px 0 40px}}",
+  "@media(max-width:767px){.income-slider{min-height:480px;padding:125px 0 40px}}",
   ".income-slider__badge-icon{width:16px;height:16px;display:block;flex-shrink:0}",
   ".income-slider__main-container{box-sizing:border-box;min-height:214px;width:100%;max-width:1241px}",
 ].join("");

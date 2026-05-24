@@ -20,6 +20,15 @@ export const useWindowSize = () => {
     startTransition(() => setWindowSize(readViewportSizeFromMedia()));
   }, []);
 
+  // Post-hydration sync only — useLayoutEffect here caused React #421 on homepage Suspense.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    startTransition(() => {
+      setWindowSize(readViewportSizeFromMedia());
+      setDidActivate(true);
+    });
+  }, []);
+
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
 
@@ -86,8 +95,8 @@ export const useWindowSize = () => {
     height,
     isMobile,
     isMD: hasSize && width >= WINDOW_SIZE_MD && width < WINDOW_SIZE_LG,
-    isTablet: hasSize ? width < WINDOW_SIZE_LG : isMobile,
-    isDesktop: hasSize ? width >= WINDOW_SIZE_LG : !isMobile,
+    isTablet: hasSize ? width < WINDOW_SIZE_LG : false,
+    isDesktop: hasSize ? width >= WINDOW_SIZE_LG : false,
     isLG: hasSize && width >= WINDOW_SIZE_LG && width < WINDOW_SIZE_XL,
     isXL: hasSize ? width >= WINDOW_SIZE_XL : false,
     didActivate,

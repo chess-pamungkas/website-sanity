@@ -39,7 +39,15 @@ body.homepage-bg-1 .partners-page-community #main-container {
 
   @include hero-page-shell-tablet(555px, 73px, 70px);
 
+  @include tablet-only {
+    margin-bottom: 0;
+  }
+
   @include hero-page-shell-desktop-lg(583px, 83px, 83px);
+
+  @include desktop-lg {
+    margin-bottom: 0;
+  }
 
   @include desktop-xl {
     min-height: calc(83px + 583px);

@@ -19,12 +19,12 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
     padding: 125px 0 0 0;
   }
 
-  @include tablet {
-    padding: 125px 0 0 0;
+  @include tablet-only {
+    padding: $contact-us-content-after-hero-gap-tablet 0 0 0;
   }
 
   @include desktop-lg {
-    padding: 150px 0 0 0;
+    padding: $contact-us-content-after-hero-gap-desktop 0 0 0;
   }
 
   &__container {
@@ -890,15 +890,17 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
     overflow: visible;
   }
 
-  @include tablet {
+  @include tablet-only {
     /* 73px top + 455px artboard — fixed height:455px clipped absolute hero → body CLS ~0.11 */
     min-height: calc(73px + 455px);
     height: auto;
     padding-top: 70px;
     padding-bottom: 0;
+    margin-bottom: 0;
   }
 
   @include desktop-lg {
+    margin-bottom: 0;
     min-height: calc(77px + 510px);
     height: auto;
     padding-top: 83px;

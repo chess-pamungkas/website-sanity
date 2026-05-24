@@ -3,6 +3,10 @@ import { useTranslationWithVariables } from "../../../../helpers/hooks/use-trans
 import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
 import { shouldDeferHeavyWorkForLighthouse } from "../../../../helpers/is-audit-environment";
+import {
+  FEATURE_EXECUTION_CARD_GAP_PX,
+  FEATURE_EXECUTION_CARD_WIDTH_PX,
+} from "../../../../helpers/features-execution-layout";
 import LanguageContext from "../../../../context/language-context";
 import FeaturesIcon from "../../../../assets/images/icons/main-page/features-execution-excellence/features.svg";
 import NavArrowLeft from "../../../../assets/images/icons/main-page/features-execution-excellence/nav-arrow-left.svg";
@@ -38,6 +42,10 @@ const FeaturesExecutionExcellence = () => {
   // Cache card width to avoid forced reflows; run only when in viewport. Skip during audit to avoid forced reflow.
   useEffect(() => {
     if (shouldDeferHeavyWorkForLighthouse()) return undefined;
+    if (!isMobile) {
+      cardWidthRef.current = FEATURE_EXECUTION_CARD_WIDTH_PX;
+      return undefined;
+    }
     const container = cardContainerRef.current;
     if (!container) return undefined;
 
@@ -78,7 +86,7 @@ const FeaturesExecutionExcellence = () => {
       };
     }
     return () => clearTimeout(fallback);
-  }, [isRTL]);
+  }, [isMobile, isRTL]);
 
   // Reset scroll index when screen size changes
   useEffect(() => {
@@ -167,7 +175,7 @@ const FeaturesExecutionExcellence = () => {
       const cardWidth = cardWidthRef.current;
       if (!container || cardWidth == null) return;
 
-      const gap = 17;
+      const gap = isMobile ? 17 : FEATURE_EXECUTION_CARD_GAP_PX;
       const totalCardWidth = cardWidth + gap;
       const scrollPosition = totalCardWidth * newIndex;
 

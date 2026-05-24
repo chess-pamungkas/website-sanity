@@ -21,11 +21,15 @@ const FeaturesSectionContent = lazy(() => import("../../../features-section"));
 const GuideContent = lazy(() => import("../../../shared/guide-content"));
 const OurCommunityContent = lazy(() => import("../../../shared/our-community"));
 
-/** WhenInView: minimal stagger on mobile so lazy chunks attach quickly when scrolling. */
+/** Stagger IO attach; empty wrappers need observeMinHeight or they never intersect. */
 const WIV_MOBILE = [0, 24, 48, 72, 96];
+const WIV_DESKTOP = [0, 48, 96, 144, 192];
+/** Reserve space while lazy chunks load so IO can fire before children mount. */
+const BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX = 520;
 
 const HomeDeferredApp = ({ isMobile }) => {
   const firstBlockPlaceholderRef = useRef(null);
+  const wivDelays = isMobile ? WIV_MOBILE : WIV_DESKTOP;
 
   return (
     <>
@@ -40,12 +44,20 @@ const HomeDeferredApp = ({ isMobile }) => {
         </ContainerWrapper>
       </div>
 
-      <WhenInView rootMargin="200px 0px" delayMs={isMobile ? WIV_MOBILE[0] : 1800}>
+      <WhenInView
+        rootMargin="200px 0px"
+        delayMs={wivDelays[0]}
+        observeMinHeight={BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX}
+      >
         <Suspense fallback={null}>
           <AccountComparison />
         </Suspense>
       </WhenInView>
-      <WhenInView rootMargin="200px 0px" delayMs={isMobile ? WIV_MOBILE[1] : 2200}>
+      <WhenInView
+        rootMargin="200px 0px"
+        delayMs={wivDelays[1]}
+        observeMinHeight={BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX}
+      >
         <ContainerWrapper>
           <Suspense fallback={null}>
             <CostCalculatorContent />
@@ -53,12 +65,20 @@ const HomeDeferredApp = ({ isMobile }) => {
           </Suspense>
         </ContainerWrapper>
       </WhenInView>
-      <WhenInView rootMargin="200px 0px" delayMs={isMobile ? WIV_MOBILE[2] : 2600}>
+      <WhenInView
+        rootMargin="200px 0px"
+        delayMs={wivDelays[2]}
+        observeMinHeight={BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX}
+      >
         <Suspense fallback={null}>
           <MarketSentimentContent />
         </Suspense>
       </WhenInView>
-      <WhenInView rootMargin="200px 0px" delayMs={isMobile ? WIV_MOBILE[3] : 3000}>
+      <WhenInView
+        rootMargin="200px 0px"
+        delayMs={wivDelays[3]}
+        observeMinHeight={BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX}
+      >
         <ContainerWrapper>
           <Suspense fallback={null}>
             <TrustContent />
@@ -70,7 +90,11 @@ const HomeDeferredApp = ({ isMobile }) => {
           </Suspense>
         </ContainerWrapper>
       </WhenInView>
-      <WhenInView rootMargin="200px 0px" delayMs={isMobile ? WIV_MOBILE[4] : 3400}>
+      <WhenInView
+        rootMargin="200px 0px"
+        delayMs={wivDelays[4]}
+        observeMinHeight={BELOW_FOLD_OBSERVE_MIN_HEIGHT_PX}
+      >
         {isMobile ? (
           <Suspense fallback={null}>
             <OurCommunityContent />

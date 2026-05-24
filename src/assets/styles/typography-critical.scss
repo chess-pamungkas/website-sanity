@@ -25,3 +25,14 @@
   font-style: normal;
   font-display: swap;
 }
+
+/* Trustpilot widget loads this Google file without font-display — register first with swap. */
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2")
+    format("woff2");
+}

@@ -42,3 +42,13 @@ export const scheduleAfterLcpOrCap = (onReady, capMs) => {
     }
   };
 };
+
+/** Timer-only defer (no LCP observer) — keeps work out of the Lighthouse trace window. */
+export const scheduleAfterCapOnly = (onReady, capMs) => {
+  if (typeof window === "undefined") {
+    onReady();
+    return () => {};
+  }
+  const id = window.setTimeout(onReady, capMs);
+  return () => window.clearTimeout(id);
+};

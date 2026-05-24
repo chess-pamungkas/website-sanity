@@ -3,11 +3,23 @@
 
 .burger-menu {
   @include mobile {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    position: relative;
+    width: 40px;
+    height: 40px;
   }
 
   @include tablet {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    position: relative;
+    width: 40px;
+    height: 40px;
   }
 
   @include desktop-lg {
@@ -40,7 +52,17 @@
     cursor: pointer;
 
     @include mobile {
-      right: 25px;
+      position: relative;
+      top: auto;
+      right: auto;
+      left: auto;
+    }
+
+    @include tablet {
+      position: relative;
+      top: auto;
+      right: auto;
+      left: auto;
     }
 
     &--open {

@@ -23,12 +23,30 @@ $product-page-ticker-margin-top-desktop: $homepage-ticker-margin-top-desktop;
 /* Marketing heroes (account-types, funding, spreads, tools, VPS, swap-free): gap hero → first block. */
 $below-marketing-hero-gap-tablet: $homepage-ticker-margin-top-tablet;
 $below-marketing-hero-gap-desktop: $homepage-ticker-margin-top-desktop;
-$below-marketing-hero-section-padding-top-tablet: 32px;
-$below-marketing-hero-section-padding-top-desktop: 40px;
+$below-marketing-hero-section-padding-top-tablet: 52px;
+$below-marketing-hero-section-padding-top-desktop: 80px;
 /* /funding/: gap between .funding-withdrawals hero and .funding-page (all viewports). */
 $funding-page-after-hero-gap-mobile: 32px;
 $funding-page-after-hero-gap-tablet: 32px;
 $funding-page-after-hero-gap-desktop: 40px;
+/* FAQ (/faq/): gap between .faq-hero and .help-center (tablet only; desktop keeps legacy offset). */
+$faq-help-center-after-hero-gap-tablet: $below-marketing-hero-section-padding-top-tablet;
+/* Contact (/contact-us/): gap between .contact-us hero and .contact-us-content-section. */
+$contact-us-content-after-hero-gap-tablet: $below-marketing-hero-section-padding-top-tablet;
+$contact-us-content-after-hero-gap-desktop: $below-marketing-hero-section-padding-top-desktop;
+/* Legal regulated card: symmetric inset for .legal-regulated-content__wrapper */
+$legal-regulated-wrapper-padding-block-mobile: 48px;
+$legal-regulated-wrapper-padding-inline-mobile: 20px;
+$legal-regulated-wrapper-padding-block-tablet: 48px;
+$legal-regulated-wrapper-padding-inline-tablet: 24px;
+$legal-regulated-wrapper-padding-block-desktop: 75px;
+$legal-regulated-wrapper-padding-inline-desktop: 20px;
+/* Legal (/legal/): gap between .legal hero and .legal-regulators. */
+$legal-regulators-after-hero-gap-tablet: $below-marketing-hero-section-padding-top-tablet;
+$legal-regulators-after-hero-gap-desktop: $below-marketing-hero-section-padding-top-desktop;
+/* Partners (/partners/): gap between .partners hero and .income-slider. */
+$partners-income-slider-after-hero-gap-tablet: $below-marketing-hero-section-padding-top-tablet;
+$partners-income-slider-after-hero-gap-desktop: $below-marketing-hero-section-padding-top-desktop;
 /* Mobile hero shell: padding-top + absolute artboard (matches *-mobile.svg 953px). */
 $funding-withdrawals-hero-mobile-top: 73px;
 $funding-withdrawals-hero-mobile-artboard: 953px;
@@ -37,7 +55,8 @@ $homepage-ticker-block-height-mobile: (
   $homepage-ticker-margin-top-mobile + $homepage-ticker-body-height-mobile
 );
 $below-hero-first-block-inner-min-height-mobile: (
-  $below-hero-first-block-min-height-mobile - $homepage-ticker-block-height-mobile
+  $below-hero-first-block-min-height-mobile -
+    $homepage-ticker-block-height-mobile
 );
 
 $font: "Sofia Pro", sans-serif;

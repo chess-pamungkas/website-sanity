@@ -39,7 +39,6 @@ export const CommonProvider = ({ children }) => {
   }, []);
 
   // Must run before paint: the desktop header-offset spacer drives #main-container layout.
-  // startTransition deferred heightOffset → first paint had 0px placeholder → huge CLS (~0.56).
   useLayoutEffect(() => {
     if (shouldDeferHeavyWorkForLighthouse() || !isBrowser()) {
       return undefined;

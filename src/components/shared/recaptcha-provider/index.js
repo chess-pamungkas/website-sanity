@@ -2,7 +2,6 @@ import React, { useEffect, useState, startTransition } from "react";
 import { shouldDeferHeavyWorkForLighthouse } from "../../../helpers/is-audit-environment";
 
 const ReCaptchaProvider = ({ children, showBadge = false }) => {
-  const [shouldLoadRecaptcha, setShouldLoadRecaptcha] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [GoogleReCaptchaProvider, setGoogleReCaptchaProvider] = useState(null);
 
@@ -10,38 +9,24 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
     startTransition(() => setIsClient(true));
   }, []);
 
-  // Load reCAPTCHA ONLY when a form that actually consumes it becomes visible (showBadge=true,
-  // i.e. registration popup opens or user is on /contact-us). Previously this was wired to
-  // window-level mousedown/touchstart/keydown listeners — that "warmup" trick caused the
-  // entire layout subtree to be wrapped in a different parent component (Fragment →
-  // GoogleReCaptchaProvider) on the user's first click on the homepage. React responds to
-  // a parent-type swap by UNMOUNTING and REMOUNTING all descendants, which the user
-  // perceived as "all content below hero + Trustpilot reload after first click".
-  //
-  // Form latency impact: ~negligible. The reCAPTCHA chunk + api.js download together is
-  // ~30-200 ms; the popup also loads its own form code on open, which dominates. Real users
-  // never notice. Forms still work because executeRecaptcha() inside form handlers awaits
-  // the provider being ready.
+  // Preload the provider wrapper after hydration so the tree parent type stays stable
+  // when the registration popup opens. Layout's MutationObserver sets showBadge=true on
+  // first open; gating the wrapper on showBadge used to swap Fragment → GoogleReCaptchaProvider
+  // and remount Header/Hero, resetting isPopupOpen and closing the popup instantly.
   useEffect(() => {
-    if (shouldDeferHeavyWorkForLighthouse()) return;
+    if (!isClient || shouldDeferHeavyWorkForLighthouse()) return;
+    if (GoogleReCaptchaProvider) return;
+    // Homepage desktop: load only when badge needed (popup/contact) — avoids recaptcha__en.js forced reflow in LH.
     if (!showBadge) return;
-    if (shouldLoadRecaptcha) return;
-    setShouldLoadRecaptcha(true);
-  }, [showBadge, shouldLoadRecaptcha]);
 
-  // Dynamic import so react-google-recaptcha-v3 is in a separate chunk (reduces main bundle and unused JS)
-  useEffect(() => {
-    if (!shouldLoadRecaptcha) return;
-    if (shouldDeferHeavyWorkForLighthouse()) return;
     import("react-google-recaptcha-v3")
       .then((mod) =>
         setGoogleReCaptchaProvider(() => mod.GoogleReCaptchaProvider)
       )
       .catch(() => {});
-  }, [shouldLoadRecaptcha]);
+  }, [isClient, GoogleReCaptchaProvider, showBadge]);
 
   useEffect(() => {
-    // Audit: skip the badge style injection (no badge shown anyway in audit).
     if (shouldDeferHeavyWorkForLighthouse()) return;
     const style = document.createElement("style");
     style.setAttribute("data-recaptcha-style", "true");
@@ -77,7 +62,6 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
     document.head.appendChild(style);
 
     return () => {
-      // Cleanup style when component unmounts
       const existingStyle = document.querySelector(
         "style[data-recaptcha-style]"
       );
@@ -87,9 +71,6 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
     };
   }, [showBadge]);
 
-  // Only render GoogleReCaptchaProvider when script should be loaded
-  // This prevents unnecessary initialization overhead
-  // Also ensure it only renders on client-side to avoid hydration warnings
   if (!isClient) {
     return <>{children}</>;
   }
@@ -98,7 +79,7 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
 
   return (
     <>
-      {shouldLoadRecaptcha && RecaptchaWrapper ? (
+      {RecaptchaWrapper ? (
         <RecaptchaWrapper
           reCaptchaKey={process.env.GATSBY_GOOGLE_CAPTCHA_SITE_KEY}
           scriptProps={{
@@ -117,9 +98,6 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
               size: "invisible",
               theme: "light",
             },
-          }}
-          onLoad={() => {
-            console.log("ReCaptcha Provider loaded");
           }}
         >
           {children}

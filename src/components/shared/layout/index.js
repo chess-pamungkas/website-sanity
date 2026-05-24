@@ -47,6 +47,7 @@ import { pushUTMParamsToDataLayer } from "../../../helpers/services/gtm-service"
 import { isBrowser } from "../../../helpers/services/is-browser";
 import {
   shouldDeferHeavyWorkForLighthouse,
+  shouldDeferStylesheetsForLighthouse,
   isAuditEnvironment,
   AUDIT_HEAVY_WORK_DEFER_MS,
 } from "../../../helpers/is-audit-environment";
@@ -394,7 +395,7 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
         typeof window !== "undefined" &&
         window.matchMedia &&
         window.matchMedia(MOBILE_VIEWPORT_MQ).matches;
-      const delay = isAuditEnvironment()
+      const delay = shouldDeferStylesheetsForLighthouse()
         ? AUDIT_HEAVY_WORK_DEFER_MS
         : isMobileViewport
           ? isHomeMarketing
@@ -406,7 +407,7 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
         clearTimeout(t);
         if (tChunk2) clearTimeout(tChunk2);
       };
-    }, []);
+    }, [isHomeMarketing]);
 
     // Fallback if SSR did not emit deferred-styles-pages.css (non-home routes get it in gatsby-ssr onPreRenderHTML).
     useEffect(() => {

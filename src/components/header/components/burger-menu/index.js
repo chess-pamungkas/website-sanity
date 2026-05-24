@@ -17,7 +17,7 @@ import Accordion from "../../../shared/accordion";
 import { getMenuStructure } from "../../../../helpers/menu-structure.config";
 import InternalLink from "../../../shared/internal-link";
 import { LogoTextMain } from "../../../shared/icons/critical";
-import { setLangParam } from "../../../../helpers/services/language-service";
+import { useLangParam } from "../../../../helpers/services/language-service";
 import ButtonPopup from "../../../shared/button-popup";
 import closeNavbarMobileIcon from "../../../../assets/images/icons/close-navbar-mobile.svg";
 import chevronDownIcon from "../../../../assets/images/icons/burger-menu-navbar/chevron-down.svg";
@@ -33,7 +33,7 @@ const BurgerMenu = ({ className }) => {
   const menu = getMenuStructure();
   const [selectedNavItem, setSelectedNavItem] = useState(menu[0].title);
   const [isLangPopupOpened, setIsLangPopupOpened] = useState(false);
-  const langParam = setLangParam(); // Get the language parameter
+  const langParam = useLangParam();
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
 
   // Mobile navigation accordion state
@@ -226,16 +226,13 @@ const BurgerMenu = ({ className }) => {
                 if (!subItems || subItems.length === 0 || isPartners) {
                   return (
                     <div key={title} className="mobile-nav-item">
-                      <a
-                        href={link}
+                      <InternalLink
+                        to={link}
                         className="mobile-nav-header mobile-nav-link"
-                        onClick={() => {
-                          // Handle navigation and close menu
-                          onTriggerChange();
-                        }}
+                        onClick={() => onTriggerChange()}
                       >
                         <span className="mobile-nav-title">{t(title)}</span>
-                      </a>
+                      </InternalLink>
                     </div>
                   );
                 }
@@ -285,9 +282,9 @@ const BurgerMenu = ({ className }) => {
                                       !si.footerOnly
                                   )
                                   .map(({ link, title: subTitle }) => (
-                                    <a
+                                    <InternalLink
                                       key={`mobile-nav-${subTitle}`}
-                                      href={link}
+                                      to={link}
                                       className="mobile-nav-subitem"
                                       onClick={(e) => {
                                         if (!handleLiveChatClick(e, subTitle)) {
@@ -296,7 +293,7 @@ const BurgerMenu = ({ className }) => {
                                       }}
                                     >
                                       {t(subTitle)}
-                                    </a>
+                                    </InternalLink>
                                   ))}
                               </div>
                             );
@@ -311,9 +308,9 @@ const BurgerMenu = ({ className }) => {
                           } = item;
                           if (desktopOnly || footerOnly) return null;
                           return (
-                            <a
+                            <InternalLink
                               key={`mobile-nav-${subTitle}`}
-                              href={link}
+                              to={link}
                               className="mobile-nav-subitem"
                               onClick={(e) => {
                                 if (!handleLiveChatClick(e, subTitle)) {
@@ -322,7 +319,7 @@ const BurgerMenu = ({ className }) => {
                               }}
                             >
                               {t(subTitle)}
-                            </a>
+                            </InternalLink>
                           );
                         })}
                       </div>

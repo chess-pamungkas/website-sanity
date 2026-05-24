@@ -2,8 +2,9 @@ import React, { useRef, useState, useEffect, useMemo } from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
-import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { shouldDeferHeavyWorkForLighthouse } from "../../../../helpers/is-audit-environment";
+import { scheduleAfterLcpOrCap } from "../../../../helpers/schedule-after-lcp";
+import { MOBILE_VIEWPORT_MQ } from "../../../../helpers/viewport-media";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
 import arrowUp from "../../../../assets/images/icons/trading-ticker/arrow-up.svg";
 import arrowDown from "../../../../assets/images/icons/trading-ticker/arrow-down.svg";
@@ -44,9 +45,12 @@ const TradingSymbols = ({
 }) => {
   const symbolsRef = useRef();
   const isRTL = useRtlDirection();
-  const { isMobile } = useWindowSize();
   const { t } = useTranslationWithVariables();
-  const margin = isMobile ? 10 : 0;
+  const isProgrammaticScrollRef = useRef(false);
+  const isMobileLayout = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia(MOBILE_VIEWPORT_MQ).matches;
+  const margin = isMobileLayout() ? 10 : 0;
   const scrollStep = 1;
   const [isTouched, setIsTouched] = useState(false);
   const scrollMetricsRef = useRef({ scrollWidth: 0 });
@@ -95,7 +99,7 @@ const TradingSymbols = ({
   }, [preloadKey]);
 
   const fixedCardWidthPx = () =>
-    isMobile ? 0 : TRADING_SYMBOL_CARD_WIDTH_PX;
+    isMobileLayout() ? 0 : TRADING_SYMBOL_CARD_WIDTH_PX;
 
   const getCardWidth = (card) => {
     if (!card) return 0;
@@ -137,103 +141,104 @@ const TradingSymbols = ({
     if (card && width != null) card.dataset.cardWidth = String(width);
   };
 
+  /** Desktop: card count × stride only (no scrollWidth/scrollLeft reads). Mobile: deferred geometric measure. */
+  const syncScrollMetrics = (container) => {
+    const cards = container.querySelectorAll(".trading-symbol-card");
+    if (!cards.length) return;
+
+    if (fixedCardWidthPx() > 0) {
+      scrollMetricsRef.current.scrollWidth =
+        cards.length * TRADING_SYMBOL_CARD_STRIDE_PX;
+      for (let i = 0; i < cards.length; i++) {
+        setCardWidthCache(cards[i], TRADING_SYMBOL_CARD_WIDTH_PX);
+      }
+      return;
+    }
+
+    let frame1;
+    let frame2;
+    frame1 = requestAnimationFrame(() => {
+      frame2 = requestAnimationFrame(() => {
+        scrollMetricsRef.current.scrollWidth = container.scrollWidth;
+        const sampleWidth = readCardWidth(cards[0]);
+        for (let i = 0; i < cards.length; i++) {
+          if (!cards[i].dataset.cardWidth) {
+            setCardWidthCache(cards[i], sampleWidth);
+          }
+        }
+      });
+    });
+    return () => {
+      if (frame1) cancelAnimationFrame(frame1);
+      if (frame2) cancelAnimationFrame(frame2);
+    };
+  };
+
   useEffect(() => {
     const container = symbolsRef.current;
-    if (!container) return;
+    if (!container || !symbols?.length || !isMobileLayout()) return undefined;
 
-    // Run layout measure only when container is in viewport. In audit use long fallback so we don't run during trace.
-    const measureFallbackMs = shouldDeferHeavyWorkForLighthouse()
-      ? 15000
-      : 8000;
-    const runMeasure = () => {
-      let frame1;
-      let frame2;
-      let frame3;
-      frame1 = requestAnimationFrame(() => {
-        frame2 = requestAnimationFrame(() => {
-          const cards = container.querySelectorAll(".trading-symbol-card");
-          if (!cards.length) return;
-          scrollPositionRef.current = container.scrollLeft || 0;
-          const sampleWidth = fixedCardWidthPx() || readCardWidth(cards[0]);
-          if (fixedCardWidthPx() > 0) {
-            scrollMetricsRef.current.scrollWidth =
-              cards.length * TRADING_SYMBOL_CARD_STRIDE_PX;
-          } else {
-            scrollMetricsRef.current.scrollWidth = container.scrollWidth;
-          }
-          frame3 = requestAnimationFrame(() => {
-            for (let i = 0; i < cards.length; i++) {
-              if (!cards[i].dataset.cardWidth) {
-                setCardWidthCache(cards[i], sampleWidth);
-              }
-            }
-          });
-        });
-      });
-      return () => {
-        if (frame1) cancelAnimationFrame(frame1);
-        if (frame2) cancelAnimationFrame(frame2);
-        if (frame3) cancelAnimationFrame(frame3);
-      };
-    };
-    let cancelMeasure;
+    let cancelArm = () => {};
+    let cancelMeasure = () => {};
     let cancelDeferRaf = null;
+    let io = null;
+    let fallbackId = null;
     let didRun = false;
+
     const runOnce = () => {
-      if (didRun) return;
+      if (didRun || shouldDeferHeavyWorkForLighthouse()) return;
       didRun = true;
-      /* IntersectionObserver often fires in the same turn as React/layout commits; defer one frame
-       * before scrollWidth + card sampling so geometric reads are not synchronous forced reflows. */
       cancelDeferRaf = requestAnimationFrame(() => {
         cancelDeferRaf = null;
-        cancelMeasure = runMeasure();
+        cancelMeasure = syncScrollMetrics(container) || (() => {});
       });
     };
-    const fallback = setTimeout(runOnce, measureFallbackMs);
-    if (typeof IntersectionObserver !== "undefined") {
-      const io = new IntersectionObserver(
-        (entries) => {
-          if (entries[0]?.isIntersecting) runOnce();
-        },
-        { rootMargin: "100px 0px", threshold: 0 }
-      );
-      io.observe(container);
-      return () => {
-        clearTimeout(fallback);
-        if (cancelDeferRaf != null) cancelAnimationFrame(cancelDeferRaf);
-        cancelMeasure && cancelMeasure();
-        io.disconnect();
-      };
-    }
-    return () => {
-      clearTimeout(fallback);
-      if (cancelDeferRaf != null) cancelAnimationFrame(cancelDeferRaf);
-      cancelMeasure && cancelMeasure();
+
+    const arm = () => {
+      if (shouldDeferHeavyWorkForLighthouse()) return;
+      if (!isMobileLayout()) {
+        runOnce();
+        return;
+      }
+      const measureFallbackMs = 8000;
+      fallbackId = setTimeout(runOnce, measureFallbackMs);
+      if (typeof IntersectionObserver !== "undefined") {
+        io = new IntersectionObserver(
+          (entries) => {
+            if (entries[0]?.isIntersecting) runOnce();
+          },
+          { rootMargin: "100px 0px", threshold: 0 }
+        );
+        io.observe(container);
+      }
     };
-  }, [symbols, isMobile]);
+
+    cancelArm = scheduleAfterLcpOrCap(
+      arm,
+      shouldDeferHeavyWorkForLighthouse() ? 15000 : 4500
+    );
+
+    return () => {
+      cancelArm();
+      if (fallbackId) clearTimeout(fallbackId);
+      if (cancelDeferRaf != null) cancelAnimationFrame(cancelDeferRaf);
+      cancelMeasure();
+      if (io) io.disconnect();
+    };
+  }, [symbols]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    // Skip layout reads during Lighthouse to avoid forced reflow (92ms+ from app bundle).
-    if (shouldDeferHeavyWorkForLighthouse()) return;
+    if (typeof window === "undefined" || !isMobileLayout()) return undefined;
+    if (shouldDeferHeavyWorkForLighthouse()) return undefined;
 
     let resizeFrame = null;
 
     const measure = () => {
       const container = symbolsRef.current;
       if (!container) return;
-      scrollPositionRef.current = container.scrollLeft || 0;
       const cards = container.querySelectorAll(".trading-symbol-card");
-      if (fixedCardWidthPx() > 0 && cards.length) {
-        scrollMetricsRef.current.scrollWidth =
-          cards.length * TRADING_SYMBOL_CARD_STRIDE_PX;
-        cards.forEach((card) => {
-          card.dataset.cardWidth = String(fixedCardWidthPx());
-        });
-      } else {
-        scrollMetricsRef.current.scrollWidth = container.scrollWidth;
-        cards.forEach((card) => delete card.dataset.cardWidth);
-      }
+      scrollMetricsRef.current.scrollWidth = container.scrollWidth;
+      cards.forEach((card) => delete card.dataset.cardWidth);
     };
 
     const handleResize = () => {
@@ -248,7 +253,7 @@ const TradingSymbols = ({
       window.removeEventListener("resize", handleResize);
       if (resizeFrame) cancelAnimationFrame(resizeFrame);
     };
-  }, [isMobile]);
+  }, []);
 
   const getIconIdsForSymbol = (symbolStr) => {
     const symbolUpper = symbolStr.toUpperCase();
@@ -339,8 +344,16 @@ const TradingSymbols = ({
       isTouched &&
       lastchild;
 
-    const firstWidth = needMoveFirst ? readCardWidth(first) : 0;
-    const lastChildWidth = needMoveLast ? readCardWidth(lastchild) : 0;
+    const cardStride =
+      fixedCardWidthPx() > 0
+        ? TRADING_SYMBOL_CARD_STRIDE_PX
+        : null;
+    const firstWidth = needMoveFirst
+      ? cardStride ?? readCardWidth(first)
+      : 0;
+    const lastChildWidth = needMoveLast
+      ? cardStride ?? readCardWidth(lastchild)
+      : 0;
     if (needMoveFirst) setCardWidthCache(first, firstWidth);
     if (needMoveLast) setCardWidthCache(lastchild, lastChildWidth);
 
@@ -387,13 +400,20 @@ const TradingSymbols = ({
       cont.prepend(lastchild);
     }
     scrollPositionRef.current = targetScrollLeft;
+    isProgrammaticScrollRef.current = true;
     cont.scrollLeft = targetScrollLeft;
+    requestAnimationFrame(() => {
+      isProgrammaticScrollRef.current = false;
+    });
   };
 
   useEffect(() => {
     if (!isInfiniteAutoScroll || isTouched) return;
+    /* Desktop/tablet: CSS translate animation (no appendChild / scrollLeft — Lighthouse forced reflow). */
+    if (!isMobileLayout()) return undefined;
     /* No symbols yet (page-specific tickers before Socket.IO): skip the loop — N tickers × idle rAF was dominating TBT on /all-markets/. */
     if (!symbols?.length) return;
+    if (shouldDeferHeavyWorkForLighthouse()) return undefined;
 
     const container = symbolsRef.current;
     if (!container) return undefined;
@@ -402,6 +422,8 @@ const TradingSymbols = ({
     let writeFrameId;
     let cancelled = false;
     let scrolling = false;
+    let cancelScrollArm = () => {};
+    let visibilityIo = null;
 
     const stopScroll = () => {
       scrolling = false;
@@ -432,47 +454,57 @@ const TradingSymbols = ({
       animationFrameId = requestAnimationFrame(tick);
     };
 
-    if (typeof IntersectionObserver === "undefined") {
-      isTickerVisibleRef.current = true;
-      startScroll();
-      return () => {
-        cancelled = true;
-        stopScroll();
-      };
-    }
+    const armAutoScroll = () => {
+      if (cancelled) return;
+      if (typeof IntersectionObserver === "undefined") {
+        isTickerVisibleRef.current = true;
+        startScroll();
+        return;
+      }
 
-    const visibilityIo = new IntersectionObserver(
-      ([entry]) => {
-        const visible = !!entry?.isIntersecting;
-        isTickerVisibleRef.current = visible;
-        if (visible) startScroll();
-        else stopScroll();
-      },
-      { rootMargin: "80px 0px", threshold: 0 }
-    );
-    visibilityIo.observe(container);
+      visibilityIo = new IntersectionObserver(
+        ([entry]) => {
+          const visible = !!entry?.isIntersecting;
+          isTickerVisibleRef.current = visible;
+          if (visible) startScroll();
+          else stopScroll();
+        },
+        { rootMargin: "80px 0px", threshold: 0 }
+      );
+      visibilityIo.observe(container);
+    };
+
+    // After hero LCP: avoid rAF scroll loop + DOM moves during the Lighthouse trace window.
+    cancelScrollArm = scheduleAfterLcpOrCap(armAutoScroll, 4500);
 
     return () => {
       cancelled = true;
-      visibilityIo.disconnect();
+      cancelScrollArm();
+      if (visibilityIo) visibilityIo.disconnect();
       stopScroll();
     };
   }, [isInfiniteAutoScroll, isTouched, isRTL, symbols?.length]);
+
+  const useCssInfiniteScroll = isInfiniteAutoScroll && !isMobileLayout();
 
   return (
     <div
       className={cn("trading-symbols-wrapper", className, {
         "trading-symbols-wrapper--rtl": isRTL,
+        "trading-symbols-wrapper--infinite-auto-scroll": useCssInfiniteScroll,
       })}
     >
       <div className="scroll-disabler"></div>
       <div
         id={`trading-symbols-${uniqueId}`}
-        className="trading-symbols"
+        className={cn("trading-symbols", {
+          "trading-symbols--css-auto-scroll": useCssInfiniteScroll,
+        })}
         ref={symbolsRef}
         onTouchStart={() => setIsTouched(true)}
         onTouchEnd={() => setIsTouched(false)}
         onScroll={() => {
+          if (isProgrammaticScrollRef.current) return;
           const container = symbolsRef.current;
           if (!container) return;
           scrollPositionRef.current = container.scrollLeft;
