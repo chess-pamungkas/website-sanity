@@ -22,15 +22,10 @@ const findLangById = (languageId) => {
 };
 
 const getLangFromUrl = () => {
-  // used to find the /{ln}/ part and extract the language
-  if (isBrowser()) {
-    const { pathname } = window.location;
-    const matches = pathname.match(/\/[a-z]{2}\//);
-    if (matches) {
-      const langCode = matches[0].slice(1, 3);
-      return langCode;
-    }
-  }
+  if (!isBrowser()) return undefined;
+  const { pathname } = window.location;
+  const match = pathname.match(/^\/([a-z]{2})(?:\/|$)/);
+  return match ? match[1] : undefined;
 };
 
 const langFromCookie = cookies.get(LAST_LANGUAGE_KEY);
@@ -81,7 +76,12 @@ export const detectInitialLanguage = (recommendedLanguage) => {
     return defaultLang;
   }
 
-  return findLangById(langFromCookie || recommendedLanguage);
+  // Geo from client-detection wins over stale lastLanguage cookie on unprefixed entry (e.g. /).
+  if (recommendedLanguage) {
+    return findLangById(recommendedLanguage);
+  }
+
+  return findLangById(langFromCookie);
 };
 
 export const setLangParam = (selectedLanguage) => {

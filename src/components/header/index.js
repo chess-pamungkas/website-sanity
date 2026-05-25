@@ -39,6 +39,7 @@ import { useWindowSize } from "../../helpers/hooks/use-window-size";
 import { useLangParam } from "../../helpers/services/language-service";
 import LangSelect from "./components/lang-select";
 import PartnersNavIcon from "../shared/icons/PartnersNavIcon";
+import { useRegistrationPopup } from "../../context/registration-popup-context";
 
 const Header = ({ className }) => {
   const { t } = useTranslationWithVariables();
@@ -61,21 +62,22 @@ const Header = ({ className }) => {
     /^\/[a-z]{2}\/?$/.test(location?.pathname || "");
   const [showSigninCTA] = useState(true);
 
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const { isOpen: isPopupOpen, open: openRegistrationPopup, close: closeRegistrationPopup } =
+    useRegistrationPopup();
   const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
   const [dropdownLocked, setDropdownLocked] = useState(false); // Add lock state
   const lastDropdownIndexRef = useRef(null);
   const [partnersDropdownHovered, setPartnersDropdownHovered] = useState(false);
 
   const handleShowRegistrationPopup = (langParam) => {
-    setIsPopupOpen(true);
+    openRegistrationPopup();
     setDropdownLocked(true); // Lock dropdown when popup opens
     lastDropdownIndexRef.current = openDropdownIndex;
     // Optionally store langParam if needed
   };
 
   const handleClosePopup = () => {
-    setIsPopupOpen(false);
+    closeRegistrationPopup();
     setDropdownLocked(false); // Unlock dropdown when popup closes
   };
 

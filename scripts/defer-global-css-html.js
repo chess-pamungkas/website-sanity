@@ -22,7 +22,7 @@ function makeLcpLoader(urlsJson) {
   // subtree gets layout/size from real screen stylesheets (deferring flip behind
   // double-rAF caused multi-second Lighthouse `elementRenderDelay` when network was fast).
   // inj: inject webpack-runtime / framework / app after double-rAF — keeps bulky parse/eval off the first frames.
-  return `<script>(function(){var u=${urlsJson};function inj(){u.forEach(function(s){var e=document.createElement("script");e.src=s;e.async=true;document.body.appendChild(e);});}var flipDone=false;function flip(){if(flipDone)return;flipDone=true;var s=document.querySelectorAll('link[rel="stylesheet"][media="print"]');[].forEach.call(s,function(l){l.media='all';if(l.onload)l.onload();});}var jsDone=false;function injJs(){if(jsDone)return;jsDone=true;inj();}flip();requestAnimationFrame(function(){requestAnimationFrame(function(){injJs();});});})();</script>`;
+  return `<script>(function(){var u=${urlsJson};function oqMarkStylesReady(){if(window.__oqStylesReady)return;window.__oqStylesReady=1;requestAnimationFrame(function(){requestAnimationFrame(function(){var idle=function(fn,t){if(typeof requestIdleCallback!=='undefined')requestIdleCallback(fn,{timeout:t||320});else setTimeout(fn,80)};idle(function(){try{document.documentElement.classList.add('app-styles-ready');window.dispatchEvent(new CustomEvent('appStylesReady'));}catch(e){}},320)})});}function oqFlipOneLink(el){if(!el||el.getAttribute('data-oq-css-flip'))return;el.setAttribute('data-oq-css-flip','1');el.media='all';}function flip(){var s=document.querySelectorAll('link[rel="stylesheet"][media="print"]');[].forEach.call(s,oqFlipOneLink);requestAnimationFrame(function(){requestAnimationFrame(function(){var idle=function(fn,t){if(typeof requestIdleCallback!=='undefined')requestIdleCallback(fn,{timeout:t||320});else setTimeout(fn,80)};idle(oqMarkStylesReady,320)})});}function inj(){u.forEach(function(s){var e=document.createElement("script");e.src=s;e.async=true;document.body.appendChild(e);});}var flipDone=false;function flipAndInj(){if(flipDone)return;flipDone=true;flip();requestAnimationFrame(function(){requestAnimationFrame(function(){inj();});});}flipAndInj();})();</script>`;
 }
 
 function replaceAppScriptsWithDeferLoader(html) {
@@ -45,13 +45,18 @@ function replaceAppScriptsWithDeferLoader(html) {
 // Remove standalone stylesheet flipper so only the loader's doInj flips styles (after LCP). Avoids applying main CSS before LCP and hiding hero.
 function removeStandaloneStylesheetFlipper(html) {
   const standaloneFlipper = /<script>\(function\(\)\{var s=document\.querySelectorAll\('link\[rel="stylesheet"\]\[media="print"\]'\);\[\]\.forEach\.call\(s,function\(l\)\{l\.onload=function\(\)\{l\.media='all';};if\(l\.sheet\)l\.media='all';\}\);\}\)\(\);<\/script>/g;
-  return html.replace(standaloneFlipper, "");
+  const brokenDoneFlipper =
+    /<script>\(function\(\)\{function mark\(\)[^<]*function done\(\)[^<]*<\/script>/g;
+  return html
+    .replace(standaloneFlipper, "")
+    .replace(brokenDoneFlipper, "");
 }
 
 // Ensure loader's doInj flips print stylesheets before inj(). Idempotent.
 function ensureLoaderFlipperInDoInj(html) {
   const doInjOnlyInj = /function doInj\(\)\{if\(done\)return;done=true;inj\(\);\}/;
-  const doInjWithFlipper = "function doInj(){if(done)return;done=true;var s=document.querySelectorAll('link[rel=\"stylesheet\"][media=\"print\"]');[].forEach.call(s,function(l){l.media='all';if(l.onload)l.onload();});inj();}";
+  const doInjWithFlipper =
+    "function doInj(){if(done)return;done=true;var s=document.querySelectorAll('link[rel=\"stylesheet\"][media=\"print\"]');[].forEach.call(s,function(l){if(!l.getAttribute('data-oq-css-flip')){l.setAttribute('data-oq-css-flip','1');l.media='all';}});if(!window.__oqStylesReady){window.__oqStylesReady=1;try{document.documentElement.classList.add('app-styles-ready');window.dispatchEvent(new CustomEvent('appStylesReady'));}catch(e){}}requestAnimationFrame(function(){requestAnimationFrame(function(){inj();});});}";
   if (doInjOnlyInj.test(html)) {
     return html.replace(doInjOnlyInj, doInjWithFlipper);
   }

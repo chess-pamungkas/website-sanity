@@ -2,13 +2,14 @@ import React, {
   useState,
   useContext,
   useMemo,
+  useEffect,
   lazy,
   Suspense,
 } from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
-import { ShowRegistrationPopup } from "../../../helpers/constants";
+import { useRegistrationPopup } from "../../../context/registration-popup-context";
 import { MarketingContext } from "../../../context/marketing-context";
 import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
 import LanguageContext from "../../../context/language-context";
@@ -19,6 +20,7 @@ import {
   HERO_ASSET_DESKTOP_MQ,
   HERO_ASSET_MOBILE_MQ,
 } from "../../../helpers/viewport-media";
+import { whenAppStylesReady } from "../../../helpers/when-app-styles-ready";
 
 /** Split Trustpilot + bootstrap out of the main hero chunk so lab/CPU parses less during TBT window. */
 const TrustPilot = lazy(() => import("../trust-pilot"));
@@ -274,19 +276,20 @@ const Hero = ({
   const { selectedLanguage } = useContext(LanguageContext);
   const { content, sect1 } = useContext(MarketingContext);
   const isRTL = useRtlDirection();
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const { open: openRegistrationPopup } = useRegistrationPopup();
   const { navigate } = useI18next();
+  /** Avoid React 18 lazy+Suspense SSR/hydration mismatch (#422) for Trustpilot next to hero markup. */
+  const [trustPilotClientReady, setTrustPilotClientReady] = useState(false);
+  useEffect(() => {
+    return whenAppStylesReady(() => setTrustPilotClientReady(true), 5800);
+  }, []);
   // Use responsive images (srcset + sizes) so mobile viewport fetches only mobile assets.
   // Default src is mobile for LCP on mobile; browser picks from srcSet by viewport.
   const globeSrcSet = `${globeImageMobile} 500w, ${globeImageDesktop} 734w`;
   const handSrcSet = `${handImageMobile} 280w, ${handImageDesktop} 450w`;
 
   const handleShowRegistrationPopup = () => {
-    setIsPopupOpen(true);
-  };
-
-  const handleClosePopup = () => {
-    setIsPopupOpen(false);
+    openRegistrationPopup();
   };
 
   const handlePrimaryButtonClick = () => {
@@ -794,9 +797,11 @@ const Hero = ({
               {/* Trust Pilot Section for FAQ */}
               {heroType === "faq-hero" && showTrustPilot && (
                 <div className={`${heroType}__trust-pilot`}>
-                  <Suspense fallback={null}>
-                    <TrustPilot className="trust-pilot--compact" />
-                  </Suspense>
+                  {trustPilotClientReady ? (
+                    <Suspense fallback={null}>
+                      <TrustPilot className="trust-pilot--compact" />
+                    </Suspense>
+                  ) : null}
                 </div>
               )}
 
@@ -862,9 +867,11 @@ const Hero = ({
               {/* TrustPilot: real widget; script load is deferred inside trust-pilot/index.js (mobile). */}
               {showTrustPilot && heroType !== "faq-hero" && (
                 <div className={`${heroType}__trust-pilot`}>
-                  <Suspense fallback={null}>
-                    <TrustPilot />
-                  </Suspense>
+                  {trustPilotClientReady ? (
+                    <Suspense fallback={null}>
+                      <TrustPilot />
+                    </Suspense>
+                  ) : null}
                 </div>
               )}
             </div>
@@ -899,13 +906,6 @@ const Hero = ({
           </div>
         </div>
       </section>
-      {isPopupOpen && (
-        <ShowRegistrationPopup
-          isOpen={isPopupOpen}
-          onClose={handleClosePopup}
-          langParam={selectedLanguage.id}
-        />
-      )}
     </>
   );
 };

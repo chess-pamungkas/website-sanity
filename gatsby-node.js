@@ -138,6 +138,17 @@ exports.onCreateWebpackConfig = ({ stage, actions, getConfig }) => {
                       enforce: true,
                       priority: 18,
                     },
+                    recaptchaV3: {
+                      test: (module) => {
+                        const id =
+                          module.identifier?.() || module.resource || "";
+                        return /react-google-recaptcha-v3/.test(id);
+                      },
+                      name: "react-google-recaptcha-v3",
+                      chunks: "all",
+                      enforce: true,
+                      priority: 22,
+                    },
                   },
                 },
               },
@@ -184,6 +195,14 @@ exports.onPostBuild = async ({ reporter }) => {
   const allowIndex = shouldAllowSearchIndexing();
   try {
     await writeRobotsTxt(publicDir, allowIndex);
+    if (!allowIndex) {
+      const entries = await fs.readdir(publicDir);
+      await Promise.all(
+        entries
+          .filter((name) => /^sitemap(-|\.)/i.test(name) && /\.xml$/i.test(name))
+          .map((name) => fs.remove(path.join(publicDir, name)))
+      );
+    }
     reporter.info(
       `robots.txt written (${allowIndex ? "Allow /" : "Disallow /"}) — GATSBY_ENV=${
         process.env.GATSBY_ENV ?? "(unset)"

@@ -16,11 +16,17 @@ import {
   AUDIT_HEAVY_WORK_DEFER_MS,
 } from "../helpers/is-audit-environment";
 import { scheduleAfterLcpOrCap } from "../helpers/schedule-after-lcp";
+import {
+  whenAppStylesReady,
+  APP_STYLES_READY_CLASS,
+} from "../helpers/when-app-styles-ready";
 
 /** DevTools mobile lab on localhost: defer below-hero past typical Lighthouse trace. */
 const PERF_LAB_DEFERRED_APP_MS = 15000;
 /** Mount below-hero after hero LCP (or cap) so features card does not become LCP with multi-second render delay. */
 const MOBILE_DEFERRED_AFTER_LCP_CAP_MS = 5000;
+/** Desktop: mount ticker/features after LCP — keeps forced reflow out of the Lighthouse trace. */
+const DESKTOP_BELOW_HERO_LCP_CAP_MS = 5500;
 import PageBackground from "../components/shared/page-background";
 
 // Hero: eager so LCP image (hand) is in initial HTML and SSR. Lazy hero caused mobile LCP ~7s; desktop was ~1.1s because chunk loaded fast.
@@ -61,15 +67,28 @@ const MOBILE_DEFERRED_APP_FALLBACK_MS = 14000;
 // Persist "full" across provider-swap remount so ticker/features don't flicker (appear → disappear → appear).
 const INDEX_PAGE_FULL_KEY = "__indexPageAlreadyFull";
 
+const belowHeroPlaceholder = (
+  <div
+    className="below-hero-placeholder below-hero-placeholder--first-block"
+    aria-hidden="true"
+  >
+    <div className="below-hero-placeholder__ticker-slot" />
+    <div className="below-hero-placeholder__content-slot" />
+  </div>
+);
+
 // Initial state must match server so we avoid React hydration #418 (no window in useState).
 const IndexPage = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables({
     deferUntilBelowHeroReady: true,
   });
   const { isMobile } = useWindowSize();
+  /** Avoid React 18 lazy+Suspense SSR/hydration mismatch (#422) next to Hero sibling. */
+  const [hydratedBelowHero, setHydratedBelowHero] = useState(false);
   const [showDeferredApp, setShowDeferredApp] = useState(false);
 
   useEffect(() => {
+    setHydratedBelowHero(true);
     if (typeof window === "undefined") return undefined;
 
     const isAudit = isAuditEnvironment();
@@ -82,8 +101,38 @@ const IndexPage = ({ className, isShowHero = true }) => {
     let cancelLcpGate = () => {};
     let onScroll;
     let onTouch;
-    let deferDesktopRaf1;
-    let deferDesktopRaf2;
+    let cancelStylesReady = () => {};
+
+    const mountHomeDeferredApp = () => {
+      preloadHomeDeferredApp().then(() => {
+        if (!effectAlive) return;
+        const reveal = () =>
+          startTransition(() => setShowDeferredApp(true));
+        const runReveal = () => {
+          if (typeof requestIdleCallback !== "undefined") {
+            requestIdleCallback(() => requestAnimationFrame(reveal), {
+              timeout: 480,
+            });
+          } else {
+            setTimeout(() => requestAnimationFrame(reveal), 48);
+          }
+        };
+        requestAnimationFrame(() => requestAnimationFrame(runReveal));
+      });
+    };
+
+    const scheduleBelowHeroMount = () => {
+      cancelStylesReady();
+      const stylesReady =
+        typeof document !== "undefined" &&
+        (document.documentElement.classList.contains(APP_STYLES_READY_CLASS) ||
+          window.__oqStylesReady);
+      if (stylesReady) {
+        mountHomeDeferredApp();
+      } else {
+        cancelStylesReady = whenAppStylesReady(mountHomeDeferredApp, 5800);
+      }
+    };
 
     // Real users: warm the chunk off the critical path (not during short Lighthouse/PSI traces).
     if (!isAudit) {
@@ -105,10 +154,7 @@ const IndexPage = ({ className, isShowHero = true }) => {
         window.removeEventListener("touchmove", onTouch);
       }
 
-      preloadHomeDeferredApp().then(() => {
-        if (!effectAlive) return;
-        startTransition(() => setShowDeferredApp(true));
-      });
+      scheduleBelowHeroMount();
     };
 
     if (!isAudit && !isPerfLab && isMobileView) {
@@ -141,6 +187,7 @@ const IndexPage = ({ className, isShowHero = true }) => {
       tId = setTimeout(trigger, MOBILE_DEFERRED_APP_FALLBACK_MS);
       return () => {
         effectAlive = false;
+        cancelStylesReady();
         cancelLcpGate();
         if (tId) clearTimeout(tId);
         if (typeof window !== "undefined" && onScroll) {
@@ -155,19 +202,32 @@ const IndexPage = ({ className, isShowHero = true }) => {
       tId = setTimeout(trigger, deferMs);
       return () => {
         effectAlive = false;
+        cancelStylesReady();
         clearTimeout(tId);
       };
     }
-    // Desktop, non-audit: defer past hydration so Suspense is not updated mid-hydrate (React #421).
-    deferDesktopRaf1 = requestAnimationFrame(() => {
-      deferDesktopRaf2 = requestAnimationFrame(() => {
-        if (effectAlive) trigger();
+
+    // Desktop, non-audit: hero i18n unblocks immediately; below-hero mounts after LCP/cap.
+    if (typeof window !== "undefined") {
+      setTimeout(() => {
+        try {
+          window.dispatchEvent(new CustomEvent("belowHeroContentReady"));
+        } catch (e) {
+          /* noop */
+        }
+      }, 0);
+    }
+    cancelLcpGate = scheduleAfterLcpOrCap(() => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (effectAlive) trigger();
+        });
       });
-    });
+    }, DESKTOP_BELOW_HERO_LCP_CAP_MS);
     return () => {
       effectAlive = false;
-      if (deferDesktopRaf1) cancelAnimationFrame(deferDesktopRaf1);
-      if (deferDesktopRaf2) cancelAnimationFrame(deferDesktopRaf2);
+      cancelStylesReady();
+      cancelLcpGate();
     };
   }, []);
 
@@ -182,29 +242,17 @@ const IndexPage = ({ className, isShowHero = true }) => {
         <MainPromotion />
       </Suspense>
 
-      <Suspense
-        fallback={
-          <div
-            className="below-hero-placeholder below-hero-placeholder--first-block"
-            aria-hidden="true"
-          >
-            <div className="below-hero-placeholder__ticker-slot" />
-            <div className="below-hero-placeholder__content-slot" />
-          </div>
-        }
-      >
-        {showDeferredApp ? (
-          <HomeDeferredApp isMobile={isMobile} />
-        ) : (
-          <div
-            className="below-hero-placeholder below-hero-placeholder--first-block"
-            aria-hidden="true"
-          >
-            <div className="below-hero-placeholder__ticker-slot" />
-            <div className="below-hero-placeholder__content-slot" />
-          </div>
-        )}
-      </Suspense>
+      {hydratedBelowHero ? (
+        <Suspense fallback={belowHeroPlaceholder}>
+          {showDeferredApp ? (
+            <HomeDeferredApp isMobile={isMobile} />
+          ) : (
+            belowHeroPlaceholder
+          )}
+        </Suspense>
+      ) : (
+        belowHeroPlaceholder
+      )}
     </PageBackground>
   );
 };

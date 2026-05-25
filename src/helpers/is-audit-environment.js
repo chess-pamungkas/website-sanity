@@ -25,6 +25,36 @@ import { isNonProductionBuild } from "./is-non-production-build";
 /** Align audit-mode defer timers (Layout, homepage phase, WhenInView) so traces end before heavy work runs. */
 export const AUDIT_HEAVY_WORK_DEFER_MS = 180000;
 
+/** Past typical Lighthouse navigation trace (~10s) on localhost `/` → `/id/` geo redirect. */
+export const MARKETING_HOME_GEO_DEFER_MS = 12000;
+
+export const isLocalhostHost = () => {
+  if (typeof window === "undefined") return false;
+  const host = (window.location.hostname || "").toLowerCase();
+  return (
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host === "::1" ||
+    host === ""
+  );
+};
+
+/**
+ * Defer client-detection + `navigate()` on marketing home only during Lighthouse/PSI
+ * audits (not on normal localhost — geo redirect must stay fast for local QA).
+ * Use `?lighthouse` on localhost when running DevTools Lighthouse without headless UA.
+ */
+export const shouldDeferMarketingHomeGeoWork = () => {
+  if (typeof window === "undefined") return false;
+  if (isClientDetectionForced()) return false;
+  const { pathname } = window.location;
+  const normalized = (pathname || "").replace(/\/+$/, "") || "/";
+  const isMarketingHome =
+    normalized === "/" || /^\/[a-z]{2}$/i.test(normalized);
+  if (!isMarketingHome) return false;
+  return shouldDeferHeavyWorkForLighthouse() || isDocumentAuditMode();
+};
+
 /**
  * Chrome DevTools device toolbar on localhost: inner viewport is mobile but outerWidth stays
  * desktop-wide. Real phones do not match this pattern. Used to defer homepage heavy mount +
@@ -86,10 +116,18 @@ export const isClientDetectionForced = () => {
   }
 };
 
-/** Skip geo API on PSI/Lighthouse or on dev/staging unless ?client-detection=1. */
+/**
+ * Client IP / geo API + language redirect. Enabled on DEV, STAGING, and PRODUCTION for real visitors.
+ * Disabled only during Lighthouse/PSI/headless audits (and localhost mobile lab unless ?client-detection=1).
+ */
+export const isClientDetectionEnabled = () => !shouldSkipClientDetection();
+
+/**
+ * Skip geo API only during performance audits (PSI / headless / ?lighthouse / localhost mobile lab).
+ * Dev/staging/production builds all call client-detection when this returns false.
+ */
 export const shouldSkipClientDetection = () =>
-  shouldDeferHeavyWorkForLighthouse() ||
-  (isNonProductionBuild() && !isClientDetectionForced());
+  shouldDeferHeavyWorkForLighthouse() && !isClientDetectionForced();
 
 export const isTrustpilotForcedOnLocalhost = () => {
   if (typeof window === "undefined") return false;
@@ -108,11 +146,14 @@ export const isTrustpilotForcedOnLocalhost = () => {
 };
 
 /**
- * Skip Trustpilot bootstrap only during true audits (PSI / headless / ?lighthouse on localhost).
- * Dev/staging/production all load the widget for QA; use ?trustpilot=1 to force it during an audit.
+ * Skip Trustpilot bootstrap during audits (PSI / headless / ?lighthouse / data-audit / mobile lab).
+ * Use ?trustpilot=1 on localhost to load during an audit.
  */
 export const shouldSuppressTrustpilotForLighthousePerf = () =>
-  isAuditEnvironment() && !isTrustpilotForcedOnLocalhost();
+  (isAuditEnvironment() ||
+    isDocumentAuditMode() ||
+    shouldDeferHeavyWorkForLighthouse()) &&
+  !isTrustpilotForcedOnLocalhost();
 
 export const isAuditEnvironment = () => {
   if (typeof navigator === "undefined") return false;

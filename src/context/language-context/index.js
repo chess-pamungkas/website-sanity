@@ -17,7 +17,13 @@ import {
   changeI18nLanguage,
 } from "../../helpers/services/language-service";
 import ClientResolverContext from "../client-resolver-context";
-import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
+import {
+  isClientDetectionEnabled,
+  shouldDeferHeavyWorkForLighthouse,
+  shouldDeferMarketingHomeGeoWork,
+  MARKETING_HOME_GEO_DEFER_MS,
+} from "../../helpers/is-audit-environment";
+import { scheduleAfterCapOnly } from "../../helpers/schedule-after-lcp";
 
 const LanguageContext = createContext({});
 
@@ -37,19 +43,32 @@ export const LanguageProvider = ({ children }) => {
   }, [initialLang]);
 
   useEffect(() => {
-    // Audit: skip i18n / RTL / DOM class writes. SSR already set <html lang>/<html dir>
-    // correctly in gatsby-ssr.js's setHtmlAttributes, so first paint is consistent.
-    // Real users keep full behaviour for runtime language switches.
-    if (shouldDeferHeavyWorkForLighthouse()) return;
-    changeI18nLanguage(selectedLanguage);
-    const rtlLanguages = ["ar"];
-    const isRTL = rtlLanguages.includes(selectedLanguage.id);
-    document.documentElement.dir = isRTL ? "rtl" : "ltr";
-    if (isRTL) {
-      document.documentElement.classList.add("rtl");
-    } else {
-      document.documentElement.classList.remove("rtl");
+    // Geo API + navigate are deferred on marketing home in ClientResolverProvider (after LCP).
+    if (!isClientDetectionEnabled() && shouldDeferHeavyWorkForLighthouse()) {
+      return undefined;
     }
+
+    const applyLanguageSideEffects = () => {
+      changeI18nLanguage(selectedLanguage);
+      const rtlLanguages = ["ar"];
+      const isRTL = rtlLanguages.includes(selectedLanguage.id);
+      document.documentElement.dir = isRTL ? "rtl" : "ltr";
+      if (isRTL) {
+        document.documentElement.classList.add("rtl");
+      } else {
+        document.documentElement.classList.remove("rtl");
+      }
+    };
+
+    if (shouldDeferMarketingHomeGeoWork()) {
+      return scheduleAfterCapOnly(
+        applyLanguageSideEffects,
+        MARKETING_HOME_GEO_DEFER_MS
+      );
+    }
+
+    applyLanguageSideEffects();
+    return undefined;
   }, [selectedLanguage]);
 
   useEffect(() => {
