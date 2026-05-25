@@ -20,6 +20,16 @@ import { trustpilotRobotoFontFaceCritical } from "./src/helpers/trustpilot-fonts
 const SSR_IS_NON_PROD_BUILD =
   process.env.GATSBY_ENV !== "production" ? "true" : "false";
 
+/** Shared print→all flip (no recursive onload). Keep in sync with scripts/defer-global-css-html.js */
+const OQ_CSS_FLIP_INLINE = `
+function oqMarkStylesReady(){if(window.__oqStylesReady)return;window.__oqStylesReady=1;requestAnimationFrame(function(){requestAnimationFrame(function(){var idle=function(fn,t){if(typeof requestIdleCallback!=='undefined')requestIdleCallback(fn,{timeout:t||200});else setTimeout(fn,64)};idle(function(){try{document.documentElement.classList.add('app-styles-ready');window.dispatchEvent(new CustomEvent('appStylesReady'));}catch(e){}},200)})});}
+function oqFlipOneLink(el){if(!el||el.getAttribute('data-oq-css-flip'))return;el.setAttribute('data-oq-css-flip','1');el.media='all';}
+function oqScheduleMarkReady(cb){requestAnimationFrame(function(){requestAnimationFrame(function(){var idle=function(fn,t){if(typeof requestIdleCallback!=='undefined')requestIdleCallback(fn,{timeout:t||320});else setTimeout(fn,80)};idle(function(){oqMarkStylesReady();if(cb)cb();},320)})});}
+function oqFlipPrintStyles(cb){var list=[].slice.call(document.querySelectorAll('link[rel="stylesheet"][media="print"]'));if(!list.length){oqScheduleMarkReady(cb);return;}requestAnimationFrame(function(){for(var i=0;i<list.length;i++)oqFlipOneLink(list[i]);oqScheduleMarkReady(cb);});}
+`
+  .replace(/\s+/g, " ")
+  .trim();
+
 /** Keep in sync with src/helpers/is-audit-environment.js (inline scripts cannot import). */
 const SSR_INLINE_IS_AUDIT_FN = `
 function isAudit() {
@@ -635,7 +645,7 @@ export const onPreRenderHTML = ({
       key="non-blocking-stylesheets"
       dangerouslySetInnerHTML={{
         __html:
-          `(function(){var s=document.querySelectorAll('link[rel="stylesheet"][media="print"]');[].forEach.call(s,function(l){l.onload=function(){l.media='all';};if(l.sheet)l.media='all';});})();`
+          `(function(){${OQ_CSS_FLIP_INLINE}oqFlipPrintStyles();})();`
             .replace(/\s+/g, " ")
             .trim(),
       }}
@@ -711,6 +721,10 @@ export const onPreRenderHTML = ({
       : null;
   const isHeroLcpPath = heroLcpPage !== null;
   const skipHeroLcpWaitForLoader = Boolean(heroLcpPage);
+  const isMarketingHome =
+    typeof pathname === "string" &&
+    (pathname === "/" || /^\/[a-z]{2}\/?$/i.test(pathname));
+  const HOME_CSS_FLIP_AUDIT_MS = 12000;
 
   // Don't push script to head so first paint isn't delayed; inject into body end below.
 
@@ -779,8 +793,8 @@ export const onPreRenderHTML = ({
             )};var inlineBodies=${JSON.stringify(
               delayedInlineBodies
             )};var done=false;function ric(fn,to){var w=typeof to==="number"?to:140;if(typeof requestIdleCallback!=="undefined")requestIdleCallback(fn,{timeout:w});else setTimeout(fn,Math.min(w,52));}
-function flipNext(links,i,cb){if(i>=links.length)return void(cb&&cb());requestAnimationFrame(function(){ric(function(){try{var el=links[i];el.media='all';if(el.onload)el.onload();}catch(e){};flipNext(links,i+1,cb)},160)})}
-function flipThen(cb){var arr=[].slice.call(document.querySelectorAll('link[rel="stylesheet"][media="print"]'));if(!arr.length)return void(cb&&cb());flipNext(arr,0,cb)}
+${OQ_CSS_FLIP_INLINE}
+function flipThen(cb){var arr=[].slice.call(document.querySelectorAll('link[rel="stylesheet"][media="print"]'));if(!arr.length){oqScheduleMarkReady(cb);return;}requestAnimationFrame(function(){for(var i=0;i<arr.length;i++)oqFlipOneLink(arr[i]);oqScheduleMarkReady(cb);});}
 function isMobile(){return !!(window.matchMedia&&window.matchMedia("(max-width: 768px)").matches)}
 var queueStart=0;
 function nowMs(){try{return (typeof performance!=="undefined"&&performance.now)?performance.now():Date.now()}catch(e){return Date.now()}}
@@ -791,9 +805,12 @@ function injInline(){if(!inlineBodies.length)return;injInlineNext(0)}
 function afterFlip(cb){ric(function(){requestAnimationFrame(function(){requestAnimationFrame(cb)})},80)}
 function doWork(){if(done)return;done=true;queueStart=nowMs();flipThen(function(){afterFlip(function(){inj();ric(function(){injInline()},1200)})})}
 function scheduleDoWorkAfterLcp(){var fired=false;function go(){if(fired)return;fired=true;doWork();}setTimeout(go,${LCP_FALLBACK_MS});if(typeof PerformanceObserver!=="undefined"){try{var po=new PerformanceObserver(function(){go();try{po.disconnect();}catch(e){}});po.observe({type:"largest-contentful-paint",buffered:true});}catch(e){}}}
+${SSR_INLINE_IS_AUDIT_FN}
+var isMarketingHome=${isMarketingHome ? "true" : "false"};
 var armMobile=!!(window.matchMedia&&window.matchMedia("(max-width: 768px)").matches);
 var skipLcpWait=!u.length||${skipHeroLcpWaitForLoader ? "true" : "false"};
-if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFrame(function(){ric(doWork,48)})})}else{requestAnimationFrame(function(){requestAnimationFrame(function(){scheduleDoWorkAfterLcp()})})}})();`
+function armCssFlipAndScripts(){if(isMarketingHome){if(isAudit()){setTimeout(function(){requestAnimationFrame(function(){requestAnimationFrame(function(){ric(doWork,48)})})},${HOME_CSS_FLIP_AUDIT_MS});return;}requestAnimationFrame(function(){requestAnimationFrame(function(){scheduleDoWorkAfterLcp()})});return;}if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFrame(function(){ric(doWork,48)})})}else{requestAnimationFrame(function(){requestAnimationFrame(function(){scheduleDoWorkAfterLcp()})})}}
+armCssFlipAndScripts();})();`
               .replace(/\s+/g, " ")
               .trim(),
           }}
@@ -882,7 +899,10 @@ if(!armMobile||skipLcpWait){requestAnimationFrame(function(){requestAnimationFra
             "@media(max-width:767px){.main-promotion__hero-container{border-radius:20px;top:66px;min-height:953px;height:953px}}",
             "@media(min-width:768px) and (max-width:1023px){.main-promotion__hero-container{border-radius:24px;top:66px;left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:100%;min-height:575px;height:575px;padding-left:24px;padding-right:24px;box-sizing:border-box}}",
             "@media(min-width:1024px){.main-promotion__hero-container{border-radius:24px;top:77px;left:50%;transform:translateX(-50%);width:calc(100vw - 120px);max-width:1400px;min-height:686px;height:686px}}",
-            ".main-promotion__content-container{position:relative;z-index:4;display:flex;flex-direction:column;padding-top:50px;max-width:100%}",
+            ".main-promotion__content-container{position:relative;z-index:4;display:flex;flex-direction:column;align-items:flex-start;padding-top:50px;max-width:100%}",
+            "html:not(.app-styles-ready) .main-promotion__hero-img,html:not(.app-styles-ready) .main-promotion__hand-container{opacity:0!important;visibility:hidden!important;pointer-events:none!important}",
+            "html:not(.app-styles-ready) .main-promotion__content-container .button-container{justify-content:flex-start!important;align-items:flex-start!important}",
+            ".header-placeholder,.header{position:fixed;top:0;left:0;right:0;z-index:1000;min-height:77px;background:rgba(247,245,243,.98);box-sizing:border-box}",
             ".main-promotion__heading{margin:0;display:flex;flex-direction:column;gap:0}",
             '.main-promotion__title{display:block;font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:600;font-size:clamp(28px,8vw,72px);line-height:1.3;color:#fff;margin:0;visibility:visible!important;opacity:1!important}',
             '@media(max-width:767px){.main-promotion__subheading{font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px;line-height:24px!important;color:#fff!important;font-weight:400!important;margin:0!important;max-width:100%!important;opacity:0.7;visibility:visible!important;display:block}}',

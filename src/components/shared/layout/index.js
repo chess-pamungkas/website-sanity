@@ -35,6 +35,10 @@ import NotificationStripeContext, {
 import { TradingProvider } from "../../../context/trading-context";
 import ReCaptchaProvider from "../recaptcha-provider";
 import WhenInView from "../when-in-view";
+import {
+  RegistrationPopupProvider,
+  useRegistrationPopup,
+} from "../../../context/registration-popup-context";
 
 const Header = lazy(() => import("../../header"));
 import { sendLog } from "../../../helpers/services/log-service";
@@ -55,6 +59,7 @@ import { isMarketingHomePath } from "../../../helpers/is-marketing-home-path";
 import { isNonProductionBuild } from "../../../helpers/is-non-production-build";
 import { MOBILE_VIEWPORT_MQ } from "../../../helpers/viewport-media";
 import { routeNeedsLiveTrading } from "../../../helpers/route-needs-live-trading";
+import { whenAppStylesReady } from "../../../helpers/when-app-styles-ready";
 import { useLocation } from "@reach/router";
 
 // true so LCP hero is in SSR HTML and first paint (avoids ~2.6s element render delay in Lighthouse)
@@ -88,17 +93,19 @@ const COOKIES_POPUP_MOUNT_DELAY_MOBILE_MS_HOME = 600;
 const COOKIES_POPUP_MOUNT_DELAY_MOBILE_MS_INNER = 400;
 const COOKIES_POPUP_MOUNT_DELAY_DESKTOP_MS = 400;
 
-const Layout = ({ children, pathname: pathnameFromPage }) => {
+const LayoutInner = ({ children, pathname: pathnameFromPage }) => {
   try {
     const [isLoaded, setIsLoaded] = useState(true);
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const { isOpen: isPopupRegistrationOpen } = useRegistrationPopup();
     const location = useLocation();
     const resolvedPath = pathnameFromPage ?? location?.pathname ?? "";
     const isHomeMarketing = isMarketingHomePath(resolvedPath);
     const enableLiveTrading = routeNeedsLiveTrading(resolvedPath);
     /** Always render real providers from start. Component-type swap was unmounting children (Trustpilot/HomeDeferredApp) on first user interaction (~6s). */
     const [deferredProvidersReady, setDeferredProvidersReady] = useState(true);
-    const [showHeader, setShowHeader] = useState(false);
+    const [showHeader, setShowHeader] = useState(() =>
+      isMarketingHomePath(pathnameFromPage ?? "")
+    );
     const [showCookiesPopup, setShowCookiesPopup] = useState(false);
     // Use pathname from page props when available so stub matches server (avoids hydration #418).
     const pathnameForStub = pathnameFromPage ?? location?.pathname;
@@ -106,10 +113,6 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
       location?.pathname === "/contact-us" ||
       location?.pathname === "/contact-us/" ||
       location?.pathname?.includes("/contact-us");
-
-    // Use only isPopupOpen here so server and client render the same (avoids hydration #418).
-    // Popup open state from external script is picked up by the MutationObserver below.
-    const isPopupRegistrationOpen = isPopupOpen;
 
     useEffect(() => {
       const setLoaded = () => startTransition(() => setIsLoaded(true));
@@ -405,11 +408,57 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
             ? DEFERRED_STYLES_DELAY_MOBILE_HOME_UX_MS
             : DEFERRED_STYLES_DELAY_MOBILE_MS
           : 0;
-      const t = setTimeout(loadDeferred, delay);
-      return () => {
-        clearTimeout(t);
-        if (tChunk2) clearTimeout(tChunk2);
+
+      const runLoadDeferred = () => {
+        const t = setTimeout(loadDeferred, delay);
+        return () => {
+          clearTimeout(t);
+          if (tChunk2) clearTimeout(tChunk2);
+        };
       };
+
+      // Desktop homepage: inject deferred CSS after main flip + below-hero gate — avoids
+      // stacking a second full recalc with print→all flip (Lighthouse forced reflow).
+      if (
+        isHomeMarketing &&
+        !isMobileViewport &&
+        !shouldDeferStylesheetsForLighthouse()
+      ) {
+        let cancelStyles = () => {};
+        let cancelBelowHero = () => {};
+        let fallbackId;
+
+        const arm = () => {
+          cancelStyles();
+          cancelStyles = whenAppStylesReady(runLoadDeferred, 6000);
+        };
+
+        const onBelowHero = () => {
+          if (typeof requestIdleCallback !== "undefined") {
+            requestIdleCallback(arm, { timeout: 400 });
+          } else {
+            setTimeout(arm, 64);
+          }
+        };
+
+        if (typeof window !== "undefined") {
+          window.addEventListener("belowHeroContentReady", onBelowHero, {
+            once: true,
+          });
+          cancelBelowHero = () => {
+            window.removeEventListener("belowHeroContentReady", onBelowHero);
+          };
+        }
+        fallbackId = window.setTimeout(arm, 9000);
+
+        return () => {
+          cancelBelowHero();
+          cancelStyles();
+          window.clearTimeout(fallbackId);
+        };
+      }
+
+      return runLoadDeferred();
     }, [isHomeMarketing]);
 
     // Fallback if SSR did not emit deferred-styles-pages.css (non-home routes get it in gatsby-ssr onPreRenderHTML).
@@ -504,39 +553,6 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
       };
     }, []);
 
-    // Monitor for popup registration changes (defer to idle; skip in Lighthouse to minimize main-thread "Other" time)
-    useEffect(() => {
-      if (!isBrowser()) return;
-      if (shouldDeferHeavyWorkForLighthouse()) return;
-      let observer = null;
-      const setup = () => {
-        const checkPopupStatus = () => {
-          const popupElement = document.querySelector(".popup-registration");
-          startTransition(() => setIsPopupOpen(!!popupElement));
-        };
-        checkPopupStatus();
-        observer = new MutationObserver(checkPopupStatus);
-        observer.observe(document.body, {
-          childList: true,
-          subtree: true,
-          attributes: true,
-          attributeFilter: ["class", "style"],
-        });
-      };
-      if (typeof requestIdleCallback !== "undefined") {
-        const id = requestIdleCallback(setup, { timeout: 2000 });
-        return () => {
-          cancelIdleCallback(id);
-          if (observer) observer.disconnect();
-        };
-      }
-      const t = setTimeout(setup, 2000);
-      return () => {
-        clearTimeout(t);
-        if (observer) observer.disconnect();
-      };
-    }, []);
-
     const headerSlot = showHeader ? (
       <Suspense fallback={<div className="header-placeholder" aria-hidden="true" />}>
         <Header />
@@ -617,9 +633,7 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
     );
 
     return (
-      <div suppressHydrationWarning>
-        <ClientResolverProvider>{withCookieAndMarketing}</ClientResolverProvider>
-      </div>
+      <div suppressHydrationWarning>{withCookieAndMarketing}</div>
     );
   } catch (error) {
     sendLog({ message: error.message, type: error.name });
@@ -627,5 +641,13 @@ const Layout = ({ children, pathname: pathnameFromPage }) => {
     throw error;
   }
 };
+
+const Layout = (props) => (
+  <ClientResolverProvider>
+    <RegistrationPopupProvider>
+      <LayoutInner {...props} />
+    </RegistrationPopupProvider>
+  </ClientResolverProvider>
+);
 
 export default Layout;
