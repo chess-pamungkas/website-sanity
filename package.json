@@ -33,7 +33,10 @@
     "gen:vps-join-community-webp": "node scripts/gen-vps-join-community-webp.js",
     "gen:vps-section-raster-webp": "node scripts/gen-vps-section-raster-webp.js",
     "verify:trading-hero-webp": "node scripts/verify-trading-hero-webp.js",
-    "lighthouse:audit": "npx lighthouse \"http://localhost:9000/\" --only-categories=performance --preset=perf --form-factor=mobile --screenEmulation.mobile=true --output=json --output-path=./lighthouse/lighthouse-mobile-result.json --chrome-flags=\"--headless --no-sandbox\" --quiet"
+    "lighthouse:audit": "npx lighthouse \"http://localhost:9000/\" --only-categories=performance --preset=perf --form-factor=mobile --screenEmulation.mobile=true --output=json --output-path=./lighthouse/lighthouse-mobile-result.json --chrome-flags=\"--headless --no-sandbox\" --quiet",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:ci": "npm run build && playwright test"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.13.4",
@@ -77,6 +80,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",

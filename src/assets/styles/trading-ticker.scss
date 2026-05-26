@@ -370,7 +370,8 @@
       .trading-symbols--css-auto-scroll {
         overflow: visible;
         width: max-content;
-        animation: auto-scroll-animation 90s linear infinite;
+        animation: auto-scroll-animation
+          var(--ticker-auto-scroll-duration, 90s) linear infinite;
         will-change: transform;
       }
 

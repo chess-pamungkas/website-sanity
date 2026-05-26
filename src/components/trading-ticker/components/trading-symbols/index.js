@@ -16,6 +16,8 @@ import symbolMapping from "./symbol-icon-mapping.json";
 import {
   TRADING_SYMBOL_CARD_STRIDE_PX,
   TRADING_SYMBOL_CARD_WIDTH_PX,
+  getTradingTickerCssScrollDurationSec,
+  prepareTradingTickerSymbols,
 } from "../../../../helpers/trading-ticker-layout";
 
 function collectTickerIconKeys(symbols) {
@@ -61,6 +63,15 @@ const TradingSymbols = ({
     () => (symbols || []).map((s) => s?.symbol ?? "").join("|"),
     [symbols]
   );
+  const preparedSymbols = useMemo(
+    () => prepareTradingTickerSymbols(symbols || []),
+    [symbols]
+  );
+  const useCssInfiniteScroll = isInfiniteAutoScroll && !isMobileLayout();
+  const cssAutoScrollDurationSec = useMemo(() => {
+    if (!useCssInfiniteScroll) return null;
+    return getTradingTickerCssScrollDurationSec(preparedSymbols.length);
+  }, [useCssInfiniteScroll, preparedSymbols.length]);
 
   useEffect(() => {
     if (!preloadKey || !symbols?.length) return undefined;
@@ -314,13 +325,6 @@ const TradingSymbols = ({
     );
   };
 
-  // Infinite scroll logic (repeat symbols if needed)
-  const prepareSymbols = (symbols) => {
-    return symbols.length > 0 && symbols.length < 20
-      ? prepareSymbols(symbols.concat(symbols))
-      : symbols;
-  };
-
   // check is scroll passed center of scroll width
   const isMiddleOfScroll = (width, offset) =>
     width > 0 ? Math.abs(offset) > width / 2 : false;
@@ -486,8 +490,6 @@ const TradingSymbols = ({
     };
   }, [isInfiniteAutoScroll, isTouched, isRTL, symbols?.length]);
 
-  const useCssInfiniteScroll = isInfiniteAutoScroll && !isMobileLayout();
-
   return (
     <div
       className={cn("trading-symbols-wrapper", className, {
@@ -501,6 +503,13 @@ const TradingSymbols = ({
         className={cn("trading-symbols", {
           "trading-symbols--css-auto-scroll": useCssInfiniteScroll,
         })}
+        style={
+          cssAutoScrollDurationSec != null
+            ? {
+                "--ticker-auto-scroll-duration": `${cssAutoScrollDurationSec}s`,
+              }
+            : undefined
+        }
         ref={symbolsRef}
         onTouchStart={() => setIsTouched(true)}
         onTouchEnd={() => setIsTouched(false)}
@@ -511,7 +520,7 @@ const TradingSymbols = ({
           scrollPositionRef.current = container.scrollLeft;
         }}
       >
-        {prepareSymbols(symbols).map((symbol, key) => (
+        {preparedSymbols.map((symbol, key) => (
           <div
             className="trading-symbol-card"
             key={`TradingSymbol${symbol.symbol}-${key}`}
