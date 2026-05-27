@@ -5,7 +5,11 @@ import { ShowRegistrationPopup } from "../../../../helpers/constants";
 import { ChevronDownIcon } from "../../../shared/icons/critical";
 import LanguageContext from "../../../../context/language-context";
 import ReusableButtons from "../../../shared/reusable-buttons";
-import { FEATURED_IDEAS_BG } from "../../../../helpers/trading-tools-section-assets";
+import {
+  FEATURED_IDEAS_BG,
+  TRADING_TOOLS_SECTION_BG_STACKED_MQ,
+  TRADING_TOOLS_SECTION_BG_WIDE_MQ,
+} from "../../../../helpers/trading-tools-section-assets";
 import badgeIcon from "../../../../assets/images/icons/badge-market-sentiment.svg";
 import featuredIdeasCustomizableFiltersImage from "../../../../assets/images/trading-tools/featured-ideas-customizable-filters.png";
 import featuredIdeasEducationalImage from "../../../../assets/images/trading-tools/featured-ideas-educational.png";
@@ -90,25 +94,25 @@ const FeaturedIdeas = ({ className }) => {
         <picture>
           <source
             type="image/webp"
-            media="(max-width: 767px)"
+            media={TRADING_TOOLS_SECTION_BG_STACKED_MQ}
             srcSet={FEATURED_IDEAS_BG.mobileWebp}
           />
           <source
             type="image/webp"
-            media="(min-width: 768px)"
+            media={TRADING_TOOLS_SECTION_BG_WIDE_MQ}
             srcSet={FEATURED_IDEAS_BG.desktopWebp}
           />
           <source
-            media="(max-width: 767px)"
+            media={TRADING_TOOLS_SECTION_BG_STACKED_MQ}
             srcSet={FEATURED_IDEAS_BG.mobileSvg}
             type="image/svg+xml"
           />
           <img
-            src={FEATURED_IDEAS_BG.desktopSvg}
+            src={FEATURED_IDEAS_BG.mobileSvg}
             alt=""
             className="featured-ideas__background-image"
-            width={FEATURED_IDEAS_BG.widthDesktop}
-            height={FEATURED_IDEAS_BG.heightDesktop}
+            width={FEATURED_IDEAS_BG.widthMobile}
+            height={FEATURED_IDEAS_BG.heightMobile}
             decoding="async"
             loading="lazy"
           />

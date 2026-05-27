@@ -161,7 +161,9 @@
     }
 
     @include tablet-only {
-      object-position: 78% 100%;
+      padding-top: 25px;
+      height: 85%;
+      object-position: 68% 100%;
     }
 
     @include desktop-lg {

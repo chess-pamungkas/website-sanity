@@ -443,14 +443,21 @@
           margin-top: 0;
           min-height: 250px;
           display: flex;
-          align-items: flex-start;
+          flex-direction: column;
+          align-items: center;
           justify-content: center;
           position: relative;
         }
 
-        @include tablet {
+        @include tablet-only {
           margin-top: 16px;
           width: 50%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 280px;
+          padding: 12px 8px 16px;
         }
 
         // Desktop specific positioning - positioned to the right
@@ -477,6 +484,19 @@
         picture:not(.vps-hand-icon) {
           display: block;
           width: 100%;
+
+          @include mobile {
+            display: flex;
+            justify-content: center;
+            width: auto;
+          }
+
+          @include tablet-only {
+            display: flex;
+            justify-content: center;
+            width: auto;
+            max-width: 100%;
+          }
         }
 
         .vps-image {
@@ -486,8 +506,19 @@
           display: block;
 
           @include mobile {
-            max-width: 100%;
+            max-width: 242px;
+            width: auto;
             height: auto;
+            margin-left: auto;
+            margin-right: auto;
+          }
+
+          @include tablet-only {
+            max-width: 242px;
+            width: auto;
+            height: auto;
+            margin-left: auto;
+            margin-right: auto;
           }
 
           // Desktop specific sizing
@@ -511,7 +542,7 @@
           width: auto;
           height: 80px;
           right: -20px;
-          top: 175px;
+          top: 158px;
 
           img {
             width: auto;
@@ -520,11 +551,14 @@
           }
 
           @include small-mobile {
-            top: 150px;
+            top: 133px;
           }
 
-          @include tablet {
-            top: 210px;
+          @include tablet-only {
+            right: auto;
+            left: calc(50% + 88px);
+            top: 185px;
+            height: 80px;
           }
 
           @include desktop-lg {
@@ -559,47 +593,29 @@
 
           @include mobile {
             position: absolute;
-            width: calc(100% - 32px);
-            max-width: 235px;
-            height: 44px;
+            width: 215px;
+            max-width: none;
+            height: 35.56px;
             left: 50%;
-            top: 68%;
-            transform: translateX(-50%) translateY(-50%);
+            top: 165px;
+            transform: translateX(-50%);
             background: rgba(255, 68, 0, 0.3);
             border: 1px solid rgba(255, 68, 0, 0.5);
             border-radius: 8px;
             padding: 13.5px 16px;
-            margin: 0 auto;
+            margin: 0;
+            box-sizing: border-box;
             transition: all 0.3s ease;
-
-            &:hover {
-              background: rgba(255, 68, 0, 0.5);
-              border-color: rgba(255, 68, 0, 0.7);
-              transform: translateX(-50%) translateY(-50%) scale(1.02);
-            }
-
-            &:active {
-              transform: translateX(-50%) translateY(-50%) scale(0.98);
-            }
           }
 
-          // Extra small mobile devices
           @include small-mobile {
-            width: calc(100% - 24px);
-            max-width: 170px;
-            padding: 12px 14px;
-            height: 40px;
-            top: 58%;
+            width: 169.88px;
+            max-width: none;
+            height: 35.56px;
+            padding: 13.5px 16px;
+            top: 168px;
             left: 50%;
-            transform: translateX(-50%) translateY(-50%);
-
-            &:hover {
-              transform: translateX(-50%) translateY(-50%) scale(1.02);
-            }
-
-            &:active {
-              transform: translateX(-50%) translateY(-50%) scale(0.98);
-            }
+            transform: translateX(-50%);
           }
 
           // Small mobile devices
@@ -619,11 +635,15 @@
           //   }
           // }
 
-          @include tablet {
-            width: 208px;
-            height: 44px;
-            left: 55px;
-            top: 200px;
+          @include tablet-only {
+            width: 218px;
+            max-width: none;
+            height: 35.56px;
+            left: 50%;
+            top: 185px;
+            transform: translateX(-50%);
+            box-sizing: border-box;
+            padding: 13.5px 16px;
             background: rgba(255, 68, 0, 0.3);
           }
 
@@ -631,11 +651,13 @@
             left: 6px;
             top: 130px;
             width: 167px;
+            transform: none;
           }
 
           @include desktop-xl {
             left: 17px;
             top: 150px;
+            transform: none;
           }
 
           .btn-text {
@@ -683,12 +705,22 @@
           &:hover {
             background: rgba(255, 68, 0, 0.7);
             border: 1px solid rgba(255, 68, 0, 0.8);
-            // transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(255, 68, 0, 0.3);
 
             @include mobile {
               background: rgba(255, 68, 0, 0.5);
               border: 1px solid rgba(255, 68, 0, 0.7);
+              transform: translateX(-50%);
+            }
+
+            @include tablet-only {
+              background: rgba(255, 68, 0, 0.5);
+              border: 1px solid rgba(255, 68, 0, 0.7);
+              transform: translateX(-50%);
+            }
+
+            @include desktop-lg {
+              transform: translateY(-2px);
             }
 
             .btn-arrow {
@@ -698,12 +730,31 @@
               color: #ffffff;
               align-items: center;
               justify-content: center;
+
+              @include mobile {
+                display: none;
+              }
+
+              @include tablet-only {
+                display: none;
+              }
             }
           }
 
           &:active {
-            // transform: translateY(0);
             box-shadow: 0 2px 6px rgba(255, 68, 0, 0.2);
+
+            @include mobile {
+              transform: translateX(-50%);
+            }
+
+            @include tablet-only {
+              transform: translateX(-50%);
+            }
+
+            @include desktop-lg {
+              transform: translateY(0);
+            }
           }
         }
       }

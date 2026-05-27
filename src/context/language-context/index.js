@@ -3,7 +3,7 @@ import React, {
   useContext,
   useEffect,
   useState,
-  useMemo,
+  useRef,
   startTransition,
 } from "react";
 import PropTypes from "prop-types";
@@ -13,8 +13,12 @@ import {
   PERFORMANCE_COOKIE_KEY,
 } from "../../helpers/gdpr-cookie.config";
 import {
-  detectInitialLanguage,
   changeI18nLanguage,
+  defaultLang,
+  detectInitialLanguage,
+  findLangById,
+  getLangFromUrl,
+  getPersistedLanguageId,
 } from "../../helpers/services/language-service";
 import ClientResolverContext from "../client-resolver-context";
 import {
@@ -24,23 +28,50 @@ import {
   MARKETING_HOME_GEO_DEFER_MS,
 } from "../../helpers/is-audit-environment";
 import { scheduleAfterCapOnly } from "../../helpers/schedule-after-lcp";
+import { isBrowser } from "../../helpers/services/is-browser";
+import { isMarketingHomePath } from "../../helpers/is-marketing-home-path";
 
 const LanguageContext = createContext({});
 
 export const LanguageProvider = ({ children }) => {
   const { setCookie } = useContext(CookieContext);
   const { clientConfig } = useContext(ClientResolverContext);
-  const initialLang = useMemo(
-    () => detectInitialLanguage(clientConfig?.recommendedLanguage),
-    [clientConfig]
+  const geoHomeAppliedRef = useRef(false);
+
+  const [selectedLanguage, setSelectedLanguage] = useState(() =>
+    isBrowser() ? detectInitialLanguage(undefined) : defaultLang
   );
 
-  const [selectedLanguage, setSelectedLanguage] = useState(initialLang);
-
+  // Geo suggestion for `/` only when the user has not chosen a language yet.
   useEffect(() => {
-    if (shouldDeferHeavyWorkForLighthouse()) return;
-    startTransition(() => setSelectedLanguage(initialLang));
-  }, [initialLang]);
+    if (shouldDeferHeavyWorkForLighthouse()) return undefined;
+    if (!clientConfig?.recommendedLanguage || geoHomeAppliedRef.current) {
+      return undefined;
+    }
+
+    const applyGeoHomeLanguage = () => {
+      if (geoHomeAppliedRef.current) return;
+      if (!isBrowser()) return;
+
+      if (getLangFromUrl()) return;
+      if (!isMarketingHomePath(window.location.pathname)) return;
+      if (getPersistedLanguageId()) return;
+
+      geoHomeAppliedRef.current = true;
+      const geoLang = findLangById(clientConfig.recommendedLanguage);
+      startTransition(() => setSelectedLanguage(geoLang));
+    };
+
+    if (shouldDeferMarketingHomeGeoWork()) {
+      return scheduleAfterCapOnly(
+        applyGeoHomeLanguage,
+        MARKETING_HOME_GEO_DEFER_MS
+      );
+    }
+
+    applyGeoHomeLanguage();
+    return undefined;
+  }, [clientConfig]);
 
   useEffect(() => {
     // Geo API + navigate are deferred on marketing home in ClientResolverProvider (after LCP).

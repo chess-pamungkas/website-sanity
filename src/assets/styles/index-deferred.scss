@@ -42,7 +42,7 @@
 /* partners + income-slider → index.scss */
 /* contact-us → index.scss (hero LCP + CLS on /contact-us/) */
 @import "form";
-@import "trading-tools-page";
+/* trading-tools-page → index.scss (alpha-generation tablet FOUC) */
 /* vps → index.scss (hero CLS + LCP layout on /vps/) */
 /* swap-free → index.scss (hero + CLS on /swap-free/) */
 @import "testimonials-content";
@@ -51,7 +51,7 @@
 @import "cost-calculator";
 @import "technology-infrastructure";
 @import "market-sentiment";
-@import "featured-ideas";
+/* featured-ideas → index.scss (trading-tools tablet FOUC) */
 @import "trading-calendar";
 @import "tab-trading-tools";
 @import "trust";

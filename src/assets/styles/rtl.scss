@@ -1677,7 +1677,7 @@ body[dir="rtl"] .phone-number-container,
     width: 100%;
     height: auto;
     max-height: auto;
-  max-height: 100vh;
+    max-height: 100vh;
     margin: auto;
     display: flex;
     flex-direction: row-reverse !important; // Reverse the flex direction for RTL
@@ -1700,7 +1700,7 @@ body[dir="rtl"] .phone-number-container,
       width: 100%;
       height: 100%;
       max-height: auto;
-  max-height: 100vh;
+      max-height: 100vh;
       overflow-y: auto;
     }
 
@@ -2044,7 +2044,7 @@ html[dir="rtl"] {
       display: flex;
       flex-direction: column;
       min-height: auto;
-  max-height: 100vh;
+      max-height: 100vh;
       width: 100%;
       overflow-x: hidden;
     }
@@ -2127,7 +2127,7 @@ html[dir="rtl"] {
       display: flex;
       flex-direction: column;
       min-height: auto;
-  max-height: 100vh;
+      max-height: 100vh;
       width: 100%;
       overflow-x: hidden;
     }

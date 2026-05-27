@@ -127,7 +127,7 @@
   /* LCP <img> replaces CSS backgrounds — mirror legacy bg positioning */
   &__hero-bg-lcp {
     @include tablet {
-      object-position: 86% 100%;
+      object-position: 80% 100%;
     }
 
     @include desktop-lg {

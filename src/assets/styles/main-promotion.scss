@@ -300,12 +300,12 @@ $hand-image: url("/images/hand.webp");
     }
 
     @include tablet {
-      width: 500px;
+      width: 400px;
       // max-width: 450px;
-      height: 480px;
+      height: 450px;
       // max-height: 420px;
       bottom: 0;
-      right: -50px;
+      right: -18px;
     }
 
     @include desktop-lg {

@@ -14,7 +14,8 @@
     gap: 32px;
     isolation: isolate;
     width: 405px;
-    height: 449px;
+    height: auto;
+    min-height: 449px;
     background: linear-gradient(
         180deg,
         rgba(255, 255, 255, 0) 0%,
@@ -40,9 +41,15 @@
     @include tablet {
       width: 100%;
       max-width: 405px;
-      height: 449px;
+      height: auto;
+      min-height: 449px;
       padding: 16px;
       gap: 32px;
+    }
+
+    @include desktop-lg {
+      height: auto;
+      min-height: 449px;
     }
   }
 
@@ -80,7 +87,8 @@
     align-items: flex-start;
     gap: 12px;
     width: 100%;
-    height: 100%;
+    flex: 1;
+    min-height: 100%;
 
     @include mobile {
       gap: 12px;
@@ -116,19 +124,15 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 0px;
+    padding: 0;
     gap: 12px;
-    width: 349px;
-    height: 268px;
-    flex: none;
-    order: 2;
+    width: 100%;
+    max-width: 349px;
+    flex: 1 1 auto;
     align-self: stretch;
-    flex-grow: 0;
     z-index: 2;
 
     @include mobile {
-      width: 100%;
-      height: auto;
       gap: 10px;
     }
   }
@@ -213,11 +217,12 @@
     justify-content: center;
     align-items: center;
     z-index: 3;
-    margin-top: 40px;
-    order: 2;
+    flex-shrink: 0;
+    margin-top: auto;
+    padding-top: 16px;
 
     @include mobile {
-      margin-top: 15px;
+      padding-top: 12px;
     }
   }
 
@@ -359,5 +364,22 @@
       height: 9.33px;
       border: 1.3333px solid #ff4400;
     }
+  }
+}
+
+/* JP (and other CJK) benefit lines run longer — inherit Noto and tighten rhythm. */
+.jp-font .market-item-advantages-list {
+  &__advantage-text {
+    font-family: $fontJP;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  &__advantages {
+    gap: 10px;
+  }
+
+  &__learn-more-btn .button-text {
+    font-family: $fontJP !important;
   }
 }

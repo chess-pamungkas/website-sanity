@@ -49,6 +49,9 @@
 @import "spreads-and-fees";
 /* Trading tools (/trading-tools/): same pattern — avoid 100vh snap + hero LCP <img> needs early layout rules. */
 @import "trading-tools";
+/* Featured Ideas + Alpha Generation: deferred-only caused tablet FOUC (light bg, text unreadable) before sheet loaded. */
+@import "featured-ideas";
+@import "trading-tools-page";
 /* VPS (/vps/): was deferred-only → ~0.25 CLS on .vps__hero-container when deferred-styles.css applied after first paint. */
 @import "vps";
 /* VPS keep-your-vps: deferred-only → ~1 CLS on section.keep-your-vps when deferred-pages.css applied (layout + min-heights). */

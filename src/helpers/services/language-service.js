@@ -1,5 +1,9 @@
 import { navigate } from "gatsby";
-import { LAST_LANGUAGE_KEY } from "../gdpr-cookie.config";
+import {
+  DEFAULT_COOKIE_AGE,
+  GLOBAL_COOKIE_PATH,
+  LAST_LANGUAGE_KEY,
+} from "../gdpr-cookie.config";
 import {
   LANG_SELECT_OPTIONS,
   PORTAL_LANGUAGES_MAP,
@@ -15,20 +19,29 @@ export const defaultLang = LANG_SELECT_OPTIONS.find(
   ({ isDefault }) => isDefault
 );
 
-const findLangById = (languageId) => {
-  return (
-    LANG_SELECT_OPTIONS.find((item) => item.id === languageId) || defaultLang
-  );
-};
-
-const getLangFromUrl = () => {
+export const getLangFromUrl = () => {
   if (!isBrowser()) return undefined;
   const { pathname } = window.location;
   const match = pathname.match(/^\/([a-z]{2})(?:\/|$)/);
   return match ? match[1] : undefined;
 };
 
-const langFromCookie = cookies.get(LAST_LANGUAGE_KEY);
+export const getPersistedLanguageId = () => cookies.get(LAST_LANGUAGE_KEY);
+
+/** Write language choice before navigate so geo detection cannot override the picker. */
+export const persistLanguageChoice = (languageId) => {
+  if (!isBrowser() || !languageId) return;
+  cookies.set(LAST_LANGUAGE_KEY, languageId, {
+    path: GLOBAL_COOKIE_PATH,
+    maxAge: DEFAULT_COOKIE_AGE,
+  });
+};
+
+export const findLangById = (languageId) => {
+  return (
+    LANG_SELECT_OPTIONS.find((item) => item.id === languageId) || defaultLang
+  );
+};
 
 const pathHasLocalePrefix = (pathname) =>
   /^\/[a-z]{2}(\/|$)/.test(pathname || "");
@@ -72,16 +85,28 @@ export const detectInitialLanguage = (recommendedLanguage) => {
   const fromUrl = getLangFromUrl();
   if (fromUrl) return findLangById(fromUrl);
 
-  if (isBrowser() && isDefaultLanguageCanonicalPath(window.location.pathname)) {
+  const pathname = isBrowser() ? window.location.pathname : "";
+  const normalized = (pathname.replace(/\/+$/, "") || "/");
+
+  // English product routes (/vps, /forex, …) without a locale prefix.
+  if (normalized !== "/" && isDefaultLanguageCanonicalPath(pathname)) {
     return defaultLang;
   }
 
-  // Geo from client-detection wins over stale lastLanguage cookie on unprefixed entry (e.g. /).
-  if (recommendedLanguage) {
-    return findLangById(recommendedLanguage);
+  const persistedId = getPersistedLanguageId();
+
+  // Homepage `/`: explicit picker/cookie choice before geo (Indonesia → id only when unset).
+  if (normalized === "/") {
+    if (persistedId) return findLangById(persistedId);
+    if (recommendedLanguage) return findLangById(recommendedLanguage);
+    return defaultLang;
   }
 
-  return findLangById(langFromCookie);
+  if (persistedId) return findLangById(persistedId);
+
+  if (recommendedLanguage) return findLangById(recommendedLanguage);
+
+  return defaultLang;
 };
 
 export const setLangParam = (selectedLanguage) => {

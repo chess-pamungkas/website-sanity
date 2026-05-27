@@ -132,7 +132,7 @@
 
   &__hero-bg-lcp {
     @include tablet {
-      object-position: 80% 100%;
+      object-position: 75% 100%;
     }
 
     @include desktop-lg {

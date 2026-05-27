@@ -1435,7 +1435,7 @@
   "popup-registration-benefits-toolsFSA": "Ferramentas de negociação avançadas ao seu alcance",
   "popup-registration-benefits-transfers": "Transferências Simples da Carteira para a Conta de Negociação",
   "popup-registration-benefits-verification": "Verificação Simplificada e Sem Complicações",
-  "popup-registration-consent": "Concordo em permitir que a empresa processe meus dados pessoais para atender às suas obrigações regulamentares e confirmei que li e entendi a {{privacyLink}} e a {{cookieLink}} da Empresa.",
+  "popup-registration-consent": "Concordo em permitir que a empresa processe meus dados pessoais para atender às suas obrigações regulamentares e confirmei que li e entendi a <1>Política de Privacidade</1> e a <3>Política de Cookies</3> da Empresa.",
   "popup-registration-consent-privacy-label": "Política de Privacidade",
   "popup-registration-consent-cookie-label": "Política de Cookies",
   "popup-registration-continue": "Continuar",

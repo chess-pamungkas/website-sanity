@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { ChevronDownIcon, ChevronUpIcon } from "../../../shared/icons/critical";
 import { useModal } from "../../../../helpers/hooks/use-modal";
 import LanguageContext from "../../../../context/language-context";
+import { persistLanguageChoice } from "../../../../helpers/services/language-service";
 import Popup from "../../../shared/popup";
 import LangOptions from "../lang-options";
 
@@ -21,6 +22,7 @@ const LangSelect = ({ className, isHeader = false, setIsLangPopupOpened }) => {
   };
 
   const onLangSelect = (selected) => {
+    persistLanguageChoice(selected.id);
     setSelectedLanguage(selected);
     // Close popup after a short delay to allow the Link navigation to complete
     setTimeout(() => {

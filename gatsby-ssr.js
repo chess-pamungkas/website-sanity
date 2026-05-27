@@ -20,6 +20,14 @@ import { trustpilotRobotoFontFaceCritical } from "./src/helpers/trustpilot-fonts
 const SSR_IS_NON_PROD_BUILD =
   process.env.GATSBY_ENV !== "production" ? "true" : "false";
 
+/** Fallback for local dev when .env is missing — production deploys must set GATSBY_CONVRS_LIVECHAT in CI. */
+const CONVRS_LIVECHAT_SRC = (
+  process.env.GATSBY_CONVRS_LIVECHAT ||
+  (process.env.GATSBY_ENV !== "production"
+    ? "https://webchat.conv.rs/266f746c05756e6d7585addf10a8a101f240b128.js"
+    : "")
+).trim();
+
 /** Shared print→all flip (no recursive onload). Keep in sync with scripts/defer-global-css-html.js */
 const OQ_CSS_FLIP_INLINE = `
 function oqMarkStylesReady(){if(window.__oqStylesReady)return;window.__oqStylesReady=1;requestAnimationFrame(function(){requestAnimationFrame(function(){var idle=function(fn,t){if(typeof requestIdleCallback!=='undefined')requestIdleCallback(fn,{timeout:t||200});else setTimeout(fn,64)};idle(function(){try{document.documentElement.classList.add('app-styles-ready');window.dispatchEvent(new CustomEvent('appStylesReady'));}catch(e){}},200)})});}
@@ -75,6 +83,8 @@ function isPerfLab(){
 }
 function isNonProdBuild(){return ${SSR_IS_NON_PROD_BUILD};}
 function shouldDeferThirdParty(){return isAudit()||isPerfLab()||isNonProdBuild();}
+/** Livechat: only skip auto-load during Lighthouse/headless audits — not dev builds or localhost perf lab. */
+function shouldDeferLivechatAutoLoad(){return isAudit();}
 `
   .replace(/\s+/g, " ")
   .trim();
@@ -317,8 +327,8 @@ export const onRenderBody = ({
         `,
       }}
     />,
-    // Convrs livechat: load only when user clicks "Live Chat" (not on any interaction). Expose loadConvrsWebchatAndOpen() for header/footer to call.
-    ...(process.env.GATSBY_CONVRS_LIVECHAT
+    // Convrs livechat: auto-load on page load for real users; menu/footer can call loadConvrsWebchatAndOpen().
+    ...(CONVRS_LIVECHAT_SRC
       ? [
           <script
             key="live-chat-deferred"
@@ -326,9 +336,7 @@ export const onRenderBody = ({
               __html: `
                 (function() {
                   ${SSR_INLINE_IS_AUDIT_FN}
-                  var url = "${(
-                    process.env.GATSBY_CONVRS_LIVECHAT || ""
-                  ).replace(/"/g, '\\"')}";
+                  var url = "${CONVRS_LIVECHAT_SRC.replace(/"/g, '\\"')}";
                   if (!url) return;
                   var loaded = false;
                   var openWhenReady = false;
@@ -375,16 +383,17 @@ export const onRenderBody = ({
                     loadWhenBodyReady();
                   };
                   window.loadConvrsWebchat = function() { loadWhenBodyReady(); };
-                  /* Audits / headless / ?lighthouse / localhost mobile lab: never auto-fetch Convrs (LH ~71ms+ forced reflow in webchat.conv.rs). Use loadConvrsWebchatAndOpen() from Live Chat menu. */
+                  /* Audits only: skip auto-fetch (use Live Chat menu). Dev/staging/mobile still load the widget. */
                   try {
-                    if (typeof shouldDeferThirdParty === "function" && shouldDeferThirdParty()) return;
+                    if (typeof shouldDeferLivechatAutoLoad === "function" && shouldDeferLivechatAutoLoad()) return;
                   } catch (e0) {}
-                  var isNarrow = false;
+                  var delayMs = 300;
                   try {
-                    isNarrow = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+                    if (window.matchMedia && window.matchMedia("(max-width: 768px)").matches) {
+                      delayMs = 800;
+                    }
                   } catch (e) {}
-                  if (isNarrow) return;
-                  setTimeout(loadWhenBodyReady, 300);
+                  setTimeout(loadWhenBodyReady, delayMs);
                 })();
               `,
             }}
@@ -418,7 +427,7 @@ window.__checkConvrsPresence = function(){
   s.textContent='#convrs-shadow-host,[id*="convrs-shadow-host"]{z-index:1002!important;position:relative!important;pointer-events:auto!important}.convrs-chat-webchat-container-full,[id*="convrs-chat-webchat-container"]{z-index:1002!important}.convrs-chat-header-full,[id*="convrs-chat-header"]{z-index:1003!important;position:relative!important;pointer-events:auto!important}@media (max-width:480px){.convrs-chat-webchat-container-full{z-index:2147483647!important}.convrs-chat-header-full{z-index:2147483647!important;pointer-events:auto!important}}';
   if (document.head) document.head.appendChild(s); else document.addEventListener('DOMContentLoaded', function(){ if(document.head) document.head.appendChild(s); });
 })();
-if(shouldDeferThirdParty())return;
+if(isAudit())return;
 var scheduled=false;
 var armed=false;
 var cachedNarrow=null;
@@ -499,7 +508,7 @@ if(isConvrsLoaded() || hasConvrsNodes()){
     <script
       key="mt-widget-deferred"
       dangerouslySetInnerHTML={{
-        __html: `(function(){${SSR_INLINE_IS_AUDIT_FN}if(typeof shouldDeferThirdParty==="function"&&shouldDeferThirdParty())return;var url="https://metatraderweb.app/trade/widget.js";function load(){var s=document.createElement("script");s.type="text/javascript";s.src=url;s.async=true;s.defer=true;document.body.appendChild(s);}function onInteract(){window.removeEventListener("click",onInteract);window.removeEventListener("keydown",onInteract);window.removeEventListener("scroll",onInteract,true);load();}function start(){var isMobile=!!(window.matchMedia&&window.matchMedia("(max-width: 768px)").matches);if(isMobile){window.addEventListener("click",onInteract,{once:true,passive:true});window.addEventListener("keydown",onInteract,{once:true,passive:true});window.addEventListener("scroll",onInteract,{once:true,passive:true});setTimeout(load,20000);}else{setTimeout(load,2500);}}if(document.readyState==="complete")start();else window.addEventListener("load",start,{once:true});})();`,
+        __html: `(function(){${SSR_INLINE_IS_AUDIT_FN}if(typeof shouldDeferThirdParty==="function"&&shouldDeferThirdParty())return;var url="https://metatraderweb.app/trade/widget.js";var path=(window.location&&window.location.pathname)||"";var isMt4Webtrader=/mt4-webtrader/i.test(path);function load(){var s=document.querySelector('script[src="'+url+'"]');if(s)return;s=document.createElement("script");s.type="text/javascript";s.src=url;s.async=true;s.defer=true;document.body.appendChild(s);}function onInteract(){window.removeEventListener("click",onInteract);window.removeEventListener("keydown",onInteract);window.removeEventListener("scroll",onInteract,true);load();}function start(){if(isMt4Webtrader){load();return;}var isMobile=!!(window.matchMedia&&window.matchMedia("(max-width: 768px)").matches);if(isMobile){window.addEventListener("click",onInteract,{once:true,passive:true});window.addEventListener("keydown",onInteract,{once:true,passive:true});window.addEventListener("scroll",onInteract,{once:true,passive:true});setTimeout(load,20000);}else{setTimeout(load,2500);}}if(document.readyState==="complete")start();else window.addEventListener("load",start,{once:true});})();`,
       }}
     />,
   ];

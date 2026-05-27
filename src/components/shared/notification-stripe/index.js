@@ -120,8 +120,8 @@ const NotificationsContainer = ({ className, setSectionOptions }) => {
         );
 
         const path = window.location.pathname;
-        const pageMt5 = path.endsWith("/mt5-webtrader/");
-        const pageMt4 = path.endsWith("/mt4-webtrader/");
+        const pageMt5 = path.includes("/mt5-webtrader");
+        const pageMt4 = path.includes("/mt4-webtrader");
         if (pageMt5 && livechatisMobile) {
           livechatisMobile.style.display = "none";
           if (isRiskWarningNotification) {

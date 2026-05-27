@@ -4,6 +4,12 @@
  * `{ default: fn }` — not `{ io: fn }`. Static `import { io }` works; dynamic must normalize.
  */
 export function loadSocketIo() {
+  if (
+    typeof window !== "undefined" &&
+    typeof window.__playwrightSocketIoFactory === "function"
+  ) {
+    return Promise.resolve(window.__playwrightSocketIoFactory);
+  }
   return import("socket.io-client").then((mod) => {
     const io = mod.io ?? mod.default;
     if (typeof io !== "function") {

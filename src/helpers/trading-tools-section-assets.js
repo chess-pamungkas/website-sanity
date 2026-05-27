@@ -6,6 +6,10 @@ export const TRADING_TOOLS_SECTION_BG = "/images/bg/trading-tools";
 
 export const TRADING_TOOLS_SECTION_IMAGES = "/images/trading-tools";
 
+/** Column-layout backgrounds (mobile + tablet 768–1023px). */
+export const TRADING_TOOLS_SECTION_BG_STACKED_MQ = "(max-width: 1023px)";
+export const TRADING_TOOLS_SECTION_BG_WIDE_MQ = "(min-width: 1024px)";
+
 /** Dimensions match SVG artboards; use on <img> for layout stability. */
 export const ALPHA_GENERATION_BG = {
   mobileWebp: `${TRADING_TOOLS_SECTION_BG}/bg-alpha-generation-mobile.webp`,

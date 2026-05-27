@@ -1,4 +1,5 @@
 import React from "react";
+import InternalLink from "../components/shared/internal-link";
 // import metaTrader4 from "../assets/images/icons/tools/metaTrader4.svg";
 // import metaTrader5 from "../assets/images/icons/tools/metaTrader5.svg";
 import {
@@ -366,13 +367,9 @@ export const mt4DownloadTabs = () => {
       title: t("mt-promotion-tabs-webtrader"),
       content: (
         <>
-          <a
-            href={MT4_DOWNLOAD_LINKS.getWebTraderLink()}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <InternalLink to={MT4_WEB_TRADER_LINK}>
             {t("mt4_mt-promotion-download-webtrader")}
-          </a>
+          </InternalLink>
         </>
       ),
     },
@@ -418,13 +415,9 @@ export const mt5DownloadTabs = () => {
       title: t("mt-promotion-tabs-webtrader"),
       content: (
         <>
-          <a
-            href={MT5_DOWNLOAD_LINKS.getWebTraderLink()}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <InternalLink to={MT5_WEB_TRADER_LINK}>
             {t("mt5_mt-promotion-download-webtrader")}
-          </a>
+          </InternalLink>
         </>
       ),
     },
