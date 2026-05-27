@@ -442,7 +442,7 @@
   justify-content: center;
   width: 100vw;
   height: auto;
-  min-height: 953px;
+  min-height: 0;
   padding-top: 80px;
   z-index: 2;
   left: 50%;
@@ -453,7 +453,8 @@
   align-items: center;
 
   @include mobile {
-    height: 953px;
+    min-height: 953px;
+    height: auto;
     border-radius: 20px;
     padding-top: 73px;
     margin-top: 0;
@@ -463,26 +464,30 @@
 
   @include hero-page-shell-tablet(555px, 73px, 70px);
 
-  @include desktop-lg {
-    height: 540px;
-    border-radius: 24px;
-    padding-top: 83px;
-    padding-bottom: 0;
-  }
+  @include hero-page-shell-desktop-lg(540px, 77px, 83px);
 
   @include desktop-xl {
-    height: 540px;
+    min-height: calc(83px + 540px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
+    border-radius: 24px;
   }
 
   @include desktop-2k {
-    height: 540px;
+    min-height: calc(83px + 540px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
+    border-radius: 24px;
   }
 
   @include desktop-5k {
-    height: 540px;
+    min-height: calc(83px + 540px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
+    border-radius: 24px;
   }
 
   &__hero-container {
@@ -1200,11 +1205,17 @@
   }
 }
 
+/* Hero already clears the fixed header — do not add a second offset inside #main-container. */
+.company + #main-container .header-offset-placeholder {
+  height: 0 !important;
+}
+
 .company-page {
   @include mobile {
-    margin-top: 130px;
+    margin-top: $company-page-after-hero-gap-mobile;
 
     .features-products {
+      padding: $company-page-features-padding-top-mobile 0 0;
       // Ensure the section is visible
       display: block !important;
       visibility: visible !important;
@@ -1312,17 +1323,29 @@
   }
 
   @include tablet {
-    margin-top: 80px;
-    margin-bottom: 50px;
+    margin-top: $company-page-after-hero-gap-tablet;
+    margin-bottom: $company-page-section-margin-bottom-tablet;
+
+    .features-products {
+      padding: $company-page-features-padding-top-tablet 0 0;
+    }
   }
 
   @include desktop-lg {
-    margin-top: 80px;
-    margin-bottom: 50px;
+    margin-top: $company-page-after-hero-gap-desktop-lg;
+    margin-bottom: $company-page-section-margin-bottom-desktop-lg;
+
+    .features-products {
+      padding: $company-page-features-padding-top-desktop 0;
+    }
   }
 
   @include desktop-xl {
-    margin-top: 100px;
-    margin-bottom: 100px;
+    margin-top: $company-page-after-hero-gap-desktop-xl;
+    margin-bottom: $company-page-section-margin-bottom-desktop-xl;
+
+    .features-products {
+      padding: $company-page-features-padding-top-desktop 0;
+    }
   }
 }

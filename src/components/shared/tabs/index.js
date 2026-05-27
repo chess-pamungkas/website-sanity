@@ -2,8 +2,13 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
 import { stringTransformToKebabCase } from "../../../helpers/services/string-service";
+import InternalLink from "../internal-link";
 import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
+import {
+  MT4_WEB_TRADER_LINK,
+  MT5_WEB_TRADER_LINK,
+} from "../../../helpers/constants";
 import { PLATFORM_SELECTION_CONFIG } from "../../../helpers/platforms.config";
 import {
   MT4_DOWNLOAD_LINKS,
@@ -223,6 +228,9 @@ const Tabs = ({
     },
   ];
 
+  const webTraderPath =
+    platformType === "mt5" ? MT5_WEB_TRADER_LINK : MT4_WEB_TRADER_LINK;
+
   const webtraderPlatforms = [
     {
       id: "webtrader",
@@ -230,26 +238,45 @@ const Tabs = ({
       icon: isMobile
         ? platformImages.webTraderMobile
         : platformImages.webTraderDesktop,
-      link: downloadLinks.getWebTraderLink(),
+      link: webTraderPath,
+      isInternal: true,
     },
   ];
 
-  const renderPlatformCard = (platform, backgroundSize) => (
-    <a
-      key={platform.id}
-      href={platform.link}
-      target="_blank"
-      rel="noreferrer"
-      className="platform-selection__card"
-      aria-label={platform.name}
-      style={{
-        backgroundImage: `url(${platform.icon})`,
-        backgroundSize,
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    />
-  );
+  const renderPlatformCard = (platform, backgroundSize) => {
+    const cardStyle = {
+      backgroundImage: `url(${platform.icon})`,
+      backgroundSize,
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+    };
+
+    if (platform.isInternal) {
+      return (
+        <InternalLink
+          key={platform.id}
+          to={platform.link}
+          className="platform-selection__card"
+          aria-label={platform.name}
+          style={cardStyle}
+        >
+          {"\u00A0"}
+        </InternalLink>
+      );
+    }
+
+    return (
+      <a
+        key={platform.id}
+        href={platform.link}
+        target="_blank"
+        rel="noreferrer"
+        className="platform-selection__card"
+        aria-label={platform.name}
+        style={cardStyle}
+      />
+    );
+  };
 
   // If this is platform selection, render the new structure
   if (isPlatformSelection) {

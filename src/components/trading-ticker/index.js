@@ -203,9 +203,7 @@ const TradingTicker = ({
       )}
       <TradingSymbols
         symbols={filterSymbols(symbols, selectedSection.id)}
-        isInfiniteAutoScroll={
-          isHomepage && isInfiniteAutoScroll !== false
-        }
+        isInfiniteAutoScroll={isInfiniteAutoScroll !== false}
         uniqueId={uniqueId}
       />
     </section>

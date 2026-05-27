@@ -87,4 +87,30 @@ test.describe("Trading ticker scroll speed", () => {
     const shares = samples.find((s) => s.sectionId === "shares");
     expect(shares.durationSec).toBeGreaterThan(metals.durationSec);
   });
+
+  test("product page ticker enables auto-scroll with normalized duration", async ({
+    page,
+  }) => {
+    await installTradingTickerSocketMock(page);
+    await ensureEnglishHomepage(page);
+    await page.goto("/forex/", { waitUntil: "domcontentloaded" });
+
+    const track = page.locator(".trading-symbols--css-auto-scroll").first();
+    await expect(track).toBeVisible({ timeout: 30_000 });
+
+    const rawCount = MOCK_STOCKS_BY_SECTION.forex.length;
+    const preparedCount = prepareSymbolCount(rawCount);
+    await expect
+      .poll(async () => {
+        const metrics = await readTickerScrollMetrics(page);
+        return metrics?.cardCount === preparedCount ? metrics : null;
+      })
+      .not.toBeNull();
+
+    const metrics = await readTickerScrollMetrics(page);
+    expect(metrics.durationSec).toBeCloseTo(
+      expectedDurationSec(preparedCount),
+      2
+    );
+  });
 });

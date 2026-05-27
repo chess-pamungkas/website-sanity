@@ -1435,7 +1435,7 @@
   "popup-registration-benefits-toolsFSA": "Herramientas de trading avanzadas al alcance de tu mano",
   "popup-registration-benefits-transfers": "Transferencias sin esfuerzo desde tu monedero a tu cuenta de trading",
   "popup-registration-benefits-verification": "Verificación simple y sin complicaciones",
-  "popup-registration-consent": "Acepto permitir que la empresa procese mis datos personales para cumplir con sus obligaciones regulatorias. He leído y entendido la {{privacyLink}} y la {{cookieLink}} de la Empresa.",
+  "popup-registration-consent": "Acepto permitir que la empresa procese mis datos personales para cumplir con sus obligaciones regulatorias. He leído y entendido la <1>Política de Privacidad</1> y la <3>Política de Cookies</3> de la Empresa.",
   "popup-registration-consent-privacy-label": "Política de Privacidad",
   "popup-registration-consent-cookie-label": "Política de Cookies",
   "popup-registration-continue": "Continuar",

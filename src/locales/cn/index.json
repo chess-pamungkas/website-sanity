@@ -1435,7 +1435,7 @@
   "popup-registration-benefits-toolsFSA": "您指尖的高级交易工具",
   "popup-registration-benefits-transfers": "简便地钱包交易账户互转",
   "popup-registration-benefits-verification": "简化，无繁琐验证",
-  "popup-registration-consent": "我同意允许公司处理我的个人数据，以履行其监管义务，并且我已阅读并理解公司的《{{privacyLink}}》和《{{cookieLink}}》。",
+  "popup-registration-consent": "我同意允许公司处理我的个人数据，以履行其监管义务，并且我已阅读并理解公司的《<1>隐私政策</1>》和《<3>Cookie政策</3>》。",
   "popup-registration-consent-privacy-label": "隐私政策",
   "popup-registration-consent-cookie-label": "Cookie政策",
   "popup-registration-continue": "继续",

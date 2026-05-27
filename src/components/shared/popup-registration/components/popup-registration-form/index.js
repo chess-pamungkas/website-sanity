@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import cn from "classnames";
 import { PopupRegistrationSchema } from "../../../../../validations/popup-registration";
 import axios from "axios";
-import { useTranslation } from "gatsby-plugin-react-i18next";
+import { Trans, useTranslation } from "gatsby-plugin-react-i18next";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useTranslationWithVariables } from "../../../../../helpers/hooks/use-translation-with-vars";
 import { useRtlDirection } from "../../../../../helpers/hooks/use-rtl-direction";
@@ -2861,39 +2861,35 @@ const PopupRegistrationForm = ({ params }) => {
                     aria-label="Toggle consent agreement"
                   />
                   <span className="toggle-text">
-                    {t("popup-registration-consent", {
-                      ns: "index",
-                      privacyLink: (
-                        <a
-                          href={policyLinks.privacyPolicy}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="link"
-                          onClick={(e) =>
-                            handlePolicyLinkClick(e, policyLinks.privacyPolicy)
-                          }
-                        >
-                          {t("popup-registration-consent-privacy-label", {
-                            ns: "index",
-                          })}
-                        </a>
-                      ),
-                      cookieLink: (
-                        <a
-                          href={policyLinks.cookiePolicy}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="link"
-                          onClick={(e) =>
-                            handlePolicyLinkClick(e, policyLinks.cookiePolicy)
-                          }
-                        >
-                          {t("popup-registration-consent-cookie-label", {
-                            ns: "index",
-                          })}
-                        </a>
-                      ),
-                    })}
+                    <Trans i18nKey="popup-registration-consent" ns="index">
+                      I agree to allow the company to process my personal data
+                      to meet its regulatory obligations and I have read and
+                      understood the
+                      <a
+                        href={policyLinks.privacyPolicy}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link"
+                        onClick={(e) =>
+                          handlePolicyLinkClick(e, policyLinks.privacyPolicy)
+                        }
+                      >
+                        Privacy Policy
+                      </a>
+                      and
+                      <a
+                        href={policyLinks.cookiePolicy}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link"
+                        onClick={(e) =>
+                          handlePolicyLinkClick(e, policyLinks.cookiePolicy)
+                        }
+                      >
+                        Cookie Policy
+                      </a>
+                      of the Company.
+                    </Trans>
                   </span>
                 </div>
 

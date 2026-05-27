@@ -1435,7 +1435,7 @@
   "popup-registration-benefits-toolsFSA": "Alat perdagangan lanjutan di hujung jari anda",
   "popup-registration-benefits-transfers": "Pemindahan dari Dompet ke Akaun Dagangan yang Mudah",
   "popup-registration-benefits-verification": "Pengesahan yang Dipermudahkan, Tanpa Kesulitan",
-  "popup-registration-consent": "Saya bersetuju untuk membenarkan syarikat memproses data peribadi saya bagi memenuhi kewajipan peraturannya dan saya telah membaca serta memahami {{privacyLink}} dan {{cookieLink}} syarikat.",
+  "popup-registration-consent": "Saya bersetuju untuk membenarkan syarikat memproses data peribadi saya bagi memenuhi kewajipan peraturannya dan saya telah membaca serta memahami <1>Dasar Privasi</1> dan <3>Dasar Kuki</3> syarikat.",
   "popup-registration-consent-privacy-label": "Dasar Privasi",
   "popup-registration-consent-cookie-label": "Dasar Kuki",
   "popup-registration-continue": "Teruskan",

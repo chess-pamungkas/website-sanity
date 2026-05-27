@@ -6,7 +6,11 @@ import { ChevronDownIcon, ChevronUpIcon } from "../../../shared/icons/critical";
 import LanguageContext from "../../../../context/language-context";
 import cn from "classnames";
 import ReusableButtons from "../../../shared/reusable-buttons";
-import { ALPHA_GENERATION_BG } from "../../../../helpers/trading-tools-section-assets";
+import {
+  ALPHA_GENERATION_BG,
+  TRADING_TOOLS_SECTION_BG_STACKED_MQ,
+  TRADING_TOOLS_SECTION_BG_WIDE_MQ,
+} from "../../../../helpers/trading-tools-section-assets";
 import badgeIcon from "../../../../assets/images/icons/badge-market-sentiment.svg";
 import analystViewsIcon from "../../../../assets/images/trading-tools/analyst-views.svg";
 import adaptiveCandlesIcon from "../../../../assets/images/trading-tools/adaptive-candles.svg";
@@ -90,25 +94,25 @@ const AlphaGeneration = () => {
           <picture>
             <source
               type="image/webp"
-              media="(max-width: 767px)"
+              media={TRADING_TOOLS_SECTION_BG_STACKED_MQ}
               srcSet={ALPHA_GENERATION_BG.mobileWebp}
             />
             <source
               type="image/webp"
-              media="(min-width: 768px)"
+              media={TRADING_TOOLS_SECTION_BG_WIDE_MQ}
               srcSet={ALPHA_GENERATION_BG.desktopWebp}
             />
             <source
-              media="(max-width: 767px)"
+              media={TRADING_TOOLS_SECTION_BG_STACKED_MQ}
               srcSet={ALPHA_GENERATION_BG.mobileSvg}
               type="image/svg+xml"
             />
             <img
-              src={ALPHA_GENERATION_BG.desktopSvg}
+              src={ALPHA_GENERATION_BG.mobileSvg}
               alt=""
               className="alpha-generation__background-image"
-              width={ALPHA_GENERATION_BG.widthDesktop}
-              height={ALPHA_GENERATION_BG.heightDesktop}
+              width={ALPHA_GENERATION_BG.widthMobile}
+              height={ALPHA_GENERATION_BG.heightMobile}
               decoding="async"
               loading="lazy"
             />

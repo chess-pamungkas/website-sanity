@@ -3,6 +3,11 @@ require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 require("dotenv").config({
   path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`),
 });
+if (!process.env.GATSBY_CONVRS_LIVECHAT) {
+  require("dotenv").config({
+    path: path.resolve(__dirname, ".env.example"),
+  });
+}
 
 const languages = require(`${__dirname}/src/locales/language.config`);
 const {

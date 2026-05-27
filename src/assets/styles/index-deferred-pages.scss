@@ -29,10 +29,10 @@
 /* partners + income-slider → index.scss (hero LCP + income-slider CLS on /partners/) */
 /* accounts-type + account-types-account-comparison → index.scss (CLS when deferred-pages applied late) */
 /* contact-us → index.scss + contact-us-critical-css.js (CLS on __container when this sheet flipped late) */
-@import "trading-tools-page";
+/* trading-tools-page → index.scss */
 @import "vps";
 /* swap-free → index.scss */
-@import "featured-ideas";
+/* featured-ideas → index.scss */
 @import "trading-calendar";
 @import "tab-trading-tools";
 @import "our-community";
