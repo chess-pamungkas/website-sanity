@@ -1,17 +1,6 @@
 import React, { useEffect, useState, startTransition } from "react";
-import {
-  shouldDeferHeavyWorkForLighthouse,
-  isDocumentAuditMode,
-} from "../../../helpers/is-audit-environment";
-import { isMarketingHomePath } from "../../../helpers/is-marketing-home-path";
+import { shouldDeferHeavyWorkForLighthouse } from "../../../helpers/is-audit-environment";
 import { importRecaptchaV3Module } from "../../../helpers/recaptcha-v3-module";
-import {
-  scheduleAfterCapOnly,
-  scheduleAfterLcpOrCap,
-} from "../../../helpers/schedule-after-lcp";
-
-/** Homepage: load reCAPTCHA only when popup opens (not during Lighthouse trace). */
-const RECAPTCHA_HOME_DEFER_CAP_MS = 11000;
 
 const ReCaptchaProvider = ({ children, showBadge = false }) => {
   const [isClient, setIsClient] = useState(false);
@@ -21,12 +10,12 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
     startTransition(() => setIsClient(true));
   }, []);
 
-  // Preload provider after idle (or immediately when popup opens) so LH desktop is not hit by
-  // recaptcha__en.js layout during the hero window. Loading only on showBadge used to remount
-  // Header/Hero and close the registration popup on first click — keep showBadge urgent path.
+  // Load reCAPTCHA ONLY when it is actually needed (contact-us or popup open).
+  // Preloading it on homepage adds large long tasks and unused JS/CSS in PSI.
   useEffect(() => {
     if (!isClient || shouldDeferHeavyWorkForLighthouse()) return undefined;
     if (GoogleReCaptchaProvider) return undefined;
+    if (!showBadge) return undefined;
 
     const loadProvider = () => {
       void importRecaptchaV3Module()
@@ -38,65 +27,8 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
         .catch(() => {});
     };
 
-    if (showBadge) {
-      loadProvider();
-      return undefined;
-    }
-
-    const path =
-      typeof window !== "undefined" ? window.location.pathname || "" : "";
-    if (isMarketingHomePath(path)) {
-      let cancelHomePreload = scheduleAfterLcpOrCap(
-        loadProvider,
-        RECAPTCHA_HOME_DEFER_CAP_MS
-      );
-      let cancelPointerWarm = () => {};
-      const warmOnPointer = () => {
-        loadProvider();
-      };
-      document.addEventListener("pointerdown", warmOnPointer, {
-        capture: true,
-        passive: true,
-      });
-      cancelPointerWarm = () => {
-        document.removeEventListener("pointerdown", warmOnPointer, {
-          capture: true,
-        });
-      };
-      return () => {
-        cancelHomePreload();
-        cancelPointerWarm();
-      };
-    }
-
-    let cancelDefer = () => {};
-    const armLoad = () => {
-      if (isDocumentAuditMode()) {
-        cancelDefer = scheduleAfterCapOnly(loadProvider, RECAPTCHA_HOME_DEFER_CAP_MS);
-        return;
-      }
-      let idleId;
-      let timeoutId;
-      if (typeof requestIdleCallback !== "undefined") {
-        idleId = requestIdleCallback(loadProvider, { timeout: 2500 });
-      } else {
-        timeoutId = window.setTimeout(loadProvider, 1200);
-      }
-      cancelDefer = () => {
-        if (idleId != null && typeof cancelIdleCallback !== "undefined") {
-          cancelIdleCallback(idleId);
-        }
-        if (timeoutId != null) {
-          window.clearTimeout(timeoutId);
-        }
-      };
-    };
-
-    cancelDefer = scheduleAfterLcpOrCap(armLoad, 4500);
-
-    return () => {
-      cancelDefer();
-    };
+    loadProvider();
+    return undefined;
   }, [isClient, GoogleReCaptchaProvider, showBadge]);
 
   useEffect(() => {
