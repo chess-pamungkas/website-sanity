@@ -14,7 +14,7 @@ import { getIcon } from "../trading-ticker/components/trading-symbols/icon-loade
 import symbolMapping from "../trading-ticker/components/trading-symbols/symbol-icon-mapping.json";
 import { getTradingSections } from "../../helpers/config";
 import { filterSymbols } from "../../helpers/services/filter-symbols";
-import { io } from "socket.io-client";
+import { loadSocketIo } from "../../helpers/services/load-socket-io";
 import { isBrowser } from "../../helpers/services/is-browser";
 import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
 
@@ -242,16 +242,16 @@ const MarketSentimentContent = () => {
       setIsLoading(false);
       return;
     }
+    if (shouldDeferHeavyWorkForLighthouse()) {
+      setIsLoading(false);
+      return;
+    }
 
-    const socket = io(`${API_URL}ws-stocks/`, {
-      transports: ["polling", "websocket"], // Fallback to polling if websocket fails
-      timeout: 10000, // 10 second timeout
-      reconnection: true,
-      reconnectionAttempts: 3,
-      reconnectionDelay: 1000,
-    });
+    let socket = null;
+    let isDisposed = false;
 
     const fetchDataForCategory = (category, sectionId) => {
+      if (!socket) return;
       socket.emit("stocks", sectionId);
     };
 
@@ -260,8 +260,7 @@ const MarketSentimentContent = () => {
       setIsLoading(false);
     }, 10000);
 
-    // Set up event listener for replies
-    socket.on("reply", (data) => {
+    const handleReply = (data) => {
       if (data && data.length > 0) {
         // Determine which category this data belongs to by checking symbol patterns
         const firstSymbol = data[0].symbol;
@@ -304,19 +303,18 @@ const MarketSentimentContent = () => {
         clearTimeout(loadingTimeout);
         setIsLoading(false);
       }
-    });
+    };
 
-    // Handle connection errors silently (don't spam console)
-    socket.on("connect_error", (error) => {
+    const handleConnectError = (error) => {
       // Only log in development, suppress in production
       if (process.env.NODE_ENV === "development") {
         console.debug("Socket.IO connection error:", error.message);
       }
       clearTimeout(loadingTimeout);
       setIsLoading(false);
-    });
+    };
 
-    socket.on("disconnect", (reason) => {
+    const handleDisconnect = (reason) => {
       // Only log unexpected disconnects
       if (
         reason !== "io client disconnect" &&
@@ -324,12 +322,33 @@ const MarketSentimentContent = () => {
       ) {
         console.debug("Socket.IO disconnected:", reason);
       }
-    });
+    };
 
-    // Fetch data for each category
-    Object.entries(categoryToSectionMap).forEach(([category, sectionId]) => {
-      fetchDataForCategory(category, sectionId);
-    });
+    loadSocketIo()
+      .then((io) => {
+        if (isDisposed) return;
+        socket = io(`${API_URL}ws-stocks/`, {
+          transports: ["polling", "websocket"], // Fallback to polling if websocket fails
+          timeout: 10000, // 10 second timeout
+          reconnection: true,
+          reconnectionAttempts: 3,
+          reconnectionDelay: 1000,
+        });
+
+        // Set up event listener for replies
+        socket.on("reply", handleReply);
+        socket.on("connect_error", handleConnectError);
+        socket.on("disconnect", handleDisconnect);
+
+        // Fetch data for each category
+        Object.entries(categoryToSectionMap).forEach(([category, sectionId]) => {
+          fetchDataForCategory(category, sectionId);
+        });
+      })
+      .catch(() => {
+        clearTimeout(loadingTimeout);
+        setIsLoading(false);
+      });
 
     // Set up interval to refresh data
     const intervalId = setInterval(() => {
@@ -339,12 +358,15 @@ const MarketSentimentContent = () => {
     }, 5000); // Refresh every 5 seconds
 
     return () => {
+      isDisposed = true;
       clearInterval(intervalId);
       clearTimeout(loadingTimeout);
-      socket.off("reply");
-      socket.off("connect_error");
-      socket.off("disconnect");
-      socket.disconnect();
+      if (socket) {
+        socket.off("reply", handleReply);
+        socket.off("connect_error", handleConnectError);
+        socket.off("disconnect", handleDisconnect);
+        socket.disconnect();
+      }
     };
   }, [API_URL]);
 
