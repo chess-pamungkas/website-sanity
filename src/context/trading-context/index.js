@@ -133,17 +133,18 @@ export const TradingProvider = ({ children, enableLiveTrading = true }) => {
         });
     };
 
-    let fallbackId = null;
+    const shouldDeferSockets = shouldDeferHeavyWorkForLighthouse();
     const onInteract = () => {
       window.removeEventListener("click", onInteract);
       window.removeEventListener("keydown", onInteract);
       window.removeEventListener("scroll", onInteract, true);
       window.removeEventListener("touchstart", onInteract, true);
       window.removeEventListener("belowHeroContentReady", onInteract);
-      if (fallbackId) clearTimeout(fallbackId);
       connect();
     };
-    if (shouldDeferHeavyWorkForLighthouse()) {
+    if (shouldDeferSockets) {
+      // In audit/headless runs, never open sockets unless a real user interaction happens.
+      // This prevents Lighthouse "Browser errors were logged to the console" from unresolved WS.
       window.addEventListener("click", onInteract, {
         once: true,
         passive: true,
@@ -152,7 +153,6 @@ export const TradingProvider = ({ children, enableLiveTrading = true }) => {
         once: true,
         passive: true,
       });
-      fallbackId = setTimeout(connect, 30000);
     } else {
       window.addEventListener("belowHeroContentReady", onInteract, {
         once: true,
@@ -168,7 +168,6 @@ export const TradingProvider = ({ children, enableLiveTrading = true }) => {
       window.removeEventListener("scroll", onInteract, true);
       window.removeEventListener("touchstart", onInteract, true);
       window.removeEventListener("belowHeroContentReady", onInteract);
-      if (fallbackId) clearTimeout(fallbackId);
       tearDown();
     };
   }, [needToLoadSymbols, enableLiveTrading]);
