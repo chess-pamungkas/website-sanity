@@ -12,7 +12,15 @@ import {
   heroTabletContainerCritical,
   heroPageShellCritical,
   heroTabletBgLcpCritical,
+  heroArabicTabletBgLcpCritical,
+  heroArabicDesktopBgLcpCritical,
 } from "./src/helpers/hero-tablet-critical-css";
+import {
+  getRtlHeroTabletLcpPosition,
+  getRtlHeroDesktopLgLcpPosition,
+  RTL_HERO_DESKTOP_XL_DEFAULT,
+  RTL_HERO_TABLET_LCP_DEFAULT,
+} from "./src/helpers/rtl-hero-lcp-critical.config";
 import { SM_MAX_WIDTH, WINDOW_SIZE_MD } from "./src/helpers/constants";
 import { trustpilotRobotoFontFaceCritical } from "./src/helpers/trustpilot-fonts";
 
@@ -598,6 +606,7 @@ export const onPreRenderHTML = ({
   replacePostBodyComponents,
   pathname,
 }) => {
+  const localeId = getLanguageIdFromPathname(pathname);
   const headComponents = getHeadComponents();
   const isWebtraderRoute = !!(
     pathname && pathname.match(/^\/([a-z]{2}\/)?mt[45]-webtrader\/?$/)
@@ -653,10 +662,9 @@ export const onPreRenderHTML = ({
     <script
       key="non-blocking-stylesheets"
       dangerouslySetInnerHTML={{
-        __html:
-          `(function(){${OQ_CSS_FLIP_INLINE}oqFlipPrintStyles();})();`
-            .replace(/\s+/g, " ")
-            .trim(),
+        __html: `(function(){${OQ_CSS_FLIP_INLINE}oqFlipPrintStyles();})();`
+          .replace(/\s+/g, " ")
+          .trim(),
       }}
     />
   );
@@ -698,7 +706,7 @@ export const onPreRenderHTML = ({
           if (last === "contact-us") {
             return { rootClass: "contact-us", assetSlug: "contact-us" };
           }
-          const allowed = new Set([
+          const heroLcpSlugs = new Set([
             "all-markets",
             "forex",
             "metals",
@@ -708,22 +716,29 @@ export const onPreRenderHTML = ({
             "energies",
             "etf",
             "accounts-type",
+            "trading-tools",
             "vps",
             "swap-free",
             "mt4",
             "mt5",
+            "funding",
+            "spreads-and-fees",
+            "partners",
           ]);
-          if (last === "funding") {
+          const heroRootBySlug = {
+            "accounts-type": "account-types",
+            funding: "funding-withdrawals",
+            "spreads-and-fees": "spreads-fees",
+          };
+          const heroAssetSlugByRoot = {
+            "account-types": "accounts-type",
+          };
+          if (heroLcpSlugs.has(last)) {
+            const rootClass = heroRootBySlug[last] ?? last;
             return {
-              rootClass: "funding-withdrawals",
-              assetSlug: "funding-withdrawals",
+              rootClass,
+              assetSlug: heroAssetSlugByRoot[rootClass] ?? last,
             };
-          }
-          if (last === "spreads-and-fees") {
-            return { rootClass: "spreads-fees", assetSlug: "spreads-fees" };
-          }
-          if (allowed.has(last)) {
-            return { rootClass: last, assetSlug: last };
           }
           return null;
         })()
@@ -936,6 +951,47 @@ armCssFlipAndScripts();})();`
   } else if (isHeroLcpPath) {
     // Match /all-markets, /faq/, forex, metals, vps, …: fonts + hero shell before deferred CSS flip.
     const heroRoot = heroLcpPage.rootClass;
+    const isArabicHeroLcp = localeId === ARABIC_LANG_ID;
+    const heroTabletLcpObjectPosition = isArabicHeroLcp
+      ? getRtlHeroTabletLcpPosition(heroRoot)
+      : "78% 100%";
+    const heroTabletLcpCriticalCss = isArabicHeroLcp
+      ? heroArabicTabletBgLcpCritical(heroRoot, heroTabletLcpObjectPosition)
+      : heroTabletBgLcpCritical(heroRoot, heroTabletLcpObjectPosition);
+    const heroArabicDesktopLcpCritical =
+      isArabicHeroLcp &&
+      heroRoot !== "faq-hero" &&
+      heroRoot !== "legal" &&
+      heroRoot !== "contact-us" &&
+      heroRoot !== "partners"
+        ? heroArabicDesktopBgLcpCritical(
+            heroRoot,
+            getRtlHeroDesktopLgLcpPosition(heroRoot),
+            RTL_HERO_DESKTOP_XL_DEFAULT
+          )
+        : "";
+    const heroArabicLcpCriticalForDedicatedPage =
+      isArabicHeroLcp &&
+      (heroRoot === "contact-us" || heroRoot === "partners")
+        ? [
+            heroArabicTabletBgLcpCritical(
+              heroRoot,
+              getRtlHeroTabletLcpPosition(heroRoot)
+            ),
+            heroArabicDesktopBgLcpCritical(
+              heroRoot,
+              getRtlHeroDesktopLgLcpPosition(heroRoot),
+              RTL_HERO_DESKTOP_XL_DEFAULT
+            ),
+          ].join("")
+        : "";
+    const heroLtrTabletLcpCriticalForDedicatedPage =
+      !isArabicHeroLcp &&
+      (heroRoot === "contact-us" || heroRoot === "partners")
+        ? heroRoot === "contact-us"
+          ? heroTabletBgLcpCritical("contact-us", "75% 100%")
+          : heroTabletBgLcpCritical("partners", "70% 100%")
+        : "";
     earlyHints.push(
       <style
         key="trading-product-hero-font-inline"
@@ -958,7 +1014,8 @@ armCssFlipAndScripts();})();`
             `@media(max-width:767px){.${heroRoot}__hero-bg,.${heroRoot}__hero-bg-lcp{position:absolute;inset:0;width:100%;height:100%}}`,
             ...(heroRoot !== "faq-hero" &&
             heroRoot !== "legal" &&
-            heroRoot !== "contact-us"
+            heroRoot !== "contact-us" &&
+            heroRoot !== "partners"
               ? [
                   heroPageShellCritical(heroRoot, 555, 73, 70),
                   heroTabletContainerCritical(
@@ -966,7 +1023,8 @@ armCssFlipAndScripts();})();`
                     555,
                     73
                   ),
-                  heroTabletBgLcpCritical(heroRoot, "78% 100%"),
+                  heroTabletLcpCriticalCss,
+                  heroArabicDesktopLcpCritical,
                 ]
               : []),
             ...(heroRoot === "faq-hero"
@@ -986,29 +1044,62 @@ armCssFlipAndScripts();})();`
                 ]
               : []),
             ...(heroRoot === "legal"
-              ? [
-                  /* Tablet tier (769–1023): matches legal.scss 455px hero shell */
-                  heroPageShellCritical("legal", 455, 73, 70),
-                  heroTabletContainerCritical(
-                    ".legal__hero-container",
-                    455,
-                    73
-                  ),
-                  /* Desktop lg+ (≥1024): 510px artboard */
-                  `@media(min-width:1024px){.legal{position:relative;width:100vw;left:50%;margin-left:-50vw;margin-right:-50vw;min-height:510px;box-sizing:border-box}}`,
-                  `@media(min-width:1024px){.legal__hero-container{height:510px;min-height:510px;position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:1400px;box-sizing:border-box;border-radius:24px;background:#000;overflow:hidden}}`,
-                  `@media(min-width:768px){.legal__hero-bg,.legal__hero-bg-lcp{position:absolute;inset:0;width:100%;height:100%}}`,
-                  heroTabletBgLcpCritical("legal", "65% 50%"),
-                  `@media(min-width:1024px) and (max-width:1919px){.legal__hero-bg-lcp{object-fit:cover;object-position:35% 50%;display:block}}`,
-                  `@media(min-width:1920px){.legal__hero-bg-lcp{object-fit:cover;object-position:center;display:block}}`,
-                  `.legal__content-container{position:relative;z-index:4}`,
-                  LEGAL_REGULATED_CRITICAL_CSS,
-                ]
+              ? (() => {
+                  const isArabicLegal = localeId === ARABIC_LANG_ID;
+                  const legalTabletLcp = isArabicLegal
+                    ? getRtlHeroTabletLcpPosition("legal")
+                    : "50% 100%";
+                  const legalDesktopLgLcp = isArabicLegal
+                    ? getRtlHeroDesktopLgLcpPosition("legal")
+                    : "35% 50%";
+                  const legalDesktopXlLcp = isArabicLegal
+                    ? RTL_HERO_DESKTOP_XL_DEFAULT
+                    : "center center";
+                  return [
+                    /* Tablet tier (768–1023): matches legal.scss 455px hero shell */
+                    heroPageShellCritical("legal", 455, 73, 70),
+                    heroTabletContainerCritical(
+                      ".legal__hero-container",
+                      455,
+                      73
+                    ),
+                    /* Desktop lg+ (≥1024): 510px artboard */
+                    `@media(min-width:1024px){.legal{position:relative;width:100vw;left:50%;margin-left:-50vw;margin-right:-50vw;min-height:510px;box-sizing:border-box}}`,
+                    `@media(min-width:1024px){.legal__hero-container{height:510px;min-height:510px;position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:1400px;box-sizing:border-box;border-radius:24px;background:#000;overflow:hidden}}`,
+                    `@media(min-width:768px){.legal__hero-bg,.legal__hero-bg-lcp{position:absolute;inset:0;width:100%;height:100%}}`,
+                    ...(isArabicLegal
+                      ? [
+                          heroArabicTabletBgLcpCritical("legal", legalTabletLcp),
+                          heroArabicDesktopBgLcpCritical(
+                            "legal",
+                            legalDesktopLgLcp,
+                            legalDesktopXlLcp
+                          ),
+                        ]
+                      : [
+                          heroTabletBgLcpCritical("legal", legalTabletLcp),
+                          `@media(min-width:1024px) and (max-width:1919px){.legal__hero-bg-lcp{object-fit:cover;object-position:${legalDesktopLgLcp};display:block}}`,
+                          `@media(min-width:1920px){.legal__hero-bg-lcp{object-fit:cover;object-position:${legalDesktopXlLcp};display:block}}`,
+                        ]),
+                    `.legal__content-container{position:relative;z-index:4}`,
+                    LEGAL_REGULATED_CRITICAL_CSS,
+                  ];
+                })()
               : []),
             ...(heroRoot === "contact-us"
-              ? [CONTACT_US_HERO_CRITICAL_CSS]
+              ? [
+                  CONTACT_US_HERO_CRITICAL_CSS,
+                  heroLtrTabletLcpCriticalForDedicatedPage,
+                  heroArabicLcpCriticalForDedicatedPage,
+                ]
               : []),
-            ...(heroRoot === "partners" ? [PARTNERS_HERO_CRITICAL_CSS] : []),
+            ...(heroRoot === "partners"
+              ? [
+                  PARTNERS_HERO_CRITICAL_CSS,
+                  heroLtrTabletLcpCriticalForDedicatedPage,
+                  heroArabicLcpCriticalForDedicatedPage,
+                ]
+              : []),
           ].join(""),
         }}
       />

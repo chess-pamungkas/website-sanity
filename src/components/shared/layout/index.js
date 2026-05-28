@@ -611,7 +611,7 @@ const LayoutInner = ({ children, pathname: pathnameFromPage }) => {
     const withCookieAndMarketing = deferredProvidersReady ? (
       <CookieProvider>
         <MarketingContextProvider>
-          <LanguageProvider>
+          <LanguageProvider initialPathname={pathnameForStub ?? ""}>
             <CommonProvider>
               <SearchProvider>{withNotificationStripeAndRecaptcha}</SearchProvider>
             </CommonProvider>

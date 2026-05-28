@@ -1002,7 +1002,7 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
   @include trading-product-hero-bg-lcp;
 
   &__hero-bg-lcp {
-    @include tablet {
+    @include tablet-only {
       object-position: 75% 100%;
     }
 
