@@ -10,6 +10,7 @@ import { getTradingSections } from "../../helpers/config";
 import { sendLog } from "../../helpers/services/log-service";
 import { isBrowser } from "../../helpers/services/is-browser";
 import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
+import { isMarketingHomePath } from "../../helpers/is-marketing-home-path";
 
 const API_URL = process.env.GATSBY_OQTIMA_API_URL;
 const TradingContext = createContext({});
@@ -134,6 +135,10 @@ export const TradingProvider = ({ children, enableLiveTrading = true }) => {
     };
 
     const shouldDeferSockets = shouldDeferHeavyWorkForLighthouse();
+    const currentPath =
+      typeof window !== "undefined" ? window.location.pathname || "" : "";
+    const shouldGateByInteractionOnly =
+      isMarketingHomePath(currentPath) || shouldDeferSockets;
     const onInteract = () => {
       window.removeEventListener("click", onInteract);
       window.removeEventListener("keydown", onInteract);
@@ -142,9 +147,9 @@ export const TradingProvider = ({ children, enableLiveTrading = true }) => {
       window.removeEventListener("belowHeroContentReady", onInteract);
       connect();
     };
-    if (shouldDeferSockets) {
-      // In audit/headless runs, never open sockets unless a real user interaction happens.
-      // This prevents Lighthouse "Browser errors were logged to the console" from unresolved WS.
+    if (shouldGateByInteractionOnly) {
+      // Homepage and audit/headless: only connect after a real user interaction.
+      // PSI/Lighthouse don't interact, so sockets never open during trace.
       window.addEventListener("click", onInteract, {
         once: true,
         passive: true,
@@ -152,6 +157,16 @@ export const TradingProvider = ({ children, enableLiveTrading = true }) => {
       window.addEventListener("keydown", onInteract, {
         once: true,
         passive: true,
+      });
+      window.addEventListener("scroll", onInteract, {
+        once: true,
+        passive: true,
+        capture: true,
+      });
+      window.addEventListener("touchstart", onInteract, {
+        once: true,
+        passive: true,
+        capture: true,
       });
     } else {
       window.addEventListener("belowHeroContentReady", onInteract, {

@@ -17,6 +17,7 @@ import { filterSymbols } from "../../helpers/services/filter-symbols";
 import { loadSocketIo } from "../../helpers/services/load-socket-io";
 import { isBrowser } from "../../helpers/services/is-browser";
 import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
+import { isMarketingHomePath } from "../../helpers/is-marketing-home-path";
 
 const MarketSentimentContent = () => {
   const { isMobile } = useWindowSize();
@@ -249,6 +250,7 @@ const MarketSentimentContent = () => {
 
     let socket = null;
     let isDisposed = false;
+    let interactionCleanup = () => {};
 
     const fetchDataForCategory = (category, sectionId) => {
       if (!socket) return;
@@ -324,31 +326,58 @@ const MarketSentimentContent = () => {
       }
     };
 
-    loadSocketIo()
-      .then((io) => {
-        if (isDisposed) return;
-        socket = io(`${API_URL}ws-stocks/`, {
-          transports: ["polling", "websocket"], // Fallback to polling if websocket fails
-          timeout: 10000, // 10 second timeout
-          reconnection: true,
-          reconnectionAttempts: 3,
-          reconnectionDelay: 1000,
-        });
+    const startSocket = () => {
+      loadSocketIo()
+        .then((io) => {
+          if (isDisposed) return;
+          socket = io(`${API_URL}ws-stocks/`, {
+            transports: ["polling", "websocket"], // Fallback to polling if websocket fails
+            timeout: 10000, // 10 second timeout
+            reconnection: true,
+            reconnectionAttempts: 3,
+            reconnectionDelay: 1000,
+          });
 
-        // Set up event listener for replies
-        socket.on("reply", handleReply);
-        socket.on("connect_error", handleConnectError);
-        socket.on("disconnect", handleDisconnect);
+          // Set up event listener for replies
+          socket.on("reply", handleReply);
+          socket.on("connect_error", handleConnectError);
+          socket.on("disconnect", handleDisconnect);
 
-        // Fetch data for each category
-        Object.entries(categoryToSectionMap).forEach(([category, sectionId]) => {
-          fetchDataForCategory(category, sectionId);
+          // Fetch data for each category
+          Object.entries(categoryToSectionMap).forEach(
+            ([category, sectionId]) => {
+              fetchDataForCategory(category, sectionId);
+            }
+          );
+        })
+        .catch(() => {
+          clearTimeout(loadingTimeout);
+          setIsLoading(false);
         });
-      })
-      .catch(() => {
-        clearTimeout(loadingTimeout);
-        setIsLoading(false);
-      });
+    };
+
+    const path = typeof window !== "undefined" ? window.location.pathname || "" : "";
+    if (isMarketingHomePath(path)) {
+      const onInteract = () => {
+        window.removeEventListener("click", onInteract, true);
+        window.removeEventListener("keydown", onInteract, true);
+        window.removeEventListener("scroll", onInteract, true);
+        window.removeEventListener("touchstart", onInteract, true);
+        startSocket();
+      };
+      window.addEventListener("click", onInteract, { once: true, passive: true, capture: true });
+      window.addEventListener("keydown", onInteract, { once: true, passive: true, capture: true });
+      window.addEventListener("scroll", onInteract, { once: true, passive: true, capture: true });
+      window.addEventListener("touchstart", onInteract, { once: true, passive: true, capture: true });
+      interactionCleanup = () => {
+        window.removeEventListener("click", onInteract, true);
+        window.removeEventListener("keydown", onInteract, true);
+        window.removeEventListener("scroll", onInteract, true);
+        window.removeEventListener("touchstart", onInteract, true);
+      };
+    } else {
+      startSocket();
+    }
 
     // Set up interval to refresh data
     const intervalId = setInterval(() => {
@@ -359,6 +388,7 @@ const MarketSentimentContent = () => {
 
     return () => {
       isDisposed = true;
+      interactionCleanup();
       clearInterval(intervalId);
       clearTimeout(loadingTimeout);
       if (socket) {
