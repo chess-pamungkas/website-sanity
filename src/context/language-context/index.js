@@ -2,6 +2,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useLayoutEffect,
   useState,
   useRef,
   startTransition,
@@ -30,17 +31,21 @@ import {
 import { scheduleAfterCapOnly } from "../../helpers/schedule-after-lcp";
 import { isBrowser } from "../../helpers/services/is-browser";
 import { isMarketingHomePath } from "../../helpers/is-marketing-home-path";
+import { getLanguageIdFromPathname } from "../../helpers/lang.config";
 
 const LanguageContext = createContext({});
 
-export const LanguageProvider = ({ children }) => {
+export const LanguageProvider = ({ children, initialPathname = "" }) => {
   const { setCookie } = useContext(CookieContext);
   const { clientConfig } = useContext(ClientResolverContext);
   const geoHomeAppliedRef = useRef(false);
 
-  const [selectedLanguage, setSelectedLanguage] = useState(() =>
-    isBrowser() ? detectInitialLanguage(undefined) : defaultLang
-  );
+  const [selectedLanguage, setSelectedLanguage] = useState(() => {
+    if (isBrowser()) {
+      return detectInitialLanguage(undefined);
+    }
+    return findLangById(getLanguageIdFromPathname(initialPathname));
+  });
 
   // Geo suggestion for `/` only when the user has not chosen a language yet.
   useEffect(() => {
@@ -73,7 +78,7 @@ export const LanguageProvider = ({ children }) => {
     return undefined;
   }, [clientConfig]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Geo API + navigate are deferred on marketing home in ClientResolverProvider (after LCP).
     if (!isClientDetectionEnabled() && shouldDeferHeavyWorkForLighthouse()) {
       return undefined;
@@ -130,6 +135,7 @@ export const LanguageProvider = ({ children }) => {
 
 LanguageProvider.propTypes = {
   children: PropTypes.node.isRequired,
+  initialPathname: PropTypes.string,
 };
 
 /**

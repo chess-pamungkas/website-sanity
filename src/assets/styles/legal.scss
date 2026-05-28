@@ -136,7 +136,7 @@
       object-position: center center;
     }
 
-    @include tablet {
+    @include tablet-only {
       object-position: 50% 100%;
     }
 

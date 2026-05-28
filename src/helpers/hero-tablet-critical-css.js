@@ -16,6 +16,17 @@ export function heroTabletBgLcpCritical(
   ].join("");
 }
 
+/** Arabic RTL tablet — match rtl-hero-bg-lcp.scss (height 80%, no padding-top). */
+export function heroArabicTabletBgLcpCritical(
+  rootClass,
+  tabletObjectPosition = "175% 100%"
+) {
+  return [
+    `@media(max-width:767px){.${rootClass}__hero-bg-lcp{object-fit:cover;object-position:center bottom;display:block}}`,
+    `@media(min-width:768px) and (max-width:1023px){.${rootClass}__hero-bg{background-image:none!important;background-color:#000!important}.${rootClass}__hero-bg-lcp{height:80%!important;padding-top:0!important;object-fit:cover!important;object-position:${tabletObjectPosition};display:block}}`,
+  ].join("");
+}
+
 /** Outer hero section shell (drops 100vh gap below hero on iPad). */
 export function heroPageShellCritical(
   rootClass,
@@ -24,4 +35,19 @@ export function heroPageShellCritical(
   paddingTopPx = 70
 ) {
   return `@media(min-width:768px) and (max-width:1023px){.${rootClass}{min-height:calc(${topPx}px + ${artboardPx}px);height:auto;padding-top:${paddingTopPx}px;padding-bottom:0;box-sizing:border-box}}`;
+}
+
+/** Arabic RTL desktop: LCP img only (no legacy CSS bg), matches rtl-hero-bg-lcp.scss. */
+export function heroArabicDesktopBgLcpCritical(
+  rootClass,
+  lgObjectPosition = "-820px center",
+  xlObjectPosition = "-750px center"
+) {
+  const desktopLcpBase =
+    "width:100%!important;height:100%!important;padding-top:0!important;object-fit:cover!important;display:block";
+  return [
+    `@media(min-width:1024px){.${rootClass}__hero-bg{background-image:none!important;background-color:#000!important}}`,
+    `@media(min-width:1024px) and (max-width:1919px){.${rootClass}__hero-bg-lcp{${desktopLcpBase};object-position:${lgObjectPosition}}}`,
+    `@media(min-width:1920px){.${rootClass}__hero-bg-lcp{${desktopLcpBase};object-position:${xlObjectPosition}}}`,
+  ].join("");
 }
