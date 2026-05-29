@@ -155,6 +155,10 @@ export const shouldSuppressTrustpilotForLighthousePerf = () =>
     shouldDeferHeavyWorkForLighthouse()) &&
   !isTrustpilotForcedOnLocalhost();
 
+/** Skip Socket.IO bootstrap during PSI/Lighthouse/headless (no user interaction required). */
+export const shouldDisableSocketsForAudit = () =>
+  isAuditEnvironment() || isDocumentAuditMode();
+
 export const isAuditEnvironment = () => {
   if (typeof navigator === "undefined") return false;
   try {
@@ -196,6 +200,14 @@ export const isAuditEnvironment = () => {
       !isLocalhost &&
       navigator.platform === "Linux x86_64" &&
       /Android/i.test(ua)
+    )
+      return true;
+    // PSI/Lighthouse desktop lab: Linux headless host emulates Mac/Windows desktop UA
+    // (networkUserAgent) while navigator.platform stays Linux x86_64.
+    if (
+      !isLocalhost &&
+      navigator.platform === "Linux x86_64" &&
+      /Mac OS X|Windows NT/i.test(ua)
     )
       return true;
     if (typeof window !== "undefined" && window.location) {

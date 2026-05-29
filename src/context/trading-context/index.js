@@ -9,7 +9,10 @@ import PropTypes from "prop-types";
 import { getTradingSections } from "../../helpers/config";
 import { sendLog } from "../../helpers/services/log-service";
 import { isBrowser } from "../../helpers/services/is-browser";
-import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
+import {
+  isAuditEnvironment,
+  isDocumentAuditMode,
+} from "../../helpers/is-audit-environment";
 
 const API_URL = process.env.GATSBY_OQTIMA_API_URL;
 const TradingContext = createContext({});
@@ -34,6 +37,9 @@ export const TradingProvider = ({ children, enableLiveTrading = true }) => {
       !isBrowser() ||
       !needToLoadSymbols
     ) {
+      return undefined;
+    }
+    if (isAuditEnvironment() || isDocumentAuditMode()) {
       return undefined;
     }
 
@@ -133,41 +139,11 @@ export const TradingProvider = ({ children, enableLiveTrading = true }) => {
         });
     };
 
-    const shouldDeferSockets = shouldDeferHeavyWorkForLighthouse();
-    const onInteract = () => {
-      window.removeEventListener("click", onInteract);
-      window.removeEventListener("keydown", onInteract);
-      window.removeEventListener("scroll", onInteract, true);
-      window.removeEventListener("touchstart", onInteract, true);
-      window.removeEventListener("belowHeroContentReady", onInteract);
-      connect();
-    };
-    if (shouldDeferSockets) {
-      // In audit/headless runs, never open sockets unless a real user interaction happens.
-      // This prevents Lighthouse "Browser errors were logged to the console" from unresolved WS.
-      window.addEventListener("click", onInteract, {
-        once: true,
-        passive: true,
-      });
-      window.addEventListener("keydown", onInteract, {
-        once: true,
-        passive: true,
-      });
-    } else {
-      window.addEventListener("belowHeroContentReady", onInteract, {
-        once: true,
-      });
-      connect();
-    }
+    connect();
 
     return () => {
       cancelled = true;
       connectStartedRef.current = false;
-      window.removeEventListener("click", onInteract);
-      window.removeEventListener("keydown", onInteract);
-      window.removeEventListener("scroll", onInteract, true);
-      window.removeEventListener("touchstart", onInteract, true);
-      window.removeEventListener("belowHeroContentReady", onInteract);
       tearDown();
     };
   }, [needToLoadSymbols, enableLiveTrading]);

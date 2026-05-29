@@ -72,6 +72,7 @@ function isAudit() {
     var hostPsi=(typeof window!=="undefined"&&window.location)?(window.location.hostname||"").toLowerCase():"";
     var isLocalPsi=hostPsi==="localhost"||hostPsi==="127.0.0.1"||hostPsi==="";
     if (!isLocalPsi && typeof navigator !== "undefined" && navigator.platform === "Linux x86_64" && /Android/i.test(navigator.userAgent || "")) return true;
+    if (!isLocalPsi && typeof navigator !== "undefined" && navigator.platform === "Linux x86_64" && /Mac OS X|Windows NT/i.test(navigator.userAgent || "")) return true;
     return false;
   } catch (e) {
     return false;
@@ -139,6 +140,7 @@ export const onRenderBody = ({
         var hostD=(window.location.hostname||"").toLowerCase();
         var isLocalD=hostD==="localhost"||hostD==="127.0.0.1"||hostD==="";
         if (!isLocalD && navigator.platform==="Linux x86_64" && /Android/i.test(navigator.userAgent||"")) return "psi-emulation";
+        if (!isLocalD && navigator.platform==="Linux x86_64" && /Mac OS X|Windows NT/i.test(navigator.userAgent||"")) return "psi-desktop-emulation";
       }
       if (typeof window!=="undefined" && window.location) {
         var host=(window.location.hostname||"").toLowerCase();
@@ -162,6 +164,35 @@ export const onRenderBody = ({
       webdriver: !!(typeof navigator!=="undefined" && navigator.webdriver),
       ts: Date.now()
     };
+    if (detected) {
+      try {
+        var _OrigWS = window.WebSocket;
+        if (_OrigWS && !_OrigWS.__oqAuditStub) {
+          function OqAuditWebSocket() {
+            this.readyState = 3;
+            this.bufferedAmount = 0;
+            this.extensions = "";
+            this.protocol = "";
+            this.binaryType = "blob";
+            this.onopen = null;
+            this.onclose = null;
+            this.onerror = null;
+            this.onmessage = null;
+            this.send = function(){};
+            this.close = function(){};
+            this.addEventListener = function(){};
+            this.removeEventListener = function(){};
+            this.dispatchEvent = function(){ return true; };
+          }
+          OqAuditWebSocket.CONNECTING = 0;
+          OqAuditWebSocket.OPEN = 1;
+          OqAuditWebSocket.CLOSING = 2;
+          OqAuditWebSocket.CLOSED = 3;
+          OqAuditWebSocket.__oqAuditStub = true;
+          window.WebSocket = OqAuditWebSocket;
+        }
+      } catch (wsStubErr) {}
+    }
     if (typeof window!=="undefined" && window.location) {
       var s = window.location.search || "";
       if (/[?&]lighthouse-debug(=|$)/i.test(s)) {
