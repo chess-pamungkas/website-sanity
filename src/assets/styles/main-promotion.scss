@@ -387,7 +387,7 @@ $hand-image: url("/images/hand.webp");
 
     @include mobile {
       width: 100%;
-      max-width: 100%;
+      max-width: none;
       box-sizing: border-box;
       align-self: stretch;
       padding-right: 18px;
@@ -396,6 +396,9 @@ $hand-image: url("/images/hand.webp");
     }
 
     @include tablet {
+      width: 100%;
+      max-width: none;
+      align-self: stretch;
       margin: 0;
     }
   }
@@ -732,14 +735,18 @@ $hand-image: url("/images/hand.webp");
     contain: layout;
 
     @include mobile {
-      max-width: 100%;
+      width: 100%;
+      max-width: none;
+      align-self: stretch;
       gap: 20px;
       margin-top: 20px;
       min-height: 124px;
     }
 
     @include tablet {
-      max-width: 100%;
+      width: 100%;
+      max-width: none;
+      align-self: stretch;
       gap: 25px;
     }
 

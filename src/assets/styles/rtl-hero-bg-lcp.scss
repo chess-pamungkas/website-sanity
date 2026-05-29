@@ -185,11 +185,21 @@ $hero-lcp-pages: "all-markets", "forex", "metals", "crypto", "indices", "shares"
 // company hero still uses CSS background on __hero-bg (not in HERO_LCP_BY_TYPE)
 @include rtl-hero-bg-css-target("company") {
   @include tablet-only {
-    background-position: 0% 100% !important;
+    // LTR tablet uses 100% 100% (art on the right of the SVG). 0% 100% shows the empty
+    // left crop only — keep URL + shift like other RTL heroes (art visible on the left).
+    background-image: url("/images/bg/hero/company/about-desktop.svg") !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position: 150% 100% !important;
+    background-color: transparent !important;
   }
 
   @include desktop-lg {
+    background-image: url("/images/bg/hero/company/about-desktop.svg") !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
     background-position: -820px center !important;
+    background-color: transparent !important;
   }
 
   @include desktop-xl {

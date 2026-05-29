@@ -12,6 +12,11 @@ export const RTL_HERO_TABLET_LCP_BY_ROOT = {
   "spreads-fees": "185% 100%",
 };
 
+/** Tablet background-position for CSS-only heroes (e.g. /company/ __hero-bg, no LCP <img>). */
+export const RTL_HERO_TABLET_BG_CSS_BY_ROOT = {
+  company: "150% 100%",
+};
+
 /** Per-page desktop-lg object-position overrides (1024–1919px). */
 export const RTL_HERO_DESKTOP_LG_LCP_BY_ROOT = {
   crypto: "-830px center",
@@ -19,6 +24,12 @@ export const RTL_HERO_DESKTOP_LG_LCP_BY_ROOT = {
 
 export function getRtlHeroTabletLcpPosition(rootClass) {
   return RTL_HERO_TABLET_LCP_BY_ROOT[rootClass] ?? RTL_HERO_TABLET_LCP_DEFAULT;
+}
+
+export function getRtlHeroTabletBgCssPosition(rootClass) {
+  return (
+    RTL_HERO_TABLET_BG_CSS_BY_ROOT[rootClass] ?? RTL_HERO_TABLET_LCP_DEFAULT
+  );
 }
 
 export function getRtlHeroDesktopLgLcpPosition(rootClass) {

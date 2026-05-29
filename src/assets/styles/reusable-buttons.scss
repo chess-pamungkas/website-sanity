@@ -876,15 +876,23 @@
   @include mobile {
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: stretch;
     padding: 0px;
     width: 100%;
+    max-width: none;
     height: 114px;
     flex: none;
     order: 0;
     align-self: stretch;
     flex-grow: 0;
     gap: 16px;
+  }
+
+  @include tablet-only {
+    width: 100%;
+    max-width: none;
+    align-self: stretch;
+    align-items: stretch;
   }
 }
 
