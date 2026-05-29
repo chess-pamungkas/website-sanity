@@ -81,6 +81,8 @@
 @import "legal";
 /* Contact-us (/contact-us/): hero LCP <img> + layout were deferred-only → CLS + undiscoverable LCP. */
 @import "contact-us";
+/* Company (/company/): was deferred-pages-only → hero shell + .company-page gap diverged on dev until deferred CSS flipped. */
+@import "company";
 /* Partners features grid: load generic card rules first, then partners overrides (was both in deferred-pages). */
 @import "features-products";
 /* Partners (/partners/): hero LCP + income-slider were deferred-only → ~0.47 CLS. */

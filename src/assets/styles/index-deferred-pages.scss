@@ -42,7 +42,7 @@
 @import "payment-systems-section";
 /* mt-advantage-list → index.scss */
 /* funding-withdrawals → index.scss (hero CLS + LCP on /funding/) */
-@import "company";
+/* company → index.scss (hero shell + .company-page gap; avoid 60px features-products default before deferred flip) */
 /* faq-hero → index.scss (critical LCP layout) */
 @import "faq-search-bar";
 @import "trust-pilot";

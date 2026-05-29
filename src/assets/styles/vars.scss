@@ -47,17 +47,17 @@ $legal-regulators-after-hero-gap-desktop: $below-marketing-hero-section-padding-
 /* Partners (/partners/): gap between .partners hero and .income-slider. */
 $partners-income-slider-after-hero-gap-tablet: $below-marketing-hero-section-padding-top-tablet;
 $partners-income-slider-after-hero-gap-desktop: $below-marketing-hero-section-padding-top-desktop;
-/* Company (/company/): gap between .company hero and first content block (.company-page + features). */
-$company-page-after-hero-gap-mobile: 72px;
+/* Company (/company/): single gap hero → .company-page (match /funding/ — no double stack with features padding). */
+$company-page-after-hero-gap-mobile: 32px;
 $company-page-after-hero-gap-tablet: 32px;
-$company-page-after-hero-gap-desktop-lg: 28px;
-$company-page-after-hero-gap-desktop-xl: 28px;
-$company-page-section-margin-bottom-tablet: 32px;
-$company-page-section-margin-bottom-desktop-lg: 32px;
-$company-page-section-margin-bottom-desktop-xl: 48px;
-$company-page-features-padding-top-mobile: 20px;
-$company-page-features-padding-top-tablet: 16px;
-$company-page-features-padding-top-desktop: 16px;
+$company-page-after-hero-gap-desktop-lg: 40px;
+$company-page-after-hero-gap-desktop-xl: 40px;
+$company-page-section-margin-bottom-tablet: 24px;
+$company-page-section-margin-bottom-desktop-lg: 24px;
+$company-page-section-margin-bottom-desktop-xl: 32px;
+$company-page-features-padding-top-mobile: 0;
+$company-page-features-padding-top-tablet: 0;
+$company-page-features-padding-top-desktop: 0;
 /* Mobile hero shell: padding-top + absolute artboard (matches *-mobile.svg 953px). */
 $funding-withdrawals-hero-mobile-top: 73px;
 $funding-withdrawals-hero-mobile-artboard: 953px;
