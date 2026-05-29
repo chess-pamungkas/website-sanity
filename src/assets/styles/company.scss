@@ -592,7 +592,7 @@
       background-color: transparent;
     }
 
-    @include tablet {
+    @include tablet-only {
       background: url("/images/bg/hero/company/about-desktop.svg")
         no-repeat 100% 100%;
       background-size: cover;
@@ -1206,16 +1206,24 @@
 }
 
 /* Hero already clears the fixed header — do not add a second offset inside #main-container. */
+body.homepage-bg-1 .company + #main-container {
+  min-height: 0;
+  flex-grow: 0;
+  contain: none;
+}
+
 .company + #main-container .header-offset-placeholder {
   height: 0 !important;
 }
 
 .company-page {
+  margin-top: 0;
+
   @include mobile {
-    margin-top: $company-page-after-hero-gap-mobile;
+    padding-top: $company-page-after-hero-gap-mobile;
 
     .features-products {
-      padding: $company-page-features-padding-top-mobile 0 0;
+      padding: $company-page-features-padding-top-mobile 0 30px !important;
       // Ensure the section is visible
       display: block !important;
       visibility: visible !important;
@@ -1323,29 +1331,29 @@
   }
 
   @include tablet {
-    margin-top: $company-page-after-hero-gap-tablet;
+    padding-top: $company-page-after-hero-gap-tablet;
     margin-bottom: $company-page-section-margin-bottom-tablet;
 
     .features-products {
-      padding: $company-page-features-padding-top-tablet 0 0;
+      padding: $company-page-features-padding-top-tablet 0 60px !important;
     }
   }
 
   @include desktop-lg {
-    margin-top: $company-page-after-hero-gap-desktop-lg;
+    padding-top: $company-page-after-hero-gap-desktop-lg;
     margin-bottom: $company-page-section-margin-bottom-desktop-lg;
 
     .features-products {
-      padding: $company-page-features-padding-top-desktop 0;
+      padding: $company-page-features-padding-top-desktop 0 60px !important;
     }
   }
 
   @include desktop-xl {
-    margin-top: $company-page-after-hero-gap-desktop-xl;
+    padding-top: $company-page-after-hero-gap-desktop-xl;
     margin-bottom: $company-page-section-margin-bottom-desktop-xl;
 
     .features-products {
-      padding: $company-page-features-padding-top-desktop 0;
+      padding: $company-page-features-padding-top-desktop 0 60px !important;
     }
   }
 }

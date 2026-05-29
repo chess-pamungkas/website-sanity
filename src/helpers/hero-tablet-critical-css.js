@@ -37,6 +37,20 @@ export function heroPageShellCritical(
   return `@media(min-width:768px) and (max-width:1023px){.${rootClass}{min-height:calc(${topPx}px + ${artboardPx}px);height:auto;padding-top:${paddingTopPx}px;padding-bottom:0;box-sizing:border-box}}`;
 }
 
+/**
+ * Arabic RTL tablet for heroes that use CSS background on __hero-bg (company — no LCP <img>).
+ * Do not use heroArabicTabletBgLcpCritical here — that sets background-image:none on __hero-bg.
+ */
+export function heroArabicTabletBgCssCritical(
+  rootClass,
+  imageUrl,
+  tabletBackgroundPosition = "175% 100%"
+) {
+  const sel = `.${rootClass}__hero-bg`;
+  const arSel = `html[lang="ar"] ${sel},html[dir="rtl"] ${sel},body[dir="rtl"] ${sel},[dir="rtl"] ${sel}`;
+  return `@media(min-width:768px) and (max-width:1023px){${arSel}{background-image:url("${imageUrl}")!important;background-repeat:no-repeat!important;background-size:cover!important;background-position:${tabletBackgroundPosition}!important;background-color:transparent!important}}`;
+}
+
 /** Arabic RTL desktop: LCP img only (no legacy CSS bg), matches rtl-hero-bg-lcp.scss. */
 export function heroArabicDesktopBgLcpCritical(
   rootClass,

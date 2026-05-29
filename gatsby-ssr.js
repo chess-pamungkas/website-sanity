@@ -13,15 +13,21 @@ import {
   heroPageShellCritical,
   heroTabletBgLcpCritical,
   heroArabicTabletBgLcpCritical,
+  heroArabicTabletBgCssCritical,
   heroArabicDesktopBgLcpCritical,
 } from "./src/helpers/hero-tablet-critical-css";
 import {
   getRtlHeroTabletLcpPosition,
+  getRtlHeroTabletBgCssPosition,
   getRtlHeroDesktopLgLcpPosition,
   RTL_HERO_DESKTOP_XL_DEFAULT,
   RTL_HERO_TABLET_LCP_DEFAULT,
 } from "./src/helpers/rtl-hero-lcp-critical.config";
-import { SM_MAX_WIDTH, WINDOW_SIZE_MD } from "./src/helpers/constants";
+import {
+  MD_MAX_WIDTH,
+  SM_MAX_WIDTH,
+  WINDOW_SIZE_MD,
+} from "./src/helpers/constants";
 import { trustpilotRobotoFontFaceCritical } from "./src/helpers/trustpilot-fonts";
 
 /** Baked into inline scripts — keep in sync with src/helpers/is-non-production-build.js */
@@ -771,10 +777,14 @@ export const onPreRenderHTML = ({
               assetSlug: heroAssetSlugByRoot[rootClass] ?? last,
             };
           }
+          if (last === "company") {
+            return { rootClass: "company", assetSlug: "company", cssBackgroundOnly: true };
+          }
           return null;
         })()
       : null;
-  const isHeroLcpPath = heroLcpPage !== null;
+  const isCompanyCssHeroPath = Boolean(heroLcpPage?.cssBackgroundOnly);
+  const isHeroLcpPath = heroLcpPage !== null && !isCompanyCssHeroPath;
   const skipHeroLcpWaitForLoader = Boolean(heroLcpPage);
   const isMarketingHome =
     typeof pathname === "string" &&
@@ -956,7 +966,8 @@ armCssFlipAndScripts();})();`
             "@media(min-width:1024px){.main-promotion__hero-container{border-radius:24px;top:77px;left:50%;transform:translateX(-50%);width:calc(100vw - 120px);max-width:1400px;min-height:686px;height:686px}}",
             ".main-promotion__content-container{position:relative;z-index:4;display:flex;flex-direction:column;align-items:flex-start;padding-top:50px;max-width:100%}",
             "html:not(.app-styles-ready) .main-promotion__hero-img,html:not(.app-styles-ready) .main-promotion__hand-container{opacity:0!important;visibility:hidden!important;pointer-events:none!important}",
-            "html:not(.app-styles-ready) .main-promotion__content-container .button-container{justify-content:flex-start!important;align-items:flex-start!important}",
+            "html:not(.app-styles-ready) .main-promotion__content-container .button-container{justify-content:flex-start!important;align-items:stretch!important;width:100%!important;max-width:none!important}",
+            "@media(max-width:1023px){.main-promotion__button-container,.main-promotion__warning-container{width:100%!important;max-width:none!important;align-self:stretch!important}}",
             ".header-placeholder,.header{position:fixed;top:0;left:0;right:0;z-index:1000;min-height:77px;background:rgba(247,245,243,.98);box-sizing:border-box}",
             ".main-promotion__heading{margin:0;display:flex;flex-direction:column;gap:0}",
             '.main-promotion__title{display:block;font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:600;font-size:clamp(28px,8vw,72px);line-height:1.3;color:#fff;margin:0;visibility:visible!important;opacity:1!important}',
@@ -1135,6 +1146,28 @@ armCssFlipAndScripts();})();`
         }}
       />
     );
+  } else if (isCompanyCssHeroPath) {
+    const isArabicCompanyHero = localeId === ARABIC_LANG_ID;
+    earlyHints.push(
+      <style
+        key="company-hero-layout"
+        dangerouslySetInnerHTML={{
+          __html: [
+            heroPageShellCritical("company", 555, 73, 70),
+            heroTabletContainerCritical(".company__hero-container", 555, 73),
+            ...(isArabicCompanyHero
+              ? [
+                  heroArabicTabletBgCssCritical(
+                    "company",
+                    "/images/bg/hero/company/about-desktop.svg",
+                    getRtlHeroTabletBgCssPosition("company")
+                  ),
+                ]
+              : []),
+          ].join(""),
+        }}
+      />
+    );
   }
 
   // Preconnect hints - MUST be at the very beginning of head for optimal performance
@@ -1222,7 +1255,18 @@ armCssFlipAndScripts();})();`
 
   // Trading-product LCP WebP (all-markets, forex, metals, shares, …): start image fetch BEFORE
   // five Sofia preloads so LCP does not queue behind fonts under Fast 4G + CPU throttle.
-  if (heroLcpPage) {
+  if (isCompanyCssHeroPath) {
+    earlyHints.push(
+      <link
+        key="preload-company-about-desktop-svg"
+        rel="preload"
+        as="image"
+        href="/images/bg/hero/company/about-desktop.svg"
+        media={`(min-width: ${WINDOW_SIZE_MD}px) and (max-width: ${MD_MAX_WIDTH}px)`}
+        fetchPriority="high"
+      />
+    );
+  } else if (heroLcpPage) {
     const slug = heroLcpPage.assetSlug;
     const desktopHeroWebp = `/images/bg/hero/${slug}/${slug}-desktop.webp`;
     const mobileHeroWebp = `/images/bg/hero/${slug}/${slug}-mobile.webp`;
