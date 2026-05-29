@@ -8,6 +8,7 @@ import {
 import { LEGAL_REGULATED_CRITICAL_CSS } from "./src/helpers/legal-regulated-critical-css";
 import { CONTACT_US_HERO_CRITICAL_CSS } from "./src/helpers/contact-us-critical-css";
 import { PARTNERS_HERO_CRITICAL_CSS } from "./src/helpers/partners-critical-css";
+import { COMPANY_CRITICAL_CSS } from "./src/helpers/company-critical-css";
 import {
   heroTabletContainerCritical,
   heroPageShellCritical,
@@ -1153,8 +1154,7 @@ armCssFlipAndScripts();})();`
         key="company-hero-layout"
         dangerouslySetInnerHTML={{
           __html: [
-            heroPageShellCritical("company", 555, 73, 70),
-            heroTabletContainerCritical(".company__hero-container", 555, 73),
+            COMPANY_CRITICAL_CSS,
             ...(isArabicCompanyHero
               ? [
                   heroArabicTabletBgCssCritical(
