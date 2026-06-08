@@ -7,12 +7,14 @@ import cn from "classnames";
 import { ContactUsSchema } from "../../../../validations/contact-us";
 import axios from "axios";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useRecaptchaReady } from "../../../shared/recaptcha-provider";
 import { currentEntity } from "../../../../helpers/entity-resolver";
 import { sendLog } from "../../../../helpers/services/log-service";
 
 const ContactUsForm = () => {
   const { t } = useTranslationWithVariables();
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const isRecaptchaReady = useRecaptchaReady();
   const [isSentSuccessful, setIsSentSuccessful] = useState(null);
   const API_URL = process.env.GATSBY_OQTIMA_API_URL;
 
@@ -25,7 +27,7 @@ const ContactUsForm = () => {
 
   const handleContactForm = async (values, setSubmitting) => {
     try {
-      if (!executeRecaptcha) {
+      if (!isRecaptchaReady || !executeRecaptcha) {
         handleApiResponse(false);
         return;
       }
@@ -121,13 +123,13 @@ const ContactUsForm = () => {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isRecaptchaReady}
             className={cn(
               "button-link",
               "button-link--with-red-border",
               "contact-us-form__btn",
               {
-                "button-link--disabled": isSubmitting,
+                "button-link--disabled": isSubmitting || !isRecaptchaReady,
               }
             )}
           >
