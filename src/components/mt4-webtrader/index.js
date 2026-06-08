@@ -4,8 +4,16 @@ import {
   HEADER_SMALL_HEIGHT,
 } from "../../helpers/constants";
 import { useWindowSize } from "../../helpers/hooks/use-window-size";
+import { useLoadingWatchdog } from "../../helpers/hooks/use-loading-watchdog";
 import { MT_LANGUAGES_MAP } from "../../helpers/lang-options.config";
 import LanguageContext from "../../context/language-context";
+import {
+  loadMetaTraderWidgetScript,
+  preloadMetaTraderWidgetScript,
+} from "../../helpers/services/load-metatrader-widget";
+
+const MT4_WATCHDOG_MS = 28000;
+const TERMINAL_READY_MAX_MS = 12000;
 
 const Mt4WebTraderLink = () => {
   const { isDesktop } = useWindowSize();
@@ -14,24 +22,56 @@ const Mt4WebTraderLink = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const containerRef = useRef(null);
+  const readinessTimeoutRef = useRef(null);
 
-  // Simple mobile detection without external utilities
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
+  useLoadingWatchdog({
+    isLoading,
+    onTimeout: () => {
+      setHasError(true);
+      setIsLoading(false);
+    },
+    timeoutMs: MT4_WATCHDOG_MS,
+    deps: [selectedLanguage?.id],
+  });
+
   useEffect(() => {
-    if (isIFrameAdded.current) return;
+    preloadMetaTraderWidgetScript();
+  }, []);
 
-    const initializeWebTrader = () => {
+  useEffect(() => {
+    if (isIFrameAdded.current) return undefined;
+
+    let cancelled = false;
+
+    const waitForTerminalReady = () =>
+      new Promise((resolve) => {
+        const startedAt = Date.now();
+        const tick = () => {
+          if (cancelled) return;
+          const root = document.getElementById("webterminal");
+          const hasContent = !!(root && root.childElementCount > 0);
+          const hasIframe = !!(root && root.querySelector("iframe"));
+          if (hasContent || hasIframe) {
+            readinessTimeoutRef.current = setTimeout(resolve, 120);
+            return;
+          }
+          if (Date.now() - startedAt > TERMINAL_READY_MAX_MS) {
+            resolve();
+            return;
+          }
+          readinessTimeoutRef.current = setTimeout(tick, 150);
+        };
+        readinessTimeoutRef.current = setTimeout(tick, 100);
+      });
+
+    const initializeWebTrader = async () => {
       try {
-        // Simple script availability check
-        if (typeof window.MetaTraderWebTerminal !== "function") {
-          console.warn("MetaTraderWebTerminal not available, retrying...");
-          setTimeout(initializeWebTrader, 1000);
-          return;
-        }
+        await loadMetaTraderWidgetScript();
+        if (cancelled) return;
 
-        // Set CSS custom property for header height
-        if (containerRef.current && containerRef.current.style) {
+        if (containerRef.current?.style) {
           const headerHeight = isDesktop
             ? HEADER_BIG_HEIGHT
             : HEADER_SMALL_HEIGHT;
@@ -41,7 +81,6 @@ const Mt4WebTraderLink = () => {
           );
         }
 
-        // Initialize MT4 WebTrader
         window.MetaTraderWebTerminal("webterminal", {
           version: 4,
           servers: ["OqtimaGlobal-Demo", "OqtimaGlobal-Server"],
@@ -51,28 +90,35 @@ const Mt4WebTraderLink = () => {
           colorScheme: "green_on_black",
         });
 
-        // Set loading to false after a delay to allow initialization
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 3000);
+        await waitForTerminalReady();
+        if (cancelled) return;
 
         isIFrameAdded.current = true;
+        setIsLoading(false);
       } catch (error) {
         console.error("Error initializing MT4 WebTrader:", error);
-        setHasError(true);
-        setIsLoading(false);
+        if (!cancelled) {
+          setHasError(true);
+          setIsLoading(false);
+        }
       }
     };
 
     initializeWebTrader();
+
+    return () => {
+      cancelled = true;
+      if (readinessTimeoutRef.current) {
+        clearTimeout(readinessTimeoutRef.current);
+        readinessTimeoutRef.current = null;
+      }
+    };
   }, [isDesktop, selectedLanguage.id]);
 
   const retryInitialization = () => {
     setHasError(false);
     setIsLoading(true);
     isIFrameAdded.current = false;
-
-    // Force re-initialization
     setTimeout(() => {
       window.location.reload();
     }, 100);
@@ -96,7 +142,7 @@ const Mt4WebTraderLink = () => {
 
   return (
     <div
-      className="mt4-webtrader"
+      className={`mt4-webtrader ${isLoading ? "mt4-webtrader--loading" : ""}`}
       ref={containerRef}
       style={{
         paddingTop: isDesktop

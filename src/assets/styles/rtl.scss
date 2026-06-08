@@ -183,12 +183,12 @@
 
   .burger-menu__trigger {
     @include mobile {
-      left: 25px;
-      right: unset;
+      left: auto;
+      right: auto;
     }
     @include tablet {
-      left: 0;
-      right: unset;
+      left: auto;
+      right: auto;
     }
   }
 
@@ -223,7 +223,7 @@
       align-items: center;
       gap: 10px;
       margin-right: unset;
-      margin-left: 50px;
+      margin-left: 0;
     }
 
     @include tablet {
@@ -231,7 +231,7 @@
       align-items: center;
       gap: 10px;
       margin-right: unset;
-      margin-left: 50px;
+      margin-left: 0;
     }
 
     @include desktop-lg {
@@ -1676,6 +1676,7 @@ body[dir="rtl"] .phone-number-container,
     z-index: 1000001;
     width: 100%;
     height: auto;
+    max-height: auto;
     max-height: 100vh;
     margin: auto;
     display: flex;
@@ -1698,6 +1699,7 @@ body[dir="rtl"] .phone-number-container,
       flex-direction: column !important;
       width: 100%;
       height: 100%;
+      max-height: auto;
       max-height: 100vh;
       overflow-y: auto;
     }
@@ -2041,7 +2043,8 @@ html[dir="rtl"] {
     body {
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      min-height: auto;
+      max-height: 100vh;
       width: 100%;
       overflow-x: hidden;
     }
@@ -2123,7 +2126,8 @@ html[dir="rtl"] {
     body {
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      min-height: auto;
+      max-height: 100vh;
       width: 100%;
       overflow-x: hidden;
     }
@@ -2242,9 +2246,9 @@ html[dir="rtl"] {
 // Main Promotion RTL Styling for VPS Images
 .main-promotion--rtl {
   .main-promotion__hero-img {
-    // Move globe image to left side for RTL
+    // Move globe image to left side for RTL (mirror of LTR `right` values in main-promotion.scss)
     right: unset;
-    left: -50px;
+    left: 30px;
     // Flip globe image horizontally for RTL
     transform: scaleX(-1);
 
@@ -2254,39 +2258,50 @@ html[dir="rtl"] {
     }
 
     @include tablet {
-      left: 60px;
+      left: 110px;
       right: unset;
     }
 
     @include desktop-lg {
-      left: 50px;
+      left: 100px;
       right: unset;
     }
 
     @include desktop-xl {
-      left: 45px;
+      left: 95px;
       right: unset;
     }
 
     @include desktop-2k {
-      left: 238px;
+      left: 300px;
       right: unset;
     }
 
     @include desktop-5k {
-      left: 238px;
+      left: 300px;
       right: unset;
     }
   }
 
   .main-promotion__hand-container {
-    // Move hand image to left side for RTL
+    // Move hand image to left side for RTL (tablet/desktop only; mobile mirrors LTR)
     right: unset;
     left: 70px;
 
     @include mobile {
-      left: -80px;
-      right: unset;
+      // Same as `.main-promotion__hand-container` mobile in main-promotion.scss (LTR)
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 488px;
+      left: auto !important;
+      right: auto !important;
+      top: auto;
+      bottom: -225px;
+      z-index: 2;
+      overflow: visible;
+      transform: none;
+      direction: ltr;
     }
 
     @include tablet {
@@ -2312,6 +2327,24 @@ html[dir="rtl"] {
     @include desktop-5k {
       left: 105px;
       right: unset;
+    }
+  }
+
+  .main-promotion__hand-img {
+    @include mobile {
+      direction: ltr;
+      width: 100%;
+
+      picture {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+
+      picture,
+      img {
+        object-position: bottom center;
+      }
     }
   }
 
@@ -2411,25 +2444,16 @@ html[dir="rtl"] {
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
-        no-repeat 130% -70% !important;
-      background-color: map-get($colors, "black") !important;
     }
 
     @include desktop-lg {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
-        no-repeat -800px center !important;
-      background-color: map-get($colors, "black") !important;
     }
 
     @include desktop-xl {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
-        no-repeat -750px center !important;
-      background-color: map-get($colors, "black") !important;
     }
   }
 }
@@ -2454,25 +2478,16 @@ body[dir="rtl"] .all-markets__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
-      no-repeat 130% -70% !important;
-    background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
-      no-repeat -800px center !important;
-    background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/all-markets/all-markets-desktop.svg")
-      no-repeat -750px center !important;
-    background-color: map-get($colors, "black") !important;
   }
 }
 
@@ -2490,7 +2505,7 @@ body[dir="rtl"] .all-markets__hero-bg,
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat
+      background: url("/images/bg/hero/crypto/crypto-desktop.svg") no-repeat
         130% 100% !important;
       background-color: map-get($colors, "black") !important;
     }
@@ -2498,7 +2513,7 @@ body[dir="rtl"] .all-markets__hero-bg,
     @include desktop-lg {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat -830px
+      background: url("/images/bg/hero/crypto/crypto-desktop.svg") no-repeat -830px
         center !important;
       background-color: map-get($colors, "black") !important;
     }
@@ -2506,7 +2521,7 @@ body[dir="rtl"] .all-markets__hero-bg,
     @include desktop-xl {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat -750px
+      background: url("/images/bg/hero/crypto/crypto-desktop.svg") no-repeat -750px
         center !important;
       background-color: map-get($colors, "black") !important;
     }
@@ -2533,15 +2548,15 @@ body[dir="rtl"] .crypto__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat
-      130% 100% !important;
+    background: url("/images/bg/hero/crypto/crypto-desktop.svg") no-repeat 130%
+      100% !important;
     background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat -830px
+    background: url("/images/bg/hero/crypto/crypto-desktop.svg") no-repeat -830px
       center !important;
     background-color: map-get($colors, "black") !important;
   }
@@ -2549,7 +2564,7 @@ body[dir="rtl"] .crypto__hero-bg,
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/crypto/crypto-desktop.svg") no-repeat -750px
+    background: url("/images/bg/hero/crypto/crypto-desktop.svg") no-repeat -750px
       center !important;
     background-color: map-get($colors, "black") !important;
   }
@@ -2857,25 +2872,16 @@ body[dir="rtl"] .faq-section.faq-section--etf .faq-right .faq__title-text,
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
-        no-repeat 135% 100% !important;
-      background-color: map-get($colors, "black") !important;
     }
 
     @include desktop-lg {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
-        no-repeat -800px center !important;
-      background-color: map-get($colors, "black") !important;
     }
 
     @include desktop-xl {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
-        no-repeat -750px center !important;
-      background-color: map-get($colors, "black") !important;
     }
   }
 }
@@ -2892,7 +2898,7 @@ body[dir="rtl"] .account-types__badge-arrow,
   }
 }
 
-// Global fallback for account types hero background
+// Global fallback for account types hero (LCP is __hero-bg-lcp; avoid duplicate CSS bg fetch)
 html[dir="rtl"] .account-types__hero-bg,
 html[lang="ar"] .account-types__hero-bg,
 body[dir="rtl"] .account-types__hero-bg,
@@ -2900,25 +2906,16 @@ body[dir="rtl"] .account-types__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
-      no-repeat 135% 100% !important;
-    background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
-      no-repeat -800px center !important;
-    background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/accounts-type/accounts-type-desktop.svg")
-      no-repeat -750px center !important;
-    background-color: map-get($colors, "black") !important;
   }
 }
 
@@ -2930,10 +2927,6 @@ body[dir="rtl"] .account-types__hero-bg,
     svg {
       transform: scaleX(-1) !important;
     }
-  }
-
-  .etf__hero-bg {
-    transform: scaleX(-1) !important;
   }
 }
 
@@ -2949,34 +2942,12 @@ body[dir="rtl"] .etf__badge-arrow,
   }
 }
 
-// Global fallback for ETF hero background
-html[dir="rtl"] .etf__hero-bg,
-html[lang="ar"] .etf__hero-bg,
-body[dir="rtl"] .etf__hero-bg,
-[dir="rtl"] .etf__hero-bg {
-  transform: scaleX(-1) !important;
-}
-
 // Energies RTL Styling
 .energies--rtl {
   .energies__badge-arrow {
     transform: scaleX(-1) !important;
 
     svg {
-      transform: scaleX(-1) !important;
-    }
-  }
-
-  .energies__hero-bg {
-    @include tablet {
-      transform: scaleX(-1) !important;
-    }
-
-    @include desktop-lg {
-      transform: scaleX(-1) !important;
-    }
-
-    @include desktop-xl {
       transform: scaleX(-1) !important;
     }
   }
@@ -2990,24 +2961,6 @@ body[dir="rtl"] .energies__badge-arrow,
   transform: scaleX(-1) !important;
 
   svg {
-    transform: scaleX(-1) !important;
-  }
-}
-
-// Global fallback for energies hero background
-html[dir="rtl"] .energies__hero-bg,
-html[lang="ar"] .energies__hero-bg,
-body[dir="rtl"] .energies__hero-bg,
-[dir="rtl"] .energies__hero-bg {
-  @include tablet {
-    transform: scaleX(-1) !important;
-  }
-
-  @include desktop-lg {
-    transform: scaleX(-1) !important;
-  }
-
-  @include desktop-xl {
     transform: scaleX(-1) !important;
   }
 }
@@ -3026,15 +2979,15 @@ body[dir="rtl"] .energies__hero-bg,
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat
-        125% 100% !important;
+      background: url("/images/bg/hero/indices/indices-desktop.svg") no-repeat
+        175% 100% !important;
       background-color: map-get($colors, "black") !important;
     }
 
     @include desktop-lg {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat -800px
+      background: url("/images/bg/hero/indices/indices-desktop.svg") no-repeat -820px
         center !important;
       background-color: map-get($colors, "black") !important;
     }
@@ -3042,7 +2995,7 @@ body[dir="rtl"] .energies__hero-bg,
     @include desktop-xl {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat -750px
+      background: url("/images/bg/hero/indices/indices-desktop.svg") no-repeat -750px
         center !important;
       background-color: map-get($colors, "black") !important;
     }
@@ -3069,15 +3022,15 @@ body[dir="rtl"] .indices__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat
-      125% 100% !important;
+    background: url("/images/bg/hero/indices/indices-desktop.svg") no-repeat
+      175% 100% !important;
     background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat -800px
+    background: url("/images/bg/hero/indices/indices-desktop.svg") no-repeat -820px
       center !important;
     background-color: map-get($colors, "black") !important;
   }
@@ -3085,7 +3038,7 @@ body[dir="rtl"] .indices__hero-bg,
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/indices/indices-desktop.svg") no-repeat -750px
+    background: url("/images/bg/hero/indices/indices-desktop.svg") no-repeat -750px
       center !important;
     background-color: map-get($colors, "black") !important;
   }
@@ -3105,15 +3058,15 @@ body[dir="rtl"] .indices__hero-bg,
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat
-        135% 100% !important;
+      background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat 175%
+        100% !important;
       background-color: map-get($colors, "black") !important;
     }
 
     @include desktop-lg {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat -800px
+      background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat -820px
         center !important;
       background-color: map-get($colors, "black") !important;
     }
@@ -3121,7 +3074,7 @@ body[dir="rtl"] .indices__hero-bg,
     @include desktop-xl {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat -750px
+      background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat -750px
         center !important;
       background-color: map-get($colors, "black") !important;
     }
@@ -3148,7 +3101,7 @@ body[dir="rtl"] .forex__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat 135%
+    background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat 175%
       100% !important;
     background-color: map-get($colors, "black") !important;
   }
@@ -3156,16 +3109,14 @@ body[dir="rtl"] .forex__hero-bg,
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat -800px
-      center !important;
+    background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat -820px center !important;
     background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/forex/forex-desktop.svg") no-repeat -750px
-      center !important;
+    background: url("/images/bg/hero/forex/forex-desktop.svg") no-repeat -750px center !important;
     background-color: map-get($colors, "black") !important;
   }
 }
@@ -3184,15 +3135,15 @@ body[dir="rtl"] .forex__hero-bg,
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat
-        137% 100% !important;
+      background: url("/images/bg/hero/metals/metals-desktop.svg") no-repeat
+        175% 100% !important;
       background-color: map-get($colors, "black") !important;
     }
 
     @include desktop-lg {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat -800px
+      background: url("/images/bg/hero/metals/metals-desktop.svg") no-repeat -820px
         center !important;
       background-color: map-get($colors, "black") !important;
     }
@@ -3200,7 +3151,7 @@ body[dir="rtl"] .forex__hero-bg,
     @include desktop-xl {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat -750px
+      background: url("/images/bg/hero/metals/metals-desktop.svg") no-repeat -750px
         center !important;
       background-color: map-get($colors, "black") !important;
     }
@@ -3227,15 +3178,15 @@ body[dir="rtl"] .metals__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat
-      137% 100% !important;
+    background: url("/images/bg/hero/metals/metals-desktop.svg") no-repeat 175%
+      100% !important;
     background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat -800px
+    background: url("/images/bg/hero/metals/metals-desktop.svg") no-repeat -820px
       center !important;
     background-color: map-get($colors, "black") !important;
   }
@@ -3243,7 +3194,7 @@ body[dir="rtl"] .metals__hero-bg,
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/metals/metals-desktop.svg") no-repeat -750px
+    background: url("/images/bg/hero/metals/metals-desktop.svg") no-repeat -750px
       center !important;
     background-color: map-get($colors, "black") !important;
   }
@@ -3263,15 +3214,15 @@ body[dir="rtl"] .metals__hero-bg,
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/shares/shares-desktop.svg") no-repeat
-        135% 100% !important;
+      background: url("/images/bg/hero/shares/shares-desktop.svg") no-repeat
+        175% 100% !important;
       background-color: map-get($colors, "black") !important;
     }
 
     @include desktop-lg {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/shares/shares-desktop.svg") no-repeat -800px
+      background: url("/images/bg/hero/shares/shares-desktop.svg") no-repeat -820px
         center !important;
       background-color: map-get($colors, "black") !important;
     }
@@ -3298,15 +3249,15 @@ body[dir="rtl"] .shares__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/shares/shares-desktop.svg") no-repeat
-      135% 100% !important;
+    background: url("/images/bg/hero/shares/shares-desktop.svg") no-repeat 175%
+      100% !important;
     background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/shares/shares-desktop.svg") no-repeat -800px
+    background: url("/images/bg/hero/shares/shares-desktop.svg") no-repeat -820px
       center !important;
     background-color: map-get($colors, "black") !important;
   }
@@ -4113,10 +4064,6 @@ body[dir="rtl"]
       transform: scaleX(-1) !important;
     }
   }
-
-  .funding-withdrawals__hero-bg {
-    transform: scaleX(-1) !important;
-  }
 }
 
 // Global fallback for funding-withdrawals badge arrow
@@ -4129,14 +4076,6 @@ body[dir="rtl"] .funding-withdrawals__badge-arrow,
   svg {
     transform: scaleX(-1) !important;
   }
-}
-
-// Global fallback for funding-withdrawals hero background
-html[dir="rtl"] .funding-withdrawals__hero-bg,
-html[lang="ar"] .funding-withdrawals__hero-bg,
-body[dir="rtl"] .funding-withdrawals__hero-bg,
-[dir="rtl"] .funding-withdrawals__hero-bg {
-  transform: scaleX(-1) !important;
 }
 
 // Withdrawal Table RTL Styling
@@ -4234,32 +4173,6 @@ body[dir="rtl"]
       transform: scaleX(-1) !important;
     }
   }
-
-  .spreads-fees__hero-bg {
-    @include tablet {
-      right: unset !important;
-      left: 0 !important;
-      background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
-        no-repeat 135% 100% !important;
-      background-color: map-get($colors, "black") !important;
-    }
-
-    @include desktop-lg {
-      right: unset !important;
-      left: 0 !important;
-      background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
-        no-repeat -800px center !important;
-      background-color: map-get($colors, "black") !important;
-    }
-
-    @include desktop-xl {
-      right: unset !important;
-      left: 0 !important;
-      background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
-        no-repeat -750px center !important;
-      background-color: map-get($colors, "black") !important;
-    }
-  }
 }
 
 // Global fallback for spreads-fees badge arrow
@@ -4271,36 +4184,6 @@ body[dir="rtl"] .spreads-fees__badge-arrow,
 
   svg {
     transform: scaleX(-1) !important;
-  }
-}
-
-// Global fallback for spreads-fees hero background
-html[dir="rtl"] .spreads-fees__hero-bg,
-html[lang="ar"] .spreads-fees__hero-bg,
-body[dir="rtl"] .spreads-fees__hero-bg,
-[dir="rtl"] .spreads-fees__hero-bg {
-  @include tablet {
-    right: unset !important;
-    left: 0 !important;
-    background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
-      no-repeat 135% 100% !important;
-    background-color: map-get($colors, "black") !important;
-  }
-
-  @include desktop-lg {
-    right: unset !important;
-    left: 0 !important;
-    background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
-      no-repeat -800px center !important;
-    background-color: map-get($colors, "black") !important;
-  }
-
-  @include desktop-xl {
-    right: unset !important;
-    left: 0 !important;
-    background: url("../images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
-      no-repeat -750px center !important;
-    background-color: map-get($colors, "black") !important;
   }
 }
 
@@ -4500,32 +4383,6 @@ body[dir="rtl"] .cost-swap-rate__formula,
       transform: scaleX(-1) !important;
     }
   }
-
-  .trading-tools__hero-bg {
-    @include tablet {
-      right: unset !important;
-      left: 0 !important;
-      background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
-        no-repeat 128% 100% !important;
-      background-color: map-get($colors, "black") !important;
-    }
-
-    @include desktop-lg {
-      right: unset !important;
-      left: 0 !important;
-      background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
-        no-repeat -800px center !important;
-      background-color: map-get($colors, "black") !important;
-    }
-
-    @include desktop-xl {
-      right: unset !important;
-      left: 0 !important;
-      background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
-        no-repeat -750px center !important;
-      background-color: map-get($colors, "black") !important;
-    }
-  }
 }
 
 // Global fallback for trading-tools badge arrow
@@ -4537,36 +4394,6 @@ body[dir="rtl"] .trading-tools__badge-arrow,
 
   svg {
     transform: scaleX(-1) !important;
-  }
-}
-
-// Global fallback for trading-tools hero background
-html[dir="rtl"] .trading-tools__hero-bg,
-html[lang="ar"] .trading-tools__hero-bg,
-body[dir="rtl"] .trading-tools__hero-bg,
-[dir="rtl"] .trading-tools__hero-bg {
-  @include tablet {
-    right: unset !important;
-    left: 0 !important;
-    background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
-      no-repeat 128% 100% !important;
-    background-color: map-get($colors, "black") !important;
-  }
-
-  @include desktop-lg {
-    right: unset !important;
-    left: 0 !important;
-    background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
-      no-repeat -800px center !important;
-    background-color: map-get($colors, "black") !important;
-  }
-
-  @include desktop-xl {
-    right: unset !important;
-    left: 0 !important;
-    background: url("../images/bg/hero/trading-tools/trading-tools-desktop.svg")
-      no-repeat -750px center !important;
-    background-color: map-get($colors, "black") !important;
   }
 }
 
@@ -4672,7 +4499,6 @@ body[dir="rtl"] .alpha-generation__content-description,
   .vps__hero-bg {
     left: 0 !important;
     right: unset !important;
-    transform: scaleX(-1) !important;
   }
 }
 
@@ -4690,7 +4516,6 @@ body[dir="rtl"] .vps .vps__hero-bg,
 [dir="rtl"] .vps .vps__hero-bg {
   left: 0 !important;
   right: unset !important;
-  transform: scaleX(-1) !important;
 }
 
 // VPS Cards RTL Override - Keep exact same positioning as non-RTL mode
@@ -6106,23 +5931,23 @@ body[dir="rtl"]
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
-        no-repeat 135% 100% !important;
+      background: url("/images/bg/hero/swap-free/swap-free-desktop.svg")
+        no-repeat 175% 100% !important;
       background-color: map-get($colors, "black") !important;
     }
 
     @include desktop-lg {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
-        no-repeat -800px center !important;
+      background: url("/images/bg/hero/swap-free/swap-free-desktop.svg")
+        no-repeat -820px center !important;
       background-color: map-get($colors, "black") !important;
     }
 
     @include desktop-xl {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
+      background: url("/images/bg/hero/swap-free/swap-free-desktop.svg")
         no-repeat -750px center !important;
       background-color: map-get($colors, "black") !important;
     }
@@ -6149,22 +5974,21 @@ body[dir="rtl"] .swap-free .swap-free__badge-arrow,
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat 128%
-        100% !important;
+      background: url("/images/bg/hero/mt4/mt4-desktop.svg") no-repeat 175% 100% !important;
       background-color: transparent !important;
     }
 
     @include desktop-lg {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat -800px center !important;
+      background: url("/images/bg/hero/mt4/mt4-desktop.svg") no-repeat -820px center !important;
       background-color: transparent !important;
     }
 
     @include desktop-xl {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat -750px center !important;
+      background: url("/images/bg/hero/mt4/mt4-desktop.svg") no-repeat -750px center !important;
       background-color: transparent !important;
     }
   }
@@ -6190,22 +6014,21 @@ body[dir="rtl"] .mt4 .mt4__badge-arrow,
     @include tablet {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat 128%
-        100% !important;
+      background: url("/images/bg/hero/mt5/mt5-desktop.svg") no-repeat 175% 100% !important;
       background-color: transparent !important;
     }
 
     @include desktop-lg {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat -800px center !important;
+      background: url("/images/bg/hero/mt5/mt5-desktop.svg") no-repeat -820px center !important;
       background-color: transparent !important;
     }
 
     @include desktop-xl {
       right: unset !important;
       left: 0 !important;
-      background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat -750px center !important;
+      background: url("/images/bg/hero/mt5/mt5-desktop.svg") no-repeat -750px center !important;
       background-color: transparent !important;
     }
   }
@@ -6224,10 +6047,6 @@ body[dir="rtl"] .mt5 .mt5__badge-arrow,
   .company__badge-arrow {
     transform: scaleX(-1) !important;
   }
-
-  .company__hero-bg {
-    transform: scaleX(-1) !important;
-  }
 }
 
 html[dir="rtl"] .company .company__badge-arrow,
@@ -6237,20 +6056,9 @@ body[dir="rtl"] .company .company__badge-arrow,
   transform: scaleX(-1) !important;
 }
 
-html[dir="rtl"] .company .company__hero-bg,
-html[lang="ar"] .company .company__hero-bg,
-body[dir="rtl"] .company .company__hero-bg,
-[dir="rtl"] .company .company__hero-bg {
-  transform: scaleX(-1) !important;
-}
-
 // Contact Us RTL Styling
 .contact-us--rtl {
   .contact-us__badge-arrow {
-    transform: scaleX(-1) !important;
-  }
-
-  .contact-us__hero-bg {
     transform: scaleX(-1) !important;
   }
 }
@@ -6262,20 +6070,9 @@ body[dir="rtl"] .contact-us .contact-us__badge-arrow,
   transform: scaleX(-1) !important;
 }
 
-html[dir="rtl"] .contact-us .contact-us__hero-bg,
-html[lang="ar"] .contact-us .contact-us__hero-bg,
-body[dir="rtl"] .contact-us .contact-us__hero-bg,
-[dir="rtl"] .contact-us .contact-us__hero-bg {
-  transform: scaleX(-1) !important;
-}
-
 // Legal RTL Styling
 .legal--rtl {
   .legal__badge-arrow {
-    transform: scaleX(-1) !important;
-  }
-
-  .legal__hero-bg {
     transform: scaleX(-1) !important;
   }
 }
@@ -6284,13 +6081,6 @@ html[dir="rtl"] .legal .legal__badge-arrow,
 html[lang="ar"] .legal .legal__badge-arrow,
 body[dir="rtl"] .legal .legal__badge-arrow,
 [dir="rtl"] .legal .legal__badge-arrow {
-  transform: scaleX(-1) !important;
-}
-
-html[dir="rtl"] .legal .legal__hero-bg,
-html[lang="ar"] .legal .legal__hero-bg,
-body[dir="rtl"] .legal .legal__hero-bg,
-[dir="rtl"] .legal .legal__hero-bg {
   transform: scaleX(-1) !important;
 }
 
@@ -6359,23 +6149,12 @@ body[dir="rtl"] .help-center .faq--help-center .faq__title-text,
   .partners__badge-arrow {
     transform: scaleX(-1) !important;
   }
-
-  .partners__hero-bg {
-    transform: scaleX(-1) !important;
-  }
 }
 
 html[dir="rtl"] .partners .partners__badge-arrow,
 html[lang="ar"] .partners .partners__badge-arrow,
 body[dir="rtl"] .partners .partners__badge-arrow,
 [dir="rtl"] .partners .partners__badge-arrow {
-  transform: scaleX(-1) !important;
-}
-
-html[dir="rtl"] .partners .partners__hero-bg,
-html[lang="ar"] .partners .partners__hero-bg,
-body[dir="rtl"] .partners .partners__hero-bg,
-[dir="rtl"] .partners .partners__hero-bg {
   transform: scaleX(-1) !important;
 }
 
@@ -6451,21 +6230,21 @@ body[dir="rtl"] .mt5 .mt5__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat 128% 100% !important;
+    background: url("/images/bg/hero/mt5/mt5-desktop.svg") no-repeat 175% 100% !important;
     background-color: transparent !important;
   }
 
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat -800px center !important;
+    background: url("/images/bg/hero/mt5/mt5-desktop.svg") no-repeat -820px center !important;
     background-color: transparent !important;
   }
 
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/mt5/mt5-desktop.svg") no-repeat -750px center !important;
+    background: url("/images/bg/hero/mt5/mt5-desktop.svg") no-repeat -750px center !important;
     background-color: transparent !important;
   }
 }
@@ -6477,21 +6256,21 @@ body[dir="rtl"] .mt4 .mt4__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat 128% 100% !important;
+    background: url("/images/bg/hero/mt4/mt4-desktop.svg") no-repeat 175% 100% !important;
     background-color: transparent !important;
   }
 
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat -800px center !important;
+    background: url("/images/bg/hero/mt4/mt4-desktop.svg") no-repeat -820px center !important;
     background-color: transparent !important;
   }
 
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/mt4/mt4-desktop.svg") no-repeat -750px center !important;
+    background: url("/images/bg/hero/mt4/mt4-desktop.svg") no-repeat -750px center !important;
     background-color: transparent !important;
   }
 }
@@ -6503,24 +6282,24 @@ body[dir="rtl"] .swap-free .swap-free__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
-      no-repeat 135% 100% !important;
+    background: url("/images/bg/hero/swap-free/swap-free-desktop.svg") no-repeat
+      175% 100% !important;
     background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
-      no-repeat -800px center !important;
+    background: url("/images/bg/hero/swap-free/swap-free-desktop.svg") no-repeat -820px
+      center !important;
     background-color: map-get($colors, "black") !important;
   }
 
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/swap-free/swap-free-desktop.svg")
-      no-repeat -750px center !important;
+    background: url("/images/bg/hero/swap-free/swap-free-desktop.svg") no-repeat -750px
+      center !important;
     background-color: map-get($colors, "black") !important;
   }
 }
@@ -6546,23 +6325,23 @@ body[dir="rtl"] .client-portal-assistance .client-portal-assistance__hero-bg,
   @include tablet {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
-      no-repeat 125% bottom !important;
+    background: url("/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
+      no-repeat 175% bottom !important;
     background-color: transparent !important;
   }
 
   @include desktop-lg {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
-      no-repeat -800px bottom !important;
+    background: url("/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
+      no-repeat -820px bottom !important;
     background-color: transparent !important;
   }
 
   @include desktop-xl {
     right: unset !important;
     left: 0 !important;
-    background: url("../images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
+    background: url("/images/bg/hero/client-portal-assistance/client-portal-assistance-desktop.svg")
       no-repeat -750px bottom !important;
     background-color: transparent !important;
   }
@@ -7031,3 +6810,5 @@ body[dir="rtl"],
     }
   }
 }
+
+@import "rtl-hero-bg-lcp";

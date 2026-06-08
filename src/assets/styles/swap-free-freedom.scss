@@ -10,12 +10,12 @@
 
   // Fix stray invalid include that broke CSS parsing
 
-  @include tablet {
-    padding: 125px 0 25px 0;
+  @include tablet-only {
+    padding: $below-marketing-hero-gap-tablet 0 25px 0;
   }
 
   @include desktop-lg {
-    padding: 150px 0 25px 0;
+    padding: $below-marketing-hero-gap-desktop 0 25px 0;
   }
 
   &__container {

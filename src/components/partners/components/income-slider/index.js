@@ -11,8 +11,9 @@ import {
 } from "../../../../helpers/partners.config";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
 import { DIR_LTR, DIR_RTL } from "../../../../helpers/constants";
-import "../../../../assets/styles/income-slider.scss";
 import IncomeSliderIcon from "../../../../assets/images/icons/main-page/features-execution-excellence/features.svg";
+
+const INCOME_SLIDER_RANGE_ID = "partners-income-slider-range";
 
 const IncomeSlider = ({ className }) => {
   const { t } = useTranslationWithVariables();
@@ -78,6 +79,8 @@ const IncomeSlider = ({ className }) => {
             src={IncomeSliderIcon}
             alt={t("partners_income-slider_badge-icon-alt")}
             className="income-slider__badge-icon"
+            width={16}
+            height={16}
           />
           <span className="income-slider__badge-text">
             {t("partners_income-slider_badge-text")}
@@ -85,7 +88,7 @@ const IncomeSlider = ({ className }) => {
         </div>
 
         {/* Title */}
-        <h2 className="income-slider__title">
+        <h2 id="income-slider-heading" className="income-slider__title">
           {t("partners_income-slider_title")}
         </h2>
 
@@ -137,12 +140,20 @@ const IncomeSlider = ({ className }) => {
                   }}
                 ></div>
                 <input
+                  id={INCOME_SLIDER_RANGE_ID}
                   type="range"
                   min={MIN_CLIENTS}
                   max={MAX_CLIENTS}
                   value={isRTL ? getRTLInputValue() : clientsCount}
                   onChange={handleSliderInput}
                   className="income-slider__progress-input"
+                  aria-labelledby="income-slider-heading"
+                  aria-valuemin={MIN_CLIENTS}
+                  aria-valuemax={MAX_CLIENTS}
+                  aria-valuenow={clientsCount}
+                  aria-valuetext={`${clientsCount} ${t(
+                    "partners_income-slider-clients-note-fsa"
+                  )}`}
                 />
               </div>
 

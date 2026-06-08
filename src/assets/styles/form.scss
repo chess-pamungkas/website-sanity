@@ -16,11 +16,13 @@
 }
 
 .input-title {
+  display: block;
   margin: 0 0 15px;
   color: map-get($colors, "black");
   font-weight: map-get($font-weight, "light");
   font-size: 16px;
   line-height: 26px;
+  cursor: default;
 
   @include tablet {
     font-size: 16px;

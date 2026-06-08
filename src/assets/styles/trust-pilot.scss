@@ -12,6 +12,39 @@
     margin: 12px 0;
     max-width: 280px;
   }
+
+  &--lab-static {
+    min-height: 24px;
+  }
+
+  &__slot {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    min-height: 24px;
+  }
+
+  &__lab-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #ffffff !important;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  &__lab-stars {
+    color: #00b67a;
+    letter-spacing: 1px;
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  &__lab-label {
+    opacity: 0.95;
+  }
 }
 
 .trustpilot-widget {
@@ -55,6 +88,10 @@
     margin: 0 auto;
     max-width: 280px;
     justify-content: center;
+
+    &__slot {
+      max-width: 280px;
+    }
   }
 
   .trustpilot-widget {

@@ -14,10 +14,10 @@ import ButtonLink from "../../../shared/button-link";
 import LangSelect from "../lang-select";
 import SearchBar from "../search-bar";
 import Accordion from "../../../shared/accordion";
-import { getMenuItems } from "../../../../helpers/menu.config";
+import { getMenuStructure } from "../../../../helpers/menu-structure.config";
 import InternalLink from "../../../shared/internal-link";
-import { LogoTextMain } from "../../../shared/icons";
-import { setLangParam } from "../../../../helpers/services/language-service";
+import { LogoTextMain } from "../../../shared/icons/critical";
+import { useLangParam } from "../../../../helpers/services/language-service";
 import ButtonPopup from "../../../shared/button-popup";
 import closeNavbarMobileIcon from "../../../../assets/images/icons/close-navbar-mobile.svg";
 import chevronDownIcon from "../../../../assets/images/icons/burger-menu-navbar/chevron-down.svg";
@@ -30,24 +30,27 @@ const BurgerMenu = ({ className }) => {
   const { isScrolled } = useContext(CommonContext);
 
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-  const menu = getMenuItems();
+  const menu = getMenuStructure();
   const [selectedNavItem, setSelectedNavItem] = useState(menu[0].title);
   const [isLangPopupOpened, setIsLangPopupOpened] = useState(false);
-  const langParam = setLangParam(); // Get the language parameter
+  const langParam = useLangParam();
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
 
   // Mobile navigation accordion state
   const [openSections, setOpenSections] = useState({});
 
-  // Handle Live Chat click to open ConvrsChat
+  // Handle Live Chat click: load Convrs only then (no global interaction), then open
   const handleLiveChatClick = (e, title) => {
-    // Check if this is the Live Chat item
     if (title === "header-nav-tab-trading-hub-live-chat-title") {
       e.preventDefault();
-      if (typeof window !== "undefined" && window.ConvrsChat) {
-        window.ConvrsChat.ShowWebChat();
+      if (typeof window !== "undefined") {
+        if (typeof window.loadConvrsWebchatAndOpen === "function") {
+          window.loadConvrsWebchatAndOpen();
+        } else if (window.ConvrsChat) {
+          window.ConvrsChat.ShowWebChat();
+        }
       }
-      onTriggerChange(); // Close the menu
+      onTriggerChange();
       return true;
     }
     return false;
@@ -98,13 +101,16 @@ const BurgerMenu = ({ className }) => {
         checked={isNavbarOpen}
         onChange={() => {}}
         className="burger-menu__cbox"
+        aria-label="Toggle navigation menu"
       />
 
       <button
+        type="button"
         className={cn("burger-menu__trigger", {
           "burger-menu__trigger--open": isNavbarOpen,
         })}
         onClick={onTriggerChange}
+        aria-label={isNavbarOpen ? "Close menu" : "Open menu"}
       >
         {[...Array(BURGER_MENU_LINES_COUNT)].map((_el, i) => (
           <span
@@ -148,8 +154,10 @@ const BurgerMenu = ({ className }) => {
                 <div className="header__right">
                   <LangSelect className="lang-select--header" isHeader={true} />
                   <button
+                    type="button"
                     className="burger-menu__mobile-close"
                     onClick={onTriggerChange}
+                    aria-label="Close menu"
                   >
                     <img
                       src={closeNavbarMobileIcon}
@@ -166,10 +174,12 @@ const BurgerMenu = ({ className }) => {
         {/* Desktop Close Button */}
         {!isMobile && !isTablet && (
           <button
+            type="button"
             className={cn("burger-menu__trigger", {
               "burger-menu__trigger--open": isNavbarOpen,
             })}
             onClick={onTriggerChange}
+            aria-label={isNavbarOpen ? "Close menu" : "Open menu"}
           >
             {[...Array(BURGER_MENU_LINES_COUNT)].map((_el, i) => (
               <span
@@ -216,16 +226,13 @@ const BurgerMenu = ({ className }) => {
                 if (!subItems || subItems.length === 0 || isPartners) {
                   return (
                     <div key={title} className="mobile-nav-item">
-                      <a
-                        href={link}
+                      <InternalLink
+                        to={link}
                         className="mobile-nav-header mobile-nav-link"
-                        onClick={() => {
-                          // Handle navigation and close menu
-                          onTriggerChange();
-                        }}
+                        onClick={() => onTriggerChange()}
                       >
                         <span className="mobile-nav-title">{t(title)}</span>
-                      </a>
+                      </InternalLink>
                     </div>
                   );
                 }
@@ -275,9 +282,9 @@ const BurgerMenu = ({ className }) => {
                                       !si.footerOnly
                                   )
                                   .map(({ link, title: subTitle }) => (
-                                    <a
+                                    <InternalLink
                                       key={`mobile-nav-${subTitle}`}
-                                      href={link}
+                                      to={link}
                                       className="mobile-nav-subitem"
                                       onClick={(e) => {
                                         if (!handleLiveChatClick(e, subTitle)) {
@@ -286,7 +293,7 @@ const BurgerMenu = ({ className }) => {
                                       }}
                                     >
                                       {t(subTitle)}
-                                    </a>
+                                    </InternalLink>
                                   ))}
                               </div>
                             );
@@ -301,9 +308,9 @@ const BurgerMenu = ({ className }) => {
                           } = item;
                           if (desktopOnly || footerOnly) return null;
                           return (
-                            <a
+                            <InternalLink
                               key={`mobile-nav-${subTitle}`}
-                              href={link}
+                              to={link}
                               className="mobile-nav-subitem"
                               onClick={(e) => {
                                 if (!handleLiveChatClick(e, subTitle)) {
@@ -312,7 +319,7 @@ const BurgerMenu = ({ className }) => {
                               }}
                             >
                               {t(subTitle)}
-                            </a>
+                            </InternalLink>
                           );
                         })}
                       </div>

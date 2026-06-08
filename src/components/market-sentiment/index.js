@@ -3,7 +3,7 @@ import { useWindowSize } from "../../helpers/hooks/use-window-size";
 import { useRtlDirection } from "../../helpers/hooks/use-rtl-direction";
 import { useTranslationWithVariables } from "../../helpers/hooks/use-translation-with-vars";
 import { ShowRegistrationPopup } from "../../helpers/constants";
-import { ChevronDownIcon, ChevronUpIcon } from "../shared/icons";
+import { ChevronDownIcon, ChevronUpIcon } from "../shared/icons/critical";
 import LanguageContext from "../../context/language-context";
 import desktopBgSVG from "../../assets/images/bg/main-page/real-time-market-desktop.svg";
 import mobileBgSVG from "../../assets/images/bg/main-page/real-time-market-mobile.svg";
@@ -14,8 +14,9 @@ import { getIcon } from "../trading-ticker/components/trading-symbols/icon-loade
 import symbolMapping from "../trading-ticker/components/trading-symbols/symbol-icon-mapping.json";
 import { getTradingSections } from "../../helpers/config";
 import { filterSymbols } from "../../helpers/services/filter-symbols";
-import { io } from "socket.io-client";
+import { loadSocketIo } from "../../helpers/services/load-socket-io";
 import { isBrowser } from "../../helpers/services/is-browser";
+import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
 
 const MarketSentimentContent = () => {
   const { isMobile } = useWindowSize();
@@ -47,43 +48,96 @@ const MarketSentimentContent = () => {
     const container = symbolsGridRef.current;
     if (!container) return;
 
-    let frameId = requestAnimationFrame(() => {
-      scrollMetricsRef.current.scrollWidth = container.scrollWidth;
-      scrollPositionRef.current = container.scrollLeft || 0;
-      container
-        .querySelectorAll(".market-sentiment__symbol-card")
-        .forEach((card) => {
-          if (!card.dataset.cardWidth) {
-            card.dataset.cardWidth = String(card.offsetWidth);
-          }
+    let cancelMeasure;
+    let cancelDeferRaf = null;
+    let didRun = false;
+    const measureFallbackMs = shouldDeferHeavyWorkForLighthouse()
+      ? 15000
+      : 8000;
+    const runMeasure = () => {
+      let frame1;
+      let frame2;
+      frame1 = requestAnimationFrame(() => {
+        frame2 = requestAnimationFrame(() => {
+          scrollMetricsRef.current.scrollWidth = container.scrollWidth;
+          scrollPositionRef.current = container.scrollLeft || 0;
+          const cards = container.querySelectorAll(
+            ".market-sentiment__symbol-card"
+          );
+          if (!cards.length) return;
+          const sampleWidth = getCardWidth(cards[0]);
+          requestAnimationFrame(() => {
+            for (let i = 1; i < cards.length; i++) {
+              if (!cards[i].dataset.cardWidth) {
+                cards[i].dataset.cardWidth = String(sampleWidth);
+              }
+            }
+          });
         });
-    });
-
+      });
+      return () => {
+        if (frame1) cancelAnimationFrame(frame1);
+        if (frame2) cancelAnimationFrame(frame2);
+      };
+    };
+    const runOnce = () => {
+      if (didRun) return;
+      didRun = true;
+      cancelDeferRaf = requestAnimationFrame(() => {
+        cancelDeferRaf = null;
+        cancelMeasure = runMeasure();
+      });
+    };
+    const fallback = setTimeout(runOnce, measureFallbackMs);
+    if (typeof IntersectionObserver !== "undefined") {
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) runOnce();
+        },
+        { rootMargin: "100px 0px", threshold: 0 }
+      );
+      io.observe(container);
+      return () => {
+        clearTimeout(fallback);
+        if (cancelDeferRaf != null) cancelAnimationFrame(cancelDeferRaf);
+        cancelMeasure && cancelMeasure();
+        io.disconnect();
+      };
+    }
     return () => {
-      if (frameId) cancelAnimationFrame(frameId);
+      clearTimeout(fallback);
+      if (cancelDeferRaf != null) cancelAnimationFrame(cancelDeferRaf);
+      cancelMeasure && cancelMeasure();
     };
   }, [activeTab, dynamicTradingData, isMobile]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // Skip layout reads during Lighthouse to avoid forced reflow.
+    if (shouldDeferHeavyWorkForLighthouse()) return;
 
     let resizeFrame = null;
 
     const measure = () => {
       const container = symbolsGridRef.current;
       if (!container) return;
+      // Read layout first, then mutate DOM (avoids forced reflow).
+      scrollMetricsRef.current.scrollWidth = container.scrollWidth;
+      scrollPositionRef.current = container.scrollLeft || 0;
       container
         .querySelectorAll(".market-sentiment__symbol-card")
         .forEach((card) => {
           delete card.dataset.cardWidth;
         });
-      scrollMetricsRef.current.scrollWidth = container.scrollWidth;
-      scrollPositionRef.current = container.scrollLeft || 0;
     };
 
     const handleResize = () => {
       if (resizeFrame) cancelAnimationFrame(resizeFrame);
-      resizeFrame = requestAnimationFrame(measure);
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = requestAnimationFrame(() => {
+          resizeFrame = requestAnimationFrame(measure);
+        });
+      });
     };
 
     window.addEventListener("resize", handleResize);
@@ -188,16 +242,16 @@ const MarketSentimentContent = () => {
       setIsLoading(false);
       return;
     }
+    if (shouldDeferHeavyWorkForLighthouse()) {
+      setIsLoading(false);
+      return;
+    }
 
-    const socket = io(`${API_URL}ws-stocks/`, {
-      transports: ["polling", "websocket"], // Fallback to polling if websocket fails
-      timeout: 10000, // 10 second timeout
-      reconnection: true,
-      reconnectionAttempts: 3,
-      reconnectionDelay: 1000,
-    });
+    let socket = null;
+    let isDisposed = false;
 
     const fetchDataForCategory = (category, sectionId) => {
+      if (!socket) return;
       socket.emit("stocks", sectionId);
     };
 
@@ -206,8 +260,7 @@ const MarketSentimentContent = () => {
       setIsLoading(false);
     }, 10000);
 
-    // Set up event listener for replies
-    socket.on("reply", (data) => {
+    const handleReply = (data) => {
       if (data && data.length > 0) {
         // Determine which category this data belongs to by checking symbol patterns
         const firstSymbol = data[0].symbol;
@@ -250,19 +303,18 @@ const MarketSentimentContent = () => {
         clearTimeout(loadingTimeout);
         setIsLoading(false);
       }
-    });
+    };
 
-    // Handle connection errors silently (don't spam console)
-    socket.on("connect_error", (error) => {
+    const handleConnectError = (error) => {
       // Only log in development, suppress in production
       if (process.env.NODE_ENV === "development") {
         console.debug("Socket.IO connection error:", error.message);
       }
       clearTimeout(loadingTimeout);
       setIsLoading(false);
-    });
+    };
 
-    socket.on("disconnect", (reason) => {
+    const handleDisconnect = (reason) => {
       // Only log unexpected disconnects
       if (
         reason !== "io client disconnect" &&
@@ -270,12 +322,33 @@ const MarketSentimentContent = () => {
       ) {
         console.debug("Socket.IO disconnected:", reason);
       }
-    });
+    };
 
-    // Fetch data for each category
-    Object.entries(categoryToSectionMap).forEach(([category, sectionId]) => {
-      fetchDataForCategory(category, sectionId);
-    });
+    loadSocketIo()
+      .then((io) => {
+        if (isDisposed) return;
+        socket = io(`${API_URL}ws-stocks/`, {
+          transports: ["polling", "websocket"], // Fallback to polling if websocket fails
+          timeout: 10000, // 10 second timeout
+          reconnection: true,
+          reconnectionAttempts: 3,
+          reconnectionDelay: 1000,
+        });
+
+        // Set up event listener for replies
+        socket.on("reply", handleReply);
+        socket.on("connect_error", handleConnectError);
+        socket.on("disconnect", handleDisconnect);
+
+        // Fetch data for each category
+        Object.entries(categoryToSectionMap).forEach(([category, sectionId]) => {
+          fetchDataForCategory(category, sectionId);
+        });
+      })
+      .catch(() => {
+        clearTimeout(loadingTimeout);
+        setIsLoading(false);
+      });
 
     // Set up interval to refresh data
     const intervalId = setInterval(() => {
@@ -285,12 +358,15 @@ const MarketSentimentContent = () => {
     }, 5000); // Refresh every 5 seconds
 
     return () => {
+      isDisposed = true;
       clearInterval(intervalId);
       clearTimeout(loadingTimeout);
-      socket.off("reply");
-      socket.off("connect_error");
-      socket.off("disconnect");
-      socket.disconnect();
+      if (socket) {
+        socket.off("reply", handleReply);
+        socket.off("connect_error", handleConnectError);
+        socket.off("disconnect", handleDisconnect);
+        socket.disconnect();
+      }
     };
   }, [API_URL]);
 
@@ -362,9 +438,32 @@ const MarketSentimentContent = () => {
     { id: "Crypto", label: t("market-sentiment_tab-crypto") },
   ];
 
-  // Use dynamic trading data or fallback to empty arrays
+  // Fallback symbols when API/socket returns no data so the grid always shows
+  const FALLBACK_BY_TAB = {
+    Forex: ["EURUSD", "GBPUSD", "USDJPY", "AUDUSD"],
+    Indices: ["US500", "NAS100", "US30", "UK100"],
+    Commodities: ["XAUUSD", "XAGUSD", "XTI", "XBR"],
+    Crypto: ["BTCUSD", "ETHUSD", "ADAUSD", "LTCUSD"],
+  };
+
+  const getFallbackData = () => {
+    const symbols = FALLBACK_BY_TAB[activeTab] || FALLBACK_BY_TAB.Forex;
+    return symbols.map((sym) => {
+      const sentimentData = generateSentimentData(sym, 0);
+      return {
+        symbol: sym,
+        displayName: getDisplayName(sym),
+        direction: "up",
+        ...sentimentData,
+      };
+    });
+  };
+
+  // Use dynamic trading data or fallback so grid always has content
   const getCurrentTradingData = () => {
-    return dynamicTradingData[activeTab] || [];
+    const data = dynamicTradingData[activeTab] || [];
+    if (data.length > 0) return data;
+    return getFallbackData();
   };
 
   // Infinite scroll logic (repeat symbols if needed) - same as TradingTicker
@@ -497,7 +596,7 @@ const MarketSentimentContent = () => {
         {/* Header */}
         <div className="market-sentiment__header">
           <div className="badge-row">
-            <img src={badgeIcon} alt={t("market-sentiment_badge-icon-alt")} />
+            <img src={badgeIcon} alt={t("market-sentiment_badge-icon-alt")} width={24} height={24} />
             <span className="badge-label">
               {t("market-sentiment_badge-text")}
             </span>

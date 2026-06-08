@@ -12,9 +12,9 @@ import { sendLog } from "../../../../helpers/services/log-service";
 
 const ContactUsForm = () => {
   const { t } = useTranslationWithVariables();
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [isSentSuccessful, setIsSentSuccessful] = useState(null);
   const API_URL = process.env.GATSBY_OQTIMA_API_URL;
-  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleApiResponse = (isSuccessful) => {
     setIsSentSuccessful(isSuccessful);
@@ -25,6 +25,10 @@ const ContactUsForm = () => {
 
   const handleContactForm = async (values, setSubmitting) => {
     try {
+      if (!executeRecaptcha) {
+        handleApiResponse(false);
+        return;
+      }
       const token = await executeRecaptcha("contact_us");
       await axios.post(`${API_URL}mail`, {
         ...values,

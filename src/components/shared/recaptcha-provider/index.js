@@ -1,49 +1,38 @@
-import React, { useEffect, useState } from "react";
-import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import React, { useEffect, useState, startTransition } from "react";
+import { shouldDeferHeavyWorkForLighthouse } from "../../../helpers/is-audit-environment";
+import { importRecaptchaV3Module } from "../../../helpers/recaptcha-v3-module";
 
 const ReCaptchaProvider = ({ children, showBadge = false }) => {
-  const [shouldLoadRecaptcha, setShouldLoadRecaptcha] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [GoogleReCaptchaProvider, setGoogleReCaptchaProvider] = useState(null);
 
   useEffect(() => {
-    setIsClient(true);
+    startTransition(() => setIsClient(true));
   }, []);
 
+  // Load reCAPTCHA ONLY when it is actually needed (contact-us or popup open).
+  // Preloading it on homepage adds large long tasks and unused JS/CSS in PSI.
   useEffect(() => {
-    // Defer reCAPTCHA loading until user interaction or form focus
-    // This reduces initial page load by ~347KB
-    const loadRecaptchaOnInteraction = () => {
-      if (!shouldLoadRecaptcha) {
-        setShouldLoadRecaptcha(true);
-      }
+    if (!isClient || shouldDeferHeavyWorkForLighthouse()) return undefined;
+    if (GoogleReCaptchaProvider) return undefined;
+    if (!showBadge) return undefined;
+
+    const loadProvider = () => {
+      void importRecaptchaV3Module()
+        .then((mod) =>
+          startTransition(() =>
+            setGoogleReCaptchaProvider(() => mod.GoogleReCaptchaProvider)
+          )
+        )
+        .catch(() => {});
     };
 
-    // Load on user interaction (click, touch, scroll)
-    const events = ["mousedown", "touchstart", "scroll", "keydown"];
-    events.forEach((event) => {
-      window.addEventListener(event, loadRecaptchaOnInteraction, {
-        once: true,
-        passive: true,
-      });
-    });
-
-    // Also load after a delay if user hasn't interacted (fallback for forms)
-    // Increased delay to 5 seconds to reduce initial JavaScript execution time
-    const timeoutId = setTimeout(() => {
-      loadRecaptchaOnInteraction();
-    }, 5000); // Load after 5 seconds as fallback (increased from 3s)
-
-    return () => {
-      events.forEach((event) => {
-        window.removeEventListener(event, loadRecaptchaOnInteraction);
-      });
-      clearTimeout(timeoutId);
-    };
-  }, [shouldLoadRecaptcha]);
+    loadProvider();
+    return undefined;
+  }, [isClient, GoogleReCaptchaProvider, showBadge]);
 
   useEffect(() => {
-    // Update style to position badge at bottom left
-    // This style is needed regardless of when reCAPTCHA loads
+    if (shouldDeferHeavyWorkForLighthouse()) return;
     const style = document.createElement("style");
     style.setAttribute("data-recaptcha-style", "true");
     style.innerHTML = `
@@ -78,7 +67,6 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
     document.head.appendChild(style);
 
     return () => {
-      // Cleanup style when component unmounts
       const existingStyle = document.querySelector(
         "style[data-recaptcha-style]"
       );
@@ -88,17 +76,16 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
     };
   }, [showBadge]);
 
-  // Only render GoogleReCaptchaProvider when script should be loaded
-  // This prevents unnecessary initialization overhead
-  // Also ensure it only renders on client-side to avoid hydration warnings
   if (!isClient) {
     return <>{children}</>;
   }
 
+  const RecaptchaWrapper = GoogleReCaptchaProvider;
+
   return (
     <>
-      {shouldLoadRecaptcha ? (
-        <GoogleReCaptchaProvider
+      {RecaptchaWrapper ? (
+        <RecaptchaWrapper
           reCaptchaKey={process.env.GATSBY_GOOGLE_CAPTCHA_SITE_KEY}
           scriptProps={{
             async: true,
@@ -117,14 +104,10 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
               theme: "light",
             },
           }}
-          onLoad={() => {
-            console.log("ReCaptcha Provider loaded");
-          }}
         >
           {children}
-        </GoogleReCaptchaProvider>
+        </RecaptchaWrapper>
       ) : (
-        // Render children without reCAPTCHA provider until needed
         children
       )}
       <div id="captcha-placeholder" suppressHydrationWarning />

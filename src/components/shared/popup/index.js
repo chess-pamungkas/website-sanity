@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import cn from "classnames";
 import PropTypes from "prop-types";
@@ -9,6 +9,9 @@ const Popup = ({
   isPopupOpen = false,
   handlePopupClose = () => {},
 }) => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const popupContent = (
     <div className={cn("popup", { "popup--active": isPopupOpen }, className)}>
       {/* Close the popup on outer wrapper click */}
@@ -30,7 +33,10 @@ const Popup = ({
     </div>
   );
 
-  // Use portal to render at document body level
+  // Render portal only after mount so server and initial client render both output null (avoids hydration mismatch #418)
+  if (!mounted || typeof document === "undefined") {
+    return null;
+  }
   return ReactDOM.createPortal(popupContent, document.body);
 };
 

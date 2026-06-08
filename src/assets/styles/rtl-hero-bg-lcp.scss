@@ -1,0 +1,208 @@
+@import "vars";
+@import "mixins";
+
+// RTL hero LCP <img>: shift artwork to the left (text stays right) without scaleX(-1).
+// Critical CSS values: keep in sync with src/helpers/rtl-hero-lcp-critical.config.js
+// Tablet rules MUST use tablet-only (768–1023px). Using @include tablet (768px+) overrides
+// desktop object-position because later rules win at equal specificity.
+
+@mixin rtl-hero-bg-lcp-target($page) {
+  html[lang="ar"] .#{$page}__hero-bg-lcp,
+  html[dir="rtl"] .#{$page}__hero-bg-lcp,
+  body[dir="rtl"] .#{$page}__hero-bg-lcp,
+  [dir="rtl"] .#{$page}__hero-bg-lcp {
+    @content;
+  }
+}
+
+@mixin rtl-hero-bg-tablet-shift($x: 175%) {
+  @include tablet-only {
+    // trading-product-hero-bg-lcp uses height:85% + padding-top on tablet — resets so crop can shift left
+    height: 80% !important;
+    padding-top: 0 !important;
+    object-fit: cover !important;
+    object-position: $x 100% !important;
+  }
+}
+
+@mixin rtl-hero-bg-desktop-shift($lg: -820px, $xl: -750px) {
+  @include desktop-lg {
+    width: 100% !important;
+    height: 100% !important;
+    padding-top: 0 !important;
+    object-fit: cover !important;
+    object-position: $lg center !important;
+  }
+
+  @include desktop-xl {
+    object-fit: cover !important;
+    object-position: $xl center !important;
+  }
+
+  @include desktop-2k {
+    object-fit: cover !important;
+    object-position: $xl center !important;
+  }
+
+  @include desktop-5k {
+    object-fit: cover !important;
+    object-position: $xl center !important;
+  }
+}
+
+@mixin rtl-hero-bg-css-target($page) {
+  html[lang="ar"] .#{$page}__hero-bg,
+  html[dir="rtl"] .#{$page}__hero-bg,
+  body[dir="rtl"] .#{$page}__hero-bg,
+  [dir="rtl"] .#{$page}__hero-bg,
+  html[lang="ar"] .#{$page} .#{$page}__hero-bg,
+  html[dir="rtl"] .#{$page} .#{$page}__hero-bg,
+  body[dir="rtl"] .#{$page} .#{$page}__hero-bg,
+  [dir="rtl"] .#{$page} .#{$page}__hero-bg,
+  html[lang="ar"] .#{$page}--rtl .#{$page}__hero-bg,
+  html[dir="rtl"] .#{$page}--rtl .#{$page}__hero-bg,
+  body[dir="rtl"] .#{$page}--rtl .#{$page}__hero-bg,
+  [dir="rtl"] .#{$page}--rtl .#{$page}__hero-bg {
+    @content;
+  }
+}
+
+$hero-lcp-pages: "all-markets", "forex", "metals", "crypto", "indices", "shares",
+  "energies", "etf", "account-types", "funding-withdrawals", "spreads-fees",
+  "trading-tools", "swap-free", "vps", "mt4", "mt5", "legal", "partners",
+  "contact-us", "faq-hero";
+
+// LCP pages: art only on __hero-bg-lcp. Drop legacy background-image (double art) but keep black fill.
+@each $page in $hero-lcp-pages {
+  @include rtl-hero-bg-css-target($page) {
+    background-image: none !important;
+    background-repeat: no-repeat !important;
+    background-color: #000 !important;
+  }
+}
+
+@each $page in $hero-lcp-pages {
+  @include rtl-hero-bg-lcp-target($page) {
+    @include rtl-hero-bg-tablet-shift(175%);
+    @include rtl-hero-bg-desktop-shift();
+  }
+}
+
+// --- Per-page (legacy background-position → object-position) ---
+
+@include rtl-hero-bg-lcp-target("crypto") {
+  @include rtl-hero-bg-desktop-shift(-830px, -750px);
+}
+
+@include rtl-hero-bg-lcp-target("indices") {
+  @include rtl-hero-bg-tablet-shift(175%);
+}
+
+@include rtl-hero-bg-lcp-target("forex") {
+  @include rtl-hero-bg-tablet-shift(175%);
+}
+
+@include rtl-hero-bg-lcp-target("metals") {
+  @include rtl-hero-bg-tablet-shift(175%);
+}
+
+@include rtl-hero-bg-lcp-target("shares") {
+  @include rtl-hero-bg-tablet-shift(175%);
+}
+
+@include rtl-hero-bg-lcp-target("energies") {
+  @include rtl-hero-bg-tablet-shift(175%);
+}
+
+@include rtl-hero-bg-lcp-target("etf") {
+  @include rtl-hero-bg-tablet-shift(175%);
+}
+
+@include rtl-hero-bg-lcp-target("account-types") {
+  @include rtl-hero-bg-tablet-shift(175%);
+}
+
+@include rtl-hero-bg-lcp-target("funding-withdrawals") {
+  @include rtl-hero-bg-tablet-shift(175%);
+}
+
+@include rtl-hero-bg-lcp-target("spreads-fees") {
+  @include rtl-hero-bg-tablet-shift(185%);
+}
+
+@include rtl-hero-bg-lcp-target("swap-free") {
+  @include rtl-hero-bg-tablet-shift(175%);
+}
+
+@include rtl-hero-bg-lcp-target("trading-tools") {
+  @include rtl-hero-bg-tablet-shift(175%);
+}
+
+@include rtl-hero-bg-lcp-target("mt4") {
+  @include rtl-hero-bg-tablet-shift(180%);
+}
+
+@include rtl-hero-bg-lcp-target("mt5") {
+  @include rtl-hero-bg-tablet-shift(180%);
+}
+
+@include rtl-hero-bg-lcp-target("vps") {
+  @include rtl-hero-bg-tablet-shift(175%);
+  @include rtl-hero-bg-desktop-shift(-820px, -750px);
+
+  @include desktop-xl {
+    object-fit: cover !important;
+    object-position: -750px center !important;
+  }
+
+  @include desktop-2k {
+    object-fit: cover !important;
+    object-position: -750px center !important;
+  }
+
+  @include desktop-5k {
+    object-fit: cover !important;
+    object-position: -750px center !important;
+  }
+}
+
+@include rtl-hero-bg-lcp-target("legal") {
+  // LTR: tablet 50% 100%, desktop-lg 35% 50% — shift artwork left without scaleX(-1)
+  @include rtl-hero-bg-tablet-shift(195%);
+  @include rtl-hero-bg-desktop-shift();
+}
+
+@include rtl-hero-bg-lcp-target("faq-hero") {
+  @include tablet-only {
+    object-position: center center !important;
+  }
+
+  @include desktop-lg {
+    object-position: center center !important;
+  }
+}
+
+// company hero still uses CSS background on __hero-bg (not in HERO_LCP_BY_TYPE)
+@include rtl-hero-bg-css-target("company") {
+  @include tablet-only {
+    // LTR tablet uses 100% 100% (art on the right of the SVG). 0% 100% shows the empty
+    // left crop only — keep URL + shift like other RTL heroes (art visible on the left).
+    background-image: url("/images/bg/hero/company/about-desktop.svg") !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position: 150% 100% !important;
+    background-color: transparent !important;
+  }
+
+  @include desktop-lg {
+    background-image: url("/images/bg/hero/company/about-desktop.svg") !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position: -820px center !important;
+    background-color: transparent !important;
+  }
+
+  @include desktop-xl {
+    background-position: -750px center !important;
+  }
+}

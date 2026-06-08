@@ -92,6 +92,7 @@
     padding-right: 0; // Reset right padding on mobile
     overflow: hidden; // Hide overflow on mobile for proper centering
     font-size: 16px;
+    transition: none;
   }
 
   @include small-mobile {
@@ -160,6 +161,8 @@
       width: 100%;
       padding-right: 0;
       overflow: hidden; // Hide overflow on mobile for proper centering
+      transition: none;
+      box-shadow: 0px 0px 19.3px rgba(255, 68, 0, 0.5);
     }
 
     // @include tablet {
@@ -189,6 +192,10 @@
       margin-left: 0; // Add spacing between text and arrow
       margin-top: 4px;
       color: map-get($colors, "black");
+      @include mobile {
+        display: none;
+        width: 0;
+      }
     }
 
     .button-text {
@@ -263,6 +270,7 @@
     width: 100%;
     justify-content: center;
     font-size: 16px;
+    transition: none;
   }
 
   @include tablet {
@@ -276,6 +284,9 @@
   .button-text {
     position: relative;
     transition: color 0.3s, text-decoration 0.3s;
+    @include mobile {
+      transition: none;
+    }
   }
 
   .button-arrow {
@@ -288,9 +299,15 @@
   &:focus {
     text-decoration: underline;
     border: none;
+    @include mobile {
+      text-decoration: none;
+    }
 
     .button-arrow {
       color: map-get($colors, "red");
+      @include mobile {
+        color: currentColor;
+      }
     }
   }
 }
@@ -859,15 +876,23 @@
   @include mobile {
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: stretch;
     padding: 0px;
     width: 100%;
+    max-width: none;
     height: 114px;
     flex: none;
     order: 0;
     align-self: stretch;
     flex-grow: 0;
     gap: 16px;
+  }
+
+  @include tablet-only {
+    width: 100%;
+    max-width: none;
+    align-self: stretch;
+    align-items: stretch;
   }
 }
 

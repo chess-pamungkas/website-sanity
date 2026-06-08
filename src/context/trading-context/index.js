@@ -1,115 +1,172 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  useEffect,
+  useRef,
+  useState,
+  startTransition,
+} from "react";
 import PropTypes from "prop-types";
 import { getTradingSections } from "../../helpers/config";
-import { io } from "socket.io-client";
 import { sendLog } from "../../helpers/services/log-service";
 import { isBrowser } from "../../helpers/services/is-browser";
+import {
+  isAuditEnvironment,
+  isDocumentAuditMode,
+} from "../../helpers/is-audit-environment";
 
 const API_URL = process.env.GATSBY_OQTIMA_API_URL;
 const TradingContext = createContext({});
 
-export const TradingProvider = ({ children }) => {
+export const TradingProvider = ({ children, enableLiveTrading = true }) => {
   const [selectedSection, setSelectedSection] = useState(
     getTradingSections()[0]
   );
   const [tradingSymbols, setTradingSymbols] = useState([]);
   const [needToLoadSymbols, setNeedToLoadSymbols] = useState(false);
-  const [socketReady, setSocketReady] = useState(false);
   const socketRef = useRef(null);
+  const pollIntervalRef = useRef(null);
+  const connectStartedRef = useRef(false);
+  const selectedSectionIdRef = useRef(selectedSection.id);
+
+  selectedSectionIdRef.current = selectedSection.id;
 
   useEffect(() => {
-    if (!API_URL || !isBrowser()) {
+    if (
+      !enableLiveTrading ||
+      !API_URL ||
+      !isBrowser() ||
+      !needToLoadSymbols
+    ) {
+      return undefined;
+    }
+    if (isAuditEnvironment() || isDocumentAuditMode()) {
       return undefined;
     }
 
-    const normalizedUrl = API_URL.endsWith("/")
-      ? `${API_URL}ws-stocks/`
-      : `${API_URL}/ws-stocks/`;
+    let cancelled = false;
 
-    try {
-      const socketInstance = io(normalizedUrl, {
-        transports: ["polling", "websocket"], // Fallback to polling if websocket fails
-        reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000,
-        timeout: 10000,
-      });
-
-      socketRef.current = socketInstance;
-
-      // Handle connection errors silently (don't spam console)
-      socketInstance.on("connect_error", (error) => {
-        // Only log in development, suppress in production
-        if (process.env.NODE_ENV === "development") {
-          console.debug("Socket.IO connection error:", error.message);
-        }
-      });
-
-      socketInstance.on("disconnect", (reason) => {
-        // Only log unexpected disconnects
-        if (
-          reason !== "io client disconnect" &&
-          process.env.NODE_ENV === "development"
-        ) {
-          console.debug("Socket.IO disconnected:", reason);
-        }
-      });
-
-      socketInstance.on("connect", () => {
-        setSocketReady(true);
-      });
-
-      return () => {
-        socketInstance.off("reply");
-        socketInstance.off("connect_error");
-        socketInstance.off("disconnect");
-        socketInstance.off("connect");
-        socketInstance.disconnect();
-        socketRef.current = null;
-        setSocketReady(false);
-      };
-    } catch (error) {
-      // Only log critical errors
-      if (process.env.NODE_ENV === "development") {
-        console.error("Socket.IO initialization error:", error);
+    const tearDown = () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+        pollIntervalRef.current = null;
       }
-      return undefined;
-    }
-  }, []);
-
-  useEffect(() => {
-    const socketInstance = socketRef.current;
-    if (!socketInstance || !API_URL || !socketReady) {
-      return undefined;
-    }
-
-    const fetchData = () => {
+      const sock = socketRef.current;
+      socketRef.current = null;
+      if (!sock) return;
       try {
-        if (API_URL) {
-          socketInstance.emit("stocks", selectedSection.id);
-        }
-      } catch (error) {
-        sendLog({ message: error.message, type: error.name });
+        sock.disconnect();
+      } catch (e) {
+        /* noop */
       }
     };
 
-    const handleReply = (data) => {
-      if (data) setTradingSymbols(data);
+    const connect = () => {
+      if (cancelled || connectStartedRef.current) return;
+      connectStartedRef.current = true;
+      import("../../helpers/services/load-socket-io")
+        .then(({ loadSocketIo }) => loadSocketIo())
+        .then((io) => {
+          if (cancelled) return;
+          const normalizedUrl = API_URL.endsWith("/")
+            ? `${API_URL}ws-stocks/`
+            : `${API_URL}/ws-stocks/`;
+
+          try {
+            const socketInstance = io(normalizedUrl, {
+              transports: ["websocket", "polling"],
+              reconnection: true,
+              reconnectionAttempts: 5,
+              reconnectionDelay: 1000,
+              timeout: 10000,
+            });
+            socketRef.current = socketInstance;
+
+            const handleReply = (data) => {
+              if (data) startTransition(() => setTradingSymbols(data));
+            };
+            socketInstance.on("reply", handleReply);
+
+            const fetchData = () => {
+              try {
+                if (!socketInstance.connected) return;
+                socketInstance.emit("stocks", selectedSectionIdRef.current);
+              } catch (error) {
+                sendLog({ message: error.message, type: error.name });
+              }
+            };
+
+            socketInstance.on("connect_error", (error) => {
+              if (process.env.NODE_ENV === "development") {
+                console.warn(
+                  "[trading] Socket.IO connect_error:",
+                  error?.message || error
+                );
+              }
+            });
+            socketInstance.on("disconnect", (reason) => {
+              if (
+                reason !== "io client disconnect" &&
+                process.env.NODE_ENV === "development"
+              ) {
+                console.debug("Socket.IO disconnected:", reason);
+              }
+            });
+
+            const startPolling = () => {
+              if (pollIntervalRef.current) {
+                clearInterval(pollIntervalRef.current);
+                pollIntervalRef.current = null;
+              }
+              fetchData();
+              pollIntervalRef.current = setInterval(fetchData, 700);
+            };
+
+            // Register reply + emit before "connect". Client queues emits until the handshake
+            // finishes — avoids empty ticker when connect is slow or racing React effects (common in dev).
+            fetchData();
+            socketInstance.on("connect", startPolling);
+            if (socketInstance.connected) {
+              startPolling();
+            }
+          } catch (error) {
+            if (process.env.NODE_ENV === "development") {
+              console.error("Socket.IO initialization error:", error);
+            }
+          }
+        })
+        .catch(() => {
+          connectStartedRef.current = false;
+        });
     };
 
-    socketInstance.on("reply", handleReply);
-    fetchData(); // Initial fetch
-
-    let intervalId;
-    if (needToLoadSymbols) {
-      intervalId = setInterval(fetchData, 700);
-    }
+    connect();
 
     return () => {
-      if (intervalId) clearInterval(intervalId);
-      socketInstance.off("reply", handleReply);
+      cancelled = true;
+      connectStartedRef.current = false;
+      tearDown();
     };
-  }, [selectedSection?.id, needToLoadSymbols, socketReady]);
+  }, [needToLoadSymbols, enableLiveTrading]);
+
+  useEffect(() => {
+    const s = socketRef.current;
+    if (
+      !enableLiveTrading ||
+      !s ||
+      !needToLoadSymbols ||
+      !API_URL
+    ) {
+      return undefined;
+    }
+    try {
+      if (s.connected) {
+        s.emit("stocks", selectedSection.id);
+      }
+    } catch (e) {
+      /* noop */
+    }
+    return undefined;
+  }, [selectedSection.id, needToLoadSymbols, enableLiveTrading]);
 
   return (
     <TradingContext.Provider
@@ -129,5 +186,6 @@ export const TradingProvider = ({ children }) => {
 
 TradingProvider.propTypes = {
   children: PropTypes.node.isRequired,
+  enableLiveTrading: PropTypes.bool,
 };
 export default TradingContext;

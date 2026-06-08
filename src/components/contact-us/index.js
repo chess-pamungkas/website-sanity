@@ -11,10 +11,9 @@ import {
 } from "../../helpers/constants";
 import ContactUsForm from "./components/contact-us-form";
 import { useRtlDirection } from "../../helpers/hooks/use-rtl-direction";
-import { useWindowSize } from "../../helpers/hooks/use-window-size";
 
 // Import icons
-import BadgeIcon from "../../assets/images/icons/main-page/badge-security.svg";
+import { BadgeSecurityIcon as BadgeIcon } from "../shared/shared-icons";
 import EmailIcon from "../../assets/images/icons/contact-us/email.svg";
 import PhoneIcon from "../../assets/images/icons/contact-us/phone.svg";
 import AddressIcon from "../../assets/images/icons/contact-us/address.svg";
@@ -60,7 +59,7 @@ const ContactUs = ({ className }) => {
             {/* Email */}
             <div className="contact-us__info-item">
               <div className="contact-us__info-icon">
-                <img src={EmailIcon} alt="Email" />
+                <img src={EmailIcon} alt="Email" width={24} height={24} />
               </div>
               <div className="contact-us__info-content">
                 <h3 className="contact-us__info-title">
@@ -75,7 +74,7 @@ const ContactUs = ({ className }) => {
             {/* Phone */}
             <div className="contact-us__info-item">
               <div className="contact-us__info-icon">
-                <img src={PhoneIcon} alt="Phone" />
+                <img src={PhoneIcon} alt="Phone" width={24} height={24} />
               </div>
               <div className="contact-us__info-content">
                 <h3 className="contact-us__info-title">
@@ -96,7 +95,7 @@ const ContactUs = ({ className }) => {
             {/* Address */}
             <div className="contact-us__info-item">
               <div className="contact-us__info-icon">
-                <img src={AddressIcon} alt="Address" />
+                <img src={AddressIcon} alt="Address" width={24} height={24} />
               </div>
               <div className="contact-us__info-content">
                 <h3 className="contact-us__info-title">

@@ -441,7 +441,8 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+  height: auto;
+  min-height: 0;
   padding-top: 80px;
   z-index: 2;
   left: 50%;
@@ -452,41 +453,44 @@
   align-items: center;
 
   @include mobile {
-    height: 953px;
+    min-height: calc(
+      #{$company-hero-mobile-top} + #{$company-hero-mobile-artboard}
+    );
+    height: auto;
     border-radius: 20px;
-    padding-top: 73px;
+    padding-top: $company-hero-mobile-top;
+    padding-bottom: 0;
     margin-top: 0;
     margin-bottom: 0;
     overflow: visible;
   }
 
-  @include tablet {
-    height: 555px;
-    border-radius: 24px;
-    padding-top: 70px;
-    padding-bottom: 0;
-  }
+  @include hero-page-shell-tablet(555px, 73px, 70px);
 
-  @include desktop-lg {
-    height: 540px;
-    border-radius: 24px;
-    padding-top: 83px;
-    padding-bottom: 0;
-  }
+  @include hero-page-shell-desktop-lg(540px, 77px, 83px);
 
   @include desktop-xl {
-    height: 540px;
+    min-height: calc(83px + 540px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
+    border-radius: 24px;
   }
 
   @include desktop-2k {
-    height: 540px;
+    min-height: calc(83px + 540px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
+    border-radius: 24px;
   }
 
   @include desktop-5k {
-    height: 540px;
+    min-height: calc(83px + 540px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
+    border-radius: 24px;
   }
 
   &__hero-container {
@@ -505,27 +509,19 @@
     @include mobile {
       width: 100%;
       max-width: 100%;
-      height: 953px;
+      min-height: $company-hero-mobile-artboard;
+      height: auto;
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 73px;
+      top: $company-hero-mobile-top;
       margin: 0 auto;
       border-radius: 20px;
       overflow: hidden;
+      contain: layout;
     }
 
-    @include tablet {
-      width: 768px;
-      max-width: 768px;
-      height: 555px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 73px;
-      margin: 0 auto;
-      border-radius: 24px;
-    }
+    @include hero-tablet-container(555px, 73px);
 
     @include desktop-lg {
       width: calc(100vw - 20px);
@@ -593,7 +589,7 @@
       left: 0;
       top: 0;
       border-radius: 20px;
-      background: url("../../assets/images/bg/hero/company/about-mobile.svg")
+      background: url("/images/bg/hero/company/about-mobile.svg")
         no-repeat center center;
       background-size: cover;
       overflow: hidden;
@@ -601,36 +597,36 @@
       background-color: transparent;
     }
 
-    @include tablet {
-      background: url("../../assets/images/bg/hero/company/about-desktop.svg")
+    @include tablet-only {
+      background: url("/images/bg/hero/company/about-desktop.svg")
         no-repeat 100% 100%;
       background-size: cover;
       background-color: transparent;
     }
 
     @include desktop-lg {
-      background: url("../../assets/images/bg/hero/company/about-desktop.svg")
+      background: url("/images/bg/hero/company/about-desktop.svg")
         no-repeat center center;
       background-size: cover;
       background-color: transparent;
     }
 
     @include desktop-xl {
-      background: url("../../assets/images/bg/hero/company/about-desktop.svg")
+      background: url("/images/bg/hero/company/about-desktop.svg")
         no-repeat center center;
       background-size: cover;
       background-color: transparent;
     }
 
     @include desktop-2k {
-      background: url("../../assets/images/bg/hero/company/about-desktop.svg")
+      background: url("/images/bg/hero/company/about-desktop.svg")
         no-repeat center center;
       background-size: cover;
       background-color: transparent;
     }
 
     @include desktop-5k {
-      background: url("../../assets/images/bg/hero/company/about-desktop.svg")
+      background: url("/images/bg/hero/company/about-desktop.svg")
         no-repeat center center;
       background-size: cover;
       background-color: transparent;
@@ -1214,11 +1210,26 @@
   }
 }
 
+/* Hero already clears the fixed header — do not add a second offset inside #main-container. */
+body.homepage-bg-1 .company + #main-container {
+  min-height: 0 !important;
+  flex-grow: 0 !important;
+  height: auto !important;
+  contain: none;
+}
+
+.company + #main-container .header-offset-placeholder {
+  height: 0 !important;
+}
+
 .company-page {
+  margin-top: 0;
+
   @include mobile {
-    margin-top: 130px;
+    padding-top: $company-page-after-hero-gap-mobile;
 
     .features-products {
+      padding: $company-page-features-padding-top-mobile 0 30px !important;
       // Ensure the section is visible
       display: block !important;
       visibility: visible !important;
@@ -1295,7 +1306,7 @@
         background: #ffffff !important; // Temporary background for debugging
 
         &::before {
-          background-image: url("../../assets/images/bg/features-products/features-products-mobile.svg") !important;
+          background-image: url("/images/bg/features-products/features-products-mobile.svg") !important;
         }
       }
 
@@ -1325,18 +1336,30 @@
     }
   }
 
-  @include tablet {
-    margin-top: 80px;
-    margin-bottom: 50px;
+  @include tablet-only {
+    padding-top: $company-page-after-hero-gap-tablet;
+    margin-bottom: $company-page-section-margin-bottom-tablet;
+
+    .features-products {
+      padding: $company-page-features-padding-top-tablet 0 60px !important;
+    }
   }
 
   @include desktop-lg {
-    margin-top: 80px;
-    margin-bottom: 50px;
+    padding-top: $company-page-after-hero-gap-desktop-lg;
+    margin-bottom: $company-page-section-margin-bottom-desktop-lg;
+
+    .features-products {
+      padding: $company-page-features-padding-top-desktop 0 60px !important;
+    }
   }
 
   @include desktop-xl {
-    margin-top: 100px;
-    margin-bottom: 100px;
+    padding-top: $company-page-after-hero-gap-desktop-xl;
+    margin-bottom: $company-page-section-margin-bottom-desktop-xl;
+
+    .features-products {
+      padding: $company-page-features-padding-top-desktop 0 60px !important;
+    }
   }
 }

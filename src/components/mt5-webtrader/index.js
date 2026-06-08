@@ -4,6 +4,7 @@ import {
   HEADER_SMALL_HEIGHT,
 } from "../../helpers/constants";
 import { useWindowSize } from "../../helpers/hooks/use-window-size";
+import { useLoadingWatchdog } from "../../helpers/hooks/use-loading-watchdog";
 import LanguageContext from "../../context/language-context";
 import { getWebTraderUrl } from "./webtrader-url";
 
@@ -17,6 +18,16 @@ const WebTraderLink = () => {
 
   // Simple mobile detection without external utilities
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+  useLoadingWatchdog({
+    isLoading,
+    onTimeout: () => {
+      setHasError(true);
+      setIsLoading(false);
+    },
+    timeoutMs: 12000,
+    deps: [selectedLanguage?.id],
+  });
 
   useEffect(() => {
     // Set CSS custom property for header height

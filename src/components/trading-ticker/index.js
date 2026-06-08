@@ -6,11 +6,24 @@ import { getTradingSections } from "../../helpers/config";
 import TradingSections from "./components/trading-sections";
 import { filterSymbols } from "../../helpers/services/filter-symbols";
 import TradingContext from "../../context/trading-context";
-import { io } from "socket.io-client";
-import { sendLog } from "../../helpers/services/log-service";
 import { isBrowser } from "../../helpers/services/is-browser";
+import { loadSocketIo } from "../../helpers/services/load-socket-io";
+import {
+  shouldDeferHeavyWorkForLighthouse,
+  AUDIT_HEAVY_WORK_DEFER_MS,
+} from "../../helpers/is-audit-environment";
+import { isMobileViewportMedia } from "../../helpers/viewport-media";
 
 const API_URL = process.env.GATSBY_OQTIMA_API_URL;
+/** Homepage ticker: desktop — fixed timer after hydrate (avoid rIC starving under load). Audits defer separately. */
+const HOMEPAGE_SYMBOLS_BOOT_DELAY_MS = 260;
+/** Mobile: show strip soon after hero; LH still skips heavy socketwork via defer flags on provider. */
+const HOMEPAGE_SYMBOLS_BOOT_DELAY_MOBILE_MS = 55;
+/**
+ * Page-specific ticker (all-markets): connect in the next microtask so work isn’t stuck behind
+ * requestIdleCallback (which can wait up to the timeout on busy main thread). Audits still defer
+ * via shouldDeferHeavyWorkForLighthouse().
+ */
 
 const TradingTicker = ({
   className,
@@ -41,58 +54,134 @@ const TradingTicker = ({
   useEffect(() => {
     if (!isPageSpecific) {
       // Homepage ticker - use global context
+      let cancelled = false;
+      let delayId;
       setSelectedSection(tradingSection[0]);
-      setNeedToLoadSymbols(true);
-      return () => setNeedToLoadSymbols(false);
+      const enable = () => {
+        if (!cancelled) setNeedToLoadSymbols(true);
+      };
+      let idleCallbackId = null;
+      const isNarrowViewport = isMobileViewportMedia();
+      const bootDelayMs = isNarrowViewport
+        ? HOMEPAGE_SYMBOLS_BOOT_DELAY_MOBILE_MS
+        : HOMEPAGE_SYMBOLS_BOOT_DELAY_MS;
+      if (shouldDeferHeavyWorkForLighthouse()) {
+        if (typeof requestIdleCallback !== "undefined") {
+          idleCallbackId = requestIdleCallback(enable, {
+            timeout: bootDelayMs,
+          });
+        } else {
+          delayId = setTimeout(enable, bootDelayMs);
+        }
+      } else {
+        delayId = setTimeout(enable, bootDelayMs);
+      }
+      return () => {
+        cancelled = true;
+        if (
+          idleCallbackId != null &&
+          typeof cancelIdleCallback !== "undefined"
+        ) {
+          cancelIdleCallback(idleCallbackId);
+        }
+        if (delayId) clearTimeout(delayId);
+        setNeedToLoadSymbols(false);
+      };
     }
 
     if (!API_URL || !isBrowser()) {
-      return;
+      return undefined;
     }
 
-    // Page-specific ticker - use local socket connection
-    const socket = io(`${API_URL}ws-stocks/`, {
-      transports: ["polling", "websocket"], // Fallback to polling if websocket fails
-      reconnection: true,
-      reconnectionAttempts: 3,
-      reconnectionDelay: 1000,
-      timeout: 10000,
-    });
-
-    // Handle connection errors silently
-    socket.on("connect_error", (error) => {
-      if (process.env.NODE_ENV === "development") {
-        console.debug("Socket.IO connection error:", error.message);
-      }
-    });
+    let cancelled = false;
+    let intervalId;
+    let socketInstance = null;
+    let cancelBoot = null;
+    const apiBase =
+      typeof API_URL === "string"
+        ? API_URL.replace(/\/+$/, "")
+        : "";
+    const wsStocksUrl = apiBase ? `${apiBase}/ws-stocks/` : "";
 
     const handleReply = (data) => {
       if (data) setLocalTradingSymbols(data);
     };
 
-    socket.on("reply", handleReply);
-
-    const fetchData = () => {
+    const tearDownSocket = () => {
+      const socket = socketInstance;
+      socketInstance = null;
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = undefined;
+      }
+      if (!socket) return;
       try {
-        if (API_URL && pageSpecificSection) {
-          socket.emit("stocks", pageSpecificSection.id);
-        }
-      } catch (error) {
-        if (process.env.NODE_ENV === "development") {
-          console.debug("Socket.IO emit error:", error.message);
-        }
+        socket.off("reply", handleReply);
+        socket.removeAllListeners("connect_error");
+        socket.disconnect();
+      } catch (e) {
+        /* noop */
       }
     };
 
-    fetchData(); // Initial fetch
+    const startSocket = () => {
+      if (cancelled || !pageSpecificSection || !wsStocksUrl) return;
+      loadSocketIo()
+        .then((io) => {
+          if (cancelled || !pageSpecificSection) return;
+          const socket = io(wsStocksUrl, {
+            transports: ["websocket", "polling"],
+            reconnection: true,
+            reconnectionAttempts: 3,
+            reconnectionDelay: 1000,
+            timeout: 10000,
+          });
+          socketInstance = socket;
 
-    const intervalId = setInterval(fetchData, 700);
+          socket.on("connect_error", (error) => {
+            if (process.env.NODE_ENV === "development") {
+              console.debug("Socket.IO connection error:", error.message);
+            }
+          });
+
+          socket.on("reply", handleReply);
+
+          const fetchData = () => {
+            try {
+              if (cancelled || !socket || !pageSpecificSection) return;
+              if (!socket.connected) return;
+              socket.emit("stocks", pageSpecificSection.id);
+            } catch (error) {
+              if (process.env.NODE_ENV === "development") {
+                console.debug("Socket.IO emit error:", error.message);
+              }
+            }
+          };
+
+          fetchData();
+          intervalId = setInterval(fetchData, 700);
+
+          if (cancelled) {
+            tearDownSocket();
+          }
+        })
+        .catch(() => {});
+    };
+
+    if (shouldDeferHeavyWorkForLighthouse()) {
+      const bootDelayId = setTimeout(startSocket, AUDIT_HEAVY_WORK_DEFER_MS);
+      cancelBoot = () => clearTimeout(bootDelayId);
+    } else {
+      queueMicrotask(() => {
+        if (!cancelled) startSocket();
+      });
+      cancelBoot = () => {};
+    }
 
     return () => {
-      clearInterval(intervalId);
-      socket.off("reply", handleReply);
-      socket.off("connect_error");
-      socket.disconnect();
+      cancelled = true;
+      if (cancelBoot) cancelBoot();
+      tearDownSocket();
     };
   }, [pageSpecificSection?.id]);
 
@@ -114,7 +203,7 @@ const TradingTicker = ({
       )}
       <TradingSymbols
         symbols={filterSymbols(symbols, selectedSection.id)}
-        isInfiniteAutoScroll={isInfiniteAutoScroll}
+        isInfiniteAutoScroll={isInfiniteAutoScroll !== false}
         uniqueId={uniqueId}
       />
     </section>

@@ -68,7 +68,6 @@ const ETFContent = ({ className, isShowHero = true }) => {
 
       <AccountComparison />
 
-      {/* FAQ Section - ETF Trading Questions */}
       <ContainerWrapper>
         <FaqSection
           faqData={FAQ_ETF}
@@ -79,10 +78,6 @@ const ETFContent = ({ className, isShowHero = true }) => {
           buttonTextKey="faq-button-text"
           onFaqButtonClick={handleFaqButtonClick}
         />
-      </ContainerWrapper>
-
-      {/* Guide Content Section */}
-      <ContainerWrapper>
         <GuideContent
           titleKey="etf-guide-title"
           subtitleKey="etf-guide-subtitle"

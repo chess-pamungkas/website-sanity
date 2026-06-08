@@ -22,4 +22,11 @@ export const NotificationStripeProvider = ({ children }) => {
 NotificationStripeProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
+/** Stub value for deferred hydration (Layout uses after requestIdleCallback). */
+export const NOTIFICATION_STRIPE_STUB_VALUE = {
+  expand: true,
+  setExpand: () => {},
+};
+
 export default NotificationStripeContext;

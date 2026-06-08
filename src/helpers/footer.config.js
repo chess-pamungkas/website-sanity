@@ -1,6 +1,7 @@
 import React from "react";
 import { LEGAL_PAGE_LINK } from "./constants";
 import { useTranslationWithVariables } from "./hooks/use-translation-with-vars";
+import InternalLink from "../components/shared/internal-link";
 
 const FOOTER_TEXT_FSA = "footer-text-fsa";
 
@@ -35,13 +36,9 @@ export const getFooterCopyright = () => {
       <p>{t(FOOTER_COPYRIGHT_FSA.p2)}</p>
       <p>
         {t(FOOTER_COPYRIGHT_FSA.p3_1)}&nbsp;
-        <a
-          href={FOOTER_COPYRIGHT_FSA.p3_link1}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <InternalLink to={FOOTER_COPYRIGHT_FSA.p3_link1}>
           {t(FOOTER_COPYRIGHT_FSA.p3_a1)}
-        </a>
+        </InternalLink>
         &nbsp;
         {t(FOOTER_COPYRIGHT_FSA.p3_2)}
       </p>

@@ -9,6 +9,10 @@
     z-index: 1000;
     top: 0;
     width: 100%;
+
+    &--dropdown-open {
+      z-index: 1003;
+    }
   }
 
   &__main-wrapper {
@@ -73,10 +77,13 @@
       margin-left: auto; // Push container to the right edge
       max-width: 380px; // Prevent overflow
       gap: 8px; // Reduced gap to save space
+      min-height: 48px;
+      min-width: 200px;
 
       @include desktop-lg {
-        max-width: 400px; // More space for longer translations
+        max-width: 400px;
         gap: 10px;
+        min-width: 220px;
       }
 
       @include desktop-xl {
@@ -264,6 +271,17 @@
     gap: 8px; // Reduced gap to save space
     margin-left: auto; // Push container to the right edge
     max-width: 380px; // Prevent overflow
+    min-width: 0;
+
+    @include mobile {
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    @include tablet {
+      gap: 10px;
+      flex-shrink: 0;
+    }
 
     @include desktop-lg {
       max-width: 400px; // More space for longer translations
@@ -418,18 +436,38 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-right: 50px;
+      margin-right: 0;
+      min-width: 0;
+      flex: 0 1 auto;
+
+      .header__signin,
+      .header__start {
+        display: none !important;
+      }
     }
-    @include tablet {
+    @include tablet-only {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-right: 50px;
+      margin-right: 0;
+      min-width: 0;
+      flex: 0 1 auto;
+
+      .header__signin,
+      .header__start {
+        display: none !important;
+      }
     }
     @include desktop-lg {
       display: flex;
+      align-items: center;
       gap: 0;
       margin-right: 0;
+
+      .header__signin,
+      .header__start {
+        display: flex !important;
+      }
     }
   }
 
@@ -484,16 +522,16 @@
 }
 
 .header-dropdown-card {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1001;
+  z-index: 1003;
   background: map-get($colors, "navbar-bg-grey");
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(19, 40, 75, 0.08);
   border: 1px solid rgba(19, 40, 75, 0.08);
-  overflow: hidden;
+  overflow: visible;
   transition: all 0.4s;
   box-sizing: border-box;
 
@@ -593,6 +631,8 @@
   width: 100%;
   max-width: 1300px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 
   @include tablet {
     max-width: 600px;
@@ -601,6 +641,7 @@
   @include desktop-lg {
     max-width: 1000px;
     padding: 35px 0;
+    min-height: 280px;
   }
 
   @include desktop-xl {

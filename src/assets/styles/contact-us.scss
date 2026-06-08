@@ -1,5 +1,14 @@
 @import "vars";
 @import "mixins";
+@import "trading-product-hero-bg-lcp";
+
+/* Contact form shell: no homepage #main-container 890px CLS reserve. */
+body.homepage-bg-1 .contact-us-shell #main-container,
+body.homepage-bg-1 .contact-us-page-community #main-container {
+  min-height: 0;
+  flex-grow: 0;
+  contain: none;
+}
 
 // Contact Us Content Section (not affecting hero)
 .contact-us-content-section {
@@ -10,12 +19,12 @@
     padding: 125px 0 0 0;
   }
 
-  @include tablet {
-    padding: 125px 0 0 0;
+  @include tablet-only {
+    padding: $contact-us-content-after-hero-gap-tablet 0 0 0;
   }
 
   @include desktop-lg {
-    padding: 150px 0 0 0;
+    padding: $contact-us-content-after-hero-gap-desktop 0 0 0;
   }
 
   &__container {
@@ -247,10 +256,11 @@
 .contact-us__title {
   display: block;
   font-weight: map-get($font-weight, "semibold"); // 600
-  font-size: 72px;
+  font-size: 42px;
   letter-spacing: -0.02em;
   margin: 0;
   padding-bottom: 10px;
+  width: 100%;
 
   background: linear-gradient(
       102.31deg,
@@ -267,19 +277,12 @@
   order: 0;
   flex-grow: 0;
 
-  @include mobile {
-    font-size: 42px;
-    width: 100%;
-  }
-
   @include tablet {
     font-size: 52px;
-    width: 100%;
   }
 
   @include desktop-lg {
     font-size: 72px;
-    width: 100%;
   }
 
   @include desktop-xl {
@@ -386,18 +389,25 @@
 }
 
 .contact-us__info-link {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 0;
   font-size: 18px;
   line-height: 26px;
   font-weight: map-get($font-weight, "light");
   color: map-get($colors, "black");
   text-decoration: none;
-  margin-bottom: 4px;
+  margin-bottom: 12px;
   transition: color 0.3s ease;
+  box-sizing: border-box;
 
   @include mobile {
     font-size: 14px;
-    line-height: 18px;
+    line-height: 20px;
+    min-height: 24px;
+    padding: 5px 0;
+    margin-bottom: 12px;
   }
 
   &:hover {
@@ -488,6 +498,7 @@
     padding: 30px;
     border-radius: 18px;
     width: 100%;
+    min-height: 553px;
     gap: 8px;
   }
 
@@ -495,6 +506,7 @@
     padding: 36px;
     border-radius: 20px;
     width: 496px;
+    min-height: 553px;
     gap: 8px;
   }
 
@@ -857,7 +869,8 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+  height: auto;
+  min-height: 953px;
   padding-top: 80px;
   z-index: 2;
   left: 50%;
@@ -868,7 +881,8 @@
   align-items: center;
 
   @include mobile {
-    height: 953px;
+    min-height: 953px;
+    height: auto;
     border-radius: 20px;
     padding-top: 73px;
     margin-top: 0;
@@ -876,30 +890,38 @@
     overflow: visible;
   }
 
-  @include tablet {
-    height: 455px;
+  @include tablet-only {
+    /* 73px top + 455px artboard — fixed height:455px clipped absolute hero → body CLS ~0.11 */
+    min-height: calc(73px + 455px);
+    height: auto;
     padding-top: 70px;
     padding-bottom: 0;
+    margin-bottom: 0;
   }
 
   @include desktop-lg {
-    height: 510px;
+    margin-bottom: 0;
+    min-height: calc(77px + 510px);
+    height: auto;
     padding-top: 83px;
     padding-bottom: 0;
   }
 
   @include desktop-xl {
-    height: 510px;
+    min-height: calc(83px + 510px);
+    height: auto;
     padding-top: 83px;
   }
 
   @include desktop-2k {
-    height: 510px;
+    min-height: calc(83px + 510px);
+    height: auto;
     padding-top: 83px;
   }
 
   @include desktop-5k {
-    height: 510px;
+    min-height: calc(83px + 510px);
+    height: auto;
     padding-top: 83px;
   }
 
@@ -929,17 +951,7 @@
       overflow: hidden;
     }
 
-    @include tablet {
-      width: 768px;
-      max-width: 768px;
-      height: 455px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 73px;
-      margin: 0 auto;
-      border-radius: 24px;
-    }
+    @include hero-tablet-container(455px, 73px);
 
     @include desktop-lg {
       width: calc(100vw - 20px);
@@ -987,67 +999,16 @@
     }
   }
 
-  &__hero-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    border-radius: 24px;
-    z-index: 1;
-    overflow: hidden;
-    background-position: center center;
-    background-repeat: no-repeat;
+  @include trading-product-hero-bg-lcp;
 
-    @include mobile {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 0;
-      top: 0;
-      border-radius: 20px;
-      background: url("../../assets/images/bg/hero/contact-us/contact-us-mobile.svg")
-        no-repeat center center;
-      background-size: cover;
-      overflow: hidden;
-      border-radius: 20px;
-      background-color: transparent;
-    }
-
-    @include tablet {
-      background: url("../../assets/images/bg/hero/contact-us/contact-us-desktop.svg")
-        no-repeat 75% 100%;
-      background-size: cover;
-      background-color: transparent;
-    }
-
-    @include desktop-lg {
-      background: url("../../assets/images/bg/hero/contact-us/contact-us-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
-    }
-
-    @include desktop-xl {
-      background: url("../../assets/images/bg/hero/contact-us/contact-us-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
-    }
-
-    @include desktop-2k {
-      background: url("../../assets/images/bg/hero/contact-us/contact-us-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
+  &__hero-bg-lcp {
+    @include tablet-only {
+      object-position: 75% 100%;
     }
 
     @include desktop-5k {
-      background: url("../../assets/images/bg/hero/contact-us/contact-us-desktop.svg")
-        no-repeat center center;
-      background-size: 100% 100%;
-      background-color: transparent;
+      object-position: center center;
+      object-fit: cover;
     }
   }
 
@@ -1163,15 +1124,20 @@
       justify-content: center;
       align-content: center;
       width: 100%;
+      height: 30px;
+      min-height: 30px;
       margin-top: 50px;
     }
     @include tablet {
       width: 100%;
+      height: 30px;
+      min-height: 30px;
       margin-top: 20px;
     }
     @include desktop-lg {
       width: 393.48px;
       height: 30px;
+      min-height: 30px;
       margin-top: 30px;
     }
     @include desktop-xl {

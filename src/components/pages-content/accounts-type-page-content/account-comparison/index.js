@@ -3,10 +3,12 @@ import BadgeAccountComparisonIcon from "../../../../assets/images/icons/account-
 import BadgeMostPopularIcon from "../../../../assets/images/icons/account-comparison/badge-most-popular.svg";
 // Using static folder path for WebP (more reliable in Gatsby)
 const StarMostPopularIcon = "/images/star-most-popular.webp";
+const StarMostPopularIcon2x = "/images/star-most-popular@2x.webp";
+const StarMostPopularSrcSet = `${StarMostPopularIcon} 110w, ${StarMostPopularIcon2x} 220w`;
 import BadgeBeginnerChoiceIcon from "../../../../assets/images/icons/account-comparison/badge-beginner-choice.svg";
 // Using static folder path for WebP (more reliable in Gatsby)
 const StarBeginnerChoiceIcon = "/images/star-beginner-choice.webp";
-import CircleMarkIcon from "../../../../assets/images/icons/circle-mark.svg";
+import { CircleMarkIcon } from "../../../shared/shared-icons";
 // Import WebP for desktop (smaller file size), SVG for mobile
 // Using static folder path for WebP (more reliable in Gatsby)
 const AccountComparisonDesktopBg = "/images/account-comparison-desktop.webp";
@@ -122,6 +124,8 @@ const AccountTypesAccountComparison = () => {
             <img
               src={StarBeginnerChoiceIcon}
               alt={t("account-comparison-zero-stars-alt")}
+              width={92}
+              height={112}
             />
           </div>
 
@@ -138,6 +142,8 @@ const AccountTypesAccountComparison = () => {
                   <img
                     src={CircleMarkIcon}
                     alt={t("account-comparison_feature-icon-alt")}
+                    width={16}
+                    height={17}
                   />
                 </div>
                 <span>{feature}</span>
@@ -173,7 +179,11 @@ const AccountTypesAccountComparison = () => {
           <div className="card-stars">
             <img
               src={StarMostPopularIcon}
+              srcSet={StarMostPopularSrcSet}
+              sizes="110px"
               alt={t("account-comparison-ecn-stars-alt")}
+              width={110}
+              height={116}
             />
           </div>
 
@@ -190,6 +200,8 @@ const AccountTypesAccountComparison = () => {
                   <img
                     src={CircleMarkIcon}
                     alt={t("account-comparison_feature-icon-alt")}
+                    width={16}
+                    height={17}
                   />
                 </div>
                 <span>{feature}</span>

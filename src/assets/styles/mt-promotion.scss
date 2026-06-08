@@ -164,11 +164,19 @@
     @include desktop-lg {
       align-self: flex-start;
       justify-self: flex-start;
+      width: 100%;
+      max-width: 405px;
+      height: auto;
+      aspect-ratio: 405 / 588;
+      object-fit: contain;
     }
 
     @include desktop-xl {
       align-self: flex-start;
       justify-self: flex-start;
+      max-width: 405px;
+      aspect-ratio: 405 / 588;
+      object-fit: contain;
     }
   }
 
@@ -329,6 +337,78 @@
         text-decoration: none;
       }
     }
+  }
+}
+
+/* MT4/MT5: one shell, one gap — promotion block must not flex-grow or use CLS min-height filler */
+$mt-platform-promo-to-comparison-gap: 48px;
+
+.mt-platform-promotion-shell {
+  flex-grow: 0 !important;
+  min-height: 0 !important;
+
+  /* Hero already clears the fixed header; spacer + legacy 150px padding caused a large gap. */
+  .header-offset-placeholder {
+    @include tablet-only {
+      height: 0 !important;
+    }
+
+    @include desktop-lg {
+      height: 0 !important;
+    }
+  }
+
+  @include tablet-only {
+    padding-top: $below-marketing-hero-gap-tablet;
+  }
+
+  @include desktop-lg {
+    padding-top: $below-marketing-hero-gap-desktop;
+  }
+
+  .mt-promotion {
+    @include tablet-only {
+      padding-top: 0 !important;
+      margin-bottom: 0;
+    }
+
+    @include desktop-lg {
+      padding-top: 0 !important;
+      margin-bottom: 0;
+    }
+
+    @include desktop-xl {
+      padding-top: 0 !important;
+      margin-bottom: 0;
+    }
+
+    @include desktop-2k {
+      padding-top: 0 !important;
+      margin-bottom: 0;
+    }
+
+    @include desktop-5k {
+      padding-top: 0 !important;
+      margin-bottom: 0;
+    }
+  }
+}
+
+.mt-platform-page-content {
+  margin-top: 0;
+  padding-top: $mt-platform-promo-to-comparison-gap;
+  flex-grow: 0;
+
+  .account-comparison-content {
+    margin-top: 0;
+    margin-bottom: 48px;
+  }
+}
+
+/* MT5 mobile tab has 2 store cards (no Huawei); keep row height aligned with MT4 (3 cards) */
+.mt-promotion .platform-selection__cards {
+  @include desktop-lg {
+    min-height: 138px;
   }
 }
 

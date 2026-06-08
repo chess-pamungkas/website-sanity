@@ -1,18 +1,17 @@
 import React, { useState, useContext } from "react";
-import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
 import { ShowRegistrationPopup } from "../../../../helpers/constants";
 import LanguageContext from "../../../../context/language-context";
-import badgeIcon from "../../../../assets/images/icons/badge-security.svg";
-import circleMarkIcon from "../../../../assets/images/icons/circle-mark.svg";
-import tradingCalendarDesktop from "../../../../assets/images/trading-tools/trading-calendar-desktop.svg";
-import tradingCalendarMobile from "../../../../assets/images/trading-tools/trading-calendar-mobile.svg";
+import {
+  BadgeSecurityIconGeneral as badgeIcon,
+  CircleMarkIcon as circleMarkIcon,
+} from "../../../shared/shared-icons";
+import { TRADING_CALENDAR_IMG } from "../../../../helpers/trading-tools-section-assets";
 import { StandardButtons } from "../../../shared/reusable-buttons";
 import { setLangParam } from "../../../../helpers/services/language-service";
 
 const TradingCalendar = ({ className }) => {
-  const { isMobile } = useWindowSize();
   const isRTL = useRtlDirection();
   const { t } = useTranslationWithVariables();
   const { selectedLanguage } = useContext(LanguageContext);
@@ -29,10 +28,6 @@ const TradingCalendar = ({ className }) => {
 
   const langParam = setLangParam();
 
-  const tradingCalendarImage = isMobile
-    ? tradingCalendarMobile
-    : tradingCalendarDesktop;
-
   return (
     <div
       id="trading-calendar"
@@ -41,11 +36,32 @@ const TradingCalendar = ({ className }) => {
       <div className="trading-calendar__container">
         {/* Left Side - Image */}
         <div className="trading-calendar__image-container">
-          <img
-            src={tradingCalendarImage}
-            alt="Trading Calendar Dashboard"
-            className="trading-calendar__image"
-          />
+          <picture>
+            <source
+              type="image/webp"
+              media="(max-width: 767px)"
+              srcSet={TRADING_CALENDAR_IMG.mobileWebp}
+            />
+            <source
+              type="image/webp"
+              media="(min-width: 768px)"
+              srcSet={TRADING_CALENDAR_IMG.desktopWebp}
+            />
+            <source
+              media="(max-width: 767px)"
+              srcSet={TRADING_CALENDAR_IMG.mobileSvg}
+              type="image/svg+xml"
+            />
+            <img
+              src={TRADING_CALENDAR_IMG.desktopSvg}
+              alt="Trading Calendar Dashboard"
+              className="trading-calendar__image"
+              width={TRADING_CALENDAR_IMG.widthDesktop}
+              height={TRADING_CALENDAR_IMG.heightDesktop}
+              decoding="async"
+              loading="lazy"
+            />
+          </picture>
         </div>
 
         {/* Right Side - Content */}
@@ -56,6 +72,8 @@ const TradingCalendar = ({ className }) => {
               src={badgeIcon}
               alt="Trading Tools"
               className="trading-calendar__badge-icon"
+              width={24}
+              height={24}
             />
             <span className="trading-calendar__badge-text">
               {t("trading-calendar_badge-text")}
@@ -75,6 +93,8 @@ const TradingCalendar = ({ className }) => {
                   src={circleMarkIcon}
                   alt="Check mark"
                   className="trading-calendar__benefit-icon-img"
+                  width={24}
+                  height={24}
                 />
               </div>
               <span className="trading-calendar__benefit-text">
@@ -87,6 +107,8 @@ const TradingCalendar = ({ className }) => {
                   src={circleMarkIcon}
                   alt="Check mark"
                   className="trading-calendar__benefit-icon-img"
+                  width={24}
+                  height={24}
                 />
               </div>
               <span className="trading-calendar__benefit-text">
@@ -99,6 +121,8 @@ const TradingCalendar = ({ className }) => {
                   src={circleMarkIcon}
                   alt="Check mark"
                   className="trading-calendar__benefit-icon-img"
+                  width={24}
+                  height={24}
                 />
               </div>
               <span className="trading-calendar__benefit-text">
@@ -111,6 +135,8 @@ const TradingCalendar = ({ className }) => {
                   src={circleMarkIcon}
                   alt="Check mark"
                   className="trading-calendar__benefit-icon-img"
+                  width={24}
+                  height={24}
                 />
               </div>
               <span className="trading-calendar__benefit-text">

@@ -69,17 +69,12 @@ const TradingToolsPageContent = ({ className, isShowHero = true }) => {
         <GuideContent
           titleKey="forex-guide-title"
           subtitleKey="forex-guide-subtitle"
-          className="guide-content--forex"
+          className="guide-content--forex guide-content--trading-tools"
         />
+        {!isMobile && <OurCommunityContent />}
       </ContainerWrapper>
 
-      {isMobile ? (
-        <OurCommunityContent />
-      ) : (
-        <ContainerWrapper>
-          <OurCommunityContent />
-        </ContainerWrapper>
-      )}
+      {isMobile && <OurCommunityContent />}
 
       {/* Render the popup */}
       {isPopupOpen && (

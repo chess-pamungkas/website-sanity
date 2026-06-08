@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import cn from "classnames";
 import PropTypes from "prop-types";
 import TradingSectionTitle from "../trading-section-title";
-import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import TradingSectionsMobileDropdown from "../trading-sections-mobile-dropdown";
+import {
+  MOBILE_VIEWPORT_MQ,
+  isMobileViewportMedia,
+} from "../../../../helpers/viewport-media";
 
 const TradingSections = ({
   className,
@@ -12,7 +15,17 @@ const TradingSections = ({
   setSelectedSection,
   tradingSection,
 }) => {
-  const { isTablet, isMobile } = useWindowSize();
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined" ? isMobileViewportMedia() : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_VIEWPORT_MQ);
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   return (
     <div className={cn("trading-sections-wrapper container", className)}>

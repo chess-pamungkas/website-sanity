@@ -3,12 +3,14 @@ import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
 
 // Import icons
-import badgeSecurityIcon from "../../../../assets/images/icons/badge-security.svg";
+import {
+  BadgeSecurityIconGeneral as badgeSecurityIcon,
+  CircleMarkIcon as circleMarkIcon,
+} from "../../../shared/shared-icons";
 import bgCardFastInFastOut from "../../../../assets/images/bg/funding-withdrawals/bg-card-fastin-fastout.svg";
 import instantDepositIcon from "../../../../assets/images/icons/funding-withdrawals/instant-deposit.svg";
 import sameDayWithdrawalsIcon from "../../../../assets/images/icons/funding-withdrawals/same-day-withdrawals.svg";
 import zeroFeesIcon from "../../../../assets/images/icons/funding-withdrawals/zero-fees.svg";
-import circleMarkIcon from "../../../../assets/images/icons/circle-mark.svg";
 
 const FastInFastOutContent = () => {
   const { isMobile } = useWindowSize();
@@ -50,6 +52,8 @@ const FastInFastOutContent = () => {
               src={badgeSecurityIcon}
               alt={t("fastin-fastout_badge-icon-alt")}
               className="fastin-fastout-section__badge-icon"
+              width={24}
+              height={24}
             />
             <span className="fastin-fastout-section__badge-text">
               {t("funding-withdrawals_fast-in-fast-out-title")}
@@ -78,7 +82,7 @@ const FastInFastOutContent = () => {
               <div className="fastin-fastout-section__card-content">
                 {/* Card Icon */}
                 <div className="fastin-fastout-section__card-icon">
-                  <img src={feature.icon} alt={feature.title} />
+                  <img src={feature.icon} alt={feature.title} width={24} height={24} />
                 </div>
 
                 {/* Card Details */}

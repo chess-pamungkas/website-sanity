@@ -1,5 +1,6 @@
 @import "vars";
 @import "mixins";
+@import "trading-product-hero-bg-lcp";
 
 .spreads-fees {
   position: relative;
@@ -9,7 +10,8 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+  /* Avoid 100vh → hero height snap (~1 CLS) when breakpoint rules arrive after deferred CSS */
+  height: 583px;
   padding-top: 80px;
   z-index: 2;
   left: 50%;
@@ -28,32 +30,22 @@
     overflow: visible;
   }
 
-  @include tablet {
-    height: 555px;
-    border-radius: 24px;
-    padding-top: 70px;
-    padding-bottom: 0;
-  }
+  @include hero-page-shell-tablet(555px, 73px, 70px);
 
-  @include desktop-lg {
-    height: 583px;
-    border-radius: 24px;
-    padding-top: 83px;
-    padding-bottom: 0;
-  }
+  @include hero-page-shell-desktop-lg(583px, 83px, 83px);
 
   @include desktop-xl {
-    height: 583px;
+    height: auto;
     padding-top: 83px;
   }
 
   @include desktop-2k {
-    height: 583px;
+    height: auto;
     padding-top: 83px;
   }
 
   @include desktop-5k {
-    height: 583px;
+    height: auto;
     padding-top: 83px;
   }
 
@@ -82,17 +74,7 @@
       border-radius: 20px;
     }
 
-    @include tablet {
-      width: 768px;
-      max-width: 768px;
-      height: 555px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 73px;
-      margin: 0 auto;
-      border-radius: 24px;
-    }
+    @include hero-tablet-container(555px, 73px);
 
     @include desktop-lg {
       width: calc(100vw - 20px);
@@ -140,67 +122,28 @@
     }
   }
 
-  &__hero-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    border-radius: 24px;
-    z-index: 1;
-    overflow: hidden;
-    background-position: center center;
-    background-repeat: no-repeat;
+  @include trading-product-hero-bg-lcp;
 
-    @include mobile {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 0;
-      top: 0;
-      border-radius: 20px;
-      background: url("../../assets/images/bg/hero/spreads-fees/spreads-fees-mobile.svg")
-        no-repeat center center;
-      background-size: cover;
-      overflow: hidden;
-      border-radius: 20px;
-      background-color: transparent;
-    }
-
+  /* Match legacy CSS bg positioning (LCP raster replaces layered backgrounds). */
+  &__hero-bg-lcp {
     @include tablet {
-      background: url("../../assets/images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
-        no-repeat 86% 100%;
-      background-size: cover;
-      background-color: transparent;
+      object-position: 75% 100%;
     }
 
     @include desktop-lg {
-      background: url("../../assets/images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
-        no-repeat 86% 100%;
-      background-size: cover;
-      background-color: transparent;
+      object-position: 86% 100%;
     }
 
     @include desktop-xl {
-      background: url("../../assets/images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
+      object-position: center center;
     }
 
     @include desktop-2k {
-      background: url("../../assets/images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
+      object-position: center center;
     }
 
     @include desktop-5k {
-      background: url("../../assets/images/bg/hero/spreads-fees/spreads-fees-desktop.svg")
-        no-repeat center center;
-      background-size: cover;
-      background-color: transparent;
+      object-position: center center;
     }
   }
 

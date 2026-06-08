@@ -11,7 +11,7 @@ import {
   BrFlagIcon,
   MyFlagIcon,
   ArFlagIcon,
-} from "../components/shared/icons";
+} from "../components/shared/icons/flags";
 import { ENTITY_LANGUAGES } from "./lang.config";
 
 const IconComponents = {

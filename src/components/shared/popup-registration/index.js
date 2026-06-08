@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import ReactDOM from "react-dom";
 import cn from "classnames";
 import PropTypes from "prop-types";
-import { Trans } from "react-i18next";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
 import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
 import { currentEntity } from "../../../helpers/entity-resolver";
+import { getBcp47Lang } from "../../../helpers/lang.config";
 import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import bulletImage from "../../../assets/images/icons/bullet.png";
 import closemage from "../../../assets/images/icons/close-icon.svg";
-import badgeSecurityIcon from "../../../assets/images/icons/badge-security.svg";
+import { BadgeSecurityIconGeneral as badgeSecurityIcon } from "../shared-icons";
 import popupRegistrationBg from "../../../assets/images/bg/popup-registration/bg-popup-registration.svg";
 import PopupRegistrationForm from "./components/popup-registration-form";
 import BackgroundPreloader from "./components/background-preloader";
@@ -69,8 +69,7 @@ export const cleanRTLAttributes = () => {
     });
   }
 
-  // Force UI update by triggering a reflow
-  const reflow = document.body.offsetHeight;
+  // Avoid reading layout (offsetHeight) here to prevent Lighthouse forced-reflow; next paint will reflect DOM changes.
 
   // console.log("RTL cleanup completed");
 };
@@ -143,7 +142,7 @@ if (typeof window !== "undefined") {
       // );
 
       // Set HTML attributes on initial page load
-      document.documentElement.setAttribute("lang", tabLanguage);
+      document.documentElement.setAttribute("lang", getBcp47Lang(tabLanguage));
       document.documentElement.setAttribute("dir", tabRtl ? "rtl" : "ltr");
 
       // Update classes
@@ -228,8 +227,18 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isContentReady, setIsContentReady] = useState(false);
   const [isBackgroundLoaded, setIsBackgroundLoaded] = useState(false);
-  const [isExternalLoad] = useState(isLoadedFromExternalScript());
+  const [isExternalLoad, setIsExternalLoad] = useState(false);
+  const [portalMounted, setPortalMounted] = useState(
+    () => typeof document !== "undefined"
+  );
   const popupRootRef = React.useRef(null);
+
+  useLayoutEffect(() => {
+    setPortalMounted(true);
+  }, []);
+  useEffect(() => {
+    setIsExternalLoad(isLoadedFromExternalScript());
+  }, []);
 
   useEffect(() => {
     if (!isExternalLoad || typeof document === "undefined") {
@@ -365,7 +374,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
         const savedLang = sessionStorage.getItem("oqtima_reset_language");
         if (savedLang) {
           // console.log(`Applying saved language after reload: ${savedLang}`);
-          document.documentElement.setAttribute("lang", savedLang);
+          document.documentElement.setAttribute("lang", getBcp47Lang(savedLang));
 
           // If it's not Arabic, make sure we clean RTL
           if (savedLang.toLowerCase() !== "ar") {
@@ -711,7 +720,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     // IMPROVED LANGUAGE HANDLING: Check the language and set it correctly first
     const effectiveLanguage =
       forcedLanguage || params?.langParam || (isRTLMode ? "ar" : "en");
-    document.documentElement.setAttribute("lang", effectiveLanguage);
+    document.documentElement.setAttribute("lang", getBcp47Lang(effectiveLanguage));
 
     // If language is not Arabic, ensure RTL attributes are removed
     if (effectiveLanguage.toLowerCase() !== "ar") {
@@ -739,8 +748,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
       document.body.removeAttribute("data-rtl");
     }
 
-    // Force UI update by triggering a reflow
-    const reflow = document.body.offsetHeight;
+    // Avoid reading layout here to prevent Lighthouse forced-reflow; next paint will reflect DOM changes.
 
     // Use MutationObserver to ensure RTL settings persist
     if (isRTLMode) {
@@ -1320,7 +1328,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
           // );
 
           // Update the HTML lang attribute with the correct value
-          document.documentElement.setAttribute("lang", actualLang);
+          document.documentElement.setAttribute("lang", getBcp47Lang(actualLang));
 
           // Update language in storage
           try {
@@ -1403,6 +1411,8 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
   // NEW: Add debug hook to monitor RTL attributes and force cleanup if needed
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // Internal popup: never force a full-page reload while open (looked like instant close).
+    if (isOpen && !isExternalLoad) return undefined;
 
     // Define what we consider a "stuck" RTL state
     const isRTLStuck = () => {
@@ -1448,7 +1458,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     }, 1000);
 
     return () => clearTimeout(checkTimeout);
-  }, []);
+  }, [isOpen, isExternalLoad]);
 
   // Effect to hide/show live chat on mobile when popup opens/closes
   useEffect(() => {
@@ -1613,7 +1623,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
             window.__OQTIMA_COMPONENT_LANGUAGE = pathLanguage;
             window.__OQTIMA_LOCKED_LANG = pathLanguage;
             window.__FORCE_LANGUAGE__ = true;
-            document.documentElement.setAttribute("lang", pathLanguage);
+            document.documentElement.setAttribute("lang", getBcp47Lang(pathLanguage));
 
             // Update other language storage as well
             try {
@@ -1686,7 +1696,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
               window.__OQTIMA_COMPONENT_LANGUAGE = cleanLanguageValue;
               window.__OQTIMA_LOCKED_LANG = cleanLanguageValue;
               window.__FORCE_LANGUAGE__ = true;
-              document.documentElement.setAttribute("lang", cleanLanguageValue);
+              document.documentElement.setAttribute("lang", getBcp47Lang(cleanLanguageValue));
 
               try {
                 localStorage.setItem("i18nextLng", cleanLanguageValue);
@@ -1753,7 +1763,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
       window.__OQTIMA_COMPONENT_LANGUAGE = detectedLanguage;
       window.__OQTIMA_LOCKED_LANG = detectedLanguage;
       window.__FORCE_LANGUAGE__ = true;
-      document.documentElement.setAttribute("lang", detectedLanguage);
+      document.documentElement.setAttribute("lang", getBcp47Lang(detectedLanguage));
 
       try {
         localStorage.setItem("i18nextLng", detectedLanguage);
@@ -1776,7 +1786,7 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
             // console.log(
             //   `Language changed from ${storedLang} to ${currentLang}, reverting back`
             // );
-            document.documentElement.setAttribute("lang", storedLang);
+            document.documentElement.setAttribute("lang", getBcp47Lang(storedLang));
           }
         }
       }
@@ -1949,6 +1959,8 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
                   <img
                     src={badgeSecurityIcon}
                     alt={t("popup-registration-badge")}
+                    width={24}
+                    height={24}
                   />
                 </div>
                 <span className="popup-registration__content__badge-text">
@@ -1972,6 +1984,10 @@ const PopupRegistration = ({ isOpen, onClose, className, params }) => {
     </>
   );
 
+  // Render portal only after mount so server and initial client render both output null (avoids hydration mismatch #418)
+  if (!portalMounted || typeof document === "undefined") {
+    return null;
+  }
   return ReactDOM.createPortal(popupContent, document.body);
 };
 

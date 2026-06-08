@@ -1,0 +1,133 @@
+/**
+ * Critical button-link styles only (above-the-fold: header, hero CTAs).
+ * Full button-link loads with deferred CSS to reduce "Reduce unused CSS" (~45 KiB) without PurgeCSS.
+ */
+@import "vars";
+@import "mixins";
+
+.button-link {
+  @include button-supress;
+  text-decoration: none;
+  color: map-get($colors, "red");
+  background: map-get($colors, "white");
+  display: block;
+  text-align: center;
+  text-transform: none;
+  font-weight: map-get($font-weight, "black");
+  font-size: 12px;
+  border-radius: $border-radius-default;
+  border: 1px solid map-get($colors, "white");
+  line-height: 31px;
+  width: 190px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all ease-in 0.4s;
+  min-width: fit-content;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  &--disabled {
+    pointer-events: none;
+  }
+
+  &--red {
+    background: map-get($colors, "red");
+    color: map-get($colors, "white");
+    border: 1px solid map-get($colors, "red");
+    &:hover,
+    &:active,
+    &:focus {
+      background: map-get($colors, "white");
+      color: map-get($colors, "red");
+      border-color: map-get($colors, "red");
+    }
+  }
+
+  &--header {
+    width: initial;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    border-radius: $border-radius-header;
+    background: map-get($colors, "red");
+    color: #fff;
+    border: 2px solid map-get($colors, "red");
+    font-size: 14px;
+    font-weight: map-get($font-weight, "bold");
+    text-transform: none;
+    white-space: nowrap;
+    transition: all ease-in 0.4s;
+    @include desktop-xl {
+      height: 40px;
+      font-size: 16px;
+    }
+    &:hover,
+    &:active,
+    &:focus {
+      background: map-get($colors, "white");
+      color: map-get($colors, "red");
+      border-color: map-get($colors, "red");
+      cursor: pointer;
+    }
+    &.header__start {
+      background: map-get($colors, "red");
+      color: #fff;
+      &:hover,
+      &:focus {
+        background: map-get($colors, "white");
+        color: map-get($colors, "red");
+      }
+    }
+    &.header__start--red {
+      background: map-get($colors, "white");
+      color: map-get($colors, "red");
+      border-color: map-get($colors, "red");
+      &:hover,
+      &:focus {
+        background: map-get($colors, "red");
+        color: #fff;
+      }
+    }
+    &.button-link--ghost.header__signin {
+      background: rgba(map-get($colors, "red"), 0.15);
+      border: 1px solid rgba(map-get($colors, "red"), 0.15);
+      color: map-get($colors, "black");
+      font-size: 16px;
+      font-weight: map-get($font-weight, "medium");
+      padding: 10px;
+      width: 94px;
+      height: 38px;
+      border-radius: 8px;
+      box-shadow: none;
+      transition: background 0.2s, border 0.2s, color 0.2s;
+      justify-content: center;
+      vertical-align: middle;
+    }
+  }
+
+  &--ghost {
+    border: 2px solid map-get($colors, "white");
+    background: transparent;
+    transition: all ease-in 0.4s;
+    &-red {
+      border: 2px solid map-get($colors, "red");
+      transition: all 0.3s;
+      &:hover,
+      &:focus,
+      &:active {
+        color: map-get($colors, "white");
+        background-color: map-get($colors, "red");
+      }
+    }
+  }
+
+  &--blank {
+    width: fit-content;
+    border: none;
+    text-transform: none;
+    font-weight: map-get($font-weight, "bold");
+    font-size: 16px;
+    line-height: 20px;
+  }
+}

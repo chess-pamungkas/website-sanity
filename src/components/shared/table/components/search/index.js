@@ -3,7 +3,7 @@ import cn from "classnames";
 import PropTypes from "prop-types";
 import { useAsyncDebounce } from "react-table";
 import { useTranslationWithVariables } from "../../../../../helpers/hooks/use-translation-with-vars";
-import { SearchIcon } from "../../../icons";
+import { SearchIcon } from "../../../icons/SearchIcon";
 
 const TableSearch = ({ globalFilter, setGlobalFilter }) => {
   const { t } = useTranslationWithVariables();

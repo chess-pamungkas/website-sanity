@@ -168,7 +168,7 @@
       order: 0;
       flex-grow: 1;
       position: relative;
-      background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-desktop.svg");
+      background-image: url("/images/bg/swap-free/bg-card-how-to-trade-desktop.svg");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -271,12 +271,6 @@
         isolation: isolate;
         width: 100%;
         height: 400px;
-        background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0) 0%,
-            rgba(255, 68, 0, 0.36) 100%
-          ),
-          rgba(0, 0, 0, 0.6);
         border: 1px solid rgba(255, 68, 0, 0.2);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
@@ -286,7 +280,13 @@
         align-self: stretch;
         flex-grow: 0;
         position: relative;
-        background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-mobile.svg");
+        background-color: rgba(0, 0, 0, 0.6);
+        background-image: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(255, 68, 0, 0.36) 100%
+          ),
+          url("/images/bg/swap-free/bg-card-how-to-trade-mobile.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -338,12 +338,6 @@
         isolation: isolate;
         width: 100%;
         height: 425px;
-        background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0) 0%,
-            rgba(255, 68, 0, 0.36) 100%
-          ),
-          rgba(0, 0, 0, 0.6);
         border: 1px solid rgba(255, 68, 0, 0.2);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
@@ -353,7 +347,13 @@
         align-self: stretch;
         flex-grow: 0;
         position: relative;
-        background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-mobile.svg");
+        background-color: rgba(0, 0, 0, 0.6);
+        background-image: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(255, 68, 0, 0.36) 100%
+          ),
+          url("/images/bg/swap-free/bg-card-how-to-trade-mobile.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -382,7 +382,7 @@
         width: 100%;
         padding: 24px;
         gap: 24px;
-        background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-mobile.svg");
+        background-image: url("/images/bg/swap-free/bg-card-how-to-trade-mobile.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -416,7 +416,7 @@
         margin-left: 0;
         margin-right: 0;
         padding: 24px 20px !important;
-        background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-desktop.svg");
+        background-image: url("/images/bg/swap-free/bg-card-how-to-trade-desktop.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -440,7 +440,7 @@
         width: 510px !important;
         margin-left: 0;
         margin-right: 0;
-        background-image: url("../../assets/images/bg/swap-free/bg-card-how-to-trade-desktop.svg");
+        background-image: url("/images/bg/swap-free/bg-card-how-to-trade-desktop.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;

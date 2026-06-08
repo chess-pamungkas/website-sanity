@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Helmet } from "react-helmet";
 import RegistrationPopup from "../components/registration-popup";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "gatsby-plugin-react-i18next";
 import { graphql } from "gatsby";
 import LanguageContext from "../context/language-context";
 import ClientResolverContext from "../context/client-resolver-context";
 import { useRtlDirection } from "../helpers/hooks/use-rtl-direction";
+import { getBcp47Lang } from "../helpers/lang.config";
 
 // Import the styles directly
 import "../assets/styles/popup-registration.scss";
@@ -906,7 +907,7 @@ const PopupRegistrationPage = ({ location, data }) => {
           http-equiv="content-language"
           content={params.langParam || "en"}
         />
-        <html lang={params.langParam || "en"} />
+        <html lang={getBcp47Lang(params.langParam || "en")} />
         <style>{`
           html, body {
             margin: 0 !important;

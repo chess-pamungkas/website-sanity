@@ -12,7 +12,7 @@ import {
   SEARCH_PAGE_LINK,
   SEARCH_PARAM_NAME,
 } from "../../../../helpers/constants";
-import { SearchIcon } from "../../../shared/icons";
+import { SearchIcon } from "../../../shared/icons/SearchIcon";
 import { useSearchData } from "../../../../helpers/hooks/use-search-data";
 import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
 import { ArabicNumbers } from "react-native-arabic-numbers";

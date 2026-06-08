@@ -110,18 +110,18 @@ const NotificationsContainer = ({ className, setSectionOptions }) => {
 
   useEffect(() => {
     if (isMobile) {
-      let livechatindex = document.getElementById(
+      const livechatindex = document.getElementById(
         "convrs-chat-channel-container"
       );
 
       if (isBrowser()) {
-        let livechatisMobile = document.getElementById(
+        const livechatisMobile = document.getElementById(
           "convrs-chat-channel-container"
         );
 
         const path = window.location.pathname;
-        const pageMt5 = path.endsWith("/mt5-webtrader/");
-        const pageMt4 = path.endsWith("/mt4-webtrader/");
+        const pageMt5 = path.includes("/mt5-webtrader");
+        const pageMt4 = path.includes("/mt4-webtrader");
         if (pageMt5 && livechatisMobile) {
           livechatisMobile.style.display = "none";
           if (isRiskWarningNotification) {
@@ -151,7 +151,7 @@ const NotificationsContainer = ({ className, setSectionOptions }) => {
           bottom = "10px";
       }
 
-      let livechat = document.getElementById("convrs-chat-channel-container");
+      const livechat = document.getElementById("convrs-chat-channel-container");
 
       if (livechat) {
         livechat.style.bottom = bottom;

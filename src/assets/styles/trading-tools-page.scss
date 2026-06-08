@@ -1,5 +1,6 @@
 @import "vars";
 @import "mixins";
+@import "trading-tools-section-bg-tablet";
 
 @mixin custom-breakpoint {
   @media screen and (min-width: 1400px) {
@@ -17,6 +18,8 @@
   justify-content: center;
   padding: 80px 0;
   border-radius: 24px;
+
+  @include trading-tools-section-tablet-shell;
 
   @include mobile {
     min-height: 1246px; // Use viewport height instead of fixed height
@@ -36,6 +39,8 @@
     align-items: center;
     justify-content: center;
 
+    @include trading-tools-section-tablet-background;
+
     &-image {
       width: 100%;
       height: 100%;
@@ -49,13 +54,6 @@
       @include mobile {
         object-fit: cover;
         object-position: center;
-      }
-
-      @include tablet {
-        object-fit: cover;
-        object-position: center;
-        width: 100%;
-        height: 100%;
       }
     }
   }
@@ -79,6 +77,12 @@
       padding-right: $padding-sm;
       height: auto;
       min-height: auto;
+    }
+
+    @include tablet-only {
+      max-width: 100%;
+      padding-left: $padding-sm;
+      padding-right: $padding-sm;
     }
   }
 
@@ -1661,7 +1665,7 @@
       bottom: 0;
       width: 100%;
       height: 100%;
-      background-image: url("../../assets/images/bg/trading-tools/bg-card-market-buzz-desktop.svg");
+      background-image: url("/images/bg/trading-tools/bg-card-market-buzz-desktop.svg");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -1678,7 +1682,7 @@
       border-radius: 12.6429px;
 
       &::before {
-        background-image: url("../../assets/images/bg/trading-tools/bg-card-market-buzz-mobile.svg");
+        background-image: url("/images/bg/trading-tools/bg-card-market-buzz-mobile.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -1923,7 +1927,7 @@
     position: relative;
     overflow: hidden;
 
-    // Background image
+    // Background image (root-relative URL — webpack-deferred CSS cannot resolve ../../assets → use static/images/)
     &::before {
       content: "";
       position: absolute;
@@ -1931,7 +1935,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-image: url("../../assets/images/bg/trading-tools/bg-card-tc-market-buzz-desktop.svg");
+      background-image: url("/images/bg/trading-tools/bg-card-tc-market-buzz-desktop.svg");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -1944,7 +1948,7 @@
       border-radius: 19.745px;
 
       &::before {
-        background-image: url("../../assets/images/bg/trading-tools/bg-card-tc-market-buzz-mobile.svg");
+        background-image: url("/images/bg/trading-tools/bg-card-tc-market-buzz-mobile.svg");
         background-size: cover;
       }
     }
@@ -1955,7 +1959,7 @@
       border-radius: 28px;
 
       &::before {
-        background-image: url("../../assets/images/bg/trading-tools/bg-card-tc-market-buzz-desktop.svg");
+        background-image: url("/images/bg/trading-tools/bg-card-tc-market-buzz-desktop.svg");
         background-size: cover;
       }
     }
@@ -1966,7 +1970,7 @@
       border-radius: 28px;
 
       &::before {
-        background-image: url("../../assets/images/bg/trading-tools/bg-card-tc-market-buzz-desktop.svg");
+        background-image: url("/images/bg/trading-tools/bg-card-tc-market-buzz-desktop.svg");
         background-size: cover;
       }
     }
@@ -1977,7 +1981,7 @@
       border-radius: 28px;
 
       &::before {
-        background-image: url("../../assets/images/bg/trading-tools/bg-card-tc-market-buzz-desktop.svg");
+        background-image: url("/images/bg/trading-tools/bg-card-tc-market-buzz-desktop.svg");
         background-size: cover;
       }
     }
@@ -2232,5 +2236,33 @@
     font-size: 24px;
     line-height: 62px;
     width: 380px;
+  }
+}
+
+/* Trading-tools guide block: breathing room vs Alpha Generation above & Our Community below. */
+.guide-content.guide-content--forex.guide-content--trading-tools {
+  @include mobile {
+    margin-top: 44px;
+    margin-bottom: 52px;
+  }
+
+  @include tablet {
+    padding-top: 52px;
+    padding-bottom: 36px;
+  }
+
+  @include desktop-lg {
+    padding-top: 52px;
+    padding-bottom: 32px;
+  }
+
+  @include desktop-xl {
+    padding-top: 64px;
+    padding-bottom: 48px;
+  }
+
+  @include desktop-2k {
+    padding-top: 52px;
+    padding-bottom: 36px;
   }
 }

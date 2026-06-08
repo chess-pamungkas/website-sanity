@@ -560,7 +560,6 @@ const BaseButton = ({
 
   return (
     <>
-      <ForceArrowFlip />
       <button
         type={type}
         className={cn(className, isRTL && `${className}--rtl`)}

@@ -4,8 +4,10 @@ import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
 import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
-import badgeSecurity from "../../../assets/images/icons/badge-security.svg";
-import circleMark from "../../../assets/images/icons/circle-mark.svg";
+import {
+  BadgeSecurityIconGeneral as badgeSecurity,
+  CircleMarkIcon as circleMark,
+} from "../shared-icons";
 import bgDesktop from "../../../assets/images/bg/mt4-mt5-trade-the-next-level-desktop.svg";
 import bgMobile from "../../../assets/images/bg/mt4-mt5-trade-the-next-level-mobile.svg";
 import Tabs from "../tabs";
@@ -29,7 +31,7 @@ const MtItemAdvantageList = ({
       <div className="mt-advantage-list__container">
         {/* Background Image */}
         <div className="mt-advantage-list__bg-image">
-          <img src={isMobile ? bgMobile : bgDesktop} alt="" />
+          <img src={isMobile ? bgMobile : bgDesktop} alt="" width={48} height={48} />
         </div>
 
         {/* Content */}

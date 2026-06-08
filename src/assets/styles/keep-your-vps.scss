@@ -28,6 +28,12 @@
     align-items: center;
     justify-content: center;
 
+    picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
     &__image {
       width: 100%;
       height: 100%;
@@ -340,24 +346,24 @@
       }
 
       &.maintain-balance-card {
-        background-image: url("../../assets/images/bg/vps/bg-card-maintain-a-$500-balance-desktop.svg");
+        background-image: url("/images/bg/vps/bg-card-maintain-a-%24500-balance-desktop.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
 
         @include mobile {
-          background-image: url("../../assets/images/bg/vps/bg-card-maintain-a-$500-balance-mobile.svg");
+          background-image: url("/images/bg/vps/bg-card-maintain-a-%24500-balance-mobile.svg");
         }
       }
 
       &.monthly-trading-card {
-        background-image: url("../../assets/images/bg/vps/bg-card-monthly-trading-requirement-desktop.svg");
+        background-image: url("/images/bg/vps/bg-card-monthly-trading-requirement-desktop.svg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
 
         @include mobile {
-          background-image: url("../../assets/images/bg/vps/bg-card-monthly-trading-requirement-mobile.svg");
+          background-image: url("/images/bg/vps/bg-card-monthly-trading-requirement-mobile.svg");
         }
 
         @include desktop-lg {
@@ -429,36 +435,99 @@
 
           @include mobile {
             width: 100%;
-            margin-top: 20px;
+            margin-top: 0;
             order: 2;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 16px 60px 16px;
+            min-height: 250px;
+            position: relative;
+          }
+
+          @include tablet-only {
+            flex: 1;
+            max-width: 50%;
+            min-height: 260px;
+            margin-top: 0;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
           }
 
           @include desktop-lg {
+            margin-top: 30px;
             margin-right: 10px;
             order: 2;
-            align-self: center;
+            align-self: flex-start;
+            max-width: none;
+            min-height: 0;
+            padding: 0;
+            width: auto;
+          }
+
+          @include desktop-xl {
+            margin-top: 30px;
+            margin-right: 10px;
+            order: 2;
+            align-self: flex-start;
+            width: auto;
+          }
+
+          picture {
+            display: block;
+            width: 100%;
+
+            @include mobile {
+              display: flex;
+              justify-content: center;
+              width: auto;
+            }
+
+            @include tablet-only {
+              display: flex;
+              justify-content: center;
+              width: auto;
+              max-width: 100%;
+            }
           }
 
           .vps-image {
             width: 100%;
             height: auto;
-            // max-width: 200px;
 
             @include mobile {
               margin-top: 0;
               max-width: 242px;
+              width: auto;
+              height: auto;
+              margin-left: auto;
+              margin-right: auto;
+            }
+
+            @include tablet-only {
+              max-width: 242px;
+              width: auto;
+              height: auto;
+              margin-left: auto;
+              margin-right: auto;
             }
 
             @include desktop-lg {
-              width: 85%;
+              max-width: 180px;
+              width: auto;
+              height: auto;
             }
 
             @include desktop-xl {
-              width: 100%;
+              max-width: 200px;
+              width: auto;
+              height: auto;
             }
           }
 
-          // Start Trading Button
+          // Start Trading Button — match get-complimentary-vps overlay positions
           .vps-start-trading-btn {
             position: absolute;
             display: flex;
@@ -469,7 +538,7 @@
             width: 167px;
             height: 38px;
             left: 17px;
-            top: 180px;
+            top: 150px;
             background: rgba(255, 68, 0, 0.49);
             border: 1px solid rgba(255, 68, 0, 0.5);
             border-radius: 8px;
@@ -479,38 +548,60 @@
 
             @include mobile {
               position: absolute;
-              width: 169.88px;
+              width: 185px;
+              max-width: none;
               height: 35.56px;
-              left: 50px;
-              top: 185px;
+              left: 44%;
+              transform: translateX(-50%);
+              top: 215px;
+              box-sizing: border-box;
               background: rgba(255, 68, 0, 0.3);
               border: 1px solid rgba(255, 68, 0, 0.5);
               border-radius: 8px;
               padding: 13.5px 16px;
+              margin: 0;
             }
 
             @include small-mobile {
               position: absolute;
               width: 169.88px;
+              max-width: none;
               height: 35.56px;
-              left: 13px;
-              top: 185px;
+              left: 50%;
+              transform: translateX(-50%);
+              top: 168px;
+              box-sizing: border-box;
               background: rgba(255, 68, 0, 0.3);
               border: 1px solid rgba(255, 68, 0, 0.5);
               border-radius: 8px;
               padding: 13.5px 16px;
             }
 
+            @include tablet-only {
+              width: 185px;
+              max-width: none;
+              height: 35.56px;
+              left: 44%;
+              top: 185px;
+              transform: translateX(-50%);
+              box-sizing: border-box;
+              padding: 13.5px 16px;
+              background: rgba(255, 68, 0, 0.3);
+              border: 1px solid rgba(255, 68, 0, 0.5);
+            }
+
             @include desktop-lg {
-              width: 165px;
-              left: 22px;
-              top: 165px;
+              width: 140px;
+              left: 6px;
+              top: 130px;
+              transform: none;
             }
 
             @include desktop-xl {
-              width: 167px;
+              width: 138px;
               left: 17px;
-              top: 180px;
+              top: 150px;
+              transform: none;
             }
 
             .btn-text {
@@ -558,12 +649,22 @@
             &:hover {
               background: rgba(255, 68, 0, 0.7);
               border: 1px solid rgba(255, 68, 0, 0.8);
-              transform: translateY(-2px);
               box-shadow: 0 4px 12px rgba(255, 68, 0, 0.3);
 
               @include mobile {
                 background: rgba(255, 68, 0, 0.5);
                 border: 1px solid rgba(255, 68, 0, 0.7);
+                transform: translateX(-50%);
+              }
+
+              @include tablet-only {
+                background: rgba(255, 68, 0, 0.5);
+                border: 1px solid rgba(255, 68, 0, 0.7);
+                transform: translateX(-50%);
+              }
+
+              @include desktop-lg {
+                transform: translateY(-2px);
               }
 
               .btn-arrow {
@@ -571,12 +672,31 @@
                 opacity: 1;
                 transform: translateX(0);
                 color: #ffffff;
+
+                @include mobile {
+                  display: none;
+                }
+
+                @include tablet-only {
+                  display: none;
+                }
               }
             }
 
             &:active {
-              transform: translateY(0);
               box-shadow: 0 2px 6px rgba(255, 68, 0, 0.2);
+
+              @include mobile {
+                transform: translateX(-50%);
+              }
+
+              @include tablet-only {
+                transform: translateX(-50%);
+              }
+
+              @include desktop-lg {
+                transform: translateY(0);
+              }
             }
           }
         }

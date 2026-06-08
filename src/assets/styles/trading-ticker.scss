@@ -25,30 +25,30 @@
     margin-bottom: 0;
   }
 
-  @include tablet {
-    margin-top: 100px;
-    margin-bottom: 50px;
+  @include tablet-only {
+    margin-top: $homepage-ticker-margin-top-tablet;
+    margin-bottom: 24px;
   }
 
   @include desktop-lg {
-    margin-top: 0;
-    margin-bottom: 25px;
+    margin-top: $homepage-ticker-margin-top-desktop;
+    margin-bottom: 0;
   }
 
   @include desktop-xl {
-    margin-top: 100px;
+    margin-top: $homepage-ticker-margin-top-desktop;
     margin-bottom: 0;
   }
 
   @include desktop-2k {
-    margin-top: 100px;
+    margin-top: $homepage-ticker-margin-top-desktop;
     max-width: 1600px;
     margin-left: auto;
     margin-right: auto;
   }
 
   @include desktop-5k {
-    margin-top: 100px;
+    margin-top: $homepage-ticker-margin-top-desktop;
     max-width: 2000px;
     margin-left: auto;
     margin-right: auto;
@@ -118,15 +118,23 @@
     gap: 20px;
     padding: 14px;
     flex-wrap: nowrap;
-    overflow: hidden;
+    overflow-x: auto;
     justify-content: center;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   @include desktop-xl {
     padding: 14px;
     flex-wrap: nowrap;
-    overflow: hidden;
+    overflow-x: auto;
     justify-content: center;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   &__header {
@@ -225,7 +233,10 @@
 
 // Custom mobile dropdown for trading-sections
 .trading-sections-mobile-dropdown {
+  display: none;
+
   @include mobile {
+    display: block;
     position: relative;
     width: 100%;
     z-index: 999;
@@ -351,6 +362,23 @@
 
   &--infinite-auto-scroll {
     justify-content: unset;
+
+    @media (min-width: 768px) {
+      overflow: hidden;
+      width: 100%;
+
+      .trading-symbols--css-auto-scroll {
+        overflow: visible;
+        width: max-content;
+        animation: auto-scroll-animation
+          var(--ticker-auto-scroll-duration, 90s) linear infinite;
+        will-change: transform;
+      }
+
+      &.trading-symbols-wrapper--rtl .trading-symbols--css-auto-scroll {
+        animation-name: auto-scroll-animation-rtl;
+      }
+    }
   }
 }
 

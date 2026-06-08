@@ -17,21 +17,20 @@ const NavbarSubItem = ({
   const Icon = hideIcon ? null : RawIcon;
   const description = hideDescription ? null : rawDescription;
 
-  // Handle Live Chat click to open ConvrsChat
+  // Handle Live Chat click: load Convrs only then (no global interaction), then open
   const handleLinkClick = (e) => {
-    // Check if this is the Live Chat item
     if (title === "header-nav-tab-trading-hub-live-chat-title") {
       e.preventDefault();
-      if (typeof window !== "undefined" && window.ConvrsChat) {
-        window.ConvrsChat.ShowWebChat();
+      if (typeof window !== "undefined") {
+        if (typeof window.loadConvrsWebchatAndOpen === "function") {
+          window.loadConvrsWebchatAndOpen();
+        } else if (window.ConvrsChat) {
+          window.ConvrsChat.ShowWebChat();
+        }
       }
-      // Also call the parent onClick handler if provided
-      if (onClick) {
-        onClick(e);
-      }
+      if (onClick) onClick(e);
       return;
     }
-    // For other links, let the normal navigation happen
   };
 
   return (

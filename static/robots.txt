@@ -1,9 +1,3 @@
+# Local `gatsby develop` default. `gatsby build` overwrites this in gatsby-node onPostBuild from GATSBY_ENV + GATSBY_NOINDEX.
 User-agent: *
-Disallow: /popup-registration
-Disallow: /scripts/registration-popup-script.js
-Disallow: /scripts/registration-popup-script.min.js
-
-User-agent: Googlebot
-Disallow: /popup-registration
-Disallow: /scripts/registration-popup-script.js
-Disallow: /scripts/registration-popup-script.min.js
+Disallow: /

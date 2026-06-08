@@ -2,8 +2,9 @@ import axios from "axios";
 import { currentEntity } from "../entity-resolver";
 import { sendLog } from "./log-service";
 import { isBrowser } from "./is-browser";
+import { getOqtimaApiUrl } from "../oqtima-api-url";
 
-const API_URL = process.env.GATSBY_OQTIMA_API_URL;
+const API_URL = getOqtimaApiUrl();
 
 export const postClientConsent = (ipAddress, consentString) => {
   // Only post consent in browser, not during SSR

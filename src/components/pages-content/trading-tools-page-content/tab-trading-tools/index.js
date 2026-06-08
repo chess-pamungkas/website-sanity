@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { useWindowSize } from "../../../../helpers/hooks/use-window-size";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
 import featuresIcon from "../../../../assets/images/icons/features.svg";
 import featuresWhiteIcon from "../../../../assets/images/icons/features-white.svg";
 
 const TabTradingTools = ({ className }) => {
-  const { isMobile } = useWindowSize();
   const { t } = useTranslationWithVariables();
   const [activeTab, setActiveTab] = useState("trading-calendar");
   const [hoveredTab, setHoveredTab] = useState(null);
@@ -35,20 +33,17 @@ const TabTradingTools = ({ className }) => {
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
-
-    // Add a small delay to ensure the element is available
-    setTimeout(() => {
-      const element = document.getElementById(tabId);
-      console.log(`Looking for element with id: ${tabId}`, element);
-      if (element) {
-        element.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      } else {
-        console.error(`Element with id "${tabId}" not found`);
-      }
-    }, 100);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const element = document.getElementById(tabId);
+        if (element) {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      });
+    });
   };
 
   const handleMouseEnter = (tabId) => {
@@ -76,13 +71,19 @@ const TabTradingTools = ({ className }) => {
               <div className="tab-trading-tools__tab-icon-container">
                 <img
                   src={featuresIcon}
-                  alt={tab.label}
+                  alt=""
                   className="tab-trading-tools__tab-icon"
+                  width={14}
+                  height={14}
+                  decoding="async"
                 />
                 <img
                   src={featuresWhiteIcon}
-                  alt={tab.label}
+                  alt=""
                   className="tab-trading-tools__tab-icon tab-trading-tools__tab-icon--white"
+                  width={15}
+                  height={14}
+                  decoding="async"
                 />
               </div>
               <span className="tab-trading-tools__tab-text">{tab.label}</span>

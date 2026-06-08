@@ -5,9 +5,10 @@ import {
   LANG_SELECT_OPTIONS,
   SHOULD_BE_SMALLER_LANGUAGES,
 } from "../../../../helpers/lang-options.config";
+import { getBcp47Lang } from "../../../../helpers/lang.config";
 import { Link, useI18next } from "gatsby-plugin-react-i18next";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
-import BadgeSecurityIcon from "../../../../assets/images/icons/badge-security.svg";
+import { BadgeSecurityIconGeneral as BadgeSecurityIcon } from "../../../shared/shared-icons";
 import CloseIcon from "../../../../assets/images/icons/close-icon.svg";
 
 const LangSelectItem = ({
@@ -31,7 +32,7 @@ const LangSelectItem = ({
         onClick={(e) => {
           e.stopPropagation(); // Prevent event from bubbling to close other dropdowns
           languageSelectHandler(language);
-          document.documentElement.setAttribute("lang", language.id);
+          document.documentElement.setAttribute("lang", getBcp47Lang(language.id));
         }}
       >
         {Icon && <Icon className="lang-options__flag" />}
@@ -88,6 +89,8 @@ const LangOptions = ({
             src={BadgeSecurityIcon}
             alt={t("lang-options_badge-icon-alt")}
             className="lang-options__badge-icon"
+            width={24}
+            height={24}
           />
           <span className="lang-options__badge-text">
             {t("lang-select-popup-badge-text")}
@@ -98,8 +101,8 @@ const LangOptions = ({
       {/* Title */}
       <h2 className="lang-options__title">{t("lang-select-popup-title")}</h2>
 
-      {/* Language Grid */}
-      <div className="lang-options__grid">
+      {/* Language Grid - use ul so li elements have valid parent (accessibility: listitem) */}
+      <ul className="lang-options__grid">
         {LANG_SELECT_OPTIONS.map((option) => (
           <LangSelectItem
             key={option.id}
@@ -108,7 +111,7 @@ const LangOptions = ({
             language={option}
           />
         ))}
-      </div>
+      </ul>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
 import { useI18next } from "gatsby-plugin-react-i18next";
 import TrustPilot from "../../../shared/trust-pilot";
-import BadgeSecurityIcon from "../../../../assets/images/icons/badge-security.svg";
+import { BadgeSecurityIconGeneral as BadgeSecurityIcon } from "../../../shared/shared-icons";
 import SearchIcon from "../../../../assets/images/icons/client-portal-assistance/search.svg";
 import {
   SEARCH_PAGE_LINK,
@@ -120,6 +120,8 @@ const OnboardingGuide = ({ className }) => {
               src={BadgeSecurityIcon}
               alt="badge"
               className="onboarding-guide__badge-icon"
+              width={24}
+              height={24}
             />
             <span className="onboarding-guide__badge-text">
               {t("client-portal-assistance_onboarding_guide_badge")}
