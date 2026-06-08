@@ -5,6 +5,7 @@ import { PopupRegistrationSchema } from "../../../../../validations/popup-regist
 import axios from "axios";
 import { Trans, useTranslation } from "gatsby-plugin-react-i18next";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useRecaptchaReady } from "../../../recaptcha-provider";
 import { useTranslationWithVariables } from "../../../../../helpers/hooks/use-translation-with-vars";
 import { useRtlDirection } from "../../../../../helpers/hooks/use-rtl-direction";
 import { sendLog } from "../../../../../helpers/services/log-service";
@@ -307,6 +308,7 @@ const PopupRegistrationForm = ({ params }) => {
   const [isLoading, setIsLoading] = useState(false);
   const API_URL = process.env.GATSBY_OQTIMA_API_URL;
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const isRecaptchaReady = useRecaptchaReady();
   const { clientConfig } = useContext(ClientResolverContext);
   const { selectedLanguage, setCurrentLanguage } = useContext(LanguageContext);
 
@@ -2004,6 +2006,10 @@ const PopupRegistrationForm = ({ params }) => {
 
   // Update the handleRegistrationtForm function to ensure referral parameters are included
   const handleRegistrationtForm = async (values) => {
+    if (!isRecaptchaReady || !executeRecaptcha) {
+      setErrorMessage(t("popup-registration-error-operation-failure"));
+      return;
+    }
     setIsLoading(true);
     const token = await executeRecaptcha("popup_registration");
 
@@ -2017,6 +2023,7 @@ const PopupRegistrationForm = ({ params }) => {
       submissionLanguage = "pt";
     }
 
+    let registrationData;
     try {
       // CRUCIAL STEP: Get most accurate and up-to-date referral parameters
       // We collect from all possible sources with a clear priority order
@@ -2151,7 +2158,7 @@ const PopupRegistrationForm = ({ params }) => {
       }
 
       // Build the registration data
-      const registrationData = {
+      registrationData = {
         ...values,
         language: submissionLanguage,
         token,
@@ -2909,9 +2916,9 @@ const PopupRegistrationForm = ({ params }) => {
                 <button
                   type="submit"
                   className={cn("continue-button", {
-                    "button-link--disabled": isSubmitting,
+                    "button-link--disabled": isSubmitting || !isRecaptchaReady,
                   })}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isRecaptchaReady}
                 >
                   <span className="button-text">
                     {t("popup-registration-continue")}

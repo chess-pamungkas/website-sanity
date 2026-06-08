@@ -1,4 +1,5 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
+import { useRegistrationPopupOptional } from "../context/registration-popup-context";
 import visaLogo from "../assets/images/icons/payments/visa.png";
 import masterCardLogo from "../assets/images/icons/payments/masterCard.png";
 import danaLogo from "../assets/images/icons/payments/dana.png";
@@ -88,6 +89,17 @@ export const getContactEmail = () => {
 export const BLOG_URL = "https://oqtima.news/";
 
 export const ShowRegistrationPopup = ({ isOpen, onClose, langParam }) => {
+  const registrationPopup = useRegistrationPopupOptional();
+
+  // Keep layout ReCaptchaProvider in sync when pages use local isPopupOpen state.
+  useEffect(() => {
+    if (!registrationPopup?.setIsOpen) return undefined;
+    registrationPopup.setIsOpen(isOpen);
+    return () => {
+      if (isOpen) registrationPopup.setIsOpen(false);
+    };
+  }, [isOpen, registrationPopup]);
+
   if (!isOpen) return null;
 
   const ibParams = setIBparamsToLink();
