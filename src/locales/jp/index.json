@@ -1435,7 +1435,7 @@
   "popup-registration-benefits-toolsFSA": "高度な取引ツール利用可能",
   "popup-registration-benefits-transfers": "ウォレットから取引口座への資金移動即時反映",
   "popup-registration-benefits-verification": "簡単でスムーズな本人確認",
-  "popup-registration-consent": "以下の内容に同意します。会社が規制上の義務を果たすために私の個人データを取り扱うこと、ならびに、会社の<1>プライバシーポリシー</1>および<3>クッキーポリシー</3>を確認し、内容を理解しました。",
+  "popup-registration-consent": "以下の内容に同意します。会社が規制上の義務を果たすために私の個人データを取り扱うこと、ならびに、会社の{{privacyLink}}および{{cookieLink}}を確認し、内容を理解しました。",
   "popup-registration-consent-privacy-label": "プライバシーポリシー",
   "popup-registration-consent-cookie-label": "クッキーポリシー",
   "popup-registration-continue": "登録する",

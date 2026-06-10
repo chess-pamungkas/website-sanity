@@ -49,13 +49,11 @@
     }
 
     @include tablet-only {
-      padding-top: 25px;
-      height: 85%;
-      object-position: 75% 100%;
+      @include hero-bg-lcp-tablet-artwork;
     }
 
     @include desktop-lg {
-      object-position: 60% 50%;
+      object-position: 55% 50%;
     }
 
     @include desktop-5k {

@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import cn from "classnames";
 import { PopupRegistrationSchema } from "../../../../../validations/popup-registration";
 import axios from "axios";
-import { Trans, useTranslation } from "gatsby-plugin-react-i18next";
+import { useTranslation } from "gatsby-plugin-react-i18next";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useRecaptchaReady } from "../../../recaptcha-provider";
 import { useTranslationWithVariables } from "../../../../../helpers/hooks/use-translation-with-vars";
@@ -50,6 +50,69 @@ const isRTLLanguage = (lang) => {
   }
 
   return false;
+};
+
+/** i18next t() only interpolates strings; map markers → <a> after translate. */
+const CONSENT_PRIVACY_MARKER = "\uE000PRIVACY\uE001";
+const CONSENT_COOKIE_MARKER = "\uE000COOKIE\uE001";
+
+const renderRegistrationConsentText = (
+  t,
+  policyLinks,
+  handlePolicyLinkClick
+) => {
+  const consentText = t("popup-registration-consent", {
+    ns: "index",
+    privacyLink: CONSENT_PRIVACY_MARKER,
+    cookieLink: CONSENT_COOKIE_MARKER,
+  });
+  const privacyLabel = t("popup-registration-consent-privacy-label", {
+    ns: "index",
+  });
+  const cookieLabel = t("popup-registration-consent-cookie-label", {
+    ns: "index",
+  });
+  const markerRe = new RegExp(
+    `(${CONSENT_PRIVACY_MARKER}|${CONSENT_COOKIE_MARKER})`
+  );
+
+  return String(consentText)
+    .split(markerRe)
+    .map((part, index) => {
+      if (part === CONSENT_PRIVACY_MARKER) {
+        return (
+          <a
+            key={`consent-privacy-${index}`}
+            href={policyLinks.privacyPolicy}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link"
+            onClick={(e) =>
+              handlePolicyLinkClick(e, policyLinks.privacyPolicy)
+            }
+          >
+            {privacyLabel}
+          </a>
+        );
+      }
+      if (part === CONSENT_COOKIE_MARKER) {
+        return (
+          <a
+            key={`consent-cookie-${index}`}
+            href={policyLinks.cookiePolicy}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link"
+            onClick={(e) =>
+              handlePolicyLinkClick(e, policyLinks.cookiePolicy)
+            }
+          >
+            {cookieLabel}
+          </a>
+        );
+      }
+      return part || null;
+    });
 };
 
 const ERROR_CODE_MAP = {
@@ -2868,35 +2931,11 @@ const PopupRegistrationForm = ({ params }) => {
                     aria-label="Toggle consent agreement"
                   />
                   <span className="toggle-text">
-                    <Trans i18nKey="popup-registration-consent" ns="index">
-                      I agree to allow the company to process my personal data
-                      to meet its regulatory obligations and I have read and
-                      understood the
-                      <a
-                        href={policyLinks.privacyPolicy}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link"
-                        onClick={(e) =>
-                          handlePolicyLinkClick(e, policyLinks.privacyPolicy)
-                        }
-                      >
-                        Privacy Policy
-                      </a>
-                      and
-                      <a
-                        href={policyLinks.cookiePolicy}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link"
-                        onClick={(e) =>
-                          handlePolicyLinkClick(e, policyLinks.cookiePolicy)
-                        }
-                      >
-                        Cookie Policy
-                      </a>
-                      of the Company.
-                    </Trans>
+                    {renderRegistrationConsentText(
+                      t,
+                      policyLinks,
+                      handlePolicyLinkClick
+                    )}
                   </span>
                 </div>
 

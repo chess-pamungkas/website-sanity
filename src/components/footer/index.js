@@ -55,11 +55,16 @@ const Footer = ({ className }) => {
                 <img src={FacebookIcon} alt="Facebook" width={24} height={24} />
               </a>
               <a
-                href="https://www.instagram.com/oqtima.global/"
+                href="https://www.instagram.com/learnwithoqtima/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img src={InstagramIcon} alt="Instagram" width={24} height={24} />
+                <img
+                  src={InstagramIcon}
+                  alt="Instagram"
+                  width={24}
+                  height={24}
+                />
               </a>
               <a
                 href="https://www.youtube.com/@OQtima"

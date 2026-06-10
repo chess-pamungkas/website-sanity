@@ -130,12 +130,8 @@
   @include trading-product-hero-bg-lcp;
 
   &__hero-bg-lcp {
-    @include tablet {
-      object-position: 86% 100%;
-    }
-
     @include desktop-lg {
-      object-position: right center;
+      object-position: center center;
     }
 
     @include desktop-xl {
@@ -282,7 +278,7 @@
 
     @include tablet {
       font-size: 52px;
-      width: 400px;
+      width: 500px;
     }
 
     @include desktop-lg {
@@ -381,7 +377,7 @@
     }
 
     @include tablet {
-      max-width: 350px;
+      max-width: 450px;
       font-size: 18px;
       line-height: 28px;
     }
