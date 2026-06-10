@@ -126,10 +126,6 @@
 
   /* Match legacy CSS bg positioning (LCP raster replaces layered backgrounds). */
   &__hero-bg-lcp {
-    @include tablet {
-      object-position: 75% 100%;
-    }
-
     @include desktop-lg {
       object-position: 86% 100%;
     }

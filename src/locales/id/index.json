@@ -1435,7 +1435,7 @@
   "popup-registration-benefits-toolsFSA": "Alat perdagangan canggih di ujung jari Anda",
   "popup-registration-benefits-transfers": "Transfer dari Dompet ke Akun Trading dengan Mudah",
   "popup-registration-benefits-verification": "Verifikasi yang Mudah dan Tanpa Ribet",
-  "popup-registration-consent": "Saya setuju untuk mengizinkan perusahaan memproses data pribadi saya untuk memenuhi kewajiban regulasinya, dan saya telah membaca serta memahami <1>Kebijakan Privasi</1> dan <3>Kebijakan Cookie</3> dari Perusahaan.",
+  "popup-registration-consent": "Saya setuju untuk mengizinkan perusahaan memproses data pribadi saya untuk memenuhi kewajiban regulasinya, dan saya telah membaca serta memahami {{privacyLink}} dan {{cookieLink}} dari Perusahaan.",
   "popup-registration-consent-privacy-label": "Kebijakan Privasi",
   "popup-registration-consent-cookie-label": "Kebijakan Cookie",
   "popup-registration-continue": "Lanjutkan",

@@ -1,4 +1,4 @@
-﻿@import "vars";
+@import "vars";
 @import "mixins";
 @import "trading-product-hero-bg-lcp";
 
@@ -129,10 +129,6 @@
   @include trading-product-hero-bg-lcp;
 
   &__hero-bg-lcp {
-    @include tablet {
-      object-position: 86% 100%;
-    }
-
     @include desktop-lg {
       object-position: 86% 100%;
     }

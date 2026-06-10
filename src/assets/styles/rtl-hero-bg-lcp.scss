@@ -1,7 +1,7 @@
 @import "vars";
 @import "mixins";
 
-// RTL hero LCP <img>: shift artwork to the left (text stays right) without scaleX(-1).
+// RTL hero LCP <img: tablet uses contain + center (same as LTR). Desktop keeps legacy shifts.
 // Critical CSS values: keep in sync with src/helpers/rtl-hero-lcp-critical.config.js
 // Tablet rules MUST use tablet-only (768–1023px). Using @include tablet (768px+) overrides
 // desktop object-position because later rules win at equal specificity.
@@ -15,13 +15,15 @@
   }
 }
 
-@mixin rtl-hero-bg-tablet-shift($x: 175%) {
+@mixin rtl-hero-bg-tablet-contain {
   @include tablet-only {
-    // trading-product-hero-bg-lcp uses height:85% + padding-top on tablet — resets so crop can shift left
-    height: 80% !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
     padding-top: 0 !important;
-    object-fit: cover !important;
-    object-position: $x 100% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    transform: none !important;
   }
 }
 
@@ -83,71 +85,18 @@ $hero-lcp-pages: "all-markets", "forex", "metals", "crypto", "indices", "shares"
 
 @each $page in $hero-lcp-pages {
   @include rtl-hero-bg-lcp-target($page) {
-    @include rtl-hero-bg-tablet-shift(175%);
+    @include rtl-hero-bg-tablet-contain;
     @include rtl-hero-bg-desktop-shift();
   }
 }
 
-// --- Per-page (legacy background-position → object-position) ---
+// --- Per-page desktop overrides ---
 
 @include rtl-hero-bg-lcp-target("crypto") {
   @include rtl-hero-bg-desktop-shift(-830px, -750px);
 }
 
-@include rtl-hero-bg-lcp-target("indices") {
-  @include rtl-hero-bg-tablet-shift(175%);
-}
-
-@include rtl-hero-bg-lcp-target("forex") {
-  @include rtl-hero-bg-tablet-shift(175%);
-}
-
-@include rtl-hero-bg-lcp-target("metals") {
-  @include rtl-hero-bg-tablet-shift(175%);
-}
-
-@include rtl-hero-bg-lcp-target("shares") {
-  @include rtl-hero-bg-tablet-shift(175%);
-}
-
-@include rtl-hero-bg-lcp-target("energies") {
-  @include rtl-hero-bg-tablet-shift(175%);
-}
-
-@include rtl-hero-bg-lcp-target("etf") {
-  @include rtl-hero-bg-tablet-shift(175%);
-}
-
-@include rtl-hero-bg-lcp-target("account-types") {
-  @include rtl-hero-bg-tablet-shift(175%);
-}
-
-@include rtl-hero-bg-lcp-target("funding-withdrawals") {
-  @include rtl-hero-bg-tablet-shift(175%);
-}
-
-@include rtl-hero-bg-lcp-target("spreads-fees") {
-  @include rtl-hero-bg-tablet-shift(185%);
-}
-
-@include rtl-hero-bg-lcp-target("swap-free") {
-  @include rtl-hero-bg-tablet-shift(175%);
-}
-
-@include rtl-hero-bg-lcp-target("trading-tools") {
-  @include rtl-hero-bg-tablet-shift(175%);
-}
-
-@include rtl-hero-bg-lcp-target("mt4") {
-  @include rtl-hero-bg-tablet-shift(180%);
-}
-
-@include rtl-hero-bg-lcp-target("mt5") {
-  @include rtl-hero-bg-tablet-shift(180%);
-}
-
 @include rtl-hero-bg-lcp-target("vps") {
-  @include rtl-hero-bg-tablet-shift(175%);
   @include rtl-hero-bg-desktop-shift(-820px, -750px);
 
   @include desktop-xl {
@@ -166,31 +115,13 @@ $hero-lcp-pages: "all-markets", "forex", "metals", "crypto", "indices", "shares"
   }
 }
 
-@include rtl-hero-bg-lcp-target("legal") {
-  // LTR: tablet 50% 100%, desktop-lg 35% 50% — shift artwork left without scaleX(-1)
-  @include rtl-hero-bg-tablet-shift(195%);
-  @include rtl-hero-bg-desktop-shift();
-}
-
-@include rtl-hero-bg-lcp-target("faq-hero") {
-  @include tablet-only {
-    object-position: center center !important;
-  }
-
-  @include desktop-lg {
-    object-position: center center !important;
-  }
-}
-
 // company hero still uses CSS background on __hero-bg (not in HERO_LCP_BY_TYPE)
 @include rtl-hero-bg-css-target("company") {
   @include tablet-only {
-    // LTR tablet uses 100% 100% (art on the right of the SVG). 0% 100% shows the empty
-    // left crop only — keep URL + shift like other RTL heroes (art visible on the left).
     background-image: url("/images/bg/hero/company/about-desktop.svg") !important;
     background-repeat: no-repeat !important;
-    background-size: cover !important;
-    background-position: 150% 100% !important;
+    background-size: contain !important;
+    background-position: center center !important;
     background-color: transparent !important;
   }
 

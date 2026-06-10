@@ -1435,7 +1435,7 @@
   "popup-registration-benefits-toolsFSA": "Advanced trading tools at your fingertips",
   "popup-registration-benefits-transfers": "Effortless Wallet-to-Trading Account Transfers",
   "popup-registration-benefits-verification": "Simplified, Hassle-Free Verification",
-  "popup-registration-consent": "I agree to allow the company to process my personal data to meet its regulatory obligations and I have read and understood the <1>Privacy Policy</1> and <3>Cookie Policy</3> of the Company.",
+  "popup-registration-consent": "I agree to allow the company to process my personal data to meet its regulatory obligations and I have read and understood the {{privacyLink}} and {{cookieLink}} of the Company.",
   "popup-registration-consent-privacy-label": "Privacy Policy",
   "popup-registration-consent-cookie-label": "Cookie Policy",
   "popup-registration-continue": "Get Started Now",

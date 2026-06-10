@@ -1,5 +1,12 @@
 import { cloneElement, createElement } from "react";
 import Layout from "./src/components/shared/layout";
+import {
+  getStoredScrollPosition,
+  initScrollRestoration,
+  restoreScrollPosition,
+  saveScrollPosition,
+  setActiveScrollPath,
+} from "./src/helpers/scroll-restoration";
 
 export const wrapPageElement = ({ element }) => {
   // Don't remove the if statement, it will break everything!!!
@@ -47,9 +54,54 @@ if ("serviceWorker" in navigator) {
   }
 }
 
+export const onPreRouteUpdate = ({ prevLocation }) => {
+  if (prevLocation?.pathname) {
+    saveScrollPosition(prevLocation.pathname);
+  }
+};
+
+export const shouldUpdateScroll = ({ routerProps, getSavedScrollPosition }) => {
+  const { location, action } = routerProps || {};
+
+  if (action === "POP" && location?.pathname) {
+    return new Promise((resolve) => {
+      const fallback = () => {
+        const stored = getStoredScrollPosition(location.pathname);
+        resolve(stored || [0, 0]);
+      };
+
+      if (typeof getSavedScrollPosition === "function") {
+        getSavedScrollPosition(location).then((saved) => {
+          if (saved && saved[1] > 0) {
+            resolve(saved);
+            return;
+          }
+          fallback();
+        });
+        return;
+      }
+
+      fallback();
+    });
+  }
+
+  return true;
+};
+
+export const onRouteUpdate = ({ location, action }) => {
+  if (action === "POP" && location?.pathname) {
+    restoreScrollPosition(location.pathname);
+  }
+
+  if (location?.pathname) {
+    setActiveScrollPath(location.pathname);
+  }
+};
+
 // Global error handler to suppress expected errors from ad blockers and third-party scripts (GTM, TikTok, Bing)
 export const onClientEntry = () => {
   if (typeof window !== "undefined") {
+    initScrollRestoration();
     const originalError = window.console.error;
     const originalWarn = window.console.warn;
 
@@ -115,4 +167,3 @@ export const onClientEntry = () => {
   }
 };
 
-export const onRouteUpdate = () => {};

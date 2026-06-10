@@ -1435,7 +1435,7 @@
   "popup-registration-benefits-toolsFSA": "Công cụ giao dịch tiên tiến ngay tại ngón tay bạn",
   "popup-registration-benefits-transfers": "Chuyển tiền từ ví sang tài khoản giao dịch dễ dàng",
   "popup-registration-benefits-verification": "Xác minh đơn giản, không rắc rối",
-  "popup-registration-consent": "Tôi đồng ý cho phép công ty xử lý dữ liệu cá nhân của tôi để đáp ứng các nghĩa vụ pháp lý và tôi đã đọc và hiểu <1>Chính sách Bảo mật</1> và <3>Chính sách Cookie</3> của Công ty.",
+  "popup-registration-consent": "Tôi đồng ý cho phép công ty xử lý dữ liệu cá nhân của tôi để đáp ứng các nghĩa vụ pháp lý và tôi đã đọc và hiểu {{privacyLink}} và {{cookieLink}} của Công ty.",
   "popup-registration-consent-privacy-label": "Chính sách Bảo mật",
   "popup-registration-consent-cookie-label": "Chính sách Cookie",
   "popup-registration-continue": "Tiếp tục",

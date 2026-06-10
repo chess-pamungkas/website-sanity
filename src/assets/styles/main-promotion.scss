@@ -97,7 +97,7 @@ $hand-image: url("/images/hand.webp");
       top: 66px;
       margin: 0 auto;
       border-radius: 24px;
-      overflow: visible;
+      overflow: hidden;
       /* iPad 768px: inner .container is 720px = hero width → no side gutter; pad like iPad Air. */
       padding-left: 24px;
       padding-right: 24px;

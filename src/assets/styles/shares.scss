@@ -126,6 +126,12 @@
 
   @include trading-product-hero-bg-lcp;
 
+  &__hero-bg-lcp {
+    @include desktop-lg {
+      object-position: 75% 50%;
+    }
+  }
+
   &__content-container {
     position: relative;
     z-index: 4;

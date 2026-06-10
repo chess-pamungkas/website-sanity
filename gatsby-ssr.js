@@ -995,12 +995,9 @@ armCssFlipAndScripts();})();`
     // Match /all-markets, /faq/, forex, metals, vps, …: fonts + hero shell before deferred CSS flip.
     const heroRoot = heroLcpPage.rootClass;
     const isArabicHeroLcp = localeId === ARABIC_LANG_ID;
-    const heroTabletLcpObjectPosition = isArabicHeroLcp
-      ? getRtlHeroTabletLcpPosition(heroRoot)
-      : "78% 100%";
     const heroTabletLcpCriticalCss = isArabicHeroLcp
-      ? heroArabicTabletBgLcpCritical(heroRoot, heroTabletLcpObjectPosition)
-      : heroTabletBgLcpCritical(heroRoot, heroTabletLcpObjectPosition);
+      ? heroArabicTabletBgLcpCritical(heroRoot)
+      : heroTabletBgLcpCritical(heroRoot);
     const heroArabicDesktopLcpCritical =
       isArabicHeroLcp &&
       heroRoot !== "faq-hero" &&
@@ -1017,10 +1014,7 @@ armCssFlipAndScripts();})();`
       isArabicHeroLcp &&
       (heroRoot === "contact-us" || heroRoot === "partners")
         ? [
-            heroArabicTabletBgLcpCritical(
-              heroRoot,
-              getRtlHeroTabletLcpPosition(heroRoot)
-            ),
+            heroArabicTabletBgLcpCritical(heroRoot),
             heroArabicDesktopBgLcpCritical(
               heroRoot,
               getRtlHeroDesktopLgLcpPosition(heroRoot),
@@ -1032,8 +1026,8 @@ armCssFlipAndScripts();})();`
       !isArabicHeroLcp &&
       (heroRoot === "contact-us" || heroRoot === "partners")
         ? heroRoot === "contact-us"
-          ? heroTabletBgLcpCritical("contact-us", "75% 100%")
-          : heroTabletBgLcpCritical("partners", "70% 100%")
+          ? heroTabletBgLcpCritical("contact-us")
+          : heroTabletBgLcpCritical("partners")
         : "";
     earlyHints.push(
       <style
@@ -1081,7 +1075,7 @@ armCssFlipAndScripts();})();`
                   `@media(min-width:1024px){.faq-hero{position:relative;width:100vw;left:50%;margin-left:-50vw;margin-right:-50vw;min-height:480px;box-sizing:border-box}}`,
                   `@media(min-width:1024px){.faq-hero__hero-container{height:480px;min-height:480px;position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:1400px;box-sizing:border-box;border-radius:24px;background:#000;overflow:hidden}}`,
                   `@media(min-width:768px){.faq-hero__hero-bg,.faq-hero__hero-bg-lcp{position:absolute;inset:0;width:100%;height:100%}}`,
-                  heroTabletBgLcpCritical("faq-hero", "center center"),
+                  heroTabletBgLcpCritical("faq-hero"),
                   `@media(min-width:1024px){.faq-hero__hero-bg-lcp{object-fit:cover;object-position:center;display:block}}`,
                   `.faq-hero__content-container{position:relative;z-index:4}`,
                 ]
@@ -1089,9 +1083,6 @@ armCssFlipAndScripts();})();`
             ...(heroRoot === "legal"
               ? (() => {
                   const isArabicLegal = localeId === ARABIC_LANG_ID;
-                  const legalTabletLcp = isArabicLegal
-                    ? getRtlHeroTabletLcpPosition("legal")
-                    : "50% 100%";
                   const legalDesktopLgLcp = isArabicLegal
                     ? getRtlHeroDesktopLgLcpPosition("legal")
                     : "35% 50%";
@@ -1112,7 +1103,7 @@ armCssFlipAndScripts();})();`
                     `@media(min-width:768px){.legal__hero-bg,.legal__hero-bg-lcp{position:absolute;inset:0;width:100%;height:100%}}`,
                     ...(isArabicLegal
                       ? [
-                          heroArabicTabletBgLcpCritical("legal", legalTabletLcp),
+                          heroArabicTabletBgLcpCritical("legal"),
                           heroArabicDesktopBgLcpCritical(
                             "legal",
                             legalDesktopLgLcp,
@@ -1120,7 +1111,7 @@ armCssFlipAndScripts();})();`
                           ),
                         ]
                       : [
-                          heroTabletBgLcpCritical("legal", legalTabletLcp),
+                          heroTabletBgLcpCritical("legal"),
                           `@media(min-width:1024px) and (max-width:1919px){.legal__hero-bg-lcp{object-fit:cover;object-position:${legalDesktopLgLcp};display:block}}`,
                           `@media(min-width:1920px){.legal__hero-bg-lcp{object-fit:cover;object-position:${legalDesktopXlLcp};display:block}}`,
                         ]),

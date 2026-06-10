@@ -1435,7 +1435,7 @@
   "popup-registration-benefits-toolsFSA": "أدوات تداول متقدمة في متناول يدك",
   "popup-registration-benefits-transfers": "تحويلات سهلة من المحفظة إلى حساب التداول",
   "popup-registration-benefits-verification": "التحقق بسيط وبدون متاعب",
-  "popup-registration-consent": "أوافق على السماح للشركة بمعالجة بياناتي الشخصية لتلبية التزاماتها التنظيمية، وقد قرأت وفهمت <1>سياسة الخصوصية</1> و<3>سياسة ملفات تعريف الارتباط</3> الخاصة بالشركة",
+  "popup-registration-consent": "أوافق على السماح للشركة بمعالجة بياناتي الشخصية لتلبية التزاماتها التنظيمية، وقد قرأت وفهمت {{privacyLink}} و{{cookieLink}} الخاصة بالشركة",
   "popup-registration-consent-privacy-label": "سياسة الخصوصية",
   "popup-registration-consent-cookie-label": "سياسة ملفات تعريف الارتباط",
   "popup-registration-continue": "استمر",
