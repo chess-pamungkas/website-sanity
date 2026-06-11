@@ -88,20 +88,7 @@ export const getContactEmail = () => {
 
 export const BLOG_URL = "https://oqtima.news/";
 
-export const ShowRegistrationPopup = ({ isOpen, onClose, langParam }) => {
-  const registrationPopup = useRegistrationPopupOptional();
-
-  // Keep layout ReCaptchaProvider in sync when pages use local isPopupOpen state.
-  useEffect(() => {
-    if (!registrationPopup?.setIsOpen) return undefined;
-    registrationPopup.setIsOpen(isOpen);
-    return () => {
-      if (isOpen) registrationPopup.setIsOpen(false);
-    };
-  }, [isOpen, registrationPopup]);
-
-  if (!isOpen) return null;
-
+export const buildRegistrationPopupParams = (langParam) => {
   const ibParams = setIBparamsToLink();
   const campaignParams = setCampaignParamsToLink();
 
@@ -118,14 +105,58 @@ export const ShowRegistrationPopup = ({ isOpen, onClose, langParam }) => {
   } else if (langParam) {
     params.langParam = langParam;
   }
-  const paramsString = JSON.stringify(params);
+
+  return JSON.stringify(params);
+};
+
+/** Single portal mounted from header when RegistrationPopupProvider context is open. */
+export const GlobalRegistrationPopup = ({ isOpen, onClose, langParam }) => {
+  if (!isOpen) return null;
 
   return (
     <Suspense fallback={null}>
       <RegistrationPopup
         isOpen={isOpen}
         onClose={onClose}
-        params={paramsString}
+        params={buildRegistrationPopupParams(langParam)}
+      />
+    </Suspense>
+  );
+};
+
+export const ShowRegistrationPopup = ({ isOpen, onClose, langParam }) => {
+  const registrationPopup = useRegistrationPopupOptional();
+  const setGlobalIsOpen = registrationPopup?.setIsOpen;
+  const hasGlobalProvider = Boolean(setGlobalIsOpen);
+
+  // Non-hero triggers use local isPopupOpen; sync open state to the header portal only.
+  useEffect(() => {
+    if (!setGlobalIsOpen || !isOpen) return undefined;
+    setGlobalIsOpen(true);
+    return () => {
+      setGlobalIsOpen(false);
+    };
+  }, [isOpen, setGlobalIsOpen]);
+
+  // When the header-mounted popup closes, reset the caller's local open state.
+  useEffect(() => {
+    if (!hasGlobalProvider || !isOpen) return undefined;
+    if (!registrationPopup.isOpen) {
+      onClose();
+    }
+  }, [registrationPopup?.isOpen, hasGlobalProvider, isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  // Avoid duplicate portals (header already renders GlobalRegistrationPopup).
+  if (hasGlobalProvider) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <RegistrationPopup
+        isOpen={isOpen}
+        onClose={onClose}
+        params={buildRegistrationPopupParams(langParam)}
       />
     </Suspense>
   );
