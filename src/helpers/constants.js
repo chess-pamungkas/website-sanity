@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, Suspense, useEffect, useRef } from "react";
 import { useRegistrationPopupOptional } from "../context/registration-popup-context";
 import visaLogo from "../assets/images/icons/payments/visa.png";
 import masterCardLogo from "../assets/images/icons/payments/masterCard.png";
@@ -129,21 +129,31 @@ export const ShowRegistrationPopup = ({ isOpen, onClose, langParam }) => {
   const setGlobalIsOpen = registrationPopup?.setIsOpen;
   const hasGlobalProvider = Boolean(setGlobalIsOpen);
 
-  // Non-hero triggers use local isPopupOpen; sync open state to the header portal only.
+  const prevGlobalIsOpenRef = useRef(false);
+
+  // Sync local open/close to the single header-mounted portal (no effect cleanup — avoids Strict Mode flash-close).
   useEffect(() => {
-    if (!setGlobalIsOpen || !isOpen) return undefined;
+    if (!setGlobalIsOpen || !isOpen) return;
     setGlobalIsOpen(true);
-    return () => {
-      setGlobalIsOpen(false);
-    };
   }, [isOpen, setGlobalIsOpen]);
 
-  // When the header-mounted popup closes, reset the caller's local open state.
   useEffect(() => {
-    if (!hasGlobalProvider || !isOpen) return undefined;
-    if (!registrationPopup.isOpen) {
+    if (!setGlobalIsOpen || isOpen) return;
+    setGlobalIsOpen(false);
+  }, [isOpen, setGlobalIsOpen]);
+
+  // Reset caller local state only when the user closes the global popup (true → false), not while opening.
+  useEffect(() => {
+    if (!hasGlobalProvider) return;
+
+    const isGlobalOpen = Boolean(registrationPopup?.isOpen);
+    const wasGlobalOpen = prevGlobalIsOpenRef.current;
+
+    if (wasGlobalOpen && !isGlobalOpen && isOpen) {
       onClose();
     }
+
+    prevGlobalIsOpenRef.current = isGlobalOpen;
   }, [registrationPopup?.isOpen, hasGlobalProvider, isOpen, onClose]);
 
   if (!isOpen) return null;
