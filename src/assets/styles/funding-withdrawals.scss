@@ -131,12 +131,8 @@
   @include trading-product-hero-bg-lcp;
 
   &__hero-bg-lcp {
-    @include tablet {
-      object-position: 75% 100%;
-    }
-
     @include desktop-lg {
-      object-position: right center;
+      object-position: center center;
     }
 
     @include desktop-xl {

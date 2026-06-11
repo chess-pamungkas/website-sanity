@@ -161,9 +161,7 @@
     }
 
     @include tablet-only {
-      padding-top: 25px;
-      height: 85%;
-      object-position: 68% 100%;
+      @include hero-bg-lcp-tablet-artwork;
     }
 
     @include desktop-lg {

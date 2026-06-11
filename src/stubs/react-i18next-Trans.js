@@ -55,7 +55,7 @@ export function Trans(_ref) {
       defaultNSFromContext ||
       (i18n && i18n.options && i18n.options.defaultNS),
     i18n,
-    t: tFromProps,
+    t,
     shouldUnescape,
     ...additionalProps,
   });

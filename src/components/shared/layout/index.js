@@ -103,9 +103,13 @@ const LayoutInner = ({ children, pathname: pathnameFromPage }) => {
     const enableLiveTrading = routeNeedsLiveTrading(resolvedPath);
     /** Always render real providers from start. Component-type swap was unmounting children (Trustpilot/HomeDeferredApp) on first user interaction (~6s). */
     const [deferredProvidersReady, setDeferredProvidersReady] = useState(true);
-    const [showHeader, setShowHeader] = useState(() =>
-      isMarketingHomePath(pathnameFromPage ?? "")
-    );
+    // Inner routes: mount header immediately (old site behaviour). Deferred header on
+    // back-navigation remounts (Safari bfcache) reset scroll when placeholder swaps in.
+    const [showHeader, setShowHeader] = useState(() => {
+      const path = pathnameFromPage ?? "";
+      if (isAuditEnvironment() && isMarketingHomePath(path)) return false;
+      return true;
+    });
     const [showCookiesPopup, setShowCookiesPopup] = useState(false);
     // Use pathname from page props when available so stub matches server (avoids hydration #418).
     const pathnameForStub = pathnameFromPage ?? location?.pathname;
@@ -121,6 +125,24 @@ const LayoutInner = ({ children, pathname: pathnameFromPage }) => {
       } else {
         requestAnimationFrame(setLoaded);
       }
+    }, []);
+
+    // Back navigation (mobile/tablet Safari bfcache + all browsers): keep header mounted
+    // so layout height does not shift after scroll restoration runs.
+    useEffect(() => {
+      if (!isBrowser()) return undefined;
+
+      const ensureHeaderVisible = () => {
+        startTransition(() => setShowHeader(true));
+      };
+
+      window.addEventListener("popstate", ensureHeaderVisible);
+      window.addEventListener("pageshow", ensureHeaderVisible);
+
+      return () => {
+        window.removeEventListener("popstate", ensureHeaderVisible);
+        window.removeEventListener("pageshow", ensureHeaderVisible);
+      };
     }, []);
 
     // Leaving marketing home enables full providers immediately (e.g. user opened / then navigated to /markets).

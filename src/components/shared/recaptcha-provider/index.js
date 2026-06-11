@@ -1,6 +1,17 @@
-import React, { useEffect, useState, startTransition } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  startTransition,
+} from "react";
 import { shouldDeferHeavyWorkForLighthouse } from "../../../helpers/is-audit-environment";
 import { importRecaptchaV3Module } from "../../../helpers/recaptcha-v3-module";
+
+const RecaptchaReadyContext = createContext(false);
+
+/** True when GoogleReCaptchaProvider is mounted and captcha can run. */
+export const useRecaptchaReady = () => useContext(RecaptchaReadyContext);
 
 const ReCaptchaProvider = ({ children, showBadge = false }) => {
   const [isClient, setIsClient] = useState(false);
@@ -76,14 +87,24 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
     };
   }, [showBadge]);
 
+  const isRecaptchaReady =
+    isClient &&
+    !shouldDeferHeavyWorkForLighthouse() &&
+    showBadge &&
+    !!GoogleReCaptchaProvider;
+
   if (!isClient) {
-    return <>{children}</>;
+    return (
+      <RecaptchaReadyContext.Provider value={false}>
+        {children}
+      </RecaptchaReadyContext.Provider>
+    );
   }
 
   const RecaptchaWrapper = GoogleReCaptchaProvider;
 
   return (
-    <>
+    <RecaptchaReadyContext.Provider value={isRecaptchaReady}>
       {RecaptchaWrapper ? (
         <RecaptchaWrapper
           reCaptchaKey={process.env.GATSBY_GOOGLE_CAPTCHA_SITE_KEY}
@@ -111,7 +132,7 @@ const ReCaptchaProvider = ({ children, showBadge = false }) => {
         children
       )}
       <div id="captcha-placeholder" suppressHydrationWarning />
-    </>
+    </RecaptchaReadyContext.Provider>
   );
 };
 

@@ -5,25 +5,22 @@ export function heroTabletContainerCritical(selector, heightPx, topPx = 66) {
   return `@media(min-width:768px) and (max-width:1023px){${selector}{top:${topPx}px;height:${heightPx}px;min-height:${heightPx}px;position:absolute;left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:100%;padding-left:24px;padding-right:24px;box-sizing:border-box;border-radius:24px;background:#000;overflow:visible}}`;
 }
 
-/** LCP img crop: mobile ≤767; tablet 768–1023 uses desktop asset + right-weighted position. */
-export function heroTabletBgLcpCritical(
-  rootClass,
-  tabletObjectPosition = "78% 100%"
-) {
+const tabletLcpContain =
+  "inset:0;width:100%;height:100%;object-fit:contain;object-position:center center;display:block";
+
+/** LCP img: mobile cover bottom; tablet contain center (full artwork). */
+export function heroTabletBgLcpCritical(rootClass) {
   return [
     `@media(max-width:767px){.${rootClass}__hero-bg-lcp{object-fit:cover;object-position:center bottom;display:block}}`,
-    `@media(min-width:768px) and (max-width:1023px){.${rootClass}__hero-bg-lcp{object-fit:cover;object-position:${tabletObjectPosition};display:block}}`,
+    `@media(min-width:768px) and (max-width:1023px){.${rootClass}__hero-bg-lcp{${tabletLcpContain}}}`,
   ].join("");
 }
 
-/** Arabic RTL tablet — match rtl-hero-bg-lcp.scss (height 80%, no padding-top). */
-export function heroArabicTabletBgLcpCritical(
-  rootClass,
-  tabletObjectPosition = "175% 100%"
-) {
+/** Arabic RTL tablet — match rtl-hero-bg-lcp.scss (contain center). */
+export function heroArabicTabletBgLcpCritical(rootClass) {
   return [
     `@media(max-width:767px){.${rootClass}__hero-bg-lcp{object-fit:cover;object-position:center bottom;display:block}}`,
-    `@media(min-width:768px) and (max-width:1023px){.${rootClass}__hero-bg{background-image:none!important;background-color:#000!important}.${rootClass}__hero-bg-lcp{height:80%!important;padding-top:0!important;object-fit:cover!important;object-position:${tabletObjectPosition};display:block}}`,
+    `@media(min-width:768px) and (max-width:1023px){.${rootClass}__hero-bg{background-image:none!important;background-color:#000!important}.${rootClass}__hero-bg-lcp{${tabletLcpContain}}}`,
   ].join("");
 }
 
@@ -44,11 +41,11 @@ export function heroPageShellCritical(
 export function heroArabicTabletBgCssCritical(
   rootClass,
   imageUrl,
-  tabletBackgroundPosition = "175% 100%"
+  tabletBackgroundPosition = "center center"
 ) {
   const sel = `.${rootClass}__hero-bg`;
   const arSel = `html[lang="ar"] ${sel},html[dir="rtl"] ${sel},body[dir="rtl"] ${sel},[dir="rtl"] ${sel}`;
-  return `@media(min-width:768px) and (max-width:1023px){${arSel}{background-image:url("${imageUrl}")!important;background-repeat:no-repeat!important;background-size:cover!important;background-position:${tabletBackgroundPosition}!important;background-color:transparent!important}}`;
+  return `@media(min-width:768px) and (max-width:1023px){${arSel}{background-image:url("${imageUrl}")!important;background-repeat:no-repeat!important;background-size:contain!important;background-position:${tabletBackgroundPosition}!important;background-color:transparent!important}}`;
 }
 
 /** Arabic RTL desktop: LCP img only (no legacy CSS bg), matches rtl-hero-bg-lcp.scss. */

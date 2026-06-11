@@ -142,12 +142,6 @@ body.homepage-bg-1 .partners-page-community #main-container {
 
   @include trading-product-hero-bg-lcp;
 
-  &__hero-bg-lcp {
-    @include tablet-only {
-      object-position: 70% 100%;
-    }
-  }
-
   &__content-container {
     position: relative;
     z-index: 4;

@@ -8,6 +8,7 @@ import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
 import { useI18next } from "gatsby-plugin-react-i18next";
 import { useWindowSize } from "../../../helpers/hooks/use-window-size";
 import { isBrowser } from "../../../helpers/services/is-browser";
+import { saveScrollPosition } from "../../../helpers/scroll-restoration";
 
 const FaqSection = ({
   faqData,
@@ -106,6 +107,9 @@ const FaqSection = ({
     if (onFaqButtonClick) {
       onFaqButtonClick();
     } else {
+      if (isBrowser()) {
+        saveScrollPosition(window.location.pathname);
+      }
       // Default behavior - navigate to FAQ page
       // Use navigate from useI18next to preserve language prefix in browser history
       navigate("/faq");

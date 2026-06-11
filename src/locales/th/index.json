@@ -1435,7 +1435,7 @@
   "popup-registration-benefits-toolsFSA": "เครื่องมือการซื้อขายคุณภาพสูงเพียงปลายนิ้วของคุณ",
   "popup-registration-benefits-transfers": "การโอนเงินจากกระเป๋าเงินไปยังบัญชีซื้อขายอย่างง่ายดาย",
   "popup-registration-benefits-verification": "การตรวจสอบที่ง่ายและไม่ยุ่งยาก",
-  "popup-registration-consent": "ฉันยินยอมให้บริษัทดำเนินการประมวลผลข้อมูลส่วนบุคคลของฉันเพื่อให้เป็นไปตามข้อกำหนดทางกฎหมายของบริษัท และฉันได้อ่านและเข้าใจ <1>นโยบายความเป็นส่วนตัว</1> และ <3>นโยบายคุกกี้</3> ของบริษัทแล้ว",
+  "popup-registration-consent": "ฉันยินยอมให้บริษัทดำเนินการประมวลผลข้อมูลส่วนบุคคลของฉันเพื่อให้เป็นไปตามข้อกำหนดทางกฎหมายของบริษัท และฉันได้อ่านและเข้าใจ {{privacyLink}} และ {{cookieLink}} ของบริษัทแล้ว",
   "popup-registration-consent-privacy-label": "นโยบายความเป็นส่วนตัว",
   "popup-registration-consent-cookie-label": "นโยบายคุกกี้",
   "popup-registration-continue": "ดำเนินการต่อ",

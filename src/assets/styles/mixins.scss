@@ -26,6 +26,24 @@
   }
 }
 
+/* iPad 768px–819px — narrower hero card than iPad Air (820px+). */
+@mixin tablet-narrow-only {
+  @media screen and (min-width: $md) and (max-width: 819px) {
+    @content;
+  }
+}
+
+/* Tablet hero LCP: contain + center (full artwork visible, no clip on tablet). */
+@mixin hero-bg-lcp-tablet-artwork {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding-top: 0;
+  object-fit: contain;
+  object-position: center center;
+  transform: none;
+}
+
 /*
  * Outer hero section: drop 100vh on tablet — reserve only top offset + artboard (partners pattern).
  */
@@ -115,7 +133,7 @@
     top: $top;
     margin: 0 auto;
     border-radius: $border-radius;
-    overflow: visible;
+    overflow: hidden;
     padding-left: 24px;
     padding-right: 24px;
     box-sizing: border-box;

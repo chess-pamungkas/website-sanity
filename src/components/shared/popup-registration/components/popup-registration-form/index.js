@@ -3,8 +3,9 @@ import { Formik } from "formik";
 import cn from "classnames";
 import { PopupRegistrationSchema } from "../../../../../validations/popup-registration";
 import axios from "axios";
-import { Trans, useTranslation } from "gatsby-plugin-react-i18next";
+import { useTranslation } from "gatsby-plugin-react-i18next";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useRecaptchaReady } from "../../../recaptcha-provider";
 import { useTranslationWithVariables } from "../../../../../helpers/hooks/use-translation-with-vars";
 import { useRtlDirection } from "../../../../../helpers/hooks/use-rtl-direction";
 import { sendLog } from "../../../../../helpers/services/log-service";
@@ -49,6 +50,69 @@ const isRTLLanguage = (lang) => {
   }
 
   return false;
+};
+
+/** i18next t() only interpolates strings; map markers → <a> after translate. */
+const CONSENT_PRIVACY_MARKER = "\uE000PRIVACY\uE001";
+const CONSENT_COOKIE_MARKER = "\uE000COOKIE\uE001";
+
+const renderRegistrationConsentText = (
+  t,
+  policyLinks,
+  handlePolicyLinkClick
+) => {
+  const consentText = t("popup-registration-consent", {
+    ns: "index",
+    privacyLink: CONSENT_PRIVACY_MARKER,
+    cookieLink: CONSENT_COOKIE_MARKER,
+  });
+  const privacyLabel = t("popup-registration-consent-privacy-label", {
+    ns: "index",
+  });
+  const cookieLabel = t("popup-registration-consent-cookie-label", {
+    ns: "index",
+  });
+  const markerRe = new RegExp(
+    `(${CONSENT_PRIVACY_MARKER}|${CONSENT_COOKIE_MARKER})`
+  );
+
+  return String(consentText)
+    .split(markerRe)
+    .map((part, index) => {
+      if (part === CONSENT_PRIVACY_MARKER) {
+        return (
+          <a
+            key={`consent-privacy-${index}`}
+            href={policyLinks.privacyPolicy}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link"
+            onClick={(e) =>
+              handlePolicyLinkClick(e, policyLinks.privacyPolicy)
+            }
+          >
+            {privacyLabel}
+          </a>
+        );
+      }
+      if (part === CONSENT_COOKIE_MARKER) {
+        return (
+          <a
+            key={`consent-cookie-${index}`}
+            href={policyLinks.cookiePolicy}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link"
+            onClick={(e) =>
+              handlePolicyLinkClick(e, policyLinks.cookiePolicy)
+            }
+          >
+            {cookieLabel}
+          </a>
+        );
+      }
+      return part || null;
+    });
 };
 
 const ERROR_CODE_MAP = {
@@ -307,6 +371,7 @@ const PopupRegistrationForm = ({ params }) => {
   const [isLoading, setIsLoading] = useState(false);
   const API_URL = process.env.GATSBY_OQTIMA_API_URL;
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const isRecaptchaReady = useRecaptchaReady();
   const { clientConfig } = useContext(ClientResolverContext);
   const { selectedLanguage, setCurrentLanguage } = useContext(LanguageContext);
 
@@ -2004,6 +2069,10 @@ const PopupRegistrationForm = ({ params }) => {
 
   // Update the handleRegistrationtForm function to ensure referral parameters are included
   const handleRegistrationtForm = async (values) => {
+    if (!isRecaptchaReady || !executeRecaptcha) {
+      setErrorMessage(t("popup-registration-error-operation-failure"));
+      return;
+    }
     setIsLoading(true);
     const token = await executeRecaptcha("popup_registration");
 
@@ -2017,6 +2086,7 @@ const PopupRegistrationForm = ({ params }) => {
       submissionLanguage = "pt";
     }
 
+    let registrationData;
     try {
       // CRUCIAL STEP: Get most accurate and up-to-date referral parameters
       // We collect from all possible sources with a clear priority order
@@ -2151,7 +2221,7 @@ const PopupRegistrationForm = ({ params }) => {
       }
 
       // Build the registration data
-      const registrationData = {
+      registrationData = {
         ...values,
         language: submissionLanguage,
         token,
@@ -2861,35 +2931,11 @@ const PopupRegistrationForm = ({ params }) => {
                     aria-label="Toggle consent agreement"
                   />
                   <span className="toggle-text">
-                    <Trans i18nKey="popup-registration-consent" ns="index">
-                      I agree to allow the company to process my personal data
-                      to meet its regulatory obligations and I have read and
-                      understood the
-                      <a
-                        href={policyLinks.privacyPolicy}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link"
-                        onClick={(e) =>
-                          handlePolicyLinkClick(e, policyLinks.privacyPolicy)
-                        }
-                      >
-                        Privacy Policy
-                      </a>
-                      and
-                      <a
-                        href={policyLinks.cookiePolicy}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link"
-                        onClick={(e) =>
-                          handlePolicyLinkClick(e, policyLinks.cookiePolicy)
-                        }
-                      >
-                        Cookie Policy
-                      </a>
-                      of the Company.
-                    </Trans>
+                    {renderRegistrationConsentText(
+                      t,
+                      policyLinks,
+                      handlePolicyLinkClick
+                    )}
                   </span>
                 </div>
 
@@ -2909,9 +2955,9 @@ const PopupRegistrationForm = ({ params }) => {
                 <button
                   type="submit"
                   className={cn("continue-button", {
-                    "button-link--disabled": isSubmitting,
+                    "button-link--disabled": isSubmitting || !isRecaptchaReady,
                   })}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isRecaptchaReady}
                 >
                   <span className="button-text">
                     {t("popup-registration-continue")}

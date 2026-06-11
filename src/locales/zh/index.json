@@ -1435,7 +1435,7 @@
   "popup-registration-benefits-toolsFSA": "您指尖的高級交易工具",
   "popup-registration-benefits-transfers": "輕鬆的錢包到交易帳戶互轉",
   "popup-registration-benefits-verification": "簡化，無繁瑣驗證",
-  "popup-registration-consent": "我同意允許公司處理我的個人資料，以履行其法規義務，並且我已閱讀並理解公司的《<1>隱私政策</1>》和《<3>Cookie 政策</3>》。",
+  "popup-registration-consent": "我同意允許公司處理我的個人資料，以履行其法規義務，並且我已閱讀並理解公司的《{{privacyLink}}》和《{{cookieLink}}》。",
   "popup-registration-consent-privacy-label": "隱私政策",
   "popup-registration-consent-cookie-label": "Cookie 政策",
   "popup-registration-continue": "繼續",
