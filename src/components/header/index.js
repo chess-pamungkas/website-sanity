@@ -17,7 +17,7 @@ import {
   DIR_RTL,
   HOME_PAGE_LINK,
   GetLoginLink,
-  ShowRegistrationPopup,
+  GlobalRegistrationPopup,
 } from "../../helpers/constants";
 import { stringTransformToKebabCase } from "../../helpers/services/string-service";
 import NavbarItem from "./components/navbar-item";
@@ -382,7 +382,7 @@ const Header = ({ className }) => {
           </div>
         )}
       {isPopupOpen && (
-        <ShowRegistrationPopup
+        <GlobalRegistrationPopup
           isOpen={isPopupOpen}
           onClose={handleClosePopup}
           langParam={langParam}
