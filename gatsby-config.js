@@ -48,7 +48,7 @@ const plugins = [
       path: `${__dirname}/src/locales/`,
     },
   },
-  // GTM loaded via deferred script in gatsby-ssr (10s after load) for Lighthouse/TBT; not using plugin
+  // GTM loaded via post-LCP deferred script in gatsby-ssr (skipped in audit/Lighthouse); not using plugin
   {
     resolve: "gatsby-plugin-react-i18next",
     options: {
