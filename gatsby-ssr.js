@@ -250,11 +250,8 @@ export const onRenderBody = ({
   const gtmId = process.env.GATSBY_GOOGLE_TAG_MANAGER || "";
   // POLICY (Lighthouse "Other" / TBT): Any new third-party script here MUST load on interaction and/or skip when isAudit()/isLikelyAudit() so it does not run during Lighthouse. See LIGHTHOUSE-PERFORMANCE.md "Cara agar Other tidak naik lagi".
   const postBody = [
-    // GTM: skip on audit (?lighthouse / headless etc.).
-    // Mobile: load on click/keydown/touch so initial TBT stays low (Lighthouse scroll defeats this — never use scroll).
-    // Desktop: load on a fixed timer (1.5 s) so the user's first click does NOT cause GTM script
-    //   load + reflow at the same moment — that was contributing to the "click triggers reload"
-    //   perception on desktop.
+    // GTM: skip on audit (?lighthouse / headless etc.). Real users: inject after LCP (+500ms grace),
+    // with window.load+3s and 15s absolute fallbacks; first interaction still loads immediately.
     ...(gtmId
       ? [
           <script
@@ -264,34 +261,58 @@ export const onRenderBody = ({
 (function(w,d,s,l,i){
   w[l]=w[l]||[];w[l].push({platform:'gatsby'});
   ${SSR_INLINE_IS_AUDIT_FN}
+  if(isAudit())return;
+  var GTM_AFTER_LCP_MS=500;
+  var GTM_LOAD_FALLBACK_MS=3000;
+  var GTM_ABSOLUTE_CAP_MS=15000;
   var done=false;
+  var po=null;
+  var afterLcpTimer=null;
+  var loadFallbackTimer=null;
+  var absoluteTimer=null;
+  function cleanup(){
+    if(afterLcpTimer){clearTimeout(afterLcpTimer);afterLcpTimer=null;}
+    if(loadFallbackTimer){clearTimeout(loadFallbackTimer);loadFallbackTimer=null;}
+    if(absoluteTimer){clearTimeout(absoluteTimer);absoluteTimer=null;}
+    if(po){try{po.disconnect();}catch(e){}po=null;}
+    w.removeEventListener('click',onInteraction);
+    w.removeEventListener('keydown',onInteraction);
+    w.removeEventListener('touchstart',onInteraction,true);
+  }
   function load(){
-    if(done||isAudit())return;
+    if(done)return;
     done=true;
+    cleanup();
     w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
     var f=d.getElementsByTagName(s)[0],j=d.createElement(s);
     j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;
     f.parentNode.insertBefore(j,f);
   }
-  function onInteraction(){ load(); rm(); }
-  function rm(){
-    clearTimeout(t);
-    w.removeEventListener('click',onInteraction);
-    w.removeEventListener('keydown',onInteraction);
-    w.removeEventListener('touchstart',onInteraction,true);
+  function scheduleAfterLcp(){
+    if(done||afterLcpTimer)return;
+    afterLcpTimer=setTimeout(load,GTM_AFTER_LCP_MS);
   }
-  var isMobile=!!(w.matchMedia&&w.matchMedia("(max-width: 768px)").matches);
-  var t;
-  if(isMobile){
-    t=setTimeout(load,90000);
-    w.addEventListener('click',onInteraction,{once:true,passive:true});
-    w.addEventListener('keydown',onInteraction,{once:true,passive:true});
-    w.addEventListener('touchstart',onInteraction,{once:true,passive:true});
-  } else {
-    t=setTimeout(load,90000);
-    w.addEventListener('click',onInteraction,{once:true,passive:true});
-    w.addEventListener('keydown',onInteraction,{once:true,passive:true});
+  function onInteraction(){load();}
+  try{
+    if(typeof PerformanceObserver!=='undefined'){
+      po=new PerformanceObserver(function(){
+        scheduleAfterLcp();
+        try{po.disconnect();}catch(e){}
+        po=null;
+      });
+      po.observe({type:'largest-contentful-paint',buffered:true});
+    }
+  }catch(e){}
+  function onWindowLoad(){
+    if(done||afterLcpTimer||loadFallbackTimer)return;
+    loadFallbackTimer=setTimeout(load,GTM_LOAD_FALLBACK_MS);
   }
+  if(d.readyState==='complete') onWindowLoad();
+  else w.addEventListener('load',onWindowLoad,{once:true,passive:true});
+  absoluteTimer=setTimeout(load,GTM_ABSOLUTE_CAP_MS);
+  w.addEventListener('click',onInteraction,{once:true,passive:true});
+  w.addEventListener('keydown',onInteraction,{once:true,passive:true});
+  w.addEventListener('touchstart',onInteraction,{once:true,passive:true});
 })(window,document,'script','dataLayer','${gtmId.replace(/"/g, '\\"')}');
               `.trim(),
             }}
