@@ -80,7 +80,7 @@ const OurCommunityContent = ({
           width={bgDesktopDim.width}
           height={bgDesktopDim.height}
           loading="eager"
-          fetchPriority="high"
+          fetchpriority="high"
           decoding="async"
         />
       </picture>
