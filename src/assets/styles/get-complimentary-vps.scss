@@ -8,21 +8,13 @@
   background: transparent;
   border-radius: 24px;
   overflow: hidden;
-  margin: 48px 0 55px 0;
+  margin: 0 0 55px 0;
+  @include marketing-page-after-hero-gap;
 
   @include mobile {
-    margin: 130px 0 0 0;
     min-height: auto;
     height: auto;
     padding-bottom: 20px;
-  }
-
-  @include tablet-only {
-    margin: $below-marketing-hero-gap-tablet 0 0 0;
-  }
-
-  @include desktop-lg {
-    margin-top: $below-marketing-hero-gap-desktop;
   }
 
   .get-complimentary-vps-bg {
@@ -67,7 +59,7 @@
     text-align: center;
 
     @include mobile {
-      padding: 20px 0;
+      padding: $marketing-card-header-padding-top 0;
       gap: 12px;
     }
 

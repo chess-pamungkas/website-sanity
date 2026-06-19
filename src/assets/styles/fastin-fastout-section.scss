@@ -6,18 +6,10 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 63px 0;
+  padding: 0 0 63px 0;
 
   @include mobile {
-    padding: 125px 0 50px 0;
-  }
-
-  @include tablet-only {
-    padding-top: $below-marketing-hero-gap-tablet;
-  }
-
-  @include desktop-lg {
-    padding-top: $below-marketing-hero-gap-desktop;
+    padding-bottom: 50px;
   }
 
   &__container {

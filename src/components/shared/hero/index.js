@@ -660,7 +660,7 @@ const Hero = ({
                   width={heroLcpConfig.dimensions.desktop.width}
                   height={heroLcpConfig.dimensions.desktop.height}
                   loading="eager"
-                  fetchPriority="high"
+                  fetchpriority="high"
                   decoding="sync"
                   aria-hidden="true"
                 />
@@ -683,7 +683,7 @@ const Hero = ({
                       width="734"
                       height="734"
                       loading="eager"
-                      fetchPriority="high"
+                      fetchpriority="high"
                       decoding="sync"
                       className={`${heroType}__hero-img-element`}
                       style={{
@@ -894,7 +894,7 @@ const Hero = ({
                         width="714"
                         height="692"
                         loading="eager"
-                        fetchPriority="high"
+                        fetchpriority="high"
                         decoding="sync"
                         className={`${heroType}__hand-img-element`}
                       />

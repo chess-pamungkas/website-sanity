@@ -25,20 +25,13 @@ $hand-image: url("/images/hand.webp");
   box-sizing: border-box;
   align-items: center;
 
-  @include mobile {
-    height: 953px;
-    border-radius: 20px;
-    padding-top: 66px;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: visible;
-  }
+  @include hero-page-shell-mobile(953px, $hero-mobile-shell-top-home, $hero-mobile-shell-top-home, 0);
 
   @include hero-page-shell-tablet(575px, 66px, 66px);
 
-  /* Desktop: reserve top offset + artboard (absolute __hero-container), not fixed 686px only. */
+  /* Desktop-lg: 575px artboard; desktop-xl+ uses 686px (matches pre-refactor Figma). */
   @include desktop-lg {
-    min-height: calc(77px + 686px);
+    min-height: calc(77px + 575px);
     height: auto;
     margin-bottom: 0;
   }
@@ -114,9 +107,9 @@ $hand-image: url("/images/hand.webp");
     }
 
     @include desktop-lg {
-      width: calc(100vw - 120px);
-      max-width: 1400px;
-      height: 686px;
+      width: calc(100vw - 20px);
+      max-width: 1200px;
+      height: 575px;
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
@@ -207,7 +200,7 @@ $hand-image: url("/images/hand.webp");
   &__hero-img {
     position: absolute;
     bottom: 0;
-    right: 30px;
+    right: -50px;
     width: 734px;
     height: 734px;
     opacity: 0.62;
@@ -248,17 +241,17 @@ $hand-image: url("/images/hand.webp");
     }
 
     @include desktop-lg {
-      width: 734px;
-      height: 734px;
+      width: 600px;
+      height: 600px;
       bottom: 0;
-      right: 95px;
+      right: 50px;
     }
 
     @include desktop-xl {
       width: 734px;
       height: 734px;
       bottom: 0;
-      right: 95px;
+      right: 45px;
     }
 
     @include desktop-2k {
@@ -309,10 +302,10 @@ $hand-image: url("/images/hand.webp");
     }
 
     @include desktop-lg {
-      width: 714px;
-      height: 692px;
+      width: 600px;
+      height: 580px;
       bottom: 0;
-      right: -90px;
+      right: -70px;
     }
 
     @include desktop-xl {
@@ -464,8 +457,8 @@ $hand-image: url("/images/hand.webp");
     }
 
     @include desktop-lg {
-      padding-top: 100px;
-      max-width: 1280px;
+      padding-top: 50px;
+      max-width: 980px;
     }
 
     @include desktop-xl {

@@ -83,7 +83,7 @@ const LegalRegulatedContent = ({ className }) => {
             className="legal-regulated-content__hero-bg-img"
             loading="eager"
             decoding="async"
-            fetchPriority="high"
+            fetchpriority="high"
           />
         </picture>
       </div>

@@ -76,7 +76,6 @@ Documents.propTypes = {
   className: PropTypes.string,
   title: PropTypes.string.isRequired,
   text: PropTypes.shape({
-    bold: PropTypes.string.isRequired,
     regular: PropTypes.string.isRequired,
   }).isRequired,
   documents: PropTypes.arrayOf(PropTypes.object).isRequired,

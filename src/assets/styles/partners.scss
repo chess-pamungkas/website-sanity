@@ -27,15 +27,7 @@ body.homepage-bg-1 .partners-page-community #main-container {
   box-sizing: border-box;
   align-items: center;
 
-  @include mobile {
-    min-height: 953px;
-    height: auto;
-    border-radius: 20px;
-    padding-top: 73px;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: visible;
-  }
+  @include hero-page-shell-mobile(953px, $hero-mobile-shell-top-default, $hero-mobile-shell-top-default, 0);
 
   @include hero-page-shell-tablet(555px, 73px, 70px);
 
@@ -141,6 +133,25 @@ body.homepage-bg-1 .partners-page-community #main-container {
   }
 
   @include trading-product-hero-bg-lcp;
+
+  &__hero-bg-lcp {
+    @include desktop-lg {
+      /* right center (100%) overlaps hero copy — nudge art right (same as legal) */
+      object-position: 42% 50%;
+    }
+
+    @include desktop-xl {
+      object-position: center center;
+    }
+
+    @include desktop-2k {
+      object-position: center center;
+    }
+
+    @include desktop-5k {
+      object-position: center center;
+    }
+  }
 
   &__content-container {
     position: relative;

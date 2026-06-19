@@ -47,7 +47,7 @@ const AllMarkets = ({ className, isShowHero = true }) => {
       />
 
       <BreadcrumbsTab
-        className="breadcrumbs-tab--all-markets-hero-tight"
+        className="breadcrumbs-tab--all-markets"
         currentPage={t("all-markets_badge-text")}
         activeTab="all-markets"
       />

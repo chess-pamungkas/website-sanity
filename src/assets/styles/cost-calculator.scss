@@ -183,10 +183,6 @@
     min-width: 0;
     max-width: 100%;
 
-    @include small-mobile {
-      margin-top: 75px !important;
-    }
-
     @include mobile {
       margin-top: 14px;
     }
@@ -1025,102 +1021,6 @@
       color: #000;
       font-weight: map-get($font-weight, "semibold");
       transition: all 0.3s ease;
-    }
-  }
-
-  @include small-mobile {
-    flex-direction: column;
-    padding: 16px 0 150px 0;
-    gap: 24px;
-    position: relative;
-    z-index: 1;
-    clear: both;
-    overflow: visible;
-    margin-bottom: 0;
-
-    &__left,
-    &__right {
-      min-width: 0;
-      padding: 0;
-    }
-
-    &__right {
-      flex-direction: column;
-      gap: 16px;
-      max-height: 341px;
-    }
-
-    &__card {
-      width: 100% !important;
-      min-width: 0;
-      max-width: 100%;
-      height: auto;
-      padding: 20px 8px;
-      gap: 0;
-
-      &-section,
-      &-row,
-      &-label,
-      &-value-container,
-      &-slider {
-        width: 100%;
-        min-width: 0;
-        margin: 0;
-      }
-    }
-
-    &__monthly-trades {
-      width: 100%;
-      min-width: 0;
-      max-width: 100%;
-      margin-top: 8px;
-
-      .cost-calculator-content__trade-btn {
-        width: auto;
-        min-width: 0;
-        flex: 1;
-        font-size: 11px;
-        padding: 8px 4px;
-      }
-    }
-
-    &__slider-label,
-    &__slider,
-    &__divider,
-    &__slider-label-2 {
-      margin-bottom: 24px;
-    }
-
-    &__comparison-row {
-      flex-direction: row !important;
-      gap: 12px;
-    }
-
-    &__comparison-card {
-      width: 50% !important;
-      flex: 1 1 0 !important;
-      padding: 10px !important;
-      box-sizing: border-box;
-      max-height: 200px !important;
-      min-width: 0;
-      max-width: 100% !important;
-    }
-
-    &__savings-info {
-      padding: 6px 20px !important;
-      font-size: 14px !important;
-      margin: 0 !important;
-    }
-
-    &__title {
-      font-size: 36px;
-      line-height: 40px;
-    }
-
-    &__subtitle {
-      font-size: 16px;
-      max-width: 100%;
-      margin-bottom: 20px;
     }
   }
 

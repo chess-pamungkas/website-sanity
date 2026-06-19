@@ -61,6 +61,24 @@
   }
 }
 
+@mixin hero-page-shell-mobile(
+  $artboard-height: $hero-mobile-shell-artboard-default,
+  $hero-top: $hero-mobile-shell-top-default,
+  $padding-top: $hero-mobile-shell-top-default,
+  $padding-bottom: $hero-mobile-shell-padding-bottom-default
+) {
+  @include mobile {
+    min-height: calc(#{$hero-top} + #{$artboard-height});
+    height: auto;
+    border-radius: 20px;
+    padding-top: $padding-top;
+    padding-bottom: $padding-bottom;
+    margin-top: 0;
+    margin-bottom: 0;
+    overflow: visible;
+  }
+}
+
 @mixin hero-page-shell-desktop-lg(
   $artboard-height: 583px,
   $hero-top: 83px,
@@ -77,8 +95,116 @@
 
 /* iPad / iPad Air (768–1023): hero gutters + inner padding (matches main-promotion). */
 /* Below trading-product hero: tight ticker gap on tablet + desktop (overrides legacy 110px). */
-/* First content block after absolute-positioned marketing hero (tablet + desktop). */
+/* First content block after absolute-positioned marketing hero (all breakpoints). */
+@mixin homepage-below-hero-margin-top {
+  @include mobile {
+    margin-top: $homepage-below-hero-gap-mobile;
+  }
+
+  @include tablet-only {
+    margin-top: $homepage-below-hero-gap-tablet;
+  }
+
+  @include desktop-lg {
+    margin-top: $homepage-below-hero-gap-desktop;
+  }
+
+  @include desktop-xl {
+    margin-top: $homepage-below-hero-gap-desktop;
+  }
+
+  @include desktop-2k {
+    margin-top: $homepage-below-hero-gap-desktop;
+  }
+
+  @include desktop-5k {
+    margin-top: $homepage-below-hero-gap-desktop;
+  }
+}
+
+@mixin homepage-below-hero-padding-top {
+  @include mobile {
+    padding-top: $homepage-below-hero-gap-mobile;
+  }
+
+  @include tablet-only {
+    padding-top: $homepage-below-hero-gap-tablet;
+  }
+
+  @include desktop-lg {
+    padding-top: $homepage-below-hero-gap-desktop;
+  }
+
+  @include desktop-xl {
+    padding-top: $homepage-below-hero-gap-desktop;
+  }
+
+  @include desktop-2k {
+    padding-top: $homepage-below-hero-gap-desktop;
+  }
+
+  @include desktop-5k {
+    padding-top: $homepage-below-hero-gap-desktop;
+  }
+}
+
+@mixin marketing-page-after-hero-gap {
+  @include mobile {
+    margin-top: $marketing-landing-after-hero-gap-mobile;
+  }
+
+  @include tablet-only {
+    margin-top: $marketing-landing-after-hero-gap-tablet;
+  }
+
+  @include desktop-lg {
+    margin-top: $marketing-landing-after-hero-gap-desktop;
+  }
+
+  @include desktop-xl {
+    margin-top: $marketing-landing-after-hero-gap-desktop;
+  }
+
+  @include desktop-2k {
+    margin-top: $marketing-landing-after-hero-gap-desktop;
+  }
+
+  @include desktop-5k {
+    margin-top: $marketing-landing-after-hero-gap-desktop;
+  }
+}
+
+@mixin marketing-page-after-hero-gap-padding {
+  @include mobile {
+    padding-top: $marketing-landing-after-hero-gap-mobile;
+  }
+
+  @include tablet-only {
+    padding-top: $marketing-landing-after-hero-gap-tablet;
+  }
+
+  @include desktop-lg {
+    padding-top: $marketing-landing-after-hero-gap-desktop;
+  }
+
+  @include desktop-xl {
+    padding-top: $marketing-landing-after-hero-gap-desktop;
+  }
+
+  @include desktop-2k {
+    padding-top: $marketing-landing-after-hero-gap-desktop;
+  }
+
+  @include desktop-5k {
+    padding-top: $marketing-landing-after-hero-gap-desktop;
+  }
+}
+
 @mixin below-marketing-hero-margin-top {
+  @include mobile {
+    margin-top: $below-marketing-hero-gap-mobile !important;
+  }
+
   @include tablet-only {
     margin-top: $below-marketing-hero-gap-tablet !important;
   }
@@ -86,9 +212,25 @@
   @include desktop-lg {
     margin-top: $below-marketing-hero-gap-desktop !important;
   }
+
+  @include desktop-xl {
+    margin-top: $below-marketing-hero-gap-desktop !important;
+  }
+
+  @include desktop-2k {
+    margin-top: $below-marketing-hero-gap-desktop !important;
+  }
+
+  @include desktop-5k {
+    margin-top: $below-marketing-hero-gap-desktop !important;
+  }
 }
 
 @mixin below-marketing-hero-padding-top {
+  @include mobile {
+    padding-top: $below-marketing-hero-gap-mobile !important;
+  }
+
   @include tablet-only {
     padding-top: $below-marketing-hero-gap-tablet !important;
   }
@@ -96,10 +238,55 @@
   @include desktop-lg {
     padding-top: $below-marketing-hero-gap-desktop !important;
   }
+
+  @include desktop-xl {
+    padding-top: $below-marketing-hero-gap-desktop !important;
+  }
+
+  @include desktop-2k {
+    padding-top: $below-marketing-hero-gap-desktop !important;
+  }
+
+  @include desktop-5k {
+    padding-top: $below-marketing-hero-gap-desktop !important;
+  }
+}
+
+/* Breadcrumbs sit below TradingTicker — not the hero gap (homepage 24px is on the ticker). */
+@mixin breadcrumbs-after-trading-ticker {
+  @include mobile {
+    display: none;
+  }
+
+  @include tablet {
+    margin-top: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  @include desktop-lg {
+    margin-top: 5px;
+  }
+
+  @include desktop-xl {
+    margin-top: 5px;
+  }
+
+  @include desktop-2k {
+    margin-top: 5px;
+  }
+
+  @include desktop-5k {
+    margin-top: 5px;
+  }
 }
 
 @mixin trading-product-page-ticker-spacing {
   .trading-ticker-wrapper {
+    @include mobile {
+      margin-top: $product-page-ticker-margin-top-mobile;
+    }
+
     @include tablet {
       margin-top: $product-page-ticker-margin-top-tablet;
     }

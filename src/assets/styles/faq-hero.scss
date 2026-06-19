@@ -21,14 +21,7 @@
   box-sizing: border-box;
   align-items: center;
 
-  @include mobile {
-    min-height: 953px;
-    border-radius: 20px;
-    padding-top: 66px;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: visible;
-  }
+  @include hero-page-shell-mobile(953px, $hero-mobile-shell-top-home, $hero-mobile-shell-top-home, 0);
 
   @include hero-page-shell-tablet(480px, 73px, 70px);
 
@@ -37,25 +30,33 @@
   }
 
   @include desktop-lg {
-    min-height: 480px;
+    margin-bottom: 0;
+    min-height: calc(77px + 480px);
+    height: auto;
     border-radius: 24px;
     padding-top: 83px;
     padding-bottom: 0;
   }
 
   @include desktop-xl {
-    min-height: 480px;
+    min-height: calc(83px + 480px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
   }
 
   @include desktop-2k {
-    min-height: 480px;
+    min-height: calc(83px + 480px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
   }
 
   @include desktop-5k {
-    min-height: 480px;
+    min-height: calc(83px + 480px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
   }
 
   &__hero-container {

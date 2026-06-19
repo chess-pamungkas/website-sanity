@@ -4,20 +4,13 @@
 .tab-trading-tools {
   position: relative;
   width: 100%;
-  padding: 20px 0;
+  padding: 0 0 20px 0;
+  @include marketing-page-after-hero-gap;
 
   @include mobile {
-    padding: 125px 0 20px 0;
+    margin-top: 30px;
   }
-
-  @include tablet-only {
-    padding: $below-marketing-hero-gap-tablet 0 20px 0;
-  }
-
-  @include desktop-lg {
-    padding: $below-marketing-hero-gap-desktop 0 20px 0;
-  }
-  s &__container {
+  &__container {
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 20px;
