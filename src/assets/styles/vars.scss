@@ -132,6 +132,9 @@ $colors: (
   "navbar-item-grey": #494949,
 );
 
+/* html/body default — ticker slot paints above hero overlap on mobile homepage. */
+$page-background-color: map-get($colors, "white");
+
 $padding-sm: 25px;
 $padding-md: 35px;
 $padding-lg: 35px;
