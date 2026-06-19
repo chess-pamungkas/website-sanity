@@ -37,10 +37,10 @@ const Seo = ({ title, description, fsaTitle, fsaDescription, fsaRobots }) => {
         }
       />
       {!allowSearchIndexing && (
-        <>
-          <meta name="googlebot" content={ROBOTS_BLOCKED} />
-          <meta name="bingbot" content={ROBOTS_BLOCKED} />
-        </>
+        <meta name="googlebot" content={ROBOTS_BLOCKED} />
+      )}
+      {!allowSearchIndexing && (
+        <meta name="bingbot" content={ROBOTS_BLOCKED} />
       )}
       {microsoftAds && <meta name="msvalidate.01" content={microsoftAds} />}
     </Helmet>

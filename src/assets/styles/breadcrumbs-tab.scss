@@ -5,48 +5,49 @@
   margin: 0 auto;
 
   @include mobile {
-    // display: none;
     max-width: 100%;
     padding-left: $padding-sm;
     padding-right: $padding-sm;
-    padding-top: 100px;
+    padding-top: $marketing-landing-after-hero-gap-mobile;
     padding-bottom: 30px;
   }
 
-  /* Tablet (768–1023): tight gap under hero — was 100px and overrode --*-hero-tight. */
-  @include tablet-only {
-    max-width: 720px;
-    padding-top: 32px;
-    padding-bottom: 20px;
+  &--all-markets {
+    @include mobile {
+      padding-top: 30px;
+      padding-bottom: 30px;
+    }
   }
 
-  /* All-markets / product pages: slightly tighter on small-mobile. */
-  &--all-markets-hero-tight {
-    @include mobile {
-      padding-top: 28px;
-      padding-bottom: 20px;
-    }
+  @include tablet-only {
+    max-width: 720px;
+    margin-top: 0;
+    padding-top: $homepage-below-hero-gap-tablet;
+    padding-bottom: 20px;
   }
 
   @include desktop-lg {
     max-width: 980px;
-    padding: 40px 0;
-    margin-top: 75px; /* Reduced spacing for better visual balance */
+    margin-top: $homepage-below-hero-gap-desktop;
+    padding: 0 0 20px;
   }
 
   @include desktop-xl {
     max-width: 1280px;
-    margin-top: 75px; /* Reduced spacing for better visual balance */
+    margin-top: $homepage-below-hero-gap-desktop;
+    padding: 0 0 20px;
   }
 
   @include desktop-2k {
     max-width: 1440px;
-    margin-top: 75px; /* Reduced spacing for better visual balance */
+    margin-top: $homepage-below-hero-gap-desktop;
+    padding: 0 0 20px;
   }
 
   @include desktop-5k {
     max-width: 1920px;
-    margin-top: 75px; /* Reduced spacing for better visual balance */
+    margin-top: $homepage-below-hero-gap-desktop;
+    padding: 0 0 20px;
   }
 
   &__content {

@@ -53,7 +53,8 @@
     }
 
     @include desktop-lg {
-      object-position: 55% 50%;
+      /* Legacy trading-product heroes (crypto, forex, …): right center at lg — see old website __hero-bg. */
+      object-position: right center;
     }
 
     @include desktop-5k {

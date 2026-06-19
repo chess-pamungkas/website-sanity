@@ -17,23 +17,47 @@ $below-hero-first-block-min-height-mobile: 1240px;
 $homepage-ticker-margin-top-mobile: 100px;
 $homepage-ticker-margin-top-tablet: 24px;
 $homepage-ticker-margin-top-desktop: 24px;
+/* Site-wide: gap hero bottom → first content block (homepage reference). */
+$homepage-below-hero-gap-mobile: $homepage-ticker-margin-top-mobile;
+$homepage-below-hero-gap-tablet: $homepage-ticker-margin-top-tablet;
+$homepage-below-hero-gap-desktop: $homepage-ticker-margin-top-desktop;
+/* Site-wide mobile gap hero → first block (matches tablet/desktop landing pages). */
+$marketing-landing-after-hero-gap-mobile: 75px;
+$marketing-landing-after-hero-gap-tablet: 75px;
+$marketing-landing-after-hero-gap-desktop: 75px;
 /* Trading-product pages (/crypto/, /forex/, …): gap under hero → ticker (was 110px). */
-$product-page-ticker-margin-top-tablet: $homepage-ticker-margin-top-tablet;
-$product-page-ticker-margin-top-desktop: $homepage-ticker-margin-top-desktop;
+$product-page-ticker-margin-top-mobile: 24px;
+$product-page-ticker-margin-top-tablet: $homepage-below-hero-gap-tablet;
+$product-page-ticker-margin-top-desktop: $homepage-below-hero-gap-desktop;
 /* Marketing heroes (account-types, funding, spreads, tools, VPS, swap-free): gap hero → first block. */
-$below-marketing-hero-gap-tablet: $homepage-ticker-margin-top-tablet;
-$below-marketing-hero-gap-desktop: $homepage-ticker-margin-top-desktop;
+$below-marketing-hero-gap-mobile: $marketing-landing-after-hero-gap-mobile;
+$below-marketing-hero-gap-tablet: $homepage-below-hero-gap-tablet;
+$below-marketing-hero-gap-desktop: $homepage-below-hero-gap-desktop;
+/* Mobile hero shell: reserve padding-top + absolute artboard (matches *-mobile.svg 953px). */
+$hero-mobile-shell-top-default: 73px;
+$hero-mobile-shell-artboard-default: 953px;
+$hero-mobile-shell-padding-bottom-default: 20px;
+$hero-mobile-shell-top-home: 66px;
+/* Internal card header inset inside comparison shell (not hero gap). */
+$account-comparison-header-padding-top-default: 73px;
+$account-comparison-header-padding-top-mobile: 52px;
+$marketing-card-header-padding-top: 0;
+$marketing-card-header-padding-inline-mobile: 18px;
+/* Internal section padding inside marketing cards (legacy — do not add to hero gap). */
 $below-marketing-hero-section-padding-top-tablet: 52px;
 $below-marketing-hero-section-padding-top-desktop: 80px;
 /* /funding/: gap between .funding-withdrawals hero and .funding-page (all viewports). */
-$funding-page-after-hero-gap-mobile: 32px;
-$funding-page-after-hero-gap-tablet: 32px;
-$funding-page-after-hero-gap-desktop: 40px;
-/* FAQ (/faq/): gap between .faq-hero and .help-center (tablet only; desktop keeps legacy offset). */
-$faq-help-center-after-hero-gap-tablet: $below-marketing-hero-section-padding-top-tablet;
+$funding-page-after-hero-gap-mobile: $marketing-landing-after-hero-gap-mobile;
+$funding-page-after-hero-gap-tablet: $homepage-below-hero-gap-tablet;
+$funding-page-after-hero-gap-desktop: $homepage-below-hero-gap-desktop;
+/* FAQ (/faq/): gap between .faq-hero and .help-center. */
+$faq-help-center-after-hero-gap-mobile: $marketing-landing-after-hero-gap-mobile;
+$faq-help-center-after-hero-gap-tablet: $homepage-below-hero-gap-tablet;
+$faq-help-center-after-hero-gap-desktop: $homepage-below-hero-gap-desktop;
 /* Contact (/contact-us/): gap between .contact-us hero and .contact-us-content-section. */
-$contact-us-content-after-hero-gap-tablet: $below-marketing-hero-section-padding-top-tablet;
-$contact-us-content-after-hero-gap-desktop: $below-marketing-hero-section-padding-top-desktop;
+$contact-us-content-after-hero-gap-mobile: 75px;
+$contact-us-content-after-hero-gap-tablet: 75px;
+$contact-us-content-after-hero-gap-desktop: 75px;
 /* Legal regulated card: symmetric inset for .legal-regulated-content__wrapper */
 $legal-regulated-wrapper-padding-block-mobile: 48px;
 $legal-regulated-wrapper-padding-inline-mobile: 20px;
@@ -42,11 +66,13 @@ $legal-regulated-wrapper-padding-inline-tablet: 24px;
 $legal-regulated-wrapper-padding-block-desktop: 75px;
 $legal-regulated-wrapper-padding-inline-desktop: 20px;
 /* Legal (/legal/): gap between .legal hero and .legal-regulators. */
-$legal-regulators-after-hero-gap-tablet: $below-marketing-hero-section-padding-top-tablet;
-$legal-regulators-after-hero-gap-desktop: $below-marketing-hero-section-padding-top-desktop;
+$legal-regulators-after-hero-gap-mobile: 50px;
+$legal-regulators-after-hero-gap-tablet: 60px;
+$legal-regulators-after-hero-gap-desktop: 75px;
 /* Partners (/partners/): gap between .partners hero and .income-slider. */
-$partners-income-slider-after-hero-gap-tablet: $below-marketing-hero-section-padding-top-tablet;
-$partners-income-slider-after-hero-gap-desktop: $below-marketing-hero-section-padding-top-desktop;
+$partners-income-slider-after-hero-gap-mobile: 75px;
+$partners-income-slider-after-hero-gap-tablet: 75px;
+$partners-income-slider-after-hero-gap-desktop: 75px;
 /* Mobile hero shell: padding-top + absolute artboard (matches *-mobile.svg 953px). */
 $funding-withdrawals-hero-mobile-top: 73px;
 $funding-withdrawals-hero-mobile-artboard: 953px;
@@ -54,10 +80,12 @@ $funding-withdrawals-hero-mobile-artboard: 953px;
 $company-hero-mobile-top: $funding-withdrawals-hero-mobile-top;
 $company-hero-mobile-artboard: $funding-withdrawals-hero-mobile-artboard;
 /* Company (/company/): single gap hero → .company-page (match /funding/ — no double stack with features padding). */
-$company-page-after-hero-gap-mobile: 32px;
-$company-page-after-hero-gap-tablet: 32px;
-$company-page-after-hero-gap-desktop-lg: 40px;
-$company-page-after-hero-gap-desktop-xl: 40px;
+$company-page-after-hero-gap-mobile: $marketing-landing-after-hero-gap-mobile;
+$company-page-after-hero-gap-tablet: 75px;
+$company-page-after-hero-gap-desktop-lg: 75px;
+$company-page-after-hero-gap-desktop-xl: 75px;
+$company-page-after-hero-gap-desktop-2k: 75px;
+$company-page-after-hero-gap-desktop-5k: 75px;
 $company-page-section-margin-bottom-tablet: 24px;
 $company-page-section-margin-bottom-desktop-lg: 24px;
 $company-page-section-margin-bottom-desktop-xl: 32px;
@@ -103,6 +131,9 @@ $colors: (
   "navbar-text-grey": #5e5f63,
   "navbar-item-grey": #494949,
 );
+
+/* html/body default — ticker slot paints above hero overlap on mobile homepage. */
+$page-background-color: map-get($colors, "white");
 
 $padding-sm: 25px;
 $padding-md: 35px;

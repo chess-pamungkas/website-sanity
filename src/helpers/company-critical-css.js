@@ -15,7 +15,7 @@ export const COMPANY_CRITICAL_CSS = [
   "@media(min-width:1920px){.company__hero-container{top:83px;height:540px;min-height:540px;position:absolute;left:50%;transform:translateX(-50%);width:calc(100vw - 120px);max-width:1400px;box-sizing:border-box;border-radius:24px;background:#000;overflow:visible}}",
   ".company__hero-bg{position:absolute;inset:0;width:100%;height:100%;border-radius:inherit;overflow:hidden}",
   "@media(max-width:767px){.company-page{padding-top:32px;margin-top:0}.company-page .features-products{padding:0 0 30px!important}}",
-  "@media(min-width:768px) and (max-width:1023px){.company-page{padding-top:32px;margin-top:0;margin-bottom:24px}.company-page .features-products{padding:0 0 60px!important}}",
-  "@media(min-width:1024px){.company-page{padding-top:40px;margin-top:0;margin-bottom:24px}.company-page .features-products{padding:0 0 60px!important}}",
-  "@media(min-width:1920px){.company-page{padding-top:40px;margin-bottom:32px}}",
+  "@media(min-width:768px) and (max-width:1023px){.company-page{padding-top:75px;margin-top:0;margin-bottom:24px}.company-page .features-products{padding:0 0 60px!important}}",
+  "@media(min-width:1024px){.company-page{padding-top:75px;margin-top:0;margin-bottom:24px}.company-page .features-products{padding:0 0 60px!important}}",
+  "@media(min-width:1920px){.company-page{padding-top:75px;margin-bottom:32px}}",
 ].join("");

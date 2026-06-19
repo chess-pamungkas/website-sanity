@@ -21,16 +21,7 @@
   box-sizing: border-box;
   align-items: center;
 
-  @include mobile {
-    min-height: 953px;
-    height: auto;
-    border-radius: 20px;
-    padding-top: 73px;
-    padding-bottom: 20px;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: visible;
-  }
+  @include hero-page-shell-mobile();
 
   @include hero-page-shell-tablet(555px, 73px, 70px);
 
@@ -752,31 +743,7 @@
   @include trading-product-page-ticker-spacing;
 
   .breadcrumbs-tab {
-    @include mobile {
-      display: none;
-    }
-
-    @include tablet {
-      margin-top: 5px;
-      padding-top: 0;
-      padding-bottom: 0;
-    }
-
-    @include desktop-lg {
-      margin-top: 5px;
-    }
-
-    @include desktop-xl {
-      margin-top: 25px;
-    }
-
-    @include desktop-2k {
-      margin-top: 25px;
-    }
-
-    @include desktop-5k {
-      margin-top: 25px;
-    }
+    @include breadcrumbs-after-trading-ticker;
   }
 }
 

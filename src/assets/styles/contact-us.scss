@@ -12,11 +12,10 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
 
 // Contact Us Content Section (not affecting hero)
 .contact-us-content-section {
-  padding: 80px 0 0 0;
-  // background: #000000;
+  padding: $contact-us-content-after-hero-gap-desktop 0 0 0;
 
   @include mobile {
-    padding: 125px 0 0 0;
+    padding: $contact-us-content-after-hero-gap-mobile 0 0 0;
   }
 
   @include tablet-only {
@@ -24,6 +23,18 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
   }
 
   @include desktop-lg {
+    padding: $contact-us-content-after-hero-gap-desktop 0 0 0;
+  }
+
+  @include desktop-xl {
+    padding: $contact-us-content-after-hero-gap-desktop 0 0 0;
+  }
+
+  @include desktop-2k {
+    padding: $contact-us-content-after-hero-gap-desktop 0 0 0;
+  }
+
+  @include desktop-5k {
     padding: $contact-us-content-after-hero-gap-desktop 0 0 0;
   }
 
@@ -880,15 +891,7 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
   box-sizing: border-box;
   align-items: center;
 
-  @include mobile {
-    min-height: 953px;
-    height: auto;
-    border-radius: 20px;
-    padding-top: 73px;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: visible;
-  }
+  @include hero-page-shell-mobile(953px, $hero-mobile-shell-top-default, $hero-mobile-shell-top-default, 0);
 
   @include tablet-only {
     /* 73px top + 455px artboard — fixed height:455px clipped absolute hero → body CLS ~0.11 */
@@ -1002,6 +1005,19 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
   @include trading-product-hero-bg-lcp;
 
   &__hero-bg-lcp {
+    @include desktop-lg {
+      /* right center (100%) overlaps hero copy — nudge art right (same as funding / legal) */
+      object-position: 50% 50%;
+    }
+
+    @include desktop-xl {
+      object-position: center center;
+    }
+
+    @include desktop-2k {
+      object-position: center center;
+    }
+
     @include desktop-5k {
       object-position: center center;
       object-fit: cover;

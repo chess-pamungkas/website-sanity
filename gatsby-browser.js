@@ -27,18 +27,81 @@ export const wrapPageElement = ({ element }) => {
   return element;
 };
 
-// Service Worker management
-if ("serviceWorker" in navigator) {
-  if (process.env.NODE_ENV === "development") {
-    // In development, unregister any existing service workers
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
+const unregisterDevServiceWorkers = () => {
+  if (process.env.NODE_ENV !== "development") return;
+  if (!("serviceWorker" in navigator)) return;
+
+  try {
+    navigator.serviceWorker
+      .getRegistrations()
+      .then((registrations) => {
         registrations.forEach((registration) => {
-          registration.unregister();
-          console.log("Service Worker unregistered for development");
+          registration.unregister().catch(() => {});
         });
-      });
-    });
+      })
+      .catch(() => {});
+  } catch (e) {
+    /* DevTools device emulation can leave the document in an invalid state. */
+  }
+};
+
+const isServiceWorkerInvalidStateRejection = (reason) => {
+  const msg =
+    (reason && typeof reason.message === "string" && reason.message) ||
+    (typeof reason === "string" ? reason : "");
+  return (
+    msg.includes("ServiceWorkerRegistration") ||
+    msg.includes("invalid state") ||
+    msg.includes("Failed to get ServiceWorkerRegistration")
+  );
+};
+
+const ensureRuntimeErrorHasStack = (error) => {
+  if (!(error instanceof Error) || error.stack) return;
+  try {
+    error.stack = `${error.name || "Error"}: ${error.message || "Unknown error"}\n    at <unknown>`;
+  } catch (e) {
+    /* frozen error object */
+  }
+};
+
+// Register before react-refresh overlay handlers (bubble). Gatsby RuntimeErrors calls
+// error.stack.split() and crashes the whole page when stack is missing (DOMException, etc.).
+if (typeof window !== "undefined") {
+  window.addEventListener(
+    "unhandledrejection",
+    (event) => {
+      if (isServiceWorkerInvalidStateRejection(event.reason)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      if (event.reason instanceof Error) {
+        ensureRuntimeErrorHasStack(event.reason);
+      }
+    },
+    true
+  );
+
+  window.addEventListener(
+    "error",
+    (event) => {
+      if (event.error instanceof Error) {
+        ensureRuntimeErrorHasStack(event.error);
+      }
+    },
+    true
+  );
+}
+
+// Service Worker management
+if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+  if (process.env.NODE_ENV === "development") {
+    // Unregister early — waiting for `load` is too late when DevTools emulation
+    // rejects getRegistrations() and Gatsby's overlay crashes on rejections without .stack.
+    unregisterDevServiceWorkers();
+    window.addEventListener("DOMContentLoaded", unregisterDevServiceWorkers);
+    window.addEventListener("load", unregisterDevServiceWorkers);
   } else {
     // In production, register the service worker
     window.addEventListener("load", () => {
@@ -102,6 +165,8 @@ export const onRouteUpdate = ({ location, action }) => {
 export const onClientEntry = () => {
   if (typeof window !== "undefined") {
     initScrollRestoration();
+    unregisterDevServiceWorkers();
+
     const originalError = window.console.error;
     const originalWarn = window.console.warn;
 

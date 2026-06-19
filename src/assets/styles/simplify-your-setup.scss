@@ -2,20 +2,30 @@
 @import "mixins";
 
 .simplify-your-setup {
-  padding: 80px 0;
+  padding: $below-marketing-hero-gap-desktop 0 25px 0;
 
   @include mobile {
-    padding: 125px 0 50px 0;
+    padding: $below-marketing-hero-gap-mobile 0 50px 0;
   }
 
-  // Fix typo block that caused invalid CSS and unexpected layout
-
-  @include tablet {
-    padding: 125px 0 25px 0;
+  @include tablet-only {
+    padding: $below-marketing-hero-gap-tablet 0 25px 0;
   }
 
   @include desktop-lg {
-    padding: 150px 0 25px 0;
+    padding: $below-marketing-hero-gap-desktop 0 25px 0;
+  }
+
+  @include desktop-xl {
+    padding: $below-marketing-hero-gap-desktop 0 25px 0;
+  }
+
+  @include desktop-2k {
+    padding: $below-marketing-hero-gap-desktop 0 25px 0;
+  }
+
+  @include desktop-5k {
+    padding: $below-marketing-hero-gap-desktop 0 25px 0;
   }
 
   &__container {

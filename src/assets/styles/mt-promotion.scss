@@ -19,7 +19,6 @@
     padding-left: 0 !important;
     padding-right: 0 !important;
     margin: 0 !important;
-    margin-bottom: 20px !important;
     overflow: visible !important;
     box-sizing: border-box !important;
     position: relative !important;
@@ -92,7 +91,7 @@
       min-width: 100% !important;
       padding: 0 !important;
       margin: 0 !important;
-      margin-bottom: 30px !important;
+      margin-bottom: 0 !important;
       flex: 1 1 100% !important;
       overflow: visible !important;
       box-sizing: border-box !important;
@@ -358,15 +357,14 @@ $mt-platform-promo-to-comparison-gap: 48px;
     }
   }
 
-  @include tablet-only {
-    padding-top: $below-marketing-hero-gap-tablet;
-  }
-
-  @include desktop-lg {
-    padding-top: $below-marketing-hero-gap-desktop;
-  }
+  @include marketing-page-after-hero-gap-padding;
 
   .mt-promotion {
+    @include mobile {
+      padding-top: 0 !important;
+      margin-bottom: 0;
+    }
+
     @include tablet-only {
       padding-top: 0 !important;
       margin-bottom: 0;
@@ -395,9 +393,9 @@ $mt-platform-promo-to-comparison-gap: 48px;
 }
 
 .mt-platform-page-content {
-  margin-top: 0;
-  padding-top: $mt-platform-promo-to-comparison-gap;
+  padding-top: 0;
   flex-grow: 0;
+  @include marketing-page-after-hero-gap;
 
   .account-comparison-content {
     margin-top: 0;

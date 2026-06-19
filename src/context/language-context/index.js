@@ -2,12 +2,12 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useLayoutEffect,
   useState,
   useRef,
   startTransition,
 } from "react";
 import PropTypes from "prop-types";
+import { useIsomorphicLayoutEffect } from "../../helpers/hooks/use-isomorphic-layout-effect";
 import CookieContext from "../cookie-context";
 import {
   LAST_LANGUAGE_KEY,
@@ -78,7 +78,7 @@ export const LanguageProvider = ({ children, initialPathname = "" }) => {
     return undefined;
   }, [clientConfig]);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     // Geo API + navigate are deferred on marketing home in ClientResolverProvider (after LCP).
     if (!isClientDetectionEnabled() && shouldDeferHeavyWorkForLighthouse()) {
       return undefined;

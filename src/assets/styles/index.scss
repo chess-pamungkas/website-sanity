@@ -133,7 +133,11 @@
 .below-hero-placeholder__ticker-slot {
   @media screen and (max-width: $max-lg) {
     flex-shrink: 0;
-    margin-top: $homepage-ticker-margin-top-mobile;
+    margin-top: 0;
+    padding-top: $homepage-ticker-margin-top-mobile;
+    position: relative;
+    z-index: 3;
+    background-color: $page-background-color;
     min-height: $homepage-ticker-body-height-mobile;
   }
 }

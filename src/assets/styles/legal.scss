@@ -21,14 +21,7 @@
   box-sizing: border-box;
   align-items: center;
 
-  @include mobile {
-    height: 953px;
-    border-radius: 20px;
-    padding-top: 73px;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: visible;
-  }
+  @include hero-page-shell-mobile();
 
   @include hero-page-shell-tablet(455px, 73px, 70px);
 
@@ -43,18 +36,24 @@
   }
 
   @include desktop-xl {
-    height: 510px;
+    min-height: calc(83px + 510px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
   }
 
   @include desktop-2k {
-    height: 510px;
+    min-height: calc(83px + 510px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
   }
 
   @include desktop-5k {
-    height: 510px;
+    min-height: calc(83px + 510px);
+    height: auto;
     padding-top: 83px;
+    padding-bottom: 0;
   }
 
   &__hero-container {
@@ -759,34 +758,67 @@ body.homepage-bg-1 .legal-page-community #main-container {
   contain: none;
 }
 
+.legal-regulators-shell {
+  @include mobile {
+    padding-top: $legal-regulators-after-hero-gap-mobile;
+  }
+
+  @include tablet-only {
+    padding-top: $legal-regulators-after-hero-gap-tablet;
+  }
+
+  @include desktop-lg {
+    padding-top: $legal-regulators-after-hero-gap-desktop;
+  }
+
+  @include desktop-xl {
+    padding-top: $legal-regulators-after-hero-gap-desktop;
+  }
+
+  @include desktop-2k {
+    padding-top: $legal-regulators-after-hero-gap-desktop;
+  }
+
+  @include desktop-5k {
+    padding-top: $legal-regulators-after-hero-gap-desktop;
+  }
+}
+
 // Legal Regulators Section
 .legal-regulators {
   position: relative;
   width: 100%;
-  padding: 120px;
   margin: 0 auto;
   overflow: visible;
+  padding: 0;
 
   @include mobile {
     width: 100%;
-    margin-top: 130px;
     margin-bottom: 50px;
-    padding: 0;
   }
 
   @include tablet-only {
     width: 100%;
-    padding: $legal-regulators-after-hero-gap-tablet 0 0;
   }
 
   @include desktop-lg {
     width: 100%;
-    padding: $legal-regulators-after-hero-gap-desktop 0 80px;
+    padding-bottom: 80px;
   }
 
   @include desktop-xl {
     width: 100%;
-    padding: $legal-regulators-after-hero-gap-desktop 0 80px;
+    padding-bottom: 80px;
+  }
+
+  @include desktop-2k {
+    width: 100%;
+    padding-bottom: 80px;
+  }
+
+  @include desktop-5k {
+    width: 100%;
+    padding-bottom: 80px;
   }
 
   &__wrapper {
@@ -1227,15 +1259,7 @@ body.homepage-bg-1 .legal-page-community #main-container {
     grid-row: 1;
   }
 
-  @include mobile {
-    min-height: 953px;
-    border-radius: 20px;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: visible;
-  }
+  @include hero-page-shell-mobile(953px, $hero-mobile-shell-top-default, 0, 0);
 
   @include hero-page-shell-tablet(555px, 73px, 70px);
 
