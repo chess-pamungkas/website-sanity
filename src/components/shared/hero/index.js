@@ -180,7 +180,7 @@ const HERO_LCP_BY_TYPE = {
     mobileSvg: "/images/bg/hero/swap-free/swap-free-mobile.svg",
     desktopSvg: "/images/bg/hero/swap-free/swap-free-desktop.svg",
     dimensions: {
-      desktop: HERO_LCP_DIM.desktop,
+      desktop: { width: 1400, height: 583 },
       mobile: HERO_LCP_DIM.mobile,
     },
   },
