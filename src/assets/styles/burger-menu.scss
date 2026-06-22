@@ -133,16 +133,20 @@
       right: 0;
       top: 0;
       padding: 0;
+      /* 100vh fallback; dvh tracks iOS Safari visible viewport when chrome resizes */
       height: 100vh;
+      height: 100dvh;
       max-height: 100vh;
-      overflow: visible;
+      max-height: 100dvh;
+      overflow: hidden;
       -webkit-overflow-scrolling: touch;
       // background: rgba(0, 0, 0, 0.95);
       box-shadow: none;
 
       // Mobile navbar structure based on Figma design
       display: grid;
-      grid-template-rows: 65px 1fr;
+      /* minmax(0,1fr): Safari must shrink content row so inner scroll works after accordion expand */
+      grid-template-rows: 65px minmax(0, 1fr);
       grid-template-areas:
         "header"
         "content";
@@ -153,7 +157,7 @@
 
       // Adjust grid when header is small (scrolled) - keep same dimensions
       &.burger-menu__navbar--header-small {
-        grid-template-rows: 65px 1fr; // Keep same height as default
+        grid-template-rows: 65px minmax(0, 1fr);
 
         // Ensure proper spacing and positioning
         .burger-menu__mobile-header--small {
@@ -176,15 +180,17 @@
       top: 0;
       padding: 0;
       height: 100vh;
+      height: 100dvh;
       max-height: 100vh;
-      overflow: visible;
+      max-height: 100dvh;
+      overflow: hidden;
       -webkit-overflow-scrolling: touch;
       // background: rgba(0, 0, 0, 0.95);
       box-shadow: none;
 
       // Mobile navbar structure based on Figma design
       display: grid;
-      grid-template-rows: 65px 1fr;
+      grid-template-rows: 65px minmax(0, 1fr);
       grid-template-areas:
         "header"
         "content";
@@ -195,7 +201,7 @@
 
       // Adjust grid when header is small (scrolled) - keep same dimensions
       &.burger-menu__navbar--header-small {
-        grid-template-rows: 65px 1fr; // Keep same height as default
+        grid-template-rows: 65px minmax(0, 1fr);
 
         // Ensure proper spacing and positioning
         .burger-menu__mobile-header--small {
@@ -394,19 +400,20 @@
   &__mobile-content {
     @include mobile {
       grid-area: content;
+      min-height: 0;
       background: rgba(0, 0, 0, 0.9) !important;
       backdrop-filter: blur(11.8px);
       border-radius: 20px !important;
-      padding: 34px 20px 20px;
+      padding: 34px 20px calc(20px + env(safe-area-inset-bottom, 0px));
       overflow-y: auto;
       overflow-x: hidden;
+      overscroll-behavior: contain;
       position: relative;
       z-index: 1000;
       top: 0;
       margin-top: 0 !important;
       border: none !important;
       outline: none !important;
-      max-height: calc(100vh - 65px);
       -webkit-overflow-scrolling: touch;
 
       // Force remove any inherited border-radius for child elements
@@ -440,19 +447,20 @@
 
     @include tablet {
       grid-area: content;
+      min-height: 0;
       background: rgba(0, 0, 0, 0.9) !important;
       backdrop-filter: blur(11.8px);
       border-radius: 20px !important;
-      padding: 34px 20px 20px;
+      padding: 34px 20px calc(20px + env(safe-area-inset-bottom, 0px));
       overflow-y: auto;
       overflow-x: hidden;
+      overscroll-behavior: contain;
       position: relative;
       z-index: 1000;
       top: 0;
       margin-top: 0 !important;
       border: none !important;
       outline: none !important;
-      max-height: calc(100vh - 65px);
       -webkit-overflow-scrolling: touch;
 
       // Force remove any inherited border-radius for child elements
@@ -848,7 +856,7 @@
           to {
             opacity: 1;
             transform: translateY(0);
-            max-height: 200px;
+            max-height: 1200px;
           }
         }
       }
@@ -1009,7 +1017,7 @@
           to {
             opacity: 1;
             transform: translateY(0);
-            max-height: 200px;
+            max-height: 1200px;
           }
         }
       }
