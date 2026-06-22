@@ -250,11 +250,8 @@ export const onRenderBody = ({
   const gtmId = process.env.GATSBY_GOOGLE_TAG_MANAGER || "";
   // POLICY (Lighthouse "Other" / TBT): Any new third-party script here MUST load on interaction and/or skip when isAudit()/isLikelyAudit() so it does not run during Lighthouse. See LIGHTHOUSE-PERFORMANCE.md "Cara agar Other tidak naik lagi".
   const postBody = [
-    // GTM: skip on audit (?lighthouse / headless etc.).
-    // Mobile: load on click/keydown/touch so initial TBT stays low (Lighthouse scroll defeats this — never use scroll).
-    // Desktop: load on a fixed timer (1.5 s) so the user's first click does NOT cause GTM script
-    //   load + reflow at the same moment — that was contributing to the "click triggers reload"
-    //   perception on desktop.
+    // GTM: skip on audit (?lighthouse / headless etc.). Real users: inject after LCP (+500ms grace),
+    // with window.load+3s and 15s absolute fallbacks; first interaction still loads immediately.
     ...(gtmId
       ? [
           <script
@@ -264,34 +261,58 @@ export const onRenderBody = ({
 (function(w,d,s,l,i){
   w[l]=w[l]||[];w[l].push({platform:'gatsby'});
   ${SSR_INLINE_IS_AUDIT_FN}
+  if(isAudit())return;
+  var GTM_AFTER_LCP_MS=500;
+  var GTM_LOAD_FALLBACK_MS=3000;
+  var GTM_ABSOLUTE_CAP_MS=15000;
   var done=false;
+  var po=null;
+  var afterLcpTimer=null;
+  var loadFallbackTimer=null;
+  var absoluteTimer=null;
+  function cleanup(){
+    if(afterLcpTimer){clearTimeout(afterLcpTimer);afterLcpTimer=null;}
+    if(loadFallbackTimer){clearTimeout(loadFallbackTimer);loadFallbackTimer=null;}
+    if(absoluteTimer){clearTimeout(absoluteTimer);absoluteTimer=null;}
+    if(po){try{po.disconnect();}catch(e){}po=null;}
+    w.removeEventListener('click',onInteraction);
+    w.removeEventListener('keydown',onInteraction);
+    w.removeEventListener('touchstart',onInteraction,true);
+  }
   function load(){
-    if(done||isAudit())return;
+    if(done)return;
     done=true;
+    cleanup();
     w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
     var f=d.getElementsByTagName(s)[0],j=d.createElement(s);
     j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;
     f.parentNode.insertBefore(j,f);
   }
-  function onInteraction(){ load(); rm(); }
-  function rm(){
-    clearTimeout(t);
-    w.removeEventListener('click',onInteraction);
-    w.removeEventListener('keydown',onInteraction);
-    w.removeEventListener('touchstart',onInteraction,true);
+  function scheduleAfterLcp(){
+    if(done||afterLcpTimer)return;
+    afterLcpTimer=setTimeout(load,GTM_AFTER_LCP_MS);
   }
-  var isMobile=!!(w.matchMedia&&w.matchMedia("(max-width: 768px)").matches);
-  var t;
-  if(isMobile){
-    t=setTimeout(load,90000);
-    w.addEventListener('click',onInteraction,{once:true,passive:true});
-    w.addEventListener('keydown',onInteraction,{once:true,passive:true});
-    w.addEventListener('touchstart',onInteraction,{once:true,passive:true});
-  } else {
-    t=setTimeout(load,90000);
-    w.addEventListener('click',onInteraction,{once:true,passive:true});
-    w.addEventListener('keydown',onInteraction,{once:true,passive:true});
+  function onInteraction(){load();}
+  try{
+    if(typeof PerformanceObserver!=='undefined'){
+      po=new PerformanceObserver(function(){
+        scheduleAfterLcp();
+        try{po.disconnect();}catch(e){}
+        po=null;
+      });
+      po.observe({type:'largest-contentful-paint',buffered:true});
+    }
+  }catch(e){}
+  function onWindowLoad(){
+    if(done||afterLcpTimer||loadFallbackTimer)return;
+    loadFallbackTimer=setTimeout(load,GTM_LOAD_FALLBACK_MS);
   }
+  if(d.readyState==='complete') onWindowLoad();
+  else w.addEventListener('load',onWindowLoad,{once:true,passive:true});
+  absoluteTimer=setTimeout(load,GTM_ABSOLUTE_CAP_MS);
+  w.addEventListener('click',onInteraction,{once:true,passive:true});
+  w.addEventListener('keydown',onInteraction,{once:true,passive:true});
+  w.addEventListener('touchstart',onInteraction,{once:true,passive:true});
 })(window,document,'script','dataLayer','${gtmId.replace(/"/g, '\\"')}');
               `.trim(),
             }}
@@ -960,11 +981,13 @@ armCssFlipAndScripts();})();`
             ".main-promotion{visibility:visible;position:relative;display:flex;align-items:center;justify-content:center;width:100%;color:#fff;box-sizing:border-box;left:50%;margin-left:-50vw;margin-right:-50vw}",
             "@media(max-width:767px){.main-promotion{height:953px;min-height:953px}}",
             "@media(min-width:768px) and (max-width:1023px){.main-promotion{min-height:calc(66px + 575px);height:auto}}",
-            "@media(min-width:1024px){.main-promotion{min-height:calc(77px + 686px);height:auto}}",
+            "@media(min-width:1024px) and (max-width:1919px){.main-promotion{min-height:calc(77px + 575px);height:auto}}",
+            "@media(min-width:1920px){.main-promotion{min-height:calc(77px + 686px);height:auto}}",
             ".main-promotion__hero-container{width:100%;height:100%;max-width:100%;background:#000;position:absolute;left:50%;transform:translateX(-50%);margin:0;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box;overflow:hidden}",
             "@media(max-width:767px){.main-promotion__hero-container{border-radius:20px;top:66px;min-height:953px;height:953px}}",
             "@media(min-width:768px) and (max-width:1023px){.main-promotion__hero-container{border-radius:24px;top:66px;left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:100%;min-height:575px;height:575px;padding-left:24px;padding-right:24px;box-sizing:border-box}}",
-            "@media(min-width:1024px){.main-promotion__hero-container{border-radius:24px;top:77px;left:50%;transform:translateX(-50%);width:calc(100vw - 120px);max-width:1400px;min-height:686px;height:686px}}",
+            "@media(min-width:1024px) and (max-width:1919px){.main-promotion__hero-container{border-radius:24px;top:77px;left:50%;transform:translateX(-50%);width:calc(100vw - 20px);max-width:1200px;min-height:575px;height:575px}}",
+            "@media(min-width:1920px){.main-promotion__hero-container{border-radius:24px;top:77px;left:50%;transform:translateX(-50%);width:calc(100vw - 120px);max-width:1400px;min-height:686px;height:686px}}",
             ".main-promotion__content-container{position:relative;z-index:4;display:flex;flex-direction:column;align-items:flex-start;padding-top:50px;max-width:100%}",
             "html:not(.app-styles-ready) .main-promotion__hero-img,html:not(.app-styles-ready) .main-promotion__hand-container{opacity:0!important;visibility:hidden!important;pointer-events:none!important}",
             "html:not(.app-styles-ready) .main-promotion__content-container .button-container{justify-content:flex-start!important;align-items:stretch!important;width:100%!important;max-width:none!important}",
@@ -976,7 +999,7 @@ armCssFlipAndScripts();})();`
             '@media(min-width:768px){.main-promotion__subheading{font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:18px;line-height:28px!important;color:#fff!important;font-weight:400!important;margin:0!important;max-width:615px;opacity:0.7;visibility:visible!important;display:block}}',
             ".main-promotion__hand-container{position:absolute;bottom:-225px;right:auto;width:100%;height:488px;display:block;z-index:2;overflow:visible}",
             ".main-promotion__hand-img,.main-promotion__hand-img picture,.main-promotion__hand-img img,.main-promotion__hand-img-element{width:100%;height:100%;display:block!important;visibility:visible!important;opacity:1!important;object-fit:contain;object-position:bottom center}",
-            "@media(max-width:767px){.trading-ticker-wrapper{margin-top:100px;margin-bottom:0}}",
+            "@media(max-width:767px){.trading-ticker-wrapper{margin-top:24px;margin-bottom:0}}",
             "@media(min-width:768px) and (max-width:1023px){.trading-ticker-wrapper{margin-top:24px;margin-bottom:24px}}",
             "@media(min-width:1024px){.trading-ticker-wrapper{margin-top:24px;margin-bottom:0}}",
             "@media(max-width:767px){html.mobile-cold-start *,html.mobile-cold-start *::before,html.mobile-cold-start *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}",
@@ -1254,7 +1277,7 @@ armCssFlipAndScripts();})();`
         as="image"
         href="/images/bg/hero/company/about-desktop.svg"
         media={`(min-width: ${WINDOW_SIZE_MD}px) and (max-width: ${MD_MAX_WIDTH}px)`}
-        fetchPriority="high"
+        fetchpriority="high"
       />
     );
   } else if (heroLcpPage) {
@@ -1269,7 +1292,7 @@ armCssFlipAndScripts();})();`
         type="image/webp"
         href={desktopHeroWebp}
         media={`(min-width: ${WINDOW_SIZE_MD}px)`}
-        fetchPriority="high"
+        fetchpriority="high"
       />,
       <link
         key={`preload-hero-${slug}-mobile`}
@@ -1278,7 +1301,7 @@ armCssFlipAndScripts();})();`
         type="image/webp"
         href={mobileHeroWebp}
         media={`(max-width: ${SM_MAX_WIDTH}px)`}
-        fetchPriority="high"
+        fetchpriority="high"
       />
     );
   }
@@ -1321,7 +1344,7 @@ armCssFlipAndScripts();})();`
         type="image/webp"
         href="/images/legal/bg-regulated-desktop.webp"
         media={`(min-width: ${WINDOW_SIZE_MD}px)`}
-        fetchPriority="high"
+        fetchpriority="high"
       />,
       <link
         key="preload-legal-bg-regulated-mobile"
@@ -1330,7 +1353,7 @@ armCssFlipAndScripts();})();`
         type="image/webp"
         href="/images/legal/bg-regulated-mobile.webp"
         media={`(max-width: ${SM_MAX_WIDTH}px)`}
-        fetchPriority="high"
+        fetchpriority="high"
       />
     );
   }
@@ -1345,7 +1368,7 @@ armCssFlipAndScripts();})();`
         type="image/webp"
         href="/images/hand-mobile.webp"
         media={`(max-width: ${SM_MAX_WIDTH}px)`}
-        fetchPriority="high"
+        fetchpriority="high"
       />,
       <link
         key="preload-lcp-hand-desktop"
@@ -1354,7 +1377,7 @@ armCssFlipAndScripts();})();`
         type="image/webp"
         href="/images/hand.webp"
         media={`(min-width: ${WINDOW_SIZE_MD}px)`}
-        fetchPriority="high"
+        fetchpriority="high"
       />
     );
   }
@@ -1500,7 +1523,7 @@ armCssFlipAndScripts();})();`
         type="image/webp"
         href="/images/globe.webp"
         media="(min-width: 769px)"
-        fetchPriority="high"
+        fetchpriority="high"
       />
     );
   }

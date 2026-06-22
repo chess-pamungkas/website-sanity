@@ -82,7 +82,7 @@ const AccountComparison = () => {
             className="account-comparison-bg__image"
             loading="lazy"
             decoding="async"
-            fetchPriority="low"
+            fetchpriority="low"
             width={ACCOUNT_COMPARISON_BG_DIM.mobile.width}
             height={ACCOUNT_COMPARISON_BG_DIM.mobile.height}
           />

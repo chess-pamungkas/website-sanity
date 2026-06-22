@@ -36,10 +36,6 @@ const AllMarketsPage = () => {
           href={ALL_MARKETS_LCP_MOBILE}
           media={HERO_ASSET_MOBILE_MQ}
         />
-        {/* Hero fonts: <link rel="preload" as="font"> for Light/Regular/Medium/SemiBold — gatsby-ssr.js
-            (all-markets path) so network dependency tree stays parallel with document (not chained off @font-face). */}
-        {/* Trustpilot hints: gatsby-ssr adds dns-prefetch on non-home paths; avoid duplicate
-            <link rel="preconnect"> here — Lighthouse flags it unused on /all-markets/ until widget loads. */}
       </Helmet>
       <Seo
         title={t("page-allmarkets-title")}

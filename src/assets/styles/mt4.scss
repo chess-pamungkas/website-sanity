@@ -21,16 +21,7 @@
   box-sizing: border-box;
   align-items: center;
 
-  @include mobile {
-    min-height: 953px;
-    height: auto;
-    border-radius: 20px;
-    padding-top: 73px;
-    padding-bottom: 20px;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: visible;
-  }
+  @include hero-page-shell-mobile();
 
   @include hero-page-shell-tablet(555px, 73px, 70px);
 

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import BadgeAccountComparisonIcon from "../../../../assets/images/icons/account-comparison/badge-account-comparison.svg";
 import BadgeMostPopularIcon from "../../../../assets/images/icons/account-comparison/badge-most-popular.svg";
 // Using static folder path for WebP (more reliable in Gatsby)
@@ -9,10 +9,6 @@ import BadgeBeginnerChoiceIcon from "../../../../assets/images/icons/account-com
 // Using static folder path for WebP (more reliable in Gatsby)
 const StarBeginnerChoiceIcon = "/images/star-beginner-choice.webp";
 import { CircleMarkIcon } from "../../../shared/shared-icons";
-// Import WebP for desktop (smaller file size), SVG for mobile
-// Using static folder path for WebP (more reliable in Gatsby)
-const AccountComparisonDesktopBg = "/images/account-comparison-desktop.webp";
-import AccountComparisonMobileBg from "../../../../assets/images/bg/account-comparison/account-comparison-mobile.svg";
 import { ShowRegistrationPopup } from "../../../../helpers/constants";
 import LanguageContext from "../../../../context/language-context";
 import { useTranslationWithVariables } from "../../../../helpers/hooks/use-translation-with-vars";
@@ -25,7 +21,6 @@ import { useRtlDirection } from "../../../../helpers/hooks/use-rtl-direction";
 
 const AccountTypesAccountComparison = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const { selectedLanguage } = useContext(LanguageContext);
   const { t } = useTranslationWithVariables();
   const isRTL = useRtlDirection();
@@ -37,20 +32,6 @@ const AccountTypesAccountComparison = () => {
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
-
-  // Mobile detection
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkIsMobile();
-    window.addEventListener("resize", checkIsMobile);
-
-    return () => {
-      window.removeEventListener("resize", checkIsMobile);
-    };
-  }, []);
 
   const ecnFeatures = [
     t("account-comparison-accounts-type-ecn-feature1"),
@@ -74,19 +55,14 @@ const AccountTypesAccountComparison = () => {
     t("account-comparison-accounts-type-zero-feature8"),
   ];
 
-  // Using static folder path for WebP (more reliable)
-  const backgroundSrc = isMobile
-    ? AccountComparisonMobileBg
-    : AccountComparisonDesktopBg;
-
   return (
     <section
       className={`account-types-account-comparison-content ${
         isRTL ? "account-comparison-content--rtl" : ""
       }`}
     >
-      {/* Background Images */}
-      <div className="account-comparison-bg"></div>
+      {/* No section background — cards use their own artboard (matches legacy /accounts-type/). */}
+      <div className="account-comparison-bg" aria-hidden="true" />
 
       {/* Header */}
       <div className="account-comparison-header">

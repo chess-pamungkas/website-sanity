@@ -452,18 +452,7 @@
   box-sizing: border-box;
   align-items: center;
 
-  @include mobile {
-    min-height: calc(
-      #{$company-hero-mobile-top} + #{$company-hero-mobile-artboard}
-    );
-    height: auto;
-    border-radius: 20px;
-    padding-top: $company-hero-mobile-top;
-    padding-bottom: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: visible;
-  }
+  @include hero-page-shell-mobile();
 
   @include hero-page-shell-tablet(555px, 73px, 70px);
 
@@ -1356,6 +1345,24 @@ body.homepage-bg-1 .company + #main-container {
 
   @include desktop-xl {
     padding-top: $company-page-after-hero-gap-desktop-xl;
+    margin-bottom: $company-page-section-margin-bottom-desktop-xl;
+
+    .features-products {
+      padding: $company-page-features-padding-top-desktop 0 60px !important;
+    }
+  }
+
+  @include desktop-2k {
+    padding-top: $company-page-after-hero-gap-desktop-2k;
+    margin-bottom: $company-page-section-margin-bottom-desktop-xl;
+
+    .features-products {
+      padding: $company-page-features-padding-top-desktop 0 60px !important;
+    }
+  }
+
+  @include desktop-5k {
+    padding-top: $company-page-after-hero-gap-desktop-5k;
     margin-bottom: $company-page-section-margin-bottom-desktop-xl;
 
     .features-products {

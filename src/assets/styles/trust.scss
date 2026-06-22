@@ -489,7 +489,7 @@
 
   // Responsive Design
   @include small-mobile {
-    padding: 60px 0 20px 0;
+    padding: 60px 0;
 
     &__container {
       flex-direction: column;
@@ -671,7 +671,7 @@
   }
 
   @include mobile {
-    padding: 60px 0 20px 0;
+    padding: 60px 0;
 
     &__container {
       flex-direction: column;

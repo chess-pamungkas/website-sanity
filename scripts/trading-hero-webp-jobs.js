@@ -44,6 +44,7 @@ const DESKTOP = { width: 1440, height: 583 };
 const DESKTOP_BY_SLUG = {
   mt4: { width: 1400, height: 583 },
   mt5: { width: 1400, height: 583 },
+  "swap-free": { width: 1400, height: 583 },
   faq: { width: 1400, height: 480 },
   legal: { width: 1400, height: 510 },
   "contact-us": { width: 1400, height: 510 },

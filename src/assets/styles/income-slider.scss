@@ -3,13 +3,29 @@
 
 .income-slider {
   width: 100%;
-  padding: 150px 0 40px 0;
+  padding: $partners-income-slider-after-hero-gap-desktop 0 40px 0;
+
+  @include mobile {
+    padding-top: $partners-income-slider-after-hero-gap-mobile;
+  }
 
   @include tablet-only {
     padding-top: $partners-income-slider-after-hero-gap-tablet;
   }
 
   @include desktop-lg {
+    padding-top: $partners-income-slider-after-hero-gap-desktop;
+  }
+
+  @include desktop-xl {
+    padding-top: $partners-income-slider-after-hero-gap-desktop;
+  }
+
+  @include desktop-2k {
+    padding-top: $partners-income-slider-after-hero-gap-desktop;
+  }
+
+  @include desktop-5k {
     padding-top: $partners-income-slider-after-hero-gap-desktop;
   }
 
@@ -767,8 +783,6 @@
 
   // Mobile specific adjustments
   @include mobile {
-    padding: 135px 0 0 0;
-
     &__content {
       max-width: 100%;
     }

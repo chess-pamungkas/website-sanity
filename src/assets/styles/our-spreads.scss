@@ -15,6 +15,7 @@
   position: relative;
   overflow: hidden;
   margin: 0 auto;
+  @include marketing-page-after-hero-gap;
 
   @include mobile {
     padding: 0;
@@ -22,15 +23,6 @@
     width: 100%;
     height: auto;
     border-radius: 12px;
-    margin-top: 130px;
-  }
-
-  @include tablet-only {
-    margin-top: $below-marketing-hero-gap-tablet;
-  }
-
-  @include desktop-lg {
-    margin-top: $below-marketing-hero-gap-desktop;
   }
 
   // Background

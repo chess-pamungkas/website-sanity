@@ -21,13 +21,10 @@
   box-sizing: border-box;
   align-items: center;
 
+  @include hero-page-shell-mobile();
+
   @include mobile {
-    height: 953px;
-    border-radius: 20px;
-    padding-top: 73px;
-    margin-top: 0;
     margin-bottom: 125px;
-    overflow: visible;
   }
 
   @include hero-page-shell-tablet(555px, 73px, 70px);

@@ -21,19 +21,7 @@
   box-sizing: border-box;
   align-items: center;
 
-  @include mobile {
-    /* Reserve padding-top + absolute artboard (was 953px only → overlap with .funding-page). */
-    min-height: calc(
-      #{$funding-withdrawals-hero-mobile-top} + #{$funding-withdrawals-hero-mobile-artboard}
-    );
-    height: auto;
-    border-radius: 20px;
-    padding-top: $funding-withdrawals-hero-mobile-top;
-    padding-bottom: 20px;
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow: visible;
-  }
+  @include hero-page-shell-mobile();
 
   @include hero-page-shell-tablet(555px, 73px, 70px);
 
@@ -132,7 +120,8 @@
 
   &__hero-bg-lcp {
     @include desktop-lg {
-      object-position: center center;
+      /* right center (100%) still overlaps long i18n copy — nudge art right */
+      object-position: 88% 50%;
     }
 
     @include desktop-xl {
@@ -838,15 +827,8 @@
 .funding-page {
   // Container wrapper styling removed to maintain consistency with other pages
   // OurCommunityContent will now use default ContainerWrapper styling
-  padding-top: $funding-page-after-hero-gap-mobile;
-
-  @include tablet-only {
-    padding-top: $funding-page-after-hero-gap-tablet;
-  }
-
-  @include desktop-lg {
-    padding-top: $funding-page-after-hero-gap-desktop;
-  }
+  padding-top: 0;
+  @include marketing-page-after-hero-gap;
 
   // Center button container in desktop
   .button-container {

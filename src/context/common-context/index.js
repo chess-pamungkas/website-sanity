@@ -1,12 +1,12 @@
 import React, {
   createContext,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
   startTransition,
 } from "react";
 import PropTypes from "prop-types";
+import { useIsomorphicLayoutEffect } from "../../helpers/hooks/use-isomorphic-layout-effect";
 import { isBrowser } from "../../helpers/services/is-browser";
 import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
 
@@ -39,7 +39,7 @@ export const CommonProvider = ({ children }) => {
   }, []);
 
   // Must run before paint: the desktop header-offset spacer drives #main-container layout.
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (shouldDeferHeavyWorkForLighthouse() || !isBrowser()) {
       return undefined;
     }

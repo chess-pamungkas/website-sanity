@@ -5,12 +5,6 @@ export const getWithdrawalDataForFigma = () => {
   const { t } = useTranslationWithVariables();
   return [
     {
-      col1: t("funding_data_method_cards"),
-      col2: t("funding_data_processing_one_day"),
-      col3: t("funding_data_fees_zero"),
-      col4: t("funding_data_currencies_usd_eur"),
-    },
-    {
       col1: t("funding_data_method_crypto"),
       col2: t("funding_data_processing_one_day"),
       col3: t("funding_data_fees_zero"),

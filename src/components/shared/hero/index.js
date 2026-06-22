@@ -180,7 +180,7 @@ const HERO_LCP_BY_TYPE = {
     mobileSvg: "/images/bg/hero/swap-free/swap-free-mobile.svg",
     desktopSvg: "/images/bg/hero/swap-free/swap-free-desktop.svg",
     dimensions: {
-      desktop: HERO_LCP_DIM.desktop,
+      desktop: { width: 1400, height: 583 },
       mobile: HERO_LCP_DIM.mobile,
     },
   },
@@ -660,7 +660,7 @@ const Hero = ({
                   width={heroLcpConfig.dimensions.desktop.width}
                   height={heroLcpConfig.dimensions.desktop.height}
                   loading="eager"
-                  fetchPriority="high"
+                  fetchpriority="high"
                   decoding="sync"
                   aria-hidden="true"
                 />
@@ -683,7 +683,7 @@ const Hero = ({
                       width="734"
                       height="734"
                       loading="eager"
-                      fetchPriority="high"
+                      fetchpriority="high"
                       decoding="sync"
                       className={`${heroType}__hero-img-element`}
                       style={{
@@ -894,7 +894,7 @@ const Hero = ({
                         width="714"
                         height="692"
                         loading="eager"
-                        fetchPriority="high"
+                        fetchpriority="high"
                         decoding="sync"
                         className={`${heroType}__hand-img-element`}
                       />
