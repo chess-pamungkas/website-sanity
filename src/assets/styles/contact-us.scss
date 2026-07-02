@@ -882,7 +882,7 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
   width: 100vw;
   height: auto;
   min-height: 953px;
-  padding-top: 80px;
+  padding-top: with-compliance-banner(80px);
   z-index: 2;
   left: 50%;
   right: 50%;
@@ -904,28 +904,28 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
 
   @include desktop-lg {
     margin-bottom: 0;
-    min-height: calc(77px + 510px);
+    min-height: calc(#{with-compliance-banner(77px)} + 510px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
     padding-bottom: 0;
   }
 
   @include desktop-xl {
-    min-height: calc(83px + 510px);
+    min-height: calc(#{with-compliance-banner(83px)} + 510px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
   }
 
   @include desktop-2k {
-    min-height: calc(83px + 510px);
+    min-height: calc(#{with-compliance-banner(83px)} + 510px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
   }
 
   @include desktop-5k {
-    min-height: calc(83px + 510px);
+    min-height: calc(#{with-compliance-banner(83px)} + 510px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
   }
 
   &__hero-container {
@@ -948,7 +948,7 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 73px;
+      top: with-compliance-banner(73px);
       margin: 0 auto;
       border-radius: 20px;
       overflow: hidden;
@@ -963,7 +963,7 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 77px;
+      top: with-compliance-banner(77px);
       margin: 0 auto;
       overflow: visible;
     }
@@ -975,7 +975,7 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -986,7 +986,7 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -997,7 +997,7 @@ body.homepage-bg-1 .contact-us-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
   }

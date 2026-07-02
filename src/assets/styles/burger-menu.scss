@@ -36,7 +36,7 @@
       & ~ .burger-menu__navbar {
         visibility: visible;
         opacity: 1;
-        z-index: 22;
+        z-index: 1100;
       }
     }
   }
@@ -131,13 +131,13 @@
     @include mobile {
       left: 0;
       right: 0;
-      top: 0;
+      top: var(--compliance-banner-height, 0px);
       padding: 0;
       /* 100vh fallback; dvh tracks iOS Safari visible viewport when chrome resizes */
-      height: 100vh;
-      height: 100dvh;
-      max-height: 100vh;
-      max-height: 100dvh;
+      height: calc(100vh - var(--compliance-banner-height, 0px));
+      height: calc(100dvh - var(--compliance-banner-height, 0px));
+      max-height: calc(100vh - var(--compliance-banner-height, 0px));
+      max-height: calc(100dvh - var(--compliance-banner-height, 0px));
       overflow: hidden;
       -webkit-overflow-scrolling: touch;
       // background: rgba(0, 0, 0, 0.95);
@@ -177,12 +177,12 @@
 
       left: 0;
       right: 0;
-      top: 0;
+      top: var(--compliance-banner-height, 0px);
       padding: 0;
-      height: 100vh;
-      height: 100dvh;
-      max-height: 100vh;
-      max-height: 100dvh;
+      height: calc(100vh - var(--compliance-banner-height, 0px));
+      height: calc(100dvh - var(--compliance-banner-height, 0px));
+      max-height: calc(100vh - var(--compliance-banner-height, 0px));
+      max-height: calc(100dvh - var(--compliance-banner-height, 0px));
       overflow: hidden;
       -webkit-overflow-scrolling: touch;
       // background: rgba(0, 0, 0, 0.95);
@@ -244,6 +244,21 @@
       &::-webkit-scrollbar-thumb {
         background-color: rgba(0, 0, 0, 0.2);
         border-radius: 2px;
+      }
+    }
+
+    &--open {
+      visibility: visible;
+      opacity: 1;
+      z-index: 1100;
+
+      .burger-menu__mobile-header {
+        .header__left,
+        .header__center,
+        .header__right > .lang-select--header {
+          visibility: visible;
+          pointer-events: auto;
+        }
       }
     }
   }
@@ -557,19 +572,9 @@
     }
   }
 
-  // Mobile logo styling - using header styling
+  // Mobile logo styling - tablet uses default .header__logo (33px) from header.scss
   &__mobile-header {
     @include mobile {
-      .header__left {
-        .header__logo {
-          height: 26px;
-          width: auto;
-          flex-shrink: 0;
-        }
-      }
-    }
-
-    @include tablet {
       .header__left {
         .header__logo {
           height: 26px;
@@ -1180,5 +1185,27 @@
 
   &__subtitles {
     margin-top: 20px;
+  }
+}
+
+.header-wrapper:has(.burger-menu__navbar--open) {
+  @include mobile {
+    > .header > .header__main-wrapper > .header__left,
+    > .header > .header__main-wrapper > .header__center,
+    > .header > .header__main-wrapper > .header__right > .lang-select--header,
+    > .header .burger-menu > .burger-menu__trigger {
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
+  @include tablet {
+    > .header > .header__main-wrapper > .header__left,
+    > .header > .header__main-wrapper > .header__center,
+    > .header > .header__main-wrapper > .header__right > .lang-select--header,
+    > .header .burger-menu > .burger-menu__trigger {
+      visibility: hidden;
+      pointer-events: none;
+    }
   }
 }

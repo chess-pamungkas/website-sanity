@@ -1178,6 +1178,7 @@
 .mt5-page-community,
 .vps-page-community,
 .partners-page-community,
+.company-page-community,
 .help-center__our-community,
 .legal-page-community,
 .contact-us-page-community,
@@ -1194,6 +1195,10 @@
   #main-container {
     min-height: 0;
     flex-grow: 0;
+  }
+
+  #main-container .header-offset-placeholder {
+    height: 0 !important;
   }
 
   #main-container .container {

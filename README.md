@@ -10,13 +10,13 @@ Gatsby frontend for [oqtima.com](https://oqtima.com). All builds use **FSA** (`G
 
 ## 2. Environment files (CI / manual deploy)
 
-| File | Use |
-|------|-----|
-| `.env.example` | Template for local dev; not used in CI |
-| `.env_dev_com` | Dev (`dev.oqt-ima.com`) |
-| `.env_staging_com` | Staging (`test.oqt-ima.com`) |
-| `.env_prod_com` | Production (`oqtima.com`) |
-| `.env_prod_com_lp` | Production LP (`lp.oqtima.com`) |
+| File               | Use                                    |
+| ------------------ | -------------------------------------- |
+| `.env.example`     | Template for local dev; not used in CI |
+| `.env_dev_com`     | Dev (`dev.oqt-ima.com`)                |
+| `.env_staging_com` | Staging (`test.oqt-ima.com`)           |
+| `.env_prod_com`    | Production (`oqtima.com`)              |
+| `.env_prod_com_lp` | Production LP (`lp.oqtima.com`)        |
 
 Set `GATSBY_OQTIMA_API_URL` per environment (dev/staging/prod backends). Workflows copy the matching file to `.env.production` before `npm run build`.
 

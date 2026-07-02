@@ -443,7 +443,7 @@
   width: 100vw;
   height: auto;
   min-height: 0;
-  padding-top: 80px;
+  padding-top: with-compliance-banner(80px);
   z-index: 2;
   left: 50%;
   right: 50%;
@@ -456,28 +456,28 @@
 
   @include hero-page-shell-tablet(555px, 73px, 70px);
 
-  @include hero-page-shell-desktop-lg(540px, 77px, 83px);
+  @include hero-page-shell-desktop-lg(540px, 83px, 83px);
 
   @include desktop-xl {
-    min-height: calc(83px + 540px);
+    min-height: calc(#{with-compliance-banner(83px)} + 540px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
     padding-bottom: 0;
     border-radius: 24px;
   }
 
   @include desktop-2k {
-    min-height: calc(83px + 540px);
+    min-height: calc(#{with-compliance-banner(83px)} + 540px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
     padding-bottom: 0;
     border-radius: 24px;
   }
 
   @include desktop-5k {
-    min-height: calc(83px + 540px);
+    min-height: calc(#{with-compliance-banner(83px)} + 540px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
     padding-bottom: 0;
     border-radius: 24px;
   }
@@ -503,7 +503,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: $company-hero-mobile-top;
+      top: with-compliance-banner($hero-mobile-shell-top-default);
       margin: 0 auto;
       border-radius: 20px;
       overflow: hidden;
@@ -519,7 +519,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 77px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
       overflow: visible;
     }
@@ -531,7 +531,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -542,7 +542,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -553,7 +553,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
   }
@@ -1205,9 +1205,37 @@ body.homepage-bg-1 .company + #main-container {
   flex-grow: 0 !important;
   height: auto !important;
   contain: none;
+
+  @include tablet-only {
+    margin-top: $marketing-landing-after-hero-gap-tablet;
+  }
+
+  @include desktop-lg {
+    margin-top: $marketing-landing-after-hero-gap-desktop;
+  }
+
+  @include desktop-xl {
+    margin-top: $marketing-landing-after-hero-gap-desktop;
+  }
+
+  @include desktop-2k {
+    margin-top: $marketing-landing-after-hero-gap-desktop;
+  }
+
+  @include desktop-5k {
+    margin-top: $marketing-landing-after-hero-gap-desktop;
+  }
 }
 
-.company + #main-container .header-offset-placeholder {
+body.homepage-bg-1 .company-page-community #main-container {
+  min-height: 0;
+  flex-grow: 0;
+  contain: none;
+}
+
+/* Below-hero sections already clear the fixed header — no desktop header spacer. */
+.company + #main-container .header-offset-placeholder,
+.company-page-community #main-container .header-offset-placeholder {
   height: 0 !important;
 }
 
@@ -1326,7 +1354,7 @@ body.homepage-bg-1 .company + #main-container {
   }
 
   @include tablet-only {
-    padding-top: $company-page-after-hero-gap-tablet;
+    padding-top: 0;
     margin-bottom: $company-page-section-margin-bottom-tablet;
 
     .features-products {
@@ -1335,7 +1363,7 @@ body.homepage-bg-1 .company + #main-container {
   }
 
   @include desktop-lg {
-    padding-top: $company-page-after-hero-gap-desktop-lg;
+    padding-top: 0;
     margin-bottom: $company-page-section-margin-bottom-desktop-lg;
 
     .features-products {
@@ -1344,7 +1372,7 @@ body.homepage-bg-1 .company + #main-container {
   }
 
   @include desktop-xl {
-    padding-top: $company-page-after-hero-gap-desktop-xl;
+    padding-top: 0;
     margin-bottom: $company-page-section-margin-bottom-desktop-xl;
 
     .features-products {
@@ -1353,7 +1381,7 @@ body.homepage-bg-1 .company + #main-container {
   }
 
   @include desktop-2k {
-    padding-top: $company-page-after-hero-gap-desktop-2k;
+    padding-top: 0;
     margin-bottom: $company-page-section-margin-bottom-desktop-xl;
 
     .features-products {
@@ -1362,7 +1390,7 @@ body.homepage-bg-1 .company + #main-container {
   }
 
   @include desktop-5k {
-    padding-top: $company-page-after-hero-gap-desktop-5k;
+    padding-top: 0;
     margin-bottom: $company-page-section-margin-bottom-desktop-xl;
 
     .features-products {

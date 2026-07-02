@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, startTransition } from "react";
 import { graphql } from "gatsby";
 import "../assets/styles/index.scss";
 import "../assets/styles/webtrader.scss";
@@ -13,17 +13,12 @@ const MT4WebTraderPage = () => {
   const { t } = useTranslationWithVariables();
 
   useEffect(() => {
-    setIsSearchBarAttached(false);
-
-    // Add webtrader class to body for mobile styling
-    document.body.classList.add("webtrader-page");
+    startTransition(() => setIsSearchBarAttached(false));
 
     return () => {
-      setIsSearchBarAttached(true);
-      // Remove webtrader class when leaving page
-      document.body.classList.remove("webtrader-page");
+      startTransition(() => setIsSearchBarAttached(true));
     };
-  }, []);
+  }, [setIsSearchBarAttached]);
 
   return (
     <>

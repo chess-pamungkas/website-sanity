@@ -66,11 +66,7 @@
   }
 }
 
-/* Desktop-only header spacer; height from CommonContext (--header-offset-px). Avoids innerWidth in ContainerWrapper. */
+/* Marketing heroes clear the fixed header — mid-page ContainerWrapper blocks must not stack a second spacer. */
 #main-container .header-offset-placeholder {
-  height: 0;
-
-  @include desktop-lg {
-    height: var(--header-offset-px, 0px);
-  }
+  height: 0 !important;
 }

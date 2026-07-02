@@ -33,17 +33,17 @@
   }
 
   @include desktop-xl {
-    padding-top: 80px;
+    padding-top: with-compliance-banner(80px);
     padding-bottom: 0;
   }
 
   @include desktop-2k {
-    padding-top: 80px;
+    padding-top: with-compliance-banner(80px);
     padding-bottom: 0;
   }
 
   @include desktop-5k {
-    padding-top: 80px;
+    padding-top: with-compliance-banner(80px);
     padding-bottom: 0;
   }
 

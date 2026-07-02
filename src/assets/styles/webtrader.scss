@@ -3,7 +3,25 @@
 
 // Global webtrader page styles
 body.webtrader-page {
+  --webtrader-nav-offset: 85px; // HEADER_BIG_HEIGHT + 20
+  --webtrader-footer-offset: 90px;
+  --webtrader-mt4-chrome-fallback: calc(
+    var(--compliance-banner-height, 110px) + var(--webtrader-nav-offset)
+  );
+
+  // Clear fixed banner + nav in one offset; avoid extra padding above the iframe.
+  &:not(.mt4-webtrader-page) main {
+    padding-top: calc(
+      var(--compliance-banner-height, 110px) + var(--webtrader-nav-offset)
+    );
+  }
+
   @include mobile {
+    --webtrader-nav-offset: 95px; // HEADER_SMALL_HEIGHT + 30
+    --webtrader-footer-offset: 70px;
+    --webtrader-mt4-chrome-fallback: calc(
+      var(--compliance-banner-height, 150px) + 76px
+    );
     // Prevent body from interfering with horizontal scroll
     overflow-x: hidden !important;
     overflow-y: auto !important;
@@ -12,11 +30,16 @@ body.webtrader-page {
     -webkit-overflow-scrolling: touch;
 
     // Fix any layout containers that might cause centering
-    main {
+    &:not(.mt4-webtrader-page) main {
       width: 100% !important;
       max-width: 100% !important;
       margin: 0 !important;
-      padding: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding-bottom: 0 !important;
+      padding-top: calc(
+        var(--compliance-banner-height, 150px) + var(--webtrader-nav-offset)
+      ) !important;
       overflow-x: hidden !important;
 
       .container {
@@ -28,13 +51,13 @@ body.webtrader-page {
       }
     }
 
-    // Ensure webtrader takes full width
+    // MT4: full-width scroll container (no -50vw bleed — clips left in some embeds)
     .mt4-webtrader {
-      width: 100vw !important;
-      max-width: none !important;
+      width: 100% !important;
+      max-width: 100% !important;
       margin: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
+      left: auto !important;
+      right: auto !important;
       transform: none !important;
       overflow-x: auto !important;
     }
@@ -49,17 +72,12 @@ body.webtrader-page {
       transform: none !important;
       overflow-x: hidden !important;
 
-      // Ensure content is below header
-      margin-top: 80px !important;
-      padding-top: 20px !important;
-
       iframe {
         width: 100% !important;
         max-width: 100% !important;
         min-width: 100% !important;
         transform: scale(1) !important;
         transform-origin: top left !important;
-        height: calc(100vh - 160px) !important; // Account for header height
       }
     }
 
@@ -79,6 +97,72 @@ body.webtrader-page {
   }
 }
 
+// MT4 mobile: measured top chrome + fixed-height terminal; footer scrolls below.
+body.webtrader-page.mt4-webtrader-page {
+  --webtrader-mt4-chrome-effective: max(
+    var(--webtrader-mt4-chrome-top, 0px),
+    var(--webtrader-mt4-chrome-fallback)
+  );
+
+  main {
+    padding-top: var(--webtrader-mt4-chrome-effective);
+  }
+
+  @include mobile {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    main {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding-bottom: 0 !important;
+      padding-top: var(--webtrader-mt4-chrome-effective) !important;
+      overflow-x: hidden !important;
+    }
+
+    .mt4-webtrader {
+      display: block !important;
+      position: relative !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      height: calc(
+        100dvh - var(--webtrader-mt4-chrome-effective) - 12px
+      ) !important;
+      min-height: 420px !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      -webkit-overflow-scrolling: touch;
+      direction: ltr;
+      unicode-bidi: isolate;
+
+      #webterminal {
+        display: block !important;
+        width: 800px !important;
+        min-width: 800px !important;
+        max-width: none !important;
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+
+        iframe {
+          display: block !important;
+          width: 800px !important;
+          min-width: 800px !important;
+          max-width: none !important;
+          height: 100% !important;
+          margin: 0 !important;
+          border: none;
+        }
+      }
+    }
+  }
+}
+
 // Webtrader container styles
 .webtrader-container {
   width: 100%;
@@ -86,7 +170,7 @@ body.webtrader-page {
 
   // Mobile-specific styles
   @include mobile {
-    height: calc(100vh - var(--header-height, 65px));
+    height: calc(100vh - #{with-compliance-banner(65px)});
     min-height: 500px;
     overflow-x: auto;
     overflow-y: hidden;
@@ -122,45 +206,45 @@ body.webtrader-page {
 
   // Tablet styles
   @include tablet {
-    height: calc(100vh - var(--header-height, 65px));
+    height: calc(100vh - #{with-compliance-banner(65px)});
     min-height: 600px;
   }
 
   // Desktop styles
   @include desktop-lg {
-    height: calc(100vh - var(--header-height, 203px));
+    height: calc(
+      100vh - var(--header-height, #{with-compliance-banner(203px)})
+    );
     min-height: 700px;
   }
 }
 
 // MT4 Webtrader specific styles
 .mt4-webtrader {
-  @extend .webtrader-container;
+  width: 100%;
+  margin: 0;
+  padding-top: 0;
+  position: relative;
+  height: calc(
+    100vh - var(--compliance-banner-height, 110px) -
+      var(--webtrader-nav-offset, 85px) - var(--webtrader-footer-offset, 90px)
+  );
+  min-height: 400px;
 
   @include mobile {
-    // Remove centering and make it full width
-    width: 100vw;
-    max-width: none;
+    width: 100%;
+    max-width: 100%;
     margin: 0;
     padding: 0;
-
-    // Position relative to parent
     position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-
-    // Add padding for mobile spacing
-    padding-top: 10px;
-    padding-bottom: 20px;
-
-    // Ensure horizontal scrolling works
+    left: auto;
+    right: auto;
     overflow-x: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
-
-    // Make container wider to accommodate MT4 interface
-    min-width: 100vw;
+    height: calc(100vh - #{with-compliance-banner(65px)});
+    min-height: 420px;
+    padding-bottom: 20px;
   }
 
   #webterminal {
@@ -170,29 +254,20 @@ body.webtrader-page {
     display: block;
 
     @include mobile {
-      // Ensure proper mobile rendering with horizontal scroll
       -webkit-overflow-scrolling: touch;
-      overflow-x: auto;
-      overflow-y: hidden;
-      min-width: 100vw;
-      width: 100vw;
-
-      // Remove any padding that might cause centering
+      overflow: visible;
+      min-width: 800px;
+      width: 800px;
+      max-width: none;
       padding: 0;
       margin: 0;
 
-      // Force the MT4 interface to be wider than viewport
-      min-width: 800px;
-      width: 800px !important;
-
-      // Ensure horizontal scrolling works
-      white-space: nowrap;
-
-      // Force the iframe content to be scrollable
       iframe {
+        display: block;
         min-width: 800px !important;
         width: 800px !important;
         height: 100% !important;
+        margin: 0 !important;
       }
 
       // Add scrollbar styling
@@ -219,21 +294,59 @@ body.webtrader-page {
 
 // MT5 Webtrader specific styles
 .mt5-webtrader {
-  @extend .webtrader-container;
+  width: 100%;
+  margin: 0;
+  padding-top: 0;
+  position: relative;
+  box-sizing: content-box;
+
+  &__frame {
+    position: relative;
+    width: 100%;
+    height: clamp(
+      420px,
+      calc(
+        100vh - var(--compliance-banner-height, 110px) -
+          var(--webtrader-nav-offset, 85px) -
+          var(--webtrader-footer-offset, 90px)
+      ),
+      540px
+    );
+  }
+
+  @include tablet {
+    &__frame {
+      height: clamp(
+        400px,
+        calc(
+          100vh - var(--compliance-banner-height, 110px) -
+            var(--webtrader-nav-offset, 85px) -
+            var(--webtrader-footer-offset, 90px)
+        ),
+        520px
+      );
+    }
+  }
 
   @include mobile {
     // Force responsive layout for all MT5 content
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    padding: 0 !important;
     overflow-x: hidden !important;
-
-    // Add proper padding to avoid header overlap
-    padding-top: 80px !important; // Ensure content is below header
     padding-bottom: 20px;
-    padding-left: 10px;
-    padding-right: 10px;
+
+    &__frame {
+      height: clamp(
+        360px,
+        calc(
+          100vh - var(--compliance-banner-height, 150px) -
+            var(--webtrader-nav-offset, 95px) -
+            var(--webtrader-footer-offset, 70px)
+        ),
+        480px
+      );
+    }
   }
 
   iframe {
@@ -241,6 +354,11 @@ body.webtrader-page {
     height: 100%;
     border: none;
     display: block;
+
+    @include desktop-lg {
+      transform: none;
+      transform-origin: center center;
+    }
 
     @include mobile {
       // Force iframe to be responsive
@@ -275,18 +393,12 @@ body.webtrader-page {
     overflow-x: hidden !important;
     overflow-y: auto !important;
 
-    // Add proper spacing to avoid header overlap
-    margin-top: 80px !important; // Additional margin to push content below header
-
     // Force iframe to fit container
     iframe {
-      position: relative !important; // Changed from absolute to relative
+      position: relative !important;
       top: 0 !important;
       left: 0 !important;
       width: 100% !important;
-      height: calc(
-        100vh - 160px
-      ) !important; // Adjusted height to account for header
       max-width: 100% !important;
       min-width: 100% !important;
 

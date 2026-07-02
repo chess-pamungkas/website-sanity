@@ -31,25 +31,25 @@ $hand-image: url("/images/hand.webp");
 
   /* Desktop-lg: 575px artboard; desktop-xl+ uses 686px (matches pre-refactor Figma). */
   @include desktop-lg {
-    min-height: calc(77px + 575px);
+    min-height: calc(#{with-compliance-banner(77px)} + 575px);
     height: auto;
     margin-bottom: 0;
   }
 
   @include desktop-xl {
-    min-height: calc(77px + 686px);
+    min-height: calc(#{with-compliance-banner(77px)} + 686px);
     height: auto;
     margin-bottom: 0;
   }
 
   @include desktop-2k {
-    min-height: calc(77px + 686px);
+    min-height: calc(#{with-compliance-banner(77px)} + 686px);
     height: auto;
     margin-bottom: 0;
   }
 
   @include desktop-5k {
-    min-height: calc(77px + 686px);
+    min-height: calc(#{with-compliance-banner(77px)} + 686px);
     height: auto;
     margin-bottom: 0;
   }
@@ -74,7 +74,7 @@ $hand-image: url("/images/hand.webp");
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 66px;
+      top: with-compliance-banner(66px);
       margin: 0 auto;
       border-radius: 20px;
       overflow: hidden;
@@ -87,7 +87,7 @@ $hand-image: url("/images/hand.webp");
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 66px;
+      top: with-compliance-banner(66px);
       margin: 0 auto;
       border-radius: 24px;
       overflow: hidden;
@@ -113,7 +113,7 @@ $hand-image: url("/images/hand.webp");
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 77px;
+      top: with-compliance-banner(77px);
       margin: 0 auto;
       overflow: visible;
     }
@@ -125,7 +125,7 @@ $hand-image: url("/images/hand.webp");
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 77px;
+      top: with-compliance-banner(77px);
       margin: 0 auto;
       overflow: visible;
     }
@@ -137,7 +137,7 @@ $hand-image: url("/images/hand.webp");
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 77px;
+      top: with-compliance-banner(77px);
       margin: 0 auto;
       overflow: visible;
     }
@@ -149,7 +149,7 @@ $hand-image: url("/images/hand.webp");
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 77px;
+      top: with-compliance-banner(77px);
       margin: 0 auto;
       overflow: visible;
     }

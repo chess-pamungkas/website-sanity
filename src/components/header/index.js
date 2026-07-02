@@ -27,6 +27,7 @@ import ButtonPopup from "../shared/button-popup";
 import SearchBar from "./components/search-bar";
 import { getMenuStructure } from "../../helpers/menu-structure.config";
 import NotificationsContainer from "../shared/notification-stripe";
+import RiskWarningBanner from "../shared/risk-warning-banner";
 
 const HeaderDropdownContent = lazy(() =>
   import("./HeaderDropdownContent").then((m) => ({ default: m.default }))
@@ -126,6 +127,7 @@ const Header = ({ className }) => {
       })}
       ref={headerRef}
     >
+      <RiskWarningBanner />
       <NotificationsContainer setSectionOptions={setSectionOptions} />
       <GDPRPopup />
       {/* Header--big or header--small always visible behind */}
