@@ -5,6 +5,11 @@ import {
   RISK_DISCLAIMER_POPUP_DESCRIPTION,
   RISK_DISCLAIMER_POPUP_TITLE,
 } from "./risk-disclaimer-content";
+import {
+  lockBodyScroll,
+  notifyScrollPositionChange,
+  unlockBodyScroll,
+} from "../../../helpers/scroll-lock";
 
 const CloseIcon = () => (
   <svg
@@ -36,15 +41,9 @@ const RiskDisclaimerPopup = ({ isOpen, onClose }) => {
     }
 
     const scrollY = window.scrollY;
-    const { body } = document;
     const appRoot = document.getElementById("gatsby-focus-wrapper");
 
-    body.classList.add("overflow-hidden");
-    body.style.position = "fixed";
-    body.style.top = `-${scrollY}px`;
-    body.style.left = "0";
-    body.style.right = "0";
-    body.style.width = "100%";
+    lockBodyScroll(scrollY);
 
     if (appRoot) {
       appRoot.setAttribute("inert", "");
@@ -64,22 +63,17 @@ const RiskDisclaimerPopup = ({ isOpen, onClose }) => {
     };
 
     window.addEventListener("keydown", handleKeyDown);
+    notifyScrollPositionChange();
 
     return () => {
-      body.classList.remove("overflow-hidden");
-      body.style.position = "";
-      body.style.top = "";
-      body.style.left = "";
-      body.style.right = "";
-      body.style.width = "";
-
       if (appRoot) {
         appRoot.removeAttribute("inert");
         appRoot.removeAttribute("aria-hidden");
       }
 
       window.removeEventListener("keydown", handleKeyDown);
-      window.scrollTo(0, scrollY);
+      unlockBodyScroll(scrollY);
+      notifyScrollPositionChange();
     };
   }, [isOpen, onClose]);
 
