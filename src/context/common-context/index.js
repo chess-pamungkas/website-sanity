@@ -9,6 +9,7 @@ import PropTypes from "prop-types";
 import { useIsomorphicLayoutEffect } from "../../helpers/hooks/use-isomorphic-layout-effect";
 import { isBrowser } from "../../helpers/services/is-browser";
 import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
+import { getEffectiveScrollY, notifyScrollPositionChange } from "../../helpers/scroll-lock";
 
 const CommonContext = createContext({});
 
@@ -25,7 +26,7 @@ export const CommonProvider = ({ children }) => {
 
   const checkIsScrolled = () => {
     if (isBrowser()) {
-      startTransition(() => setIsScrolled(window.scrollY > 0));
+      startTransition(() => setIsScrolled(getEffectiveScrollY() > 0));
     }
   };
 
