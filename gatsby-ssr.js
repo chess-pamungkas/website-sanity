@@ -9,6 +9,8 @@ import { LEGAL_REGULATED_CRITICAL_CSS } from "./src/helpers/legal-regulated-crit
 import { CONTACT_US_HERO_CRITICAL_CSS } from "./src/helpers/contact-us-critical-css";
 import { PARTNERS_HERO_CRITICAL_CSS } from "./src/helpers/partners-critical-css";
 import { COMPANY_CRITICAL_CSS } from "./src/helpers/company-critical-css";
+import { RISK_DISCLAIMER_CRITICAL_CSS } from "./src/helpers/risk-disclaimer-critical-css";
+import { staticCssUrl } from "./src/helpers/static-css-cache-bust";
 import {
   heroTabletContainerCritical,
   heroPageShellCritical,
@@ -1394,13 +1396,13 @@ armCssFlipAndScripts();})();`
       createElement("link", {
         key: "deferred-styles-pages-ssr",
         rel: "stylesheet",
-        href: "/css/deferred-styles-pages.css",
+        href: staticCssUrl("/css/deferred-styles-pages.css"),
         media: "print",
       }),
       createElement("link", {
         key: "preload-deferred-styles-pages",
         rel: "preload",
-        href: "/css/deferred-styles-pages.css",
+        href: staticCssUrl("/css/deferred-styles-pages.css"),
         as: "style",
       })
     );
@@ -1500,6 +1502,14 @@ armCssFlipAndScripts();})();`
   }
   // Load fonts-critical.css async (no render-blocking): sync loading regressed TBT ~700ms+ on mobile (main-thread long tasks).
   // Subheading LCP is helped by aligned inline hero CSS + Sofia Light in this file + preload Light on homepage.
+  earlyHints.push(
+    <style
+      key="risk-disclaimer-critical-inline"
+      dangerouslySetInnerHTML={{
+        __html: RISK_DISCLAIMER_CRITICAL_CSS,
+      }}
+    />
+  );
   earlyHints.push(
     <link
       key="fonts-critical-async"
