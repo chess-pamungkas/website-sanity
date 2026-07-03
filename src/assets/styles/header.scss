@@ -9,9 +9,28 @@
     z-index: 1000;
     top: 0;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 
     &--dropdown-open {
       z-index: 1003;
+    }
+
+    &:has(.burger-menu__navbar--open) {
+      z-index: 1100;
+    }
+
+    .header {
+      position: relative;
+      top: auto;
+      left: auto;
+      right: auto;
+      flex-shrink: 0;
+    }
+
+    .risk-warning-banner {
+      flex-shrink: 0;
+      width: 100%;
     }
   }
 
@@ -537,7 +556,7 @@
 
   // When opened from header--small, match its margin
   &--from-small {
-    top: 8px; // Match header--small margin-top
+    top: with-compliance-banner(8px); // Match header--small margin-top
     width: 100%;
 
     @include tablet {
@@ -563,7 +582,7 @@
 
   // When opened from header--big, stay at top: 0
   &--from-big {
-    top: -1px;
+    top: with-compliance-banner(-1px);
     margin-top: 0;
     width: 100%;
 

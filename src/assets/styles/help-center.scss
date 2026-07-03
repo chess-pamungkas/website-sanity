@@ -3,7 +3,7 @@
 
 .help-center {
   padding-top: $faq-help-center-after-hero-gap-desktop;
-  padding-bottom: 120px;
+  padding-bottom: 0;
   background: map-get($colors, "white");
 
   @include mobile {
@@ -18,18 +18,22 @@
 
   @include desktop-lg {
     padding-top: $faq-help-center-after-hero-gap-desktop;
+    padding-bottom: $faq-help-center-before-our-community-gap-desktop;
   }
 
   @include desktop-xl {
     padding-top: $faq-help-center-after-hero-gap-desktop;
+    padding-bottom: $faq-help-center-before-our-community-gap-desktop;
   }
 
   @include desktop-2k {
     padding-top: $faq-help-center-after-hero-gap-desktop;
+    padding-bottom: $faq-help-center-before-our-community-gap-desktop;
   }
 
   @include desktop-5k {
     padding-top: $faq-help-center-after-hero-gap-desktop;
+    padding-bottom: $faq-help-center-before-our-community-gap-desktop;
   }
 
   &__wrapper {
@@ -987,7 +991,7 @@
     color: inherit;
 
     @include mobile {
-      padding: 0;
+      padding: 16px 0;
       align-items: center;
     }
 
@@ -1300,7 +1304,7 @@
 
   @include mobile {
     min-height: 53px;
-    margin-bottom: 10px;
+    margin-bottom: 0;
   }
 
   &:last-child {

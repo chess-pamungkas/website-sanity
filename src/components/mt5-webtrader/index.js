@@ -91,36 +91,6 @@ const WebTraderLink = () => {
 
   const handleIframeLoad = () => {
     setIsLoading(false);
-
-    // Try to inject responsive CSS into iframe
-    try {
-      const iframe = containerRef.current?.querySelector("iframe");
-      if (iframe && iframe.contentDocument) {
-        const iframeDoc = iframe.contentDocument;
-        const style = iframeDoc.createElement("style");
-        style.textContent = `
-          * {
-            max-width: 100% !important;
-            box-sizing: border-box !important;
-          }
-          body {
-            width: 100% !important;
-            max-width: 100% !important;
-            overflow-x: hidden !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          .container, .main, .content {
-            width: 100% !important;
-            max-width: 100% !important;
-            overflow-x: hidden !important;
-          }
-        `;
-        iframeDoc.head.appendChild(style);
-      }
-    } catch (error) {
-      // Cross-origin restrictions, ignore
-    }
   };
 
   const handleIframeError = () => {
@@ -140,7 +110,10 @@ const WebTraderLink = () => {
 
   if (hasError) {
     return (
-      <div className="mt5-webtrader webtrader-error" ref={containerRef}>
+      <div
+        className="mt5-webtrader webtrader-error"
+        ref={containerRef}
+      >
         <div className="error-icon">⚠️</div>
         <div className="error-message">
           {isMobile
@@ -160,35 +133,27 @@ const WebTraderLink = () => {
         className="mt5-webtrader"
         ref={containerRef}
         data-interface={interfaceType}
-        style={{
-          paddingTop: isDesktop
-            ? HEADER_BIG_HEIGHT + 20
-            : isMobile
-            ? HEADER_SMALL_HEIGHT + 30 // More padding for mobile
-            : HEADER_SMALL_HEIGHT + 10,
-          height: isMobile ? "calc(100vh - 95px)" : "calc(100vh - 223px)", // Adjusted height for mobile
-        }}
       >
-        {isLoading && (
-          <div className="webtrader-loading">
-            <div className="loading-spinner"></div>
-          </div>
-        )}
-        <iframe
-          src={getWebTraderUrl(selectedLanguage)}
-          width="100%"
-          height="100%"
-          onLoad={handleIframeLoad}
-          onError={handleIframeError}
-          style={{
-            border: "none",
-            opacity: isLoading ? 0 : 1,
-            transition: "opacity 0.3s ease-in-out",
-          }}
-          title="MT5 WebTrader"
-          allowFullScreen
-          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
-        />
+        <div className="mt5-webtrader__frame">
+          {isLoading && (
+            <div className="webtrader-loading">
+              <div className="loading-spinner"></div>
+            </div>
+          )}
+          <iframe
+            src={getWebTraderUrl(selectedLanguage)}
+            onLoad={handleIframeLoad}
+            onError={handleIframeError}
+            style={{
+              border: "none",
+              opacity: isLoading ? 0 : 1,
+              transition: "opacity 0.3s ease-in-out",
+            }}
+            title="MT5 WebTrader"
+            allowFullScreen
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+          />
+        </div>
       </div>
     </div>
   );

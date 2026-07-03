@@ -14,7 +14,7 @@
   width: 100vw;
   height: auto;
   min-height: 953px;
-  padding-top: 80px;
+  padding-top: with-compliance-banner(80px);
   z-index: 2;
   left: 50%;
   right: 50%;
@@ -28,24 +28,28 @@
   @include hero-page-shell-tablet(575px, 66px, 70px);
 
   @include desktop-lg {
-    height: 786px;
-    padding-top: 83px;
+    min-height: calc(#{with-compliance-banner(83px)} + 686px);
+    height: auto;
+    padding-top: with-compliance-banner(83px);
     padding-bottom: 0;
   }
 
   @include desktop-xl {
-    height: 786px;
-    padding-top: 83px;
+    min-height: calc(#{with-compliance-banner(83px)} + 686px);
+    height: auto;
+    padding-top: with-compliance-banner(83px);
   }
 
   @include desktop-2k {
-    height: 786px;
-    padding-top: 83px;
+    min-height: calc(#{with-compliance-banner(83px)} + 686px);
+    height: auto;
+    padding-top: with-compliance-banner(83px);
   }
 
   @include desktop-5k {
-    height: 786px;
-    padding-top: 83px;
+    min-height: calc(#{with-compliance-banner(83px)} + 686px);
+    height: auto;
+    padding-top: with-compliance-banner(83px);
   }
 
   &__hero-container {
@@ -68,7 +72,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 66px;
+      top: with-compliance-banner(66px);
       margin: 0 auto;
       border-radius: 20px;
       overflow: hidden;
@@ -83,7 +87,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 77px;
+      top: with-compliance-banner(77px);
       margin: 0 auto;
       overflow: visible;
     }
@@ -95,7 +99,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 77px;
+      top: with-compliance-banner(77px);
       margin: 0 auto;
       overflow: visible;
     }
@@ -107,7 +111,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 77px;
+      top: with-compliance-banner(77px);
       margin: 0 auto;
       overflow: visible;
     }
@@ -119,7 +123,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 77px;
+      top: with-compliance-banner(77px);
       margin: 0 auto;
       overflow: visible;
     }

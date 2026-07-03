@@ -75,6 +75,9 @@ const RISK_DISCLOSURE_DOC_FSA = generateFileLinkWithLang(
   { id: "en", URIPart: "/en" }
 );
 
+export const getRiskDisclosureDocForLanguage = (selectedLanguage) =>
+  generateFileLinkWithLang(riskDisclosureNoticeFSA, selectedLanguage);
+
 export const RISK_DISCLOSURE_DOC = RISK_DISCLOSURE_DOC_FSA;
 export const TRADING_VIEW_DOC = RISK_DISCLOSURE_DOC_FSA;
 

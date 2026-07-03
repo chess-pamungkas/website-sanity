@@ -10,11 +10,8 @@ const ContainerWrapper = ({ children, className }) => {
     <div id="main-container" className={cn(className)}>
       <div
         className="header-offset-placeholder"
-        style={
-          heightOffset > 0
-            ? { "--header-offset-px": `${heightOffset}px` }
-            : undefined
-        }
+        style={{ "--header-offset-px": `${heightOffset}px` }}
+        suppressHydrationWarning
       />
       <div className="container">{children}</div>
     </div>

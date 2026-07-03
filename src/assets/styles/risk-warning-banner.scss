@@ -1,0 +1,233 @@
+@import "vars";
+@import "mixins";
+
+:root {
+  --compliance-banner-height: 110px;
+
+  @include mobile {
+    --compliance-banner-height: 102px;
+  }
+
+  @include tablet-only {
+    --compliance-banner-height: 77px;
+  }
+
+  @include desktop-lg {
+    --compliance-banner-height: 65px;
+  }
+}
+
+.risk-warning-banner {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px 0;
+  isolation: isolate;
+  flex: none;
+  position: relative;
+  z-index: 2;
+
+  @include mobile {
+    z-index: 25;
+  }
+
+  @include tablet-only {
+    z-index: 25;
+    padding: 10px 16px 0;
+  }
+
+  @include desktop-lg {
+    padding: 12px 0 0;
+  }
+
+  &__inner {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 8px;
+    gap: 10px;
+    isolation: isolate;
+    background: rgba(0, 0, 0, 0.61);
+    border: 1px solid rgba(255, 68, 0, 0.3);
+    border-radius: 15px;
+    transition: backdrop-filter 0.3s ease, border-color 0.3s ease;
+
+    @include tablet-only {
+      border-radius: 10px;
+    }
+
+    @include desktop-lg {
+      padding: 12px 26px;
+      gap: 10px;
+      border-radius: 10px;
+      @include desktop-header-small-max-width;
+    }
+
+    &--collapsed {
+      @include desktop-lg {
+        flex-direction: row;
+        align-items: center;
+        min-height: 41px;
+      }
+    }
+
+    .risk-warning-banner--scrolled & {
+      background: rgba(0, 0, 0, 0.61);
+      border-color: rgba(255, 68, 0, 0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  }
+
+  &__collapsed {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    position: relative;
+
+    @include desktop-lg {
+      flex-direction: row;
+      width: auto;
+      gap: 0;
+      justify-content: center;
+    }
+  }
+
+  &__summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+
+    @include desktop-lg {
+      width: auto;
+      flex: none;
+      order: 0;
+    }
+  }
+
+  &__text {
+    margin: 0;
+    width: 100%;
+    font-family: $font;
+    font-style: normal;
+    font-weight: map-get($font-weight, "regular");
+    font-size: 15.4px;
+    line-height: 17px;
+    letter-spacing: 0;
+    text-align: center;
+    color: #ffffff;
+
+    @include desktop-lg {
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    @include desktop-xl {
+      font-size: 16px;
+      line-height: 18px;
+    }
+
+    &--summary-line,
+    &--summary-desktop {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      text-transform: none;
+    }
+
+    &--summary-desktop {
+      width: auto;
+      white-space: nowrap;
+    }
+  }
+
+  &__summary-body {
+    font-weight: map-get($font-weight, "regular");
+  }
+
+  &__label {
+    font-weight: map-get($font-weight, "bold");
+
+    @include desktop-lg {
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    @include desktop-xl {
+      font-size: 16px;
+      line-height: 18px;
+    }
+  }
+
+  &__read-more {
+    flex: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: $font;
+    font-style: normal;
+    font-weight: map-get($font-weight, "bold");
+    font-size: 15.4px;
+    line-height: 17px;
+    letter-spacing: 0;
+    text-align: center;
+    text-decoration: underline;
+    text-transform: none;
+    color: #ffffff;
+    z-index: 1;
+    transition: opacity 0.2s ease;
+
+    &--inline {
+      display: inline;
+      width: auto;
+      line-height: 17px;
+
+      @include desktop-lg {
+        font-size: 13px;
+        line-height: 18px;
+      }
+
+      @include desktop-xl {
+        font-size: 16px;
+        line-height: 18px;
+      }
+    }
+
+    &--block {
+      display: block;
+      width: 100%;
+      line-height: 17px;
+
+      @include desktop-lg {
+        width: auto;
+        font-size: 13px;
+        line-height: 18px;
+      }
+
+      @include desktop-xl {
+        font-size: 16px;
+        line-height: 18px;
+      }
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      opacity: 0.85;
+      text-decoration: underline;
+    }
+  }
+}
