@@ -60,6 +60,10 @@ import { isNonProductionBuild } from "../../../helpers/is-non-production-build";
 import { MOBILE_VIEWPORT_MQ } from "../../../helpers/viewport-media";
 import { routeNeedsLiveTrading } from "../../../helpers/route-needs-live-trading";
 import { whenAppStylesReady } from "../../../helpers/when-app-styles-ready";
+import {
+  isStaticCssLinkLoaded,
+  staticCssUrl,
+} from "../../../helpers/static-css-cache-bust";
 import { useLocation } from "@reach/router";
 
 // true so LCP hero is in SSR HTML and first paint (avoids ~2.6s element render delay in Lighthouse)
@@ -348,6 +352,9 @@ const LayoutInner = ({ children, pathname: pathnameFromPage }) => {
       const loadDeferred = () => {
         if (done) return;
         done = true;
+        const deferredStylesPath = staticCssUrl("/css/deferred-styles.css");
+        const deferredStyles2Path = staticCssUrl("/css/deferred-styles-2.css");
+        const deferredFontsPath = staticCssUrl("/css/deferred-fonts.css");
         const addLink = (href, onLoad) => {
           const link = document.createElement("link");
           link.rel = "stylesheet";
@@ -371,7 +378,7 @@ const LayoutInner = ({ children, pathname: pathnameFromPage }) => {
           return isMarketingHomePath(p);
         };
         const injectSecond = () => {
-          addLink("/css/deferred-fonts.css");
+          addLink(deferredFontsPath);
           if (isMarketingHome()) {
             // Fallback if parallel inject (see injectFirst) did not load chunk 2 yet.
             const isMobileViewport =
@@ -385,8 +392,8 @@ const LayoutInner = ({ children, pathname: pathnameFromPage }) => {
                 ? 400
                 : 0;
             tChunk2 = setTimeout(() => {
-              if (!document.querySelector('link[href="/css/deferred-styles-2.css"]')) {
-                addLink("/css/deferred-styles-2.css");
+              if (!isStaticCssLinkLoaded("/css/deferred-styles-2.css")) {
+                addLink(deferredStyles2Path);
               }
             }, chunk2DelayMs);
           }
@@ -396,11 +403,11 @@ const LayoutInner = ({ children, pathname: pathnameFromPage }) => {
             isMarketingHome() &&
             typeof document !== "undefined" &&
             typeof document.querySelector !== "undefined" &&
-            !document.querySelector('link[href="/css/deferred-styles-2.css"]')
+            !isStaticCssLinkLoaded("/css/deferred-styles-2.css")
           ) {
-            addLink("/css/deferred-styles-2.css");
+            addLink(deferredStyles2Path);
           }
-          addLink("/css/deferred-styles.css", () => {
+          addLink(deferredStylesPath, () => {
             if (typeof scheduler !== "undefined" && scheduler.yield) {
               scheduler.yield().then(injectSecond).catch(injectSecond);
             } else {
@@ -489,10 +496,10 @@ const LayoutInner = ({ children, pathname: pathnameFromPage }) => {
       const pathname = location?.pathname || "";
       const isHomepage = pathname === "/" || pathname.match(/^\/[a-z]{2}\/?$/);
       if (isHomepage) return;
-      if (document.querySelector('link[href="/css/deferred-styles-pages.css"]')) return;
+      if (isStaticCssLinkLoaded("/css/deferred-styles-pages.css")) return;
       const link = document.createElement("link");
       link.rel = "stylesheet";
-      link.href = "/css/deferred-styles-pages.css";
+      link.href = staticCssUrl("/css/deferred-styles-pages.css");
       document.head.appendChild(link);
     }, [location?.pathname]);
 
