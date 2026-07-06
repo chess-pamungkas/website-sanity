@@ -1,0 +1,122 @@
+@import "vars";
+@import "mixins";
+
+.risk-disclaimer-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  isolation: isolate;
+  pointer-events: auto;
+  touch-action: none;
+
+  @include mobile {
+    align-items: flex-start;
+    padding: calc(var(--compliance-banner-height, 102px) + 12px) 16px 16px;
+  }
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+    touch-action: none;
+  }
+
+  &__dialog {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 345px;
+    padding: 40px 13px 24px;
+    background: rgba(0, 0, 0, 0.61);
+    border: 1px solid rgba(255, 68, 0, 0.3);
+    border-radius: 10px;
+
+    @include mobile {
+      max-height: calc(
+        100dvh - var(--compliance-banner-height, 102px) - 28px
+      );
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @include tablet-only {
+      max-width: 751px;
+      padding: 39px 23px 24px;
+    }
+
+    @include desktop-lg {
+      max-width: 708px;
+      padding: 36px 40px 27px;
+    }
+  }
+
+  &__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    svg {
+      display: block;
+      width: 24px;
+      height: 24px;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      opacity: 0.85;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #ffffff;
+      outline-offset: 2px;
+    }
+  }
+
+  &__title {
+    margin: 0 0 16px;
+    font-family: $font;
+    font-style: normal;
+    font-weight: map-get($font-weight, "bold");
+    font-size: 25px;
+    line-height: 18px;
+    text-align: center;
+    color: #ffffff;
+  }
+
+  &__description {
+    margin: 0;
+    font-family: $font;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 15.4px;
+    line-height: 20px;
+    text-align: center;
+    color: #ffffff;
+
+    @include desktop-lg {
+      font-size: 16px;
+    }
+  }
+}

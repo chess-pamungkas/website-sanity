@@ -7,6 +7,8 @@
 @import "reusable-buttons";
 @import "main-promotion";
 @import "header";
+@import "risk-warning-banner";
+@import "risk-disclaimer-popup";
 @import "footer";
 @import "navbar-item";
 @import "dropdown-item";
@@ -103,9 +105,13 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  min-height: $header-height-small-mobile;
+  min-height: calc(
+    #{$header-height-small-mobile} + var(--compliance-banner-height, 110px)
+  );
   @include tablet {
-    min-height: $header-height-small;
+    min-height: calc(
+      #{$header-height-small} + var(--compliance-banner-height, 110px)
+    );
   }
   pointer-events: none;
   background-color: rgba(247, 245, 243, 0.98);
@@ -195,6 +201,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  scrollbar-gutter: stable;
 
   &.overflow-hidden {
     overflow: hidden;

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useTranslationWithVariables } from "../../../helpers/hooks/use-translation-with-vars";
-import { useRtlDirection } from "../../../helpers/hooks/use-rtl-direction";
 import { ShowRegistrationPopup } from "../../../helpers/constants";
 import { setLangParam } from "../../../helpers/services/language-service";
 import Hero from "../../shared/hero";
@@ -15,7 +14,6 @@ import CompanySection from "./company-section";
 const CompanyPageContent = ({ className, isShowHero = true }) => {
   const { t } = useTranslationWithVariables();
   const { isMobile } = useWindowSize();
-  const isRTL = useRtlDirection();
   const langParam = setLangParam(); // Get the language parameter
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
 
@@ -53,9 +51,11 @@ const CompanyPageContent = ({ className, isShowHero = true }) => {
       {isMobile ? (
         <OurCommunityContent />
       ) : (
-        <ContainerWrapper>
-          <OurCommunityContent />
-        </ContainerWrapper>
+        <div className="company-page-community">
+          <ContainerWrapper>
+            <OurCommunityContent />
+          </ContainerWrapper>
+        </div>
       )}
 
       {/* Render the popup */}

@@ -9,6 +9,7 @@ import PropTypes from "prop-types";
 import { useIsomorphicLayoutEffect } from "../../helpers/hooks/use-isomorphic-layout-effect";
 import { isBrowser } from "../../helpers/services/is-browser";
 import { shouldDeferHeavyWorkForLighthouse } from "../../helpers/is-audit-environment";
+import { getEffectiveScrollY, notifyScrollPositionChange } from "../../helpers/scroll-lock";
 
 const CommonContext = createContext({});
 
@@ -20,16 +21,18 @@ export const CommonProvider = ({ children }) => {
   const lastHeightRef = useRef(0);
   const headerMainWrapperRef = useRef();
   const riskWarningRef = useRef();
+  const complianceBannerRef = useRef();
   const [isScrolled, setIsScrolled] = useState("");
 
   const checkIsScrolled = () => {
     if (isBrowser()) {
-      startTransition(() => setIsScrolled(window.scrollY > 0));
+      startTransition(() => setIsScrolled(getEffectiveScrollY() > 0));
     }
   };
 
   useEffect(() => {
     if (isBrowser()) {
+      checkIsScrolled();
       window.addEventListener("scroll", checkIsScrolled, { passive: true });
 
       return () => {
@@ -45,9 +48,25 @@ export const CommonProvider = ({ children }) => {
     }
 
     let cancelled = false;
-    let ro = null;
     let rafId = null;
-    const el = riskWarningRef.current;
+    let retryId = null;
+    const observers = [];
+
+    const measureCombinedHeight = () => {
+      const bannerEl = complianceBannerRef.current;
+      const stripeEl = riskWarningRef.current;
+      const bannerH = bannerEl?.getBoundingClientRect().height ?? 0;
+      const stripeH = stripeEl?.getBoundingClientRect().height ?? 0;
+
+      if (isBrowser() && bannerEl) {
+        document.documentElement.style.setProperty(
+          "--compliance-banner-height",
+          `${Math.round(bannerH)}px`
+        );
+      }
+
+      return bannerH + stripeH;
+    };
 
     const applyHeight = (h) => {
       if (cancelled) return;
@@ -68,32 +87,42 @@ export const CommonProvider = ({ children }) => {
       });
     };
 
-    if (!el) {
-      applyHeight(0);
-      return undefined;
-    }
+    const observeElement = (el) => {
+      if (!el || typeof ResizeObserver === "undefined") return null;
 
-    if (typeof ResizeObserver !== "undefined") {
-      ro = new ResizeObserver((entries) => {
-        const entry = entries[0];
-        if (cancelled || !entry) return;
-        let h = entry.contentRect.height;
-        const box = entry.borderBoxSize?.[0];
-        if (box && typeof box.blockSize === "number") {
-          h = box.blockSize;
-        }
-        scheduleHeight(h);
+      const observer = new ResizeObserver(() => {
+        if (cancelled) return;
+        scheduleHeight(measureCombinedHeight());
       });
-      ro.observe(el);
-      return () => {
-        cancelled = true;
-        if (rafId != null) cancelAnimationFrame(rafId);
-        ro.disconnect();
-      };
-    }
+      observer.observe(el);
+      return observer;
+    };
+
+    const setupObservers = () => {
+      if (cancelled) return;
+
+      const bannerEl = complianceBannerRef.current;
+      const stripeEl = riskWarningRef.current;
+
+      if (!bannerEl && !stripeEl) {
+        retryId = requestAnimationFrame(setupObservers);
+        return;
+      }
+
+      scheduleHeight(measureCombinedHeight());
+
+      [observeElement(bannerEl), observeElement(stripeEl)]
+        .filter(Boolean)
+        .forEach((observer) => observers.push(observer));
+    };
+
+    setupObservers();
 
     return () => {
       cancelled = true;
+      if (rafId != null) cancelAnimationFrame(rafId);
+      if (retryId != null) cancelAnimationFrame(retryId);
+      observers.forEach((observer) => observer.disconnect());
     };
   }, [sectionOptions]);
 
@@ -109,6 +138,7 @@ export const CommonProvider = ({ children }) => {
         headerMainWrapperRef,
         isScrolled,
         riskWarningRef,
+        complianceBannerRef,
       }}
     >
       {children}
@@ -130,6 +160,7 @@ export const COMMON_STUB_VALUE = {
   heightOffset: 0,
   headerMainWrapperRef: { current: null },
   riskWarningRef: { current: null },
+  complianceBannerRef: { current: null },
   isScrolled: "",
 };
 

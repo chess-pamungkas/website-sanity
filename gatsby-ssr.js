@@ -9,6 +9,8 @@ import { LEGAL_REGULATED_CRITICAL_CSS } from "./src/helpers/legal-regulated-crit
 import { CONTACT_US_HERO_CRITICAL_CSS } from "./src/helpers/contact-us-critical-css";
 import { PARTNERS_HERO_CRITICAL_CSS } from "./src/helpers/partners-critical-css";
 import { COMPANY_CRITICAL_CSS } from "./src/helpers/company-critical-css";
+import { RISK_DISCLAIMER_CRITICAL_CSS } from "./src/helpers/risk-disclaimer-critical-css";
+import { staticCssUrl } from "./src/helpers/static-css-cache-bust";
 import {
   heroTabletContainerCritical,
   heroPageShellCritical,
@@ -992,7 +994,9 @@ armCssFlipAndScripts();})();`
             "html:not(.app-styles-ready) .main-promotion__hero-img,html:not(.app-styles-ready) .main-promotion__hand-container{opacity:0!important;visibility:hidden!important;pointer-events:none!important}",
             "html:not(.app-styles-ready) .main-promotion__content-container .button-container{justify-content:flex-start!important;align-items:stretch!important;width:100%!important;max-width:none!important}",
             "@media(max-width:1023px){.main-promotion__button-container,.main-promotion__warning-container{width:100%!important;max-width:none!important;align-self:stretch!important}}",
-            ".header-placeholder,.header{position:fixed;top:0;left:0;right:0;z-index:1000;min-height:77px;background:rgba(247,245,243,.98);box-sizing:border-box}",
+            ".header-wrapper{position:fixed;top:0;left:0;right:0;z-index:1000;width:100%;box-sizing:border-box;display:flex;flex-direction:column}",
+            ".header-placeholder{position:fixed;top:0;left:0;right:0;z-index:1000;min-height:77px;background:rgba(247,245,243,.98);box-sizing:border-box}",
+            ".header-wrapper .header{position:relative;top:auto;left:auto;right:auto;width:100%;min-height:65px;box-sizing:border-box}",
             ".main-promotion__heading{margin:0;display:flex;flex-direction:column;gap:0}",
             '.main-promotion__title{display:block;font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:600;font-size:clamp(28px,8vw,72px);line-height:1.3;color:#fff;margin:0;visibility:visible!important;opacity:1!important}',
             '@media(max-width:767px){.main-promotion__subheading{font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px;line-height:24px!important;color:#fff!important;font-weight:400!important;margin:0!important;max-width:100%!important;opacity:0.7;visibility:visible!important;display:block}}',
@@ -1392,13 +1396,13 @@ armCssFlipAndScripts();})();`
       createElement("link", {
         key: "deferred-styles-pages-ssr",
         rel: "stylesheet",
-        href: "/css/deferred-styles-pages.css",
+        href: staticCssUrl("/css/deferred-styles-pages.css"),
         media: "print",
       }),
       createElement("link", {
         key: "preload-deferred-styles-pages",
         rel: "preload",
-        href: "/css/deferred-styles-pages.css",
+        href: staticCssUrl("/css/deferred-styles-pages.css"),
         as: "style",
       })
     );
@@ -1498,6 +1502,14 @@ armCssFlipAndScripts();})();`
   }
   // Load fonts-critical.css async (no render-blocking): sync loading regressed TBT ~700ms+ on mobile (main-thread long tasks).
   // Subheading LCP is helped by aligned inline hero CSS + Sofia Light in this file + preload Light on homepage.
+  earlyHints.push(
+    <style
+      key="risk-disclaimer-critical-inline"
+      dangerouslySetInnerHTML={{
+        __html: RISK_DISCLAIMER_CRITICAL_CSS,
+      }}
+    />
+  );
   earlyHints.push(
     <link
       key="fonts-critical-async"

@@ -12,7 +12,7 @@
   width: 100vw;
   height: auto;
   min-height: 953px;
-  padding-top: 80px;
+  padding-top: with-compliance-banner(80px);
   z-index: 2;
   left: 50%;
   right: 50%;
@@ -29,17 +29,17 @@
 
   @include desktop-xl {
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
   }
 
   @include desktop-2k {
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
   }
 
   @include desktop-5k {
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
   }
 
   &__hero-container {
@@ -63,7 +63,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 73px;
+      top: with-compliance-banner(73px);
       margin: 0 auto;
       border-radius: 20px;
       contain: layout;
@@ -78,7 +78,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
       border-radius: 24px;
     }
@@ -90,7 +90,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -101,7 +101,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -112,7 +112,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
   }

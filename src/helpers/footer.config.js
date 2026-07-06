@@ -11,6 +11,7 @@ const FOOTER_COPYRIGHT_FSA = {
   p1: "footer-copyright-paragraph1-fsa",
   p1_2: "footer-copyright-paragraph1_2-fsa",
   // p1_3: "footer-copyright-paragraph1_3-fsa",
+  p2_label: "footer-copyright-paragraph2-fsa-label",
   p2: "footer-copyright-paragraph2-fsa",
   p3_1: "footer-copyright-paragraph3-part1-fsa",
   p3_2: "footer-copyright-paragraph3-part2-fsa",
@@ -33,7 +34,12 @@ export const getFooterCopyright = () => {
       <p>{t(FOOTER_COPYRIGHT_FSA.p1)}</p>
       <p>{t(FOOTER_COPYRIGHT_FSA.p1_2)}</p>
       <p>{t(FOOTER_COPYRIGHT_FSA.p1_3)}</p>
-      <p>{t(FOOTER_COPYRIGHT_FSA.p2)}</p>
+      <p>
+        <span className="copy-right-block__risk-warning-label">
+          {t(FOOTER_COPYRIGHT_FSA.p2_label)}
+        </span>{" "}
+        {t(FOOTER_COPYRIGHT_FSA.p2)}
+      </p>
       <p>
         {t(FOOTER_COPYRIGHT_FSA.p3_1)}&nbsp;
         <InternalLink to={FOOTER_COPYRIGHT_FSA.p3_link1}>

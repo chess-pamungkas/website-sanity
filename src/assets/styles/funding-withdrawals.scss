@@ -11,8 +11,9 @@
   justify-content: center;
   width: 100vw;
   /* Avoid 100vh → fixed-height snap before breakpoint rules apply (~1 CLS on /funding/). */
-  height: 583px;
-  padding-top: 80px;
+  height: auto;
+  min-height: 953px;
+  padding-top: with-compliance-banner(80px);
   z-index: 2;
   left: 50%;
   right: 50%;
@@ -26,21 +27,6 @@
   @include hero-page-shell-tablet(555px, 73px, 70px);
 
   @include hero-page-shell-desktop-lg(583px, 83px, 83px);
-
-  @include desktop-xl {
-    height: auto;
-    padding-top: 83px;
-  }
-
-  @include desktop-2k {
-    height: auto;
-    padding-top: 83px;
-  }
-
-  @include desktop-5k {
-    height: auto;
-    padding-top: 83px;
-  }
 
   &__hero-container {
     width: 100%;
@@ -63,7 +49,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 73px;
+      top: with-compliance-banner(73px);
       margin: 0 auto;
       border-radius: 20px;
     }
@@ -77,7 +63,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
       border-radius: 24px;
     }
@@ -89,7 +75,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -100,7 +86,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -111,7 +97,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
   }

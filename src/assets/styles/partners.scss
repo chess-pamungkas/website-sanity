@@ -8,6 +8,12 @@ body.homepage-bg-1 .partners-page-community #main-container {
   contain: none;
 }
 
+/* Below-hero sections already follow the full-bleed partners hero — no desktop header spacer. */
+.partners-page + #main-container .header-offset-placeholder,
+.partners-page-community #main-container .header-offset-placeholder {
+  height: 0 !important;
+}
+
 .partners {
   position: relative;
   overflow: visible;
@@ -18,7 +24,7 @@ body.homepage-bg-1 .partners-page-community #main-container {
   width: 100vw;
   height: auto;
   min-height: 953px;
-  padding-top: 80px;
+  padding-top: with-compliance-banner(80px);
   z-index: 2;
   left: 50%;
   right: 50%;
@@ -27,7 +33,7 @@ body.homepage-bg-1 .partners-page-community #main-container {
   box-sizing: border-box;
   align-items: center;
 
-  @include hero-page-shell-mobile(953px, $hero-mobile-shell-top-default, $hero-mobile-shell-top-default, 0);
+  @include hero-page-shell-mobile();
 
   @include hero-page-shell-tablet(555px, 73px, 70px);
 
@@ -42,21 +48,21 @@ body.homepage-bg-1 .partners-page-community #main-container {
   }
 
   @include desktop-xl {
-    min-height: calc(83px + 583px);
+    min-height: calc(#{with-compliance-banner(83px)} + 583px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
   }
 
   @include desktop-2k {
-    min-height: calc(83px + 583px);
+    min-height: calc(#{with-compliance-banner(83px)} + 583px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
   }
 
   @include desktop-5k {
-    min-height: calc(83px + 583px);
+    min-height: calc(#{with-compliance-banner(83px)} + 583px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
   }
 
   &__hero-container {
@@ -73,15 +79,18 @@ body.homepage-bg-1 .partners-page-community #main-container {
     box-sizing: border-box;
 
     @include mobile {
-      width: 393px;
-      max-width: 393px;
-      height: 953px;
+      width: 100%;
+      max-width: 100%;
+      min-height: 953px;
+      height: auto;
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 73px;
+      top: with-compliance-banner(73px);
       margin: 0 auto;
       border-radius: 20px;
+      overflow: hidden;
+      contain: layout;
     }
 
     @include hero-tablet-container(555px, 73px);
@@ -93,7 +102,7 @@ body.homepage-bg-1 .partners-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
       border-radius: 24px;
     }
@@ -105,7 +114,7 @@ body.homepage-bg-1 .partners-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -116,7 +125,7 @@ body.homepage-bg-1 .partners-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -127,7 +136,7 @@ body.homepage-bg-1 .partners-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
   }

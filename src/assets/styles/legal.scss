@@ -12,7 +12,7 @@
   width: 100vw;
   height: auto;
   min-height: 953px;
-  padding-top: 80px;
+  padding-top: with-compliance-banner(80px);
   z-index: 2;
   left: 50%;
   right: 50%;
@@ -36,23 +36,23 @@
   }
 
   @include desktop-xl {
-    min-height: calc(83px + 510px);
+    min-height: calc(#{with-compliance-banner(83px)} + 510px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
     padding-bottom: 0;
   }
 
   @include desktop-2k {
-    min-height: calc(83px + 510px);
+    min-height: calc(#{with-compliance-banner(83px)} + 510px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
     padding-bottom: 0;
   }
 
   @include desktop-5k {
-    min-height: calc(83px + 510px);
+    min-height: calc(#{with-compliance-banner(83px)} + 510px);
     height: auto;
-    padding-top: 83px;
+    padding-top: with-compliance-banner(83px);
     padding-bottom: 0;
   }
 
@@ -75,7 +75,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 73px;
+      top: with-compliance-banner(73px);
       margin: 0 auto;
       border-radius: 20px;
     }
@@ -89,7 +89,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
       border-radius: 24px;
     }
@@ -101,7 +101,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -112,7 +112,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -123,7 +123,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
   }
@@ -1317,7 +1317,7 @@ body.homepage-bg-1 .legal-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 73px;
+      top: with-compliance-banner(73px);
       margin: 0 auto;
       border-radius: 20px;
     }
@@ -1331,7 +1331,7 @@ body.homepage-bg-1 .legal-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 77px;
+      top: with-compliance-banner(77px);
       margin: 0 auto;
     }
 
@@ -1342,7 +1342,7 @@ body.homepage-bg-1 .legal-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -1353,7 +1353,7 @@ body.homepage-bg-1 .legal-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
 
@@ -1364,7 +1364,7 @@ body.homepage-bg-1 .legal-page-community #main-container {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: 83px;
+      top: with-compliance-banner(83px);
       margin: 0 auto;
     }
   }

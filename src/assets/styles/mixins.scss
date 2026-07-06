@@ -44,6 +44,34 @@
   transform: none;
 }
 
+@function with-compliance-banner($base) {
+  @return calc(#{$base} + var(--compliance-banner-height, 0px));
+}
+
+/* Matches .header--small max-width at each desktop breakpoint. */
+@mixin desktop-header-small-max-width {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+
+  @include desktop-lg {
+    max-width: calc(1004px + 44px);
+  }
+
+  @include desktop-xl {
+    max-width: calc(1280px + 60px);
+  }
+
+  @include desktop-2k {
+    max-width: calc(1440px + 60px);
+  }
+
+  @include desktop-5k {
+    max-width: calc(1920px + 60px);
+  }
+}
+
 /*
  * Outer hero section: drop 100vh on tablet — reserve only top offset + artboard (partners pattern).
  */
@@ -53,9 +81,9 @@
   $padding-top: 70px
 ) {
   @include tablet-only {
-    min-height: calc(#{$hero-top} + #{$artboard-height});
+    min-height: calc(#{with-compliance-banner($hero-top)} + #{$artboard-height});
     height: auto;
-    padding-top: $padding-top;
+    padding-top: with-compliance-banner($padding-top);
     padding-bottom: 0;
     border-radius: 24px;
   }
@@ -68,10 +96,10 @@
   $padding-bottom: $hero-mobile-shell-padding-bottom-default
 ) {
   @include mobile {
-    min-height: calc(#{$hero-top} + #{$artboard-height});
+    min-height: calc(#{with-compliance-banner($hero-top)} + #{$artboard-height});
     height: auto;
     border-radius: 20px;
-    padding-top: $padding-top;
+    padding-top: with-compliance-banner($padding-top);
     padding-bottom: $padding-bottom;
     margin-top: 0;
     margin-bottom: 0;
@@ -85,11 +113,32 @@
   $padding-top: 83px
 ) {
   @include desktop-lg {
-    min-height: calc(#{$hero-top} + #{$artboard-height});
+    min-height: calc(#{with-compliance-banner($hero-top)} + #{$artboard-height});
     height: auto;
-    padding-top: $padding-top;
+    padding-top: with-compliance-banner($padding-top);
     padding-bottom: 0;
     border-radius: 24px;
+  }
+
+  @include desktop-xl {
+    min-height: calc(#{with-compliance-banner($hero-top)} + #{$artboard-height});
+    height: auto;
+    padding-top: with-compliance-banner($padding-top);
+    padding-bottom: 0;
+  }
+
+  @include desktop-2k {
+    min-height: calc(#{with-compliance-banner($hero-top)} + #{$artboard-height});
+    height: auto;
+    padding-top: with-compliance-banner($padding-top);
+    padding-bottom: 0;
+  }
+
+  @include desktop-5k {
+    min-height: calc(#{with-compliance-banner($hero-top)} + #{$artboard-height});
+    height: auto;
+    padding-top: with-compliance-banner($padding-top);
+    padding-bottom: 0;
   }
 }
 
@@ -317,7 +366,7 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: $top;
+    top: with-compliance-banner($top);
     margin: 0 auto;
     border-radius: $border-radius;
     overflow: hidden;

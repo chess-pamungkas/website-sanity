@@ -54,6 +54,8 @@ $funding-page-after-hero-gap-desktop: $homepage-below-hero-gap-desktop;
 $faq-help-center-after-hero-gap-mobile: $marketing-landing-after-hero-gap-mobile;
 $faq-help-center-after-hero-gap-tablet: $homepage-below-hero-gap-tablet;
 $faq-help-center-after-hero-gap-desktop: $homepage-below-hero-gap-desktop;
+/* FAQ (/faq/): gap .help-center bottom → .help-center__our-community (desktop). */
+$faq-help-center-before-our-community-gap-desktop: $homepage-below-hero-gap-desktop;
 /* Contact (/contact-us/): gap between .contact-us hero and .contact-us-content-section. */
 $contact-us-content-after-hero-gap-mobile: 75px;
 $contact-us-content-after-hero-gap-tablet: 75px;
