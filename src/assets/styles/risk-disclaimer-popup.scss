@@ -14,11 +14,6 @@
   pointer-events: auto;
   touch-action: none;
 
-  @include mobile {
-    align-items: flex-start;
-    padding: calc(var(--compliance-banner-height, 102px) + 12px) 16px 16px;
-  }
-
   &__backdrop {
     position: absolute;
     inset: 0;
@@ -41,9 +36,7 @@
     border-radius: 10px;
 
     @include mobile {
-      max-height: calc(
-        100dvh - var(--compliance-banner-height, 102px) - 28px
-      );
+      max-height: calc(100dvh - 32px);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }

@@ -1,5 +1,5 @@
 /** Bump when static /css/*.css assets must bypass CDN immutable cache (query string bust). */
-export const STATIC_CSS_CACHE_BUST = "ow955-3";
+export const STATIC_CSS_CACHE_BUST = "ow960-1";
 
 export const staticCssUrl = (pathname) => {
   if (!pathname || typeof pathname !== "string") return pathname;
