@@ -10,8 +10,6 @@ import {
   notifyScrollPositionChange,
   unlockBodyScroll,
 } from "../../../helpers/scroll-lock";
-import { isBrowser } from "../../../helpers/services/is-browser";
-import { MOBILE_VIEWPORT_MQ } from "../../../helpers/viewport-media";
 
 const CloseIcon = () => (
   <svg
@@ -31,27 +29,10 @@ const CloseIcon = () => (
 
 const RiskDisclaimerPopup = ({ isOpen, onClose }) => {
   const [mounted, setMounted] = useState(false);
-  const [isMobileLayout, setIsMobileLayout] = useState(false);
   const closeButtonRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isBrowser()) return undefined;
-
-    const mediaQuery = window.matchMedia(MOBILE_VIEWPORT_MQ);
-    const syncLayout = () => setIsMobileLayout(mediaQuery.matches);
-    syncLayout();
-
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", syncLayout);
-      return () => mediaQuery.removeEventListener("change", syncLayout);
-    }
-
-    mediaQuery.addListener(syncLayout);
-    return () => mediaQuery.removeListener(syncLayout);
   }, []);
 
   useEffect(() => {
@@ -100,29 +81,11 @@ const RiskDisclaimerPopup = ({ isOpen, onClose }) => {
     return null;
   }
 
-  const popupStyle = isMobileLayout
-    ? {
-        alignItems: "flex-start",
-        padding:
-          "calc(var(--compliance-banner-height, 102px) + 12px) 16px 16px",
-      }
-    : undefined;
-
-  const dialogStyle = isMobileLayout
-    ? {
-        maxHeight:
-          "calc(100dvh - var(--compliance-banner-height, 102px) - 28px)",
-        overflowY: "auto",
-        WebkitOverflowScrolling: "touch",
-      }
-    : undefined;
-
   return createPortal(
-    <div className="risk-disclaimer-popup" style={popupStyle}>
+    <div className="risk-disclaimer-popup">
       <div className="risk-disclaimer-popup__backdrop" aria-hidden="true" />
       <div
         className="risk-disclaimer-popup__dialog"
-        style={dialogStyle}
         role="dialog"
         aria-modal="true"
         aria-labelledby="risk-disclaimer-popup-title"

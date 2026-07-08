@@ -682,9 +682,9 @@ const Hero = ({
                       alt=""
                       width="734"
                       height="734"
-                      loading="eager"
-                      fetchpriority="high"
-                      decoding="sync"
+                      loading="lazy"
+                      fetchpriority="low"
+                      decoding="async"
                       className={`${heroType}__hero-img-element`}
                       style={{
                         display: "block",
@@ -891,11 +891,11 @@ const Hero = ({
                         srcSet={handSrcSet}
                         sizes="(max-width: 767px) 222px, 412px"
                         alt=""
-                        width="714"
-                        height="692"
+                        width="280"
+                        height="271"
                         loading="eager"
                         fetchpriority="high"
-                        decoding="sync"
+                        decoding="async"
                         className={`${heroType}__hand-img-element`}
                       />
                     </picture>
