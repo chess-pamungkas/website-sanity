@@ -1002,8 +1002,6 @@ armCssFlipAndScripts();})();`
             '@media(max-width:767px){.main-promotion__subheading{font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px;line-height:24px!important;color:#fff!important;font-weight:400!important;margin:0!important;max-width:100%!important;opacity:0.7;visibility:visible!important;display:block}}',
             '@media(min-width:768px){.main-promotion__subheading{font-family:"Sofia Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:18px;line-height:28px!important;color:#fff!important;font-weight:400!important;margin:0!important;max-width:615px;opacity:0.7;visibility:visible!important;display:block}}',
             ".main-promotion__hand-container{position:absolute;bottom:-225px;right:auto;width:100%;height:488px;display:block;z-index:2;overflow:visible}",
-            "@media(max-width:767px){.main-promotion__hero-img-element--desktop{display:none!important}}",
-            "@media(min-width:768px){.main-promotion__hero-img-element--mobile{display:none!important}}",
             ".main-promotion__hand-img,.main-promotion__hand-img picture,.main-promotion__hand-img img,.main-promotion__hand-img-element{width:100%;height:100%;display:block!important;visibility:visible!important;opacity:1!important;object-fit:contain;object-position:bottom center}",
             "@media(max-width:767px){.trading-ticker-wrapper{margin-top:24px;margin-bottom:0}}",
             "@media(min-width:768px) and (max-width:1023px){.trading-ticker-wrapper{margin-top:24px;margin-bottom:24px}}",

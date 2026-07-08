@@ -670,54 +670,32 @@ const Hero = ({
             {heroType === "main-promotion" ? (
               <div className={`${heroType}__hero-img`} aria-hidden="true">
                 {showHeroImage && (
-                  <>
-                    <picture>
-                      <img
-                        src={globeImageMobile}
-                        alt=""
-                        width="419"
-                        height="419"
-                        loading="lazy"
-                        fetchpriority="low"
-                        decoding="async"
-                        className={`${heroType}__hero-img-element ${heroType}__hero-img-element--mobile`}
-                        style={{
-                          display: "block",
-                          visibility: "visible",
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "contain",
-                          objectPosition: "bottom center",
-                        }}
-                      />
-                    </picture>
-                    <picture>
-                      <source
-                        media={HERO_ASSET_DESKTOP_MQ}
-                        srcSet={globeImageDesktop}
-                      />
-                      <img
-                        src={globeImageDesktop}
-                        srcSet={globeSrcSet}
-                        sizes="(max-width: 767px) 419px, 734px"
-                        alt=""
-                        width="734"
-                        height="734"
-                        loading="eager"
-                        fetchpriority="high"
-                        decoding="sync"
-                        className={`${heroType}__hero-img-element ${heroType}__hero-img-element--desktop`}
-                        style={{
-                          display: "block",
-                          visibility: "visible",
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "contain",
-                          objectPosition: "bottom center",
-                        }}
-                      />
-                    </picture>
-                  </>
+                  <picture>
+                    <source
+                      media={HERO_ASSET_MOBILE_MQ}
+                      srcSet={globeImageMobile}
+                    />
+                    <img
+                      src={globeImageMobile}
+                      srcSet={globeSrcSet}
+                      sizes="(max-width: 767px) 419px, 734px"
+                      alt=""
+                      width="734"
+                      height="734"
+                      loading="lazy"
+                      fetchpriority="low"
+                      decoding="async"
+                      className={`${heroType}__hero-img-element`}
+                      style={{
+                        display: "block",
+                        visibility: "visible",
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        objectPosition: "bottom center",
+                      }}
+                    />
+                  </picture>
                 )}
               </div>
             ) : showHeroImage ? (
