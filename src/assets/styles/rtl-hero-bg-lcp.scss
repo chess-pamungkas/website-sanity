@@ -72,7 +72,7 @@
 $hero-lcp-pages: "all-markets", "forex", "metals", "crypto", "indices", "shares",
   "energies", "etf", "account-types", "funding-withdrawals", "spreads-fees",
   "trading-tools", "swap-free", "vps", "mt4", "mt5", "legal", "partners",
-  "contact-us", "faq-hero";
+  "trading-hub", "trading-hub-article-hero", "contact-us", "faq-hero";
 
 // LCP pages: art only on __hero-bg-lcp. Drop legacy background-image (double art) but keep black fill.
 @each $page in $hero-lcp-pages {

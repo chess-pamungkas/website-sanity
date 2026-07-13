@@ -51,6 +51,7 @@
 @import "spreads-and-fees";
 /* Trading tools (/trading-tools/): same pattern — avoid 100vh snap + hero LCP <img> needs early layout rules. */
 @import "trading-tools";
+@import "trading-hub";
 /* Featured Ideas + Alpha Generation: deferred-only caused tablet FOUC (light bg, text unreadable) before sheet loaded. */
 @import "featured-ideas";
 @import "trading-tools-page";

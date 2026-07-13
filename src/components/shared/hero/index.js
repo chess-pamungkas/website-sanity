@@ -38,6 +38,21 @@ const HERO_LCP_DIM = {
   mobile: { width: 393, height: 953 },
 };
 
+/** CMS / absolute URLs only — ignore legacy CSS `url(...)` props still passed by some pages. */
+function resolveHeroImageSrc(value) {
+  if (!value || typeof value !== "string") return null;
+  const normalized = value.trim();
+  if (!normalized || normalized.startsWith("url(")) return null;
+  if (
+    normalized.startsWith("/") ||
+    normalized.startsWith("http://") ||
+    normalized.startsWith("https://")
+  ) {
+    return normalized;
+  }
+  return null;
+}
+
 const HERO_LCP_BY_TYPE = {
   "all-markets": {
     mobileWebp: "/images/bg/hero/all-markets/all-markets-mobile.webp",
@@ -244,6 +259,16 @@ const HERO_LCP_BY_TYPE = {
       mobile: HERO_LCP_DIM.mobile,
     },
   },
+  "trading-hub": {
+    mobileWebp: "/images/bg/hero/trading-tools/trading-tools-mobile.webp",
+    desktopWebp: "/images/bg/hero/trading-tools/trading-tools-desktop.webp",
+    mobileSvg: "/images/bg/hero/trading-tools/trading-tools-mobile.svg",
+    desktopSvg: "/images/bg/hero/trading-tools/trading-tools-desktop.svg",
+    dimensions: {
+      desktop: HERO_LCP_DIM.desktop,
+      mobile: HERO_LCP_DIM.mobile,
+    },
+  },
 };
 
 const Hero = ({
@@ -264,6 +289,8 @@ const Hero = ({
   // Background images
   desktopBackground,
   mobileBackground,
+  onPrimaryButtonClick,
+  useCmsCopy = false,
   // Custom styling
   customClassNames = {},
   // FAQ specific props
@@ -293,6 +320,10 @@ const Hero = ({
   };
 
   const handlePrimaryButtonClick = () => {
+    if (typeof onPrimaryButtonClick === "function") {
+      onPrimaryButtonClick();
+      return;
+    }
     // For MT4 and MT5, scroll to platform section instead of opening popup
     if (heroType === "mt4" || heroType === "mt5") {
       const platformSection = document.getElementById(
@@ -511,9 +542,21 @@ const Hero = ({
           subtitle: customSubtitle || "partners_partners-text",
           primaryButton: customPrimaryButtonText || "partners_button-apply-now",
           secondaryButton:
-            customSecondaryButtonText || "partners_button-contact-us",
+            customSecondaryButtonText === false
+              ? null
+              : customSecondaryButtonText || "partners_button-contact-us",
           warning: customWarningText || "index_main-promotion-warning",
           reviews: "index_main-promotion-reviews",
+        };
+      case "trading-hub":
+        return {
+          badge: customBadgeText || "",
+          title: customTitle || "",
+          subtitle: customSubtitle || "",
+          primaryButton: customPrimaryButtonText || "",
+          secondaryButton: null,
+          warning: customWarningText || "",
+          reviews: null,
         };
       case "contact-us":
         return {
@@ -585,30 +628,46 @@ const Hero = ({
   };
 
   const translationKeys = getTranslationKeys();
-  const heroLcpConfig = useMemo(
-    () => HERO_LCP_BY_TYPE[heroType] ?? null,
-    [heroType]
-  );
+  const heroLcpConfig = useMemo(() => {
+    const customDesktop = resolveHeroImageSrc(desktopBackground);
+    const customMobile = resolveHeroImageSrc(mobileBackground);
+    if (customDesktop || customMobile) {
+      const desktop = customDesktop || customMobile;
+      const mobile = customMobile || customDesktop;
+      return {
+        mobileWebp: mobile,
+        desktopWebp: desktop,
+        mobileSvg: mobile,
+        desktopSvg: desktop,
+        dimensions: HERO_LCP_BY_TYPE[heroType]?.dimensions || HERO_LCP_DIM,
+      };
+    }
+    return HERO_LCP_BY_TYPE[heroType] ?? null;
+  }, [heroType, desktopBackground, mobileBackground]);
   const heroLcpHasRaster =
     heroLcpConfig &&
     typeof heroLcpConfig.mobileWebp === "string" &&
     typeof heroLcpConfig.desktopWebp === "string";
   const localized = useMemo(() => {
-    const title = t(translationKeys.title);
+    const resolve = (key) => {
+      if (!key) return "";
+      return useCmsCopy ? key : t(key);
+    };
+    const title = resolve(translationKeys.title);
     return {
-      badge: t(translationKeys.badge),
+      badge: resolve(translationKeys.badge),
       title,
-      titleLines: title.split("\n"),
-      subtitle: t(translationKeys.subtitle),
+      titleLines: title ? title.split("\n") : [],
+      subtitle: resolve(translationKeys.subtitle),
       primaryButton: translationKeys.primaryButton
-        ? t(translationKeys.primaryButton)
+        ? resolve(translationKeys.primaryButton)
         : null,
       secondaryButton: translationKeys.secondaryButton
-        ? t(translationKeys.secondaryButton)
+        ? resolve(translationKeys.secondaryButton)
         : null,
-      warning: t(translationKeys.warning),
+      warning: resolve(translationKeys.warning),
     };
-  }, [t, translationKeys]);
+  }, [t, translationKeys, useCmsCopy]);
 
   return (
     <>
@@ -938,12 +997,16 @@ Hero.propTypes = {
     "trading-tools",
     "vps",
     "swap-free",
+    "trading-hub",
   ]),
   customBadgeText: PropTypes.string,
   customTitle: PropTypes.string,
   customSubtitle: PropTypes.string,
   customPrimaryButtonText: PropTypes.string,
-  customSecondaryButtonText: PropTypes.string,
+  customSecondaryButtonText: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.oneOf([false]),
+  ]),
   customWarningText: PropTypes.string,
   showWarning: PropTypes.bool,
   showHandImage: PropTypes.bool,
@@ -951,6 +1014,8 @@ Hero.propTypes = {
   showTrustPilot: PropTypes.bool,
   desktopBackground: PropTypes.string,
   mobileBackground: PropTypes.string,
+  onPrimaryButtonClick: PropTypes.func,
+  useCmsCopy: PropTypes.bool,
   customClassNames: PropTypes.object,
   // FAQ specific props
   setSearchResults: PropTypes.func,

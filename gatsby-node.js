@@ -183,6 +183,239 @@ const writeRobotsTxt = async (publicDir, allowIndex) => {
   await fs.writeFile(robotsPath, `${lines.join("\n")}\n`, "utf8");
 };
 
+const { ENTITY_LANGUAGES } = require("./src/helpers/lang.config");
+const {
+  syncTradingHubNodes,
+  syncTradingHubPages,
+} = require("./src/helpers/sanity/sync-trading-hub");
+const {
+  setupTradingHubWatch,
+  registerTradingHubPageSync,
+  storeTradingHubSourceHelpers,
+} = require("./src/helpers/sanity/gatsby-watch");
+
+const DEFAULT_NEW_BADGE_LABEL = [{ language: "en", value: "New", _key: "en" }];
+const DEFAULT_SEARCH_PLACEHOLDER = "What do you want to learn today?";
+
+function normalizeLocalizedStringArray(field, defaultValue = "") {
+  if (!Array.isArray(field) || field.length === 0) {
+    return [{ language: "en", value: defaultValue, _key: "en" }];
+  }
+
+  return field.map((entry) => ({
+    ...entry,
+    _key: entry._key || entry.language || "en",
+    language: entry.language || entry._key || "en",
+    value:
+      typeof entry?.value === "string" && entry.value.length > 0
+        ? entry.value
+        : defaultValue,
+  }));
+}
+
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions;
+
+  createTypes(`
+    type SanityHubArticleSeoValue {
+      title: String
+      description: String
+      _type: String
+    }
+
+    type SanityHubArticleDetailHeroImageAsset {
+      _id: String
+      url: String
+    }
+
+    type SanityHubArticleDetailHeroImage {
+      asset: SanityHubArticleDetailHeroImageAsset
+    }
+
+    type SanityHubArticleAuthorPhotoAsset {
+      _id: String
+      url: String
+    }
+
+    type SanityHubArticleAuthorPhotoHotspot {
+      x: Float
+      y: Float
+      height: Float
+      width: Float
+    }
+
+    type SanityHubArticleAuthorPhotoCrop {
+      top: Float
+      bottom: Float
+      left: Float
+      right: Float
+    }
+
+    type SanityHubArticleAuthorPhoto {
+      asset: SanityHubArticleAuthorPhotoAsset
+      hotspot: SanityHubArticleAuthorPhotoHotspot
+      crop: SanityHubArticleAuthorPhotoCrop
+    }
+
+    type SanityHubArticle implements Node {
+      orderRank: String
+      sanityId: String
+      relatedContentMode: String
+      relatedArticles: [String]
+      heroImageDesktop: SanityHubArticleDetailHeroImage
+      heroImageMobile: SanityHubArticleDetailHeroImage
+    }
+  `);
+};
+
+exports.createResolvers = ({ createResolvers }) => {
+  createResolvers({
+    SanityTradingHubPage: {
+      newBadgeLabel: {
+        type: "[SanityTradingHubPageLoadMoreLabel]",
+        resolve: (source) => source.newBadgeLabel ?? DEFAULT_NEW_BADGE_LABEL,
+      },
+      searchPlaceholder: {
+        type: "[SanityTradingHubPageSearchPlaceholder]",
+        resolve: (source) =>
+          normalizeLocalizedStringArray(
+            source.searchPlaceholder,
+            DEFAULT_SEARCH_PLACEHOLDER
+          ),
+      },
+    },
+    SanityTradingHubPageSearchPlaceholder: {
+      value: {
+        type: "String",
+        resolve: (source) => source?.value ?? "",
+      },
+    },
+    SanityHubArticle: {
+      orderRank: {
+        type: "String",
+        resolve: (source) => source.orderRank || null,
+      },
+      relatedContentMode: {
+        type: "String",
+        resolve: (source) => source.relatedContentMode || null,
+      },
+      relatedArticles: {
+        type: "[String]",
+        resolve: (source) =>
+          (source.relatedArticles || [])
+            .map((entry) =>
+              typeof entry === "string" ? entry : entry?._id
+            )
+            .filter((id) => Boolean(id) && id !== "null"),
+      },
+      sanityId: {
+        type: "String",
+        resolve: (source) => source.sanityId || source._id || null,
+      },
+      isNew: {
+        type: "Boolean",
+        resolve: (source) => source.isNew === true,
+      },
+      categorySlug: {
+        type: "String",
+        resolve: (source) =>
+          source.categorySlug || source.category?.slug?.current || "",
+      },
+      heroImageDesktop: {
+        type: "SanityHubArticleDetailHeroImage",
+        resolve: (source) => source.heroImageDesktop || source.heroImage || null,
+      },
+      heroImageMobile: {
+        type: "SanityHubArticleDetailHeroImage",
+        resolve: (source) =>
+          source.heroImageMobile ||
+          source.heroImageDesktop ||
+          source.heroImage ||
+          null,
+      },
+    },
+    SanityHubArticleSeo: {
+      value: {
+        type: "SanityHubArticleSeoValue",
+        resolve: (source) => source?.value ?? null,
+      },
+    },
+  });
+};
+
+exports.sourceNodes = async (helpers) => {
+  const { reporter } = helpers;
+
+  try {
+    storeTradingHubSourceHelpers(helpers);
+    await syncTradingHubNodes(helpers);
+  } catch (error) {
+    reporter.warn(`Trading Hub Sanity source skipped: ${error.message}`);
+  }
+};
+
+exports.createPages = async ({ graphql, actions, reporter, getNodes, getNodesByType }) => {
+  const { createRedirect } = actions;
+
+  registerTradingHubPageSync(() =>
+    syncTradingHubPages({ actions, reporter, getNodes, getNodesByType })
+  );
+
+  await syncTradingHubPages({ actions, reporter, getNodes, getNodesByType });
+  setupTradingHubWatch({ actions, reporter, getNodes, getNodesByType });
+
+  const result = await graphql(`
+    query TradingHubPages {
+      categories: allSanityHubCategory(filter: { isActive: { eq: true } }) {
+        nodes {
+          id
+        }
+      }
+      articles: allSanityHubArticle {
+        nodes {
+          id
+        }
+      }
+    }
+  `);
+
+  if (result.errors) {
+    reporter.panicOnBuild("Trading Hub createPages GraphQL errors", result.errors);
+    return;
+  }
+
+  const categories = result.data?.categories?.nodes || [];
+  const articles = result.data?.articles?.nodes || [];
+
+  if (!categories.length && !articles.length) {
+    reporter.warn(
+      "Trading Hub: no Sanity categories/articles found — only /trading-hub/ landing will be available."
+    );
+  }
+
+  const legacyRedirects = [
+    { from: "/trading-academy/", to: "/trading-hub/trading-academy/" },
+    { from: "/beginners-guide/", to: "/trading-hub/beginners-guide/" },
+    { from: "/intermediate-lessons/", to: "/trading-hub/intermediate-lessons/" },
+    { from: "/advanced-playbook/", to: "/trading-hub/advanced-playbook/" },
+    {
+      from: "/platform-setup-guides/",
+      to: "/trading-hub/platform-setup-guides/",
+    },
+  ];
+
+  ENTITY_LANGUAGES.forEach((lang) => {
+    const prefix = lang.URIPart || "";
+    legacyRedirects.forEach(({ from, to }) => {
+      createRedirect({
+        fromPath: `${prefix}${from}`,
+        toPath: `${prefix}${to}`,
+        isPermanent: true,
+      });
+    });
+  });
+};
+
 // Make sure the registration script is copied to the public folder
 exports.onPostBuild = async ({ reporter }) => {
   const scriptsDir = path.join(process.cwd(), "src", "scripts");

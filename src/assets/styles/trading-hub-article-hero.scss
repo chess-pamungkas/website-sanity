@@ -1,0 +1,443 @@
+@import "vars";
+@import "mixins";
+@import "trading-product-hero-bg-lcp";
+
+$article-detail-hero-height-mobile-sm: 560px;
+$article-detail-hero-height-mobile: 680px;
+$article-detail-hero-height-desktop: 320px;
+
+// Article detail hero — same header clearance + shell pattern as .trading-hub landing hero.
+
+.trading-hub-article-hero {
+  position: relative;
+  overflow: visible;
+  color: map-get($colors, "white");
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: auto;
+  min-height: calc(
+    #{with-compliance-banner(80px)} + #{$article-detail-hero-height-desktop}
+  );
+  padding-top: with-compliance-banner(80px);
+  margin-bottom: 48px;
+  z-index: 2;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  box-sizing: border-box;
+
+  @include hero-page-shell-mobile(
+    $article-detail-hero-height-mobile,
+    $hero-mobile-shell-top-default,
+    $hero-mobile-shell-top-default,
+    0
+  );
+
+  @include small-mobile {
+    min-height: calc(
+      #{with-compliance-banner($hero-mobile-shell-top-default)} + #{$article-detail-hero-height-mobile-sm}
+    );
+  }
+
+  @include hero-page-shell-tablet(
+    $article-detail-hero-height-desktop,
+    73px,
+    70px
+  );
+  @include hero-page-shell-desktop-lg(
+    $article-detail-hero-height-desktop,
+    83px,
+    83px
+  );
+
+  @include mobile {
+    margin-bottom: 32px;
+  }
+
+  @include desktop-xl {
+    min-height: calc(
+      #{with-compliance-banner(83px)} + #{$article-detail-hero-height-desktop}
+    );
+    height: auto;
+    padding-top: with-compliance-banner(83px);
+  }
+
+  @include desktop-2k {
+    min-height: calc(
+      #{with-compliance-banner(83px)} + #{$article-detail-hero-height-desktop}
+    );
+    height: auto;
+    padding-top: with-compliance-banner(83px);
+  }
+
+  @include desktop-5k {
+    min-height: calc(
+      #{with-compliance-banner(83px)} + #{$article-detail-hero-height-desktop}
+    );
+    height: auto;
+    padding-top: with-compliance-banner(83px);
+  }
+
+  &__hero-container {
+    width: 100%;
+    height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    border-radius: 24px;
+    background: #000000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+
+    @include mobile {
+      width: 100%;
+      max-width: 100%;
+      height: $article-detail-hero-height-mobile;
+      min-height: $article-detail-hero-height-mobile;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: with-compliance-banner($hero-mobile-shell-top-default);
+      margin: 0 auto;
+      border-radius: 20px;
+    }
+
+    @include small-mobile {
+      height: $article-detail-hero-height-mobile-sm;
+      min-height: $article-detail-hero-height-mobile-sm;
+    }
+
+    @include hero-tablet-container($article-detail-hero-height-desktop, 73px);
+
+    @include desktop-lg {
+      width: calc(100vw - 20px);
+      max-width: 1200px;
+      height: $article-detail-hero-height-desktop;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: with-compliance-banner(83px);
+      margin: 0 auto;
+      border-radius: 24px;
+    }
+
+    @include desktop-xl {
+      width: calc(100vw - 120px);
+      max-width: 1400px;
+      height: $article-detail-hero-height-desktop;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: with-compliance-banner(83px);
+      margin: 0 auto;
+    }
+
+    @include desktop-2k {
+      width: calc(100vw - 160px);
+      max-width: 1600px;
+      height: $article-detail-hero-height-desktop;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: with-compliance-banner(83px);
+      margin: 0 auto;
+    }
+
+    @include desktop-5k {
+      width: calc(100vw - 200px);
+      max-width: 2000px;
+      height: $article-detail-hero-height-desktop;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: with-compliance-banner(83px);
+      margin: 0 auto;
+    }
+
+    .container {
+      position: relative;
+      z-index: 4;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+
+      @include mobile {
+        align-items: flex-start;
+        padding-top: 50px;
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      @include tablet {
+        padding-top: 48px;
+        align-items: flex-start;
+      }
+
+      @include tablet-only {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+    }
+  }
+
+  @include trading-product-hero-bg-lcp;
+
+  &__hero-bg--fallback {
+    background: radial-gradient(
+        ellipse 80% 120% at 0% 50%,
+        rgba(255, 68, 0, 0.35),
+        transparent 60%
+      ),
+      linear-gradient(180deg, #1a0a06 0%, #0d0504 100%);
+  }
+
+  &__hero-bg-lcp {
+    object-fit: cover;
+    object-position: center center;
+
+    @include mobile {
+      object-fit: cover;
+      object-position: center bottom;
+    }
+
+    @include small-mobile {
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    @include tablet-only {
+      @include hero-bg-lcp-tablet-artwork;
+    }
+
+    @include desktop-lg {
+      object-fit: cover;
+      object-position: center center;
+    }
+  }
+
+  &__content-container {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 100%;
+    width: 100%;
+    pointer-events: auto;
+
+    @include mobile {
+      gap: 12px;
+      max-width: 100%;
+    }
+
+    @include tablet-only {
+      max-width: 65%;
+      gap: 12px;
+    }
+  }
+
+  &__category {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    max-width: 100%;
+    min-height: 28px;
+    height: 28px;
+    padding: 4px 10px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 68, 0, 0.15);
+    background: #0f0f0f;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+
+    @include mobile {
+      max-width: fit-content;
+      margin-bottom: 16px;
+    }
+
+    &:hover {
+      border-color: rgba(255, 68, 0, 0.35);
+
+      .trading-hub-article-hero__category-label {
+        color: #ff4400;
+      }
+    }
+  }
+
+  &__category-label {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: map-get($font-weight, "medium");
+    line-height: 20px;
+    transition: color 0.2s ease;
+
+    @include mobile {
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+
+  &__category-arrow {
+    flex-shrink: 0;
+    align-items: center;
+    margin-top: 5px;
+    margin-left: 5px;
+    z-index: 1;
+    position: relative;
+  }
+
+  &__title {
+    display: block;
+    margin: 0;
+    font-weight: map-get($font-weight, "semibold");
+    font-size: 72px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    background: linear-gradient(
+        102.31deg,
+        rgba(255, 255, 255, 0) 9.12%,
+        rgba(255, 68, 0, 0.45) 71.6%
+      ),
+      #ffffff;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding-bottom: 10px;
+
+    @include small-mobile {
+      font-size: 32px !important;
+      line-height: 1.2;
+    }
+
+    @include mobile {
+      font-size: 42px;
+      width: 100%;
+      line-height: 1.2;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
+    @include tablet {
+      font-size: 38px;
+      width: 550px;
+      max-width: 100%;
+    }
+
+    @include desktop-lg {
+      font-size: 64px;
+      width: 1000px;
+      max-width: 100%;
+    }
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: 18px;
+    line-height: 28px;
+    color: #ffffff;
+    font-weight: map-get($font-weight, "regular");
+    max-width: 615px;
+    opacity: 0.7;
+
+    @include small-mobile {
+      font-size: 13.5px !important;
+      line-height: 20px !important;
+    }
+
+    @include mobile {
+      font-size: 16px;
+      font-weight: map-get($font-weight, "light");
+      line-height: 24px;
+      max-width: 100%;
+    }
+
+    @include tablet {
+      max-width: 100%;
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    @include desktop-lg {
+      max-width: 675px;
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    @include desktop-xl {
+      max-width: 675px;
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    @include desktop-2k {
+      max-width: 675px;
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    @include desktop-5k {
+      max-width: 675px;
+      font-size: 18px;
+      line-height: 28px;
+    }
+  }
+
+  &__date {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    min-height: 28px;
+    padding: 4px 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(15, 15, 15, 0.72);
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(255, 255, 255, 0.75);
+
+    @include mobile {
+      font-size: 12px;
+      line-height: 18px;
+      min-height: 24px;
+      padding: 3px 12px;
+    }
+  }
+
+  // Arabic RTL — mirror trading-hub / trading-product heroes: keep copy on the
+  // physical left (away from the portrait) while text stays right-aligned.
+  &--rtl {
+    .trading-hub-article-hero__hero-container .container {
+      direction: ltr;
+      justify-content: flex-start;
+    }
+
+    .trading-hub-article-hero__content-container {
+      direction: rtl;
+      text-align: right;
+    }
+
+    .trading-hub-article-hero__category {
+      flex-direction: row-reverse;
+    }
+
+    .trading-hub-article-hero__category-arrow {
+      transform: scaleX(-1);
+      margin-left: 0;
+      margin-right: 5px;
+    }
+
+    .trading-hub-article-hero__title,
+    .trading-hub-article-hero__subtitle {
+      text-align: right;
+    }
+  }
+}

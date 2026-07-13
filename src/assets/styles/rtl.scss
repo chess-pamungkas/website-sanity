@@ -6151,6 +6151,34 @@ body[dir="rtl"] .help-center .faq--help-center .faq__title-text,
   }
 }
 
+// Trading Hub hero RTL (badge arrow in hero)
+.trading-hub--rtl {
+  .trading-hub__badge-arrow {
+    transform: scaleX(-1) !important;
+  }
+}
+
+// Trading Hub article detail hero RTL
+.trading-hub-article-hero--rtl {
+  .trading-hub-article-hero__category-arrow {
+    transform: scaleX(-1) !important;
+  }
+}
+
+html[dir="rtl"] .trading-hub .trading-hub__badge-arrow,
+html[lang="ar"] .trading-hub .trading-hub__badge-arrow,
+body[dir="rtl"] .trading-hub .trading-hub__badge-arrow,
+[dir="rtl"] .trading-hub .trading-hub__badge-arrow {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .trading-hub-article-hero .trading-hub-article-hero__category-arrow,
+html[lang="ar"] .trading-hub-article-hero .trading-hub-article-hero__category-arrow,
+body[dir="rtl"] .trading-hub-article-hero .trading-hub-article-hero__category-arrow,
+[dir="rtl"] .trading-hub-article-hero .trading-hub-article-hero__category-arrow {
+  transform: scaleX(-1) !important;
+}
+
 html[dir="rtl"] .partners .partners__badge-arrow,
 html[lang="ar"] .partners .partners__badge-arrow,
 body[dir="rtl"] .partners .partners__badge-arrow,

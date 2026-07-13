@@ -8,6 +8,8 @@ import {
 import { LEGAL_REGULATED_CRITICAL_CSS } from "./src/helpers/legal-regulated-critical-css";
 import { CONTACT_US_HERO_CRITICAL_CSS } from "./src/helpers/contact-us-critical-css";
 import { PARTNERS_HERO_CRITICAL_CSS } from "./src/helpers/partners-critical-css";
+import { TRADING_HUB_HERO_CRITICAL_CSS } from "./src/helpers/trading-hub-critical-css";
+import { TRADING_HUB_ARTICLE_HERO_CRITICAL_CSS } from "./src/helpers/trading-hub-article-critical-css";
 import { COMPANY_CRITICAL_CSS } from "./src/helpers/company-critical-css";
 import { RISK_DISCLAIMER_CRITICAL_CSS } from "./src/helpers/risk-disclaimer-critical-css";
 import { staticCssUrl } from "./src/helpers/static-css-cache-bust";
@@ -767,6 +769,19 @@ export const onPreRenderHTML = ({
           if (last === "contact-us") {
             return { rootClass: "contact-us", assetSlug: "contact-us" };
           }
+          const tradingHubIndex = parts.findIndex(
+            (segment) => segment.toLowerCase() === "trading-hub"
+          );
+          if (tradingHubIndex !== -1) {
+            const afterTradingHub = parts.slice(tradingHubIndex + 1);
+            if (afterTradingHub.length >= 2) {
+              return {
+                rootClass: "trading-hub-article-hero",
+                assetSlug: "trading-tools",
+              };
+            }
+            return { rootClass: "trading-hub", assetSlug: "trading-tools" };
+          }
           const heroLcpSlugs = new Set([
             "all-markets",
             "forex",
@@ -1025,12 +1040,15 @@ armCssFlipAndScripts();})();`
     const heroTabletLcpCriticalCss = isArabicHeroLcp
       ? heroArabicTabletBgLcpCritical(heroRoot)
       : heroTabletBgLcpCritical(heroRoot);
+    const isTradingHubDedicatedHero =
+      heroRoot === "trading-hub" || heroRoot === "trading-hub-article-hero";
     const heroArabicDesktopLcpCritical =
       isArabicHeroLcp &&
       heroRoot !== "faq-hero" &&
       heroRoot !== "legal" &&
       heroRoot !== "contact-us" &&
-      heroRoot !== "partners"
+      heroRoot !== "partners" &&
+      !isTradingHubDedicatedHero
         ? heroArabicDesktopBgLcpCritical(
             heroRoot,
             getRtlHeroDesktopLgLcpPosition(heroRoot),
@@ -1039,7 +1057,9 @@ armCssFlipAndScripts();})();`
         : "";
     const heroArabicLcpCriticalForDedicatedPage =
       isArabicHeroLcp &&
-      (heroRoot === "contact-us" || heroRoot === "partners")
+      (heroRoot === "contact-us" ||
+        heroRoot === "partners" ||
+        isTradingHubDedicatedHero)
         ? [
             heroArabicTabletBgLcpCritical(heroRoot),
             heroArabicDesktopBgLcpCritical(
@@ -1051,10 +1071,12 @@ armCssFlipAndScripts();})();`
         : "";
     const heroLtrTabletLcpCriticalForDedicatedPage =
       !isArabicHeroLcp &&
-      (heroRoot === "contact-us" || heroRoot === "partners")
+      (heroRoot === "contact-us" ||
+        heroRoot === "partners" ||
+        isTradingHubDedicatedHero)
         ? heroRoot === "contact-us"
           ? heroTabletBgLcpCritical("contact-us")
-          : heroTabletBgLcpCritical("partners")
+          : heroTabletBgLcpCritical(heroRoot)
         : "";
     earlyHints.push(
       <style
@@ -1079,7 +1101,8 @@ armCssFlipAndScripts();})();`
             ...(heroRoot !== "faq-hero" &&
             heroRoot !== "legal" &&
             heroRoot !== "contact-us" &&
-            heroRoot !== "partners"
+            heroRoot !== "partners" &&
+            !isTradingHubDedicatedHero
               ? [
                   heroPageShellCritical(heroRoot, 555, 73, 70),
                   heroTabletContainerCritical(
@@ -1157,6 +1180,20 @@ armCssFlipAndScripts();})();`
             ...(heroRoot === "partners"
               ? [
                   PARTNERS_HERO_CRITICAL_CSS,
+                  heroLtrTabletLcpCriticalForDedicatedPage,
+                  heroArabicLcpCriticalForDedicatedPage,
+                ]
+              : []),
+            ...(heroRoot === "trading-hub"
+              ? [
+                  TRADING_HUB_HERO_CRITICAL_CSS,
+                  heroLtrTabletLcpCriticalForDedicatedPage,
+                  heroArabicLcpCriticalForDedicatedPage,
+                ]
+              : []),
+            ...(heroRoot === "trading-hub-article-hero"
+              ? [
+                  TRADING_HUB_ARTICLE_HERO_CRITICAL_CSS,
                   heroLtrTabletLcpCriticalForDedicatedPage,
                   heroArabicLcpCriticalForDedicatedPage,
                 ]

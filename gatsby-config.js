@@ -65,6 +65,13 @@ const plugins = [
   },
 ];
 
+const sanityProjectId =
+  process.env.GATSBY_SANITY_PROJECT_ID ||
+  process.env.SANITY_PROJECT_ID ||
+  "ms3sz7xq";
+const sanityDataset =
+  process.env.GATSBY_SANITY_DATASET || process.env.SANITY_DATASET || "production";
+
 if (allowSearchIndexing) {
   plugins.splice(2, 0, "gatsby-plugin-sitemap");
 }

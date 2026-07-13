@@ -1,0 +1,79 @@
+/* Delete confirmation dialogs — responsive sizing aligned with Gatsby vars.scss */
+
+.hub-delete-dialog[data-ui='Dialog'],
+#hub-delete-confirm[data-ui='Dialog'],
+#hub-delete-blocked[data-ui='Dialog'] {
+  box-sizing: border-box;
+  width: calc(100vw - 32px) !important;
+  max-width: calc(100vw - 32px) !important;
+}
+
+.hub-delete-dialog [data-ui='DialogCard'],
+#hub-delete-confirm [data-ui='DialogCard'],
+#hub-delete-blocked [data-ui='DialogCard'] {
+  width: 100%;
+  max-height: none !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Sanity wraps dialog body in a scrollable region — disable for short copy. */
+.hub-delete-dialog [data-ui='DialogCard'] > div,
+#hub-delete-confirm [data-ui='DialogCard'] > div,
+#hub-delete-blocked [data-ui='DialogCard'] > div {
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+}
+
+.hub-delete-dialog__content {
+  box-sizing: border-box;
+  min-height: 220px;
+  overflow: visible;
+}
+
+.hub-delete-dialog__footer {
+  box-sizing: border-box;
+}
+
+/* Tablet: 768px – 1023px ($md – $max-lg) */
+@media screen and (min-width: 768px) {
+  .hub-delete-dialog[data-ui='Dialog'],
+  #hub-delete-confirm[data-ui='Dialog'],
+  #hub-delete-blocked[data-ui='Dialog'] {
+    width: min(520px, calc(100vw - 48px)) !important;
+    max-width: min(520px, calc(100vw - 48px)) !important;
+  }
+
+  .hub-delete-dialog__content {
+    min-height: 240px;
+  }
+}
+
+/* Desktop: 1024px+ ($lg) */
+@media screen and (min-width: 1024px) {
+  .hub-delete-dialog[data-ui='Dialog'],
+  #hub-delete-confirm[data-ui='Dialog'],
+  #hub-delete-blocked[data-ui='Dialog'] {
+    width: 560px !important;
+    max-width: 560px !important;
+  }
+
+  .hub-delete-dialog__content {
+    min-height: 252px;
+  }
+}
+
+/* Large desktop: 1920px+ ($xl) */
+@media screen and (min-width: 1920px) {
+  .hub-delete-dialog[data-ui='Dialog'],
+  #hub-delete-confirm[data-ui='Dialog'],
+  #hub-delete-blocked[data-ui='Dialog'] {
+    width: 600px !important;
+    max-width: 600px !important;
+  }
+
+  .hub-delete-dialog__content {
+    min-height: 260px;
+  }
+}
