@@ -12,37 +12,45 @@ import {
 } from "../helpers/sanity/map-trading-hub-data";
 import "../assets/styles/index.scss";
 
-const TradingHubCategoryTemplate = ({ data, pageContext }) => {
+const TradingHubCategoryTemplate = ({ data, serverData, pageContext }) => {
   const { language } = useI18next();
   const { categorySlug } = pageContext;
 
+  const landingPageRaw = serverData?.landingPage || data.landingPage;
+  const categoriesRaw = serverData?.categories || data.categories?.nodes || [];
+  const articlesRaw = serverData?.articles || data.articles?.nodes || [];
+  const categoryRaw =
+    serverData?.ssrCategory ||
+    data.category ||
+    categoriesRaw.find((c) => c.slug?.current === categorySlug);
+
   const landingPage = useMemo(
-    () => mapLandingPage(data.landingPage, language),
-    [data.landingPage, language]
+    () => mapLandingPage(landingPageRaw, language),
+    [landingPageRaw, language]
   );
 
   const activeCategory = useMemo(
-    () => mapCategory(data.category, language),
-    [data.category, language]
+    () => mapCategory(categoryRaw, language),
+    [categoryRaw, language]
   );
 
   const categories = useMemo(
     () =>
-      (data.categories?.nodes || [])
+      categoriesRaw
         .map((node) => mapCategory(node, language))
         .filter(Boolean)
         .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
-    [data.categories?.nodes, language]
+    [categoriesRaw, language]
   );
 
   const articles = useMemo(
     () =>
       sortArticlesByOrderRank(
-        (data.articles?.nodes || [])
+        articlesRaw
           .map((node) => mapArticle(node, language))
           .filter(Boolean)
       ),
-    [data.articles?.nodes, language]
+    [articlesRaw, language]
   );
 
   const seo = landingPage?.seo || {};
@@ -64,6 +72,21 @@ const TradingHubCategoryTemplate = ({ data, pageContext }) => {
     </PageBackground>
   );
 };
+
+export async function getServerData({ pageContext }) {
+  try {
+    const { fetchTradingHubDataSSR } = require("../helpers/sanity/gatsby-source");
+    const ssrData = await fetchTradingHubDataSSR();
+    const ssrCategory =
+      ssrData.categories.find(
+        (c) => c.slug?.current === pageContext.categorySlug
+      ) || null;
+    return { props: { ...ssrData, ssrCategory } };
+  } catch (err) {
+    console.error("[SSR] trading-hub-category:", err.message);
+    return { props: {} };
+  }
+}
 
 export default TradingHubCategoryTemplate;
 

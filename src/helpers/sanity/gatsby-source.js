@@ -179,9 +179,34 @@ function createSanityNodeFactory({
 const TRADING_HUB_LISTEN_QUERY =
   '*[_type in ["hubArticle", "hubCategory", "hubAuthor", "tradingHubPage"]]';
 
+function normalizeSanityDocForSSR(doc) {
+  if (!doc || typeof doc !== "object") return doc;
+  return { ...doc, id: doc._id, sanityId: doc._id };
+}
+
+/**
+ * Fetches fresh Trading Hub data from Sanity at request time (SSR).
+ * Normalises each document so map-trading-hub-data helpers receive
+ * the same shape as Gatsby GraphQL nodes (id, sanityId present).
+ */
+async function fetchTradingHubDataSSR() {
+  const { landingPage, categories, articles } = await fetchTradingHubData();
+  return {
+    landingPage: landingPage ? normalizeSanityDocForSSR(landingPage) : null,
+    categories: (categories || []).map(normalizeSanityDocForSSR),
+    articles: (articles || []).map((a) =>
+      normalizeSanityDocForSSR({
+        ...a,
+        category: a.category ? normalizeSanityDocForSSR(a.category) : null,
+      })
+    ),
+  };
+}
+
 module.exports = {
   getSanityClient,
   fetchTradingHubData,
+  fetchTradingHubDataSSR,
   createSanityNodeFactory,
   TRADING_HUB_LISTEN_QUERY,
   isPublishedSanityDocument,

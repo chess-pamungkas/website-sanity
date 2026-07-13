@@ -12,31 +12,35 @@ import {
 } from "../helpers/sanity/map-trading-hub-data";
 import "../assets/styles/index.scss";
 
-const TradingHubLandingPage = ({ data }) => {
+const TradingHubLandingPage = ({ data, serverData }) => {
   const { language } = useI18next();
 
+  const landingPageRaw = serverData?.landingPage || data.landingPage;
+  const categoriesRaw = serverData?.categories || data.categories?.nodes || [];
+  const articlesRaw = serverData?.articles || data.articles?.nodes || [];
+
   const landingPage = useMemo(
-    () => mapLandingPage(data.landingPage, language),
-    [data.landingPage, language]
+    () => mapLandingPage(landingPageRaw, language),
+    [landingPageRaw, language]
   );
 
   const categories = useMemo(
     () =>
-      (data.categories?.nodes || [])
+      categoriesRaw
         .map((node) => mapCategory(node, language))
         .filter(Boolean)
         .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
-    [data.categories?.nodes, language]
+    [categoriesRaw, language]
   );
 
   const articles = useMemo(
     () =>
       sortArticlesByOrderRank(
-        (data.articles?.nodes || [])
+        articlesRaw
           .map((node) => mapArticle(node, language))
           .filter(Boolean)
       ),
-    [data.articles?.nodes, language]
+    [articlesRaw, language]
   );
 
   const seo = landingPage?.seo || {};
@@ -57,6 +61,17 @@ const TradingHubLandingPage = ({ data }) => {
     </PageBackground>
   );
 };
+
+export async function getServerData() {
+  try {
+    const { fetchTradingHubDataSSR } = require("../helpers/sanity/gatsby-source");
+    const ssrData = await fetchTradingHubDataSSR();
+    return { props: ssrData };
+  } catch (err) {
+    console.error("[SSR] trading-hub landing:", err.message);
+    return { props: {} };
+  }
+}
 
 export default TradingHubLandingPage;
 

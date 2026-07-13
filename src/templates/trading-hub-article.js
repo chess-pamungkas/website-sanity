@@ -10,41 +10,56 @@ import {
 } from "../helpers/sanity/map-trading-hub-data";
 import "../assets/styles/index.scss";
 
-const TradingHubArticleTemplate = ({ data, pageContext }) => {
+const TradingHubArticleTemplate = ({ data, serverData, pageContext }) => {
   const { language } = useI18next();
   const {
     relatedArticleIds = [],
     relatedContentMode: contextRelatedContentMode,
+    articleSlug,
   } = pageContext;
 
+  // Prefer fresh SSR data over stale build-time GraphQL data
+  const articleRaw =
+    serverData?.ssrArticle ||
+    data.article ||
+    null;
+
+  const allArticlesRaw = serverData?.articles || data.allArticles?.nodes || [];
+
   const article = useMemo(
-    () => mapArticle(data.article, language),
-    [data.article, language]
+    () => mapArticle(articleRaw, language),
+    [articleRaw, language]
   );
+
+  // Use fresh relatedContentMode and relatedArticleIds from SSR when available
+  const freshRelatedContentMode =
+    serverData?.ssrArticle?.relatedContentMode || contextRelatedContentMode;
+  const freshRelatedArticleIds =
+    serverData?.ssrArticle?.relatedArticles?.length
+      ? serverData.ssrArticle.relatedArticles
+      : relatedArticleIds;
 
   const articleForRelated = useMemo(
     () => ({
       ...article,
-      relatedContentMode:
-        contextRelatedContentMode || article.relatedContentMode,
+      relatedContentMode: freshRelatedContentMode || article?.relatedContentMode,
     }),
-    [article, contextRelatedContentMode]
+    [article, freshRelatedContentMode]
   );
 
   const relatedArticles = useMemo(() => {
-    const allNodes = data.allArticles?.nodes || [];
     return resolveRelatedArticles(
       articleForRelated,
-      allNodes,
+      allArticlesRaw,
       language,
       4,
-      relatedArticleIds
+      freshRelatedArticleIds
     );
   }, [
     articleForRelated,
-    data.allArticles?.nodes,
+    allArticlesRaw,
     language,
-    relatedArticleIds,
+    freshRelatedArticleIds,
   ]);
 
   const seo = article?.seo || {};
@@ -62,6 +77,21 @@ const TradingHubArticleTemplate = ({ data, pageContext }) => {
     </PageBackground>
   );
 };
+
+export async function getServerData({ pageContext }) {
+  try {
+    const { fetchTradingHubDataSSR } = require("../helpers/sanity/gatsby-source");
+    const ssrData = await fetchTradingHubDataSSR();
+    const ssrArticle =
+      ssrData.articles.find(
+        (a) => a.slug?.current === pageContext.articleSlug
+      ) || null;
+    return { props: { ...ssrData, ssrArticle } };
+  } catch (err) {
+    console.error("[SSR] trading-hub-article:", err.message);
+    return { props: {} };
+  }
+}
 
 export default TradingHubArticleTemplate;
 
