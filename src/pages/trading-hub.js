@@ -4,6 +4,7 @@ import { useI18next } from "gatsby-plugin-react-i18next";
 import PageBackground from "../components/shared/page-background";
 import Seo from "../components/shared/seo";
 import TradingHubContent from "../components/trading-hub/trading-hub-content";
+import SanityPreviewBanner from "../components/trading-hub/preview-banner";
 import {
   mapArticle,
   mapCategory,
@@ -14,6 +15,7 @@ import "../assets/styles/index.scss";
 
 const TradingHubLandingPage = ({ data, serverData }) => {
   const { language } = useI18next();
+  const isPreview = serverData?.isPreview === true;
 
   const landingPageRaw = serverData?.landingPage || data.landingPage;
   const categoriesRaw = serverData?.categories || data.categories?.nodes || [];
@@ -47,6 +49,7 @@ const TradingHubLandingPage = ({ data, serverData }) => {
 
   return (
     <PageBackground backgroundType="homepage-bg-1">
+      <SanityPreviewBanner enabled={isPreview} />
       <Seo
         title={seo.title || landingPage?.hubTitle || "Trading Hub"}
         description={seo.description || landingPage?.heroSubtitle || ""}
@@ -62,11 +65,18 @@ const TradingHubLandingPage = ({ data, serverData }) => {
   );
 };
 
-export async function getServerData() {
+export async function getServerData({ headers }) {
   try {
+    const { isPreviewRequest } = require("../helpers/sanity/preview");
     const { fetchTradingHubDataSSR } = require("../helpers/sanity/gatsby-source");
-    const ssrData = await fetchTradingHubDataSSR();
-    return { props: ssrData };
+    const preview = isPreviewRequest(headers);
+    const ssrData = await fetchTradingHubDataSSR({ preview });
+    return {
+      props: ssrData,
+      headers: preview
+        ? { "Cache-Control": "private, no-cache, no-store, must-revalidate" }
+        : undefined,
+    };
   } catch (err) {
     console.error("[SSR] trading-hub landing:", err.message);
     return { props: {} };

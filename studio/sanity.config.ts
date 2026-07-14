@@ -7,6 +7,7 @@ import {schemaTypes} from './schemaTypes'
 import {structure} from './structure'
 import {hubArticleDuplicatePlugin} from './plugins/hubArticleDuplicatePlugin'
 import {hubCategoryDuplicatePlugin} from './plugins/hubCategoryDuplicatePlugin'
+import {hubPreviewPlugin} from './plugins/hubPreviewPlugin'
 import './styles/hub-dialog.css'
 
 const LANGUAGES = LOCALES.map(({title, value}) => ({id: value, title}))
@@ -30,6 +31,7 @@ function createWorkspaceConfig(dataset: 'production' | 'development') {
       visionTool(),
       hubArticleDuplicatePlugin(),
       hubCategoryDuplicatePlugin(),
+      hubPreviewPlugin(),
       internationalizedArray({
         languages: LANGUAGES,
         // Auto-create only English on new documents; other locales are added via + buttons.

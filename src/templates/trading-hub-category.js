@@ -4,6 +4,7 @@ import { useI18next } from "gatsby-plugin-react-i18next";
 import PageBackground from "../components/shared/page-background";
 import Seo from "../components/shared/seo";
 import TradingHubContent from "../components/trading-hub/trading-hub-content";
+import SanityPreviewBanner from "../components/trading-hub/preview-banner";
 import {
   mapArticle,
   mapCategory,
@@ -15,6 +16,7 @@ import "../assets/styles/index.scss";
 const TradingHubCategoryTemplate = ({ data, serverData, pageContext }) => {
   const { language } = useI18next();
   const { categorySlug } = pageContext;
+  const isPreview = serverData?.isPreview === true;
 
   const landingPageRaw = serverData?.landingPage || data.landingPage;
   const categoriesRaw = serverData?.categories || data.categories?.nodes || [];
@@ -57,6 +59,7 @@ const TradingHubCategoryTemplate = ({ data, serverData, pageContext }) => {
 
   return (
     <PageBackground backgroundType="homepage-bg-1">
+      <SanityPreviewBanner enabled={isPreview} />
       <Seo
         title={activeCategory?.title || seo.title || "Trading Hub"}
         description={seo.description || landingPage?.heroSubtitle || ""}
@@ -73,15 +76,22 @@ const TradingHubCategoryTemplate = ({ data, serverData, pageContext }) => {
   );
 };
 
-export async function getServerData({ pageContext }) {
+export async function getServerData({ headers, pageContext }) {
   try {
+    const { isPreviewRequest } = require("../helpers/sanity/preview");
     const { fetchTradingHubDataSSR } = require("../helpers/sanity/gatsby-source");
-    const ssrData = await fetchTradingHubDataSSR();
+    const preview = isPreviewRequest(headers);
+    const ssrData = await fetchTradingHubDataSSR({ preview });
     const ssrCategory =
       ssrData.categories.find(
         (c) => c.slug?.current === pageContext.categorySlug
       ) || null;
-    return { props: { ...ssrData, ssrCategory } };
+    return {
+      props: { ...ssrData, ssrCategory },
+      headers: preview
+        ? { "Cache-Control": "private, no-cache, no-store, must-revalidate" }
+        : undefined,
+    };
   } catch (err) {
     console.error("[SSR] trading-hub-category:", err.message);
     return { props: {} };

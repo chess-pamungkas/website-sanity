@@ -4,6 +4,7 @@ import { useI18next } from "gatsby-plugin-react-i18next";
 import PageBackground from "../components/shared/page-background";
 import Seo from "../components/shared/seo";
 import TradingHubArticleDetail from "../components/trading-hub/article-detail";
+import SanityPreviewBanner from "../components/trading-hub/preview-banner";
 import {
   mapArticle,
   resolveRelatedArticles,
@@ -15,8 +16,8 @@ const TradingHubArticleTemplate = ({ data, serverData, pageContext }) => {
   const {
     relatedArticleIds = [],
     relatedContentMode: contextRelatedContentMode,
-    articleSlug,
   } = pageContext;
+  const isPreview = serverData?.isPreview === true;
 
   // Prefer fresh SSR data over stale build-time GraphQL data
   const articleRaw =
@@ -66,6 +67,7 @@ const TradingHubArticleTemplate = ({ data, serverData, pageContext }) => {
 
   return (
     <PageBackground backgroundType="homepage-bg-1">
+      <SanityPreviewBanner enabled={isPreview} />
       <Seo
         title={seo.title || article?.title || "Trading Hub"}
         description={seo.description || article?.subtitle || ""}
@@ -78,15 +80,22 @@ const TradingHubArticleTemplate = ({ data, serverData, pageContext }) => {
   );
 };
 
-export async function getServerData({ pageContext }) {
+export async function getServerData({ headers, pageContext }) {
   try {
+    const { isPreviewRequest } = require("../helpers/sanity/preview");
     const { fetchTradingHubDataSSR } = require("../helpers/sanity/gatsby-source");
-    const ssrData = await fetchTradingHubDataSSR();
+    const preview = isPreviewRequest(headers);
+    const ssrData = await fetchTradingHubDataSSR({ preview });
     const ssrArticle =
       ssrData.articles.find(
         (a) => a.slug?.current === pageContext.articleSlug
       ) || null;
-    return { props: { ...ssrData, ssrArticle } };
+    return {
+      props: { ...ssrData, ssrArticle },
+      headers: preview
+        ? { "Cache-Control": "private, no-cache, no-store, must-revalidate" }
+        : undefined,
+    };
   } catch (err) {
     console.error("[SSR] trading-hub-article:", err.message);
     return { props: {} };

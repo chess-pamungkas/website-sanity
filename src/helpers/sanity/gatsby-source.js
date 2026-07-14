@@ -5,28 +5,35 @@ const {
   isPublishedSanityDocument,
 } = require("./published-only");
 
-function getSanityClient() {
+function getSanityClient(options = {}) {
+  const { preview = false } = options;
+  const token = process.env.SANITY_API_TOKEN;
+
   return createClient({
     projectId:
       process.env.GATSBY_SANITY_PROJECT_ID ||
       process.env.SANITY_PROJECT_ID ||
       "ms3sz7xq",
     dataset:
-      process.env.GATSBY_SANITY_DATASET || process.env.SANITY_DATASET || "production",
+      process.env.GATSBY_SANITY_DATASET ||
+      process.env.SANITY_DATASET ||
+      "production",
     apiVersion: "2024-01-01",
-    useCdn: false,
-    token: process.env.SANITY_API_TOKEN,
+    useCdn: !preview,
+    token: preview ? token : token || undefined,
+    perspective: preview ? "previewDrafts" : "published",
+    ...(preview ? { stega: false } : {}),
   });
 }
 
-function getSanityFetchClient() {
-  // Public frontend always reads the published perspective only.
-  return getSanityClient().withConfig({ perspective: "published" });
+function getSanityFetchClient(options = {}) {
+  return getSanityClient(options);
 }
 
-function buildLandingPageQuery() {
+function buildLandingPageQuery(preview = false) {
+  const idFilter = preview ? "true" : PUBLISHED_ID_FILTER;
   return `
-  *[_type == "tradingHubPage" && ${PUBLISHED_ID_FILTER}][0]{
+  *[_type == "tradingHubPage" && ${idFilter}][0]{
     _id,
     heroBadge,
     heroTitle,
@@ -46,9 +53,10 @@ function buildLandingPageQuery() {
 `;
 }
 
-function buildCategoriesQuery() {
+function buildCategoriesQuery(preview = false) {
+  const idFilter = preview ? "true" : PUBLISHED_ID_FILTER;
   return `
-  *[_type == "hubCategory" && isActive == true && ${PUBLISHED_ID_FILTER}] | order(sortOrder asc) {
+  *[_type == "hubCategory" && isActive == true && ${idFilter}] | order(sortOrder asc) {
     _id,
     sortOrder,
     isActive,
@@ -58,9 +66,12 @@ function buildCategoriesQuery() {
 `;
 }
 
-function buildArticlesQuery() {
+function buildArticlesQuery(preview = false) {
+  const idFilter = preview ? "true" : PUBLISHED_ID_FILTER;
+  // Preview: allow drafts without publishedAt so never-published articles can be reviewed
+  const publishedAtFilter = preview ? "true" : "defined(publishedAt)";
   return `
-  *[_type == "hubArticle" && ${PUBLISHED_ID_FILTER} && defined(publishedAt)] | order(orderRank asc, publishedAt desc) {
+  *[_type == "hubArticle" && ${idFilter} && ${publishedAtFilter}] | order(orderRank asc, publishedAt desc) {
     _id,
     publishToSites,
     orderRank,
@@ -93,13 +104,28 @@ function buildArticlesQuery() {
 `;
 }
 
-async function fetchTradingHubData() {
-  const client = getSanityFetchClient();
+async function fetchTradingHubData(options = {}) {
+  const preview = options.preview === true;
+  const client = getSanityFetchClient({ preview });
+
+  if (preview && !process.env.SANITY_API_TOKEN) {
+    throw new Error("SANITY_API_TOKEN is required for draft preview fetches");
+  }
+
   const [landingPage, categories, articles] = await Promise.all([
-    client.fetch(buildLandingPageQuery()),
-    client.fetch(buildCategoriesQuery()),
-    client.fetch(buildArticlesQuery()),
+    client.fetch(buildLandingPageQuery(preview)),
+    client.fetch(buildCategoriesQuery(preview)),
+    client.fetch(buildArticlesQuery(preview)),
   ]);
+
+  if (preview) {
+    return {
+      landingPage: landingPage || null,
+      categories: Array.isArray(categories) ? categories : [],
+      articles: Array.isArray(articles) ? articles : [],
+      isPreview: true,
+    };
+  }
 
   const publishedLandingPage =
     landingPage && isPublishedSanityDocument(landingPage) ? landingPage : null;
@@ -108,6 +134,7 @@ async function fetchTradingHubData() {
     landingPage: publishedLandingPage,
     categories: filterPublishedSanityDocuments(categories),
     articles: filterPublishedSanityDocuments(articles),
+    isPreview: false,
   };
 }
 
@@ -181,16 +208,19 @@ const TRADING_HUB_LISTEN_QUERY =
 
 function normalizeSanityDocForSSR(doc) {
   if (!doc || typeof doc !== "object") return doc;
-  return { ...doc, id: doc._id, sanityId: doc._id };
+  const sanitizedId = String(doc._id || "").replace(/^drafts\./, "");
+  return { ...doc, id: sanitizedId || doc._id, sanityId: sanitizedId || doc._id };
 }
 
 /**
  * Fetches fresh Trading Hub data from Sanity at request time (SSR).
- * Normalises each document so map-trading-hub-data helpers receive
- * the same shape as Gatsby GraphQL nodes (id, sanityId present).
+ * Pass `{ preview: true }` to read draft overlays (requires SANITY_API_TOKEN).
  */
-async function fetchTradingHubDataSSR() {
-  const { landingPage, categories, articles } = await fetchTradingHubData();
+async function fetchTradingHubDataSSR(options = {}) {
+  const preview = options.preview === true;
+  const { landingPage, categories, articles, isPreview } =
+    await fetchTradingHubData({ preview });
+
   return {
     landingPage: landingPage ? normalizeSanityDocForSSR(landingPage) : null,
     categories: (categories || []).map(normalizeSanityDocForSSR),
@@ -200,6 +230,7 @@ async function fetchTradingHubDataSSR() {
         category: a.category ? normalizeSanityDocForSSR(a.category) : null,
       })
     ),
+    isPreview: Boolean(isPreview),
   };
 }
 
