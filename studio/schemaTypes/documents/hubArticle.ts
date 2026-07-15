@@ -12,6 +12,7 @@ import {
 } from '../helpers/localized'
 import {slugifyTitle} from '../helpers/slugify'
 import {HubArticleIsNewInput} from '../../components/HubArticleIsNewInput'
+import {StudioPreviewLinksField} from '../../components/StudioPreviewLinksField'
 
 export default defineType({
   name: 'hubArticle',
@@ -25,6 +26,14 @@ export default defineType({
   ],
   fields: [
     orderRankField({type: 'hubArticle', newItemPosition: 'before'}),
+    defineField({
+      name: 'previewLinks',
+      title: 'Preview',
+      type: 'string',
+      group: 'localized',
+      readOnly: true,
+      components: {field: StudioPreviewLinksField},
+    }),
     defineField({
       name: 'title',
       title: 'Article Title',

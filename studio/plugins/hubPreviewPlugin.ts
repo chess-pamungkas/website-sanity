@@ -18,6 +18,7 @@ export const hubPreviewPlugin = definePlugin({
         return prev
       }
 
+      // Keep Publish as the primary action; preview stays secondary.
       return [...prev, PreviewComAction, PreviewJpAction, PreviewLpComAction]
     },
   },

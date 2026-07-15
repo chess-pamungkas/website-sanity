@@ -18,6 +18,7 @@ const TradingHubArticleTemplate = ({ data, serverData, pageContext }) => {
     relatedContentMode: contextRelatedContentMode,
   } = pageContext;
   const isPreview = serverData?.isPreview === true;
+  const notFound = serverData?.notFound === true;
 
   // Prefer fresh SSR data over stale build-time GraphQL data
   const articleRaw =
@@ -65,6 +66,23 @@ const TradingHubArticleTemplate = ({ data, serverData, pageContext }) => {
 
   const seo = article?.seo || {};
 
+  if (notFound || !article) {
+    return (
+      <PageBackground backgroundType="homepage-bg-1">
+        <SanityPreviewBanner enabled={isPreview} />
+        <Seo title="Article not found" description="" />
+        <div className="container" style={{ padding: "4rem 1rem" }}>
+          <h1>Article not found</h1>
+          <p>
+            {isPreview
+              ? "No draft/published article matches this slug. Save the document in Studio, then try Preview again."
+              : "This Trading Hub article is not available."}
+          </p>
+        </div>
+      </PageBackground>
+    );
+  }
+
   return (
     <PageBackground backgroundType="homepage-bg-1">
       <SanityPreviewBanner enabled={isPreview} />
@@ -80,18 +98,50 @@ const TradingHubArticleTemplate = ({ data, serverData, pageContext }) => {
   );
 };
 
-export async function getServerData({ headers, pageContext }) {
+export async function getServerData({
+  headers,
+  pageContext,
+  params,
+  url,
+  query,
+}) {
   try {
     const { isPreviewRequest } = require("../helpers/sanity/preview");
     const { fetchTradingHubDataSSR } = require("../helpers/sanity/gatsby-source");
+    const {
+      resolveTradingHubSlugs,
+    } = require("../helpers/sanity/resolve-trading-hub-slugs");
     const preview = isPreviewRequest(headers);
+    const { categorySlug, articleSlug } = resolveTradingHubSlugs({
+      params,
+      pageContext,
+      url,
+      query,
+    });
     const ssrData = await fetchTradingHubDataSSR({ preview });
     const ssrArticle =
-      ssrData.articles.find(
-        (a) => a.slug?.current === pageContext.articleSlug
-      ) || null;
+      ssrData.articles.find((a) => {
+        if (a.slug?.current !== articleSlug) return false;
+        if (!categorySlug) return true;
+        return a.category?.slug?.current === categorySlug;
+      }) || null;
+
+    if (!articleSlug || !ssrArticle) {
+      return {
+        status: 404,
+        props: {
+          ...ssrData,
+          ssrArticle: null,
+          notFound: true,
+        },
+        headers: preview
+          ? { "Cache-Control": "private, no-cache, no-store, must-revalidate" }
+          : undefined,
+      };
+    }
+
     return {
-      props: { ...ssrData, ssrArticle },
+      props: { ...ssrData, ssrArticle, notFound: false },
       headers: preview
         ? { "Cache-Control": "private, no-cache, no-store, must-revalidate" }
         : undefined,

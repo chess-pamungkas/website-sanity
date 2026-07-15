@@ -9,6 +9,7 @@ import {
 } from '../helpers/localized'
 import {HUB_LANDING_PAGE_IMAGE_SPECS} from '../constants'
 import {imageUploadGuidance} from '../../components/ImageUploadGuidance'
+import {StudioPreviewLinksField} from '../../components/StudioPreviewLinksField'
 
 /**
  * Singleton landing page config for /trading-hub (or /trading-academy route).
@@ -24,6 +25,14 @@ export default defineType({
     {name: 'seo', title: 'SEO'},
   ],
   fields: [
+    defineField({
+      name: 'previewLinks',
+      title: 'Preview',
+      type: 'string',
+      group: 'localized',
+      readOnly: true,
+      components: {field: StudioPreviewLinksField},
+    }),
     defineField({
       name: 'heroBadge',
       title: 'Hero Badge',

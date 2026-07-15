@@ -15,8 +15,10 @@ import "../assets/styles/index.scss";
 
 const TradingHubCategoryTemplate = ({ data, serverData, pageContext }) => {
   const { language } = useI18next();
-  const { categorySlug } = pageContext;
+  const categorySlug =
+    serverData?.resolvedCategorySlug || pageContext.categorySlug || "";
   const isPreview = serverData?.isPreview === true;
+  const notFound = serverData?.notFound === true;
 
   const landingPageRaw = serverData?.landingPage || data.landingPage;
   const categoriesRaw = serverData?.categories || data.categories?.nodes || [];
@@ -57,6 +59,23 @@ const TradingHubCategoryTemplate = ({ data, serverData, pageContext }) => {
 
   const seo = landingPage?.seo || {};
 
+  if (notFound || !activeCategory) {
+    return (
+      <PageBackground backgroundType="homepage-bg-1">
+        <SanityPreviewBanner enabled={isPreview} />
+        <Seo title="Category not found" description="" />
+        <div className="container" style={{ padding: "4rem 1rem" }}>
+          <h1>Category not found</h1>
+          <p>
+            {isPreview
+              ? "No draft/published category matches this slug. Save the document in Studio, then try Preview again."
+              : "This Trading Hub category is not available."}
+          </p>
+        </div>
+      </PageBackground>
+    );
+  }
+
   return (
     <PageBackground backgroundType="homepage-bg-1">
       <SanityPreviewBanner enabled={isPreview} />
@@ -76,18 +95,52 @@ const TradingHubCategoryTemplate = ({ data, serverData, pageContext }) => {
   );
 };
 
-export async function getServerData({ headers, pageContext }) {
+export async function getServerData({
+  headers,
+  pageContext,
+  params,
+  url,
+  query,
+}) {
   try {
     const { isPreviewRequest } = require("../helpers/sanity/preview");
     const { fetchTradingHubDataSSR } = require("../helpers/sanity/gatsby-source");
+    const {
+      resolveTradingHubSlugs,
+    } = require("../helpers/sanity/resolve-trading-hub-slugs");
     const preview = isPreviewRequest(headers);
+    const { categorySlug } = resolveTradingHubSlugs({
+      params,
+      pageContext,
+      url,
+      query,
+    });
     const ssrData = await fetchTradingHubDataSSR({ preview });
     const ssrCategory =
-      ssrData.categories.find(
-        (c) => c.slug?.current === pageContext.categorySlug
-      ) || null;
+      ssrData.categories.find((c) => c.slug?.current === categorySlug) || null;
+
+    if (!categorySlug || !ssrCategory) {
+      return {
+        status: 404,
+        props: {
+          ...ssrData,
+          ssrCategory: null,
+          resolvedCategorySlug: categorySlug,
+          notFound: true,
+        },
+        headers: preview
+          ? { "Cache-Control": "private, no-cache, no-store, must-revalidate" }
+          : undefined,
+      };
+    }
+
     return {
-      props: { ...ssrData, ssrCategory },
+      props: {
+        ...ssrData,
+        ssrCategory,
+        resolvedCategorySlug: categorySlug,
+        notFound: false,
+      },
       headers: preview
         ? { "Cache-Control": "private, no-cache, no-store, must-revalidate" }
         : undefined,

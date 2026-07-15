@@ -1,6 +1,7 @@
 import {defineField, defineType} from 'sanity'
 import {getLocalizedValue, requireEnglishString, ENGLISH_STRING_INITIAL} from '../helpers/localized'
 import {slugifyTitle} from '../helpers/slugify'
+import {StudioPreviewLinksField} from '../../components/StudioPreviewLinksField'
 
 /**
  * Real categories managed by Marketing (e.g. Trading Academy, Beginner's Guide).
@@ -15,6 +16,14 @@ export default defineType({
     {name: 'common', title: 'Common'},
   ],
   fields: [
+    defineField({
+      name: 'previewLinks',
+      title: 'Preview',
+      type: 'string',
+      group: 'localized',
+      readOnly: true,
+      components: {field: StudioPreviewLinksField},
+    }),
     defineField({
       name: 'title',
       title: 'Title',

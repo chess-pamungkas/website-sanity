@@ -12,10 +12,10 @@ function useResolvedPreviewSlug(props: DocumentActionProps) {
 
   useEffect(() => {
     let cancelled = false
+    const type = props.type
+    const draftOrPublished = props.draft || props.published
 
     async function resolve() {
-      const type = props.type
-      const draftOrPublished = props.draft || props.published
       if (!draftOrPublished) {
         setSlug('/trading-hub/')
         return
@@ -27,24 +27,15 @@ function useResolvedPreviewSlug(props: DocumentActionProps) {
       }
 
       if (type === 'hubCategory') {
-        const categorySlug = (draftOrPublished as {slug?: {current?: string}})?.slug
-          ?.current
+        const categorySlug = (draftOrPublished as {slug?: {current?: string}})?.slug?.current
         setSlug(categorySlug ? `/trading-hub/${categorySlug}/` : '/trading-hub/')
         return
       }
 
       if (type === 'hubArticle') {
-        const articleSlug = (draftOrPublished as {slug?: {current?: string}})?.slug
-          ?.current
-        const categoryRef = (draftOrPublished as {category?: {_ref?: string}})?.category
-          ?._ref
-
-        if (!articleSlug) {
-          setSlug('/trading-hub/')
-          return
-        }
-
-        if (!categoryRef) {
+        const articleSlug = (draftOrPublished as {slug?: {current?: string}})?.slug?.current
+        const categoryRef = (draftOrPublished as {category?: {_ref?: string}})?.category?._ref
+        if (!articleSlug || !categoryRef) {
           setSlug('/trading-hub/')
           return
         }
@@ -59,12 +50,13 @@ function useResolvedPreviewSlug(props: DocumentActionProps) {
                 : `drafts.${categoryRef}`,
             },
           )
-          if (cancelled) return
-          setSlug(
-            categorySlug
-              ? `/trading-hub/${categorySlug}/${articleSlug}/`
-              : '/trading-hub/',
-          )
+          if (!cancelled) {
+            setSlug(
+              categorySlug
+                ? `/trading-hub/${categorySlug}/${articleSlug}/`
+                : '/trading-hub/',
+            )
+          }
         } catch {
           if (!cancelled) setSlug('/trading-hub/')
         }
@@ -95,7 +87,7 @@ function createPreviewSiteAction(site: PreviewSite): DocumentActionComponent {
           status: 'warning',
           title: 'Preview secret missing',
           description:
-            'Set SANITY_STUDIO_PREVIEW_SECRET (same value as website SANITY_PREVIEW_SECRET), then redeploy Studio.',
+            'Set SANITY_STUDIO_PREVIEW_SECRET in studio/.env (same as website SANITY_PREVIEW_SECRET), then redeploy Studio.',
         })
         props.onComplete()
         return
@@ -109,13 +101,15 @@ function createPreviewSiteAction(site: PreviewSite): DocumentActionComponent {
     return {
       label: `Preview ${site.title}`,
       icon: EarthGlobeIcon,
+      tone: 'default',
+      // Menu only — do not steal the primary Publish button
+      group: ['paneActions'],
       onHandle,
       title: `Open draft preview on ${site.title} staging`,
     }
   }
 
   PreviewSiteAction.action = `preview-${site.id}`
-  PreviewSiteAction.displayName = `Preview${site.title.replace(/\s+/g, '')}Action`
   return PreviewSiteAction
 }
 

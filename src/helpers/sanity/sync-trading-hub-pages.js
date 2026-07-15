@@ -81,6 +81,39 @@ async function syncTradingHubPages({
   const expectedPaths = new Set();
   const articleIdToPath = new Map();
 
+  // Always-built SSR bases for draft-only slugs (duplicates that are not published yet).
+  // Pretty /trading-hub/{slug}/ URLs 404 until a Vercel rebuild creates that path;
+  // /api/preview redirects here with ?categorySlug=&articleSlug= instead.
+  const draftCategoryPreviewPath = `/trading-hub/draft-preview/category/`;
+  const draftArticlePreviewPath = `/trading-hub/draft-preview/article/`;
+  expectedPaths.add(draftCategoryPreviewPath);
+  expectedPaths.add(draftArticlePreviewPath);
+
+  createPage({
+    path: draftCategoryPreviewPath,
+    matchPath: `/trading-hub/:categorySlug/`,
+    component: categoryTemplate,
+    context: {
+      categoryId: "__trading_hub_draft_catch_all__",
+      categorySlug: "",
+      isDraftCatchAll: true,
+    },
+  });
+
+  createPage({
+    path: draftArticlePreviewPath,
+    matchPath: `/trading-hub/:categorySlug/:articleSlug/`,
+    component: articleTemplate,
+    context: {
+      articleId: "__trading_hub_draft_catch_all__",
+      categorySlug: "",
+      articleSlug: "",
+      relatedContentMode: null,
+      relatedArticleIds: [],
+      isDraftCatchAll: true,
+    },
+  });
+
   categories.forEach((category) => {
     const categorySlug = category.slug?.current;
     if (!categorySlug) return;
