@@ -23,10 +23,11 @@ const TradingHubArticleTemplate = ({ data, serverData, pageContext }) => {
   // Prefer fresh SSR data over stale build-time GraphQL data
   const articleRaw =
     serverData?.ssrArticle ||
-    data.article ||
+    data?.article ||
     null;
 
-  const allArticlesRaw = serverData?.articles || data.allArticles?.nodes || [];
+  const allArticlesRaw =
+    serverData?.articles || data?.allArticles?.nodes || [];
 
   const article = useMemo(
     () => mapArticle(articleRaw, language),

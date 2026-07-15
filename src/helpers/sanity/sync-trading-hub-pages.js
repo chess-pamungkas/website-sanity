@@ -84,6 +84,7 @@ async function syncTradingHubPages({
   // Always-built SSR bases for draft-only slugs (duplicates that are not published yet).
   // Pretty /trading-hub/{slug}/ URLs 404 until a Vercel rebuild creates that path;
   // /api/preview redirects here with ?categorySlug=&articleSlug= instead.
+  // Do NOT set matchPath — it breaks Gatsby SSR on Vercel (reach-router match null / window).
   const draftCategoryPreviewPath = `/trading-hub/draft-preview/category/`;
   const draftArticlePreviewPath = `/trading-hub/draft-preview/article/`;
   expectedPaths.add(draftCategoryPreviewPath);
@@ -91,7 +92,6 @@ async function syncTradingHubPages({
 
   createPage({
     path: draftCategoryPreviewPath,
-    matchPath: `/trading-hub/:categorySlug/`,
     component: categoryTemplate,
     context: {
       categoryId: "__trading_hub_draft_catch_all__",
@@ -102,7 +102,6 @@ async function syncTradingHubPages({
 
   createPage({
     path: draftArticlePreviewPath,
-    matchPath: `/trading-hub/:categorySlug/:articleSlug/`,
     component: articleTemplate,
     context: {
       articleId: "__trading_hub_draft_catch_all__",

@@ -16,16 +16,17 @@ import "../assets/styles/index.scss";
 const TradingHubCategoryTemplate = ({ data, serverData, pageContext }) => {
   const { language } = useI18next();
   const categorySlug =
-    serverData?.resolvedCategorySlug || pageContext.categorySlug || "";
+    serverData?.resolvedCategorySlug || pageContext?.categorySlug || "";
   const isPreview = serverData?.isPreview === true;
   const notFound = serverData?.notFound === true;
 
-  const landingPageRaw = serverData?.landingPage || data.landingPage;
-  const categoriesRaw = serverData?.categories || data.categories?.nodes || [];
-  const articlesRaw = serverData?.articles || data.articles?.nodes || [];
+  const landingPageRaw = serverData?.landingPage || data?.landingPage;
+  const categoriesRaw =
+    serverData?.categories || data?.categories?.nodes || [];
+  const articlesRaw = serverData?.articles || data?.articles?.nodes || [];
   const categoryRaw =
     serverData?.ssrCategory ||
-    data.category ||
+    data?.category ||
     categoriesRaw.find((c) => c.slug?.current === categorySlug);
 
   const landingPage = useMemo(
