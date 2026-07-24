@@ -238,7 +238,11 @@ $article-detail-hero-height-desktop: 320px;
 
     @include tablet-only {
       max-width: 65%;
-      gap: 12px;
+      gap: 6px;
+    }
+
+    @include desktop-lg {
+      gap: 8px;
     }
   }
 
@@ -300,7 +304,7 @@ $article-detail-hero-height-desktop: 320px;
     font-weight: map-get($font-weight, "semibold");
     font-size: 72px;
     letter-spacing: -0.02em;
-    line-height: 1.2;
+    line-height: 1;
     background: linear-gradient(
         102.31deg,
         rgba(255, 255, 255, 0) 9.12%,
@@ -333,9 +337,19 @@ $article-detail-hero-height-desktop: 320px;
     }
 
     @include desktop-lg {
-      font-size: 64px;
-      width: 1000px;
+      font-size: 44px;
+      width: 800px;
       max-width: 100%;
+    }
+
+    @include desktop-xl {
+      font-size: 48px;
+      width: 800px;
+    }
+
+    @include desktop-2k {
+      font-size: 56px;
+      width: 1000px;
     }
   }
 
@@ -373,21 +387,7 @@ $article-detail-hero-height-desktop: 320px;
     }
 
     @include desktop-xl {
-      max-width: 675px;
-      font-size: 18px;
-      line-height: 28px;
-    }
-
-    @include desktop-2k {
-      max-width: 675px;
-      font-size: 18px;
-      line-height: 28px;
-    }
-
-    @include desktop-5k {
-      max-width: 675px;
-      font-size: 18px;
-      line-height: 28px;
+      max-width: 750px;
     }
   }
 
